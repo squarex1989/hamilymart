@@ -37,6 +37,7 @@ import {
   getProductColorParts,
 } from "./data/catalog";
 import { HAMSTER_VARIANTS } from "./data/hamsters";
+import { FEATURES } from "./data/features";
 import type { ColorId, Rotation } from "./data/catalog";
 import {
   addPlatform,
@@ -491,7 +492,7 @@ export default function App() {
         </section>
         <aside className="catalog-panel control-dock" aria-label="搭建与场景设置">
           <div className="workspace-tabs" role="tablist" aria-label="场景设置">
-            {([["build", "搭建"], ["bedding", "垫料"], ["hamster", "仓鼠"]] as const).map(([id, label]) =>
+            {([["build", "搭建"], ["bedding", "垫料"], ["hamster", "仓鼠"]] as const).filter(([id]) => id !== "hamster" || FEATURES.hamsterPreview).map(([id, label]) =>
               <button key={id} role="tab" aria-selected={toolTab === id} className={toolTab === id ? "active" : ""}
                 onClick={() => { setToolTab(id); setActiveProduct(null); }}>{label}</button>)}
             <button className="round-button undo-action" aria-label="撤销上一步" disabled={!history.length} onClick={() => {
@@ -889,7 +890,7 @@ export default function App() {
               </div>
               <p className="setting-note"><Info size={15} /><span>厚铺时，所有有腿平台的脚长自动与垫料同高；薄铺 5 cm 使用 10 cm 腿。无腿平台始终放在垫料上。</span></p>
             </section>}
-            {toolTab === "hamster" && <section className="environment-panel hamster-panel" aria-label="仓鼠品种与花色">
+            {FEATURES.hamsterPreview && toolTab === "hamster" && <section className="environment-panel hamster-panel" aria-label="仓鼠品种与花色">
               <div className="environment-heading"><h2>请小家人入住</h2>{state.hamster && <button className="remove-hamster" onClick={() => applyAction(setHamster(state, null), "仓鼠预览已移除")}><Trash2 size={14} />移除</button>}</div>
               <p className="setting-description">选择一种品种与花色，看看它在小家里的样子。</p>
               <div className="species-tabs" aria-label="仓鼠品种筛选">
@@ -955,7 +956,7 @@ export default function App() {
                 <span className="eyebrow">SAME LITTLE HOME.</span>
                 <h2 id="modal-title">把这份喜欢，分享出去</h2>
                 <p className="modal-lead">
-                  完整搭配编号包含平台、组件、颜色、留洞、脚长、垫料与仓鼠。
+                  完整搭配编号包含平台、组件、颜色、留洞、脚长、垫料{FEATURES.hamsterPreview ? "与仓鼠" : ""}。
                   <br />
                   复制给朋友，粘贴即可还原同一个小家。
                 </p>
@@ -1099,7 +1100,7 @@ export default function App() {
                     <div>
                       <h3>转一转，涂上喜欢的颜色</h3>
                       <p>
-                        选中配件后，在下方或右侧设置区旋转、换色或移除，点击完成继续挑选。拖动画布空白处查看全貌；还能添加仓鼠预览比例。满意后复制搭配编号，或下载完整配件清单。
+                        选中配件后，在下方或右侧设置区旋转、换色或移除，点击完成继续挑选。拖动画布空白处查看全貌。{FEATURES.hamsterPreview && "还能添加仓鼠预览比例。"}满意后复制搭配编号，或下载完整配件清单。
                       </p>
                     </div>
                   </article>

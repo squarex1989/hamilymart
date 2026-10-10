@@ -23,6 +23,7 @@ import modelIndex from "../data/model-index.json";
 import { applyFinish } from "../lib/scene-finishes";
 import { createBedding } from "../lib/bedding-scene";
 import { createHamsterSimulation } from "../lib/hamster-scene";
+import { FEATURES } from "../data/features";
 
 type Point = { x: number; y: number; z: number };
 export type SceneHandle = {
@@ -248,7 +249,8 @@ function createRuntime(
   objects.userData.hamsterEnvironment = true;
   scene.add(objects);
   const bedding = createBedding(scene);
-  const hamster = createHamsterSimulation(scene);
+  // Gate the scene too: a saved configuration may already contain a hamster.
+  const hamster = FEATURES.hamsterPreview ? createHamsterSimulation(scene) : null;
   const targets = new THREE.Group();
   scene.add(targets);
   let ghost: THREE.Group | null = null;
@@ -443,7 +445,7 @@ function createRuntime(
       );
       if (rev === revision && !disposed) {
         objects.updateMatrixWorld(true);
-        hamster.update(s);
+        hamster?.update(s);
         const center = sceneCenter();
         sun.position.set(center.x - 370, center.y - 450, contentTop() + 420);
         sun.target.position.set(center.x, center.y, 0);
@@ -720,7 +722,7 @@ function createRuntime(
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     controls.update();
-    hamster.tick(Math.min(clock.getDelta(), .05));
+    hamster?.tick(Math.min(clock.getDelta(), .05));
     renderer.render(scene, camera);
   };
   draw();
@@ -754,7 +756,7 @@ function createRuntime(
       cancelAnimationFrame(frame);
       resize.disconnect();
       controls.dispose();
-      hamster.dispose();
+      hamster?.dispose();
       bedding.dispose();
       window.removeEventListener("pointerdown", touchStart, true);
       element.removeEventListener("pointerdown", down);
