@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v4/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v7/assembly_meshes.json')
 DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
 
 
@@ -99,6 +99,8 @@ def write_glb(path: Path, group: dict, meshes: list[trimesh.Trimesh]) -> None:
             'baseColorFactor': [*linear.tolist(), 1], 'metallicFactor': 0, 'roughnessFactor': .62}, 'doubleSided': False})
         extras = {'sourcePart': component['id'], 'sourceGroup': group['id'],
                   'colorKey': component['color_key'], 'defaultColor': component['color']}
+        if component.get('color_slot'):
+            extras['colorSlot'] = component['color_slot']
         gltf['meshes'].append({'name': component['id'], 'extras': extras, 'primitives': [{
             'attributes': {'POSITION': position, 'NORMAL': normal}, 'indices': indices, 'material': i}]})
         gltf['nodes'].append({'mesh': i, 'name': component['id'], 'extras': extras})
@@ -115,7 +117,8 @@ def write_glb(path: Path, group: dict, meshes: list[trimesh.Trimesh]) -> None:
 # default stock colours, and primary/trim colour rules as the interactive scene.
 def thumbnail_catalog() -> dict:
     exporter = """
-import { COLORS, PRODUCTS, getBaseParts, SOURCE_TRIM_COLORS, SOURCE_PART_TRIM_COLORS, PRIMARY_COLOR_KEYS } from './src/data/catalog.ts';
+import { COLORS, PRODUCTS, getBaseParts, getDefaultColors, getSourceColorSlot, SOURCE_TRIM_COLORS, SOURCE_PART_TRIM_COLORS, PRIMARY_COLOR_KEYS } from './src/data/catalog.ts';
+import modelIndex from './src/data/model-index.json';
 const base = getBaseParts(100, false);
 const pool = getBaseParts(100, true).find(part => part.id === 'B01');
 console.log(JSON.stringify({
@@ -123,6 +126,10 @@ console.log(JSON.stringify({
   trimColors: SOURCE_TRIM_COLORS,
   partTrimColors: SOURCE_PART_TRIM_COLORS,
   primaryColorKeys: PRIMARY_COLOR_KEYS,
+  sourcePartSlots: Object.fromEntries(Object.entries(modelIndex).map(([id, group]) => [id,
+    Object.fromEntries(group.components.map(component => [component.id,
+      getSourceColorSlot(id, component.id, component.colorKey)]))])),
+  slotDefaults: Object.fromEntries(PRODUCTS.map(product => [product.id, getDefaultColors(product.id)])),
   groups: Object.fromEntries([
     ['base', base], ...PRODUCTS.map(product => [product.id, product.parts]),
     ['pool', [pool]],
@@ -186,6 +193,8 @@ for product, product_parts in groups.items():
             source_key = obj.get('colorKey')
             trim_colors = {**catalog['trimColors'], **catalog['partTrimColors'].get(group_id, {})}
             color_id = part['defaultColor'] if not source_key or source_key == primary_key else trim_colors.get(source_key, part['defaultColor'])
+            slot = catalog['sourcePartSlots'].get(group_id, {}).get(obj.get('sourcePart'))
+            color_id = catalog['slotDefaults'].get(product, {}).get(slot, color_id)
             rgba = linear_rgba(catalog['colors'][color_id])
             for slot in obj.material_slots:
                 material = slot.material.copy()
@@ -290,7 +299,13 @@ def main():
             index[group['id']] = {'url': '/models/' + file.name, 'bounds': group['assembly_bounds_mm'],
                                   'components': [{'id': c['id'], 'colorKey': c['color_key'], 'color': c['color']} for c in group['components']],
                                   'nameZh': group['name_zh']}
-            metrics[group['id']] = {'bytes': file.stat().st_size, 'components': checks}
+            provenance = bowl_source if group['id'] == 'O01' else {
+                'sourceDirectory': args.source.parent.name,
+                'sourceVersion': source.get('version'),
+                'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
+            }
+            metrics[group['id']] = {'bytes': file.stat().st_size, 'components': checks,
+                                    'source': provenance}
             print(f"{group['id']}: {sum(c['sourceTriangles'] for c in checks):,} → {sum(c['triangles'] for c in checks):,} triangles, {file.stat().st_size / 1000:.1f} KB", flush=True)
         index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
         validation_path.write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),

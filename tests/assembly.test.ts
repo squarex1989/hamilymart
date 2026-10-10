@@ -9,6 +9,7 @@ import {
   SOURCE_TRIM_COLORS,
   SOURCE_PART_TRIM_COLORS,
   SOURCE_PART_COLOR_SLOTS,
+  getSourceColorSlot,
   getProductColorParts,
   getDefaultColors,
   getBaseParts,
@@ -34,6 +35,8 @@ import { decodeConfig, decodeConfigWithMigration, encodeConfig } from "../src/li
 
 /** Frozen before V4 changes using the actual catalog-2 encoder (custom colors + reversed loft). */
 const LEGACY_CATALOG_2_CODE = "HM1.WzEsMiwyMDAsMCxbNywxLDAsMCwwLDAsMCwwLDBdLFtbMCwxNTAsMTkwLDExMCwwLFs0LDYsNSwzXSwtMV0sWzMsNzgsMjM5LDIwMCwyLFsyXSwwXV1d.4AF01816";
+/** Frozen before the bow-to-star model update, with separate custom ribbon/bow colors. */
+const LEGACY_BOW_HM2_CODE = "HM2.WzIsNCwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sbnVsbCxbWzAsMTUwLDE5MCwxMTAsMCxbMSwwLDIsMSwxLDEsMCwwLDUsNl0sLTFdXV0.A72A079F";
 const LEGACY_LOCAL_STATE = {
   version: 1, legHeight: 200, baseInsert: "lid",
   baseColors: { P01: "lilac", legs: "pine", H01: "cream", H02: "cream", H03: "cream", H04: "cream", H05: "cream", H06: "cream", B01: "cream" },
@@ -164,6 +167,32 @@ test("pipe and correct support are sold together; adjacent original pipe interfa
   const c = place(b.state, "pipe-st3", 250, 50);
   assert.equal(c.state.items.length, 3);
   assert.deepEqual(getOrderLines(c.state)[1].parts, ["ST1T", "ST1B"]);
+});
+test("pipe supports retain all twelve bottom holes and allow reversed neighboring pipes without side poles", () => {
+  assert.deepEqual(PRODUCTS.filter(product => product.category === "pipe").map(product => [product.id, product.bottomMagnets]), [
+    ["pipe-st1", [[10, 90, 0], [90, 90, 0]]],
+    ["pipe-st2", [[110, 90, 0], [190, 90, 0]]],
+    ["pipe-st3", [[210, 90, 0], [290, 90, 0]]],
+    ["pipe-lt1", [[10, 190, 0], [90, 190, 0]]],
+    ["pipe-lt2", [[110, 190, 0], [190, 110, 0]]],
+    ["pipe-lt3", [[190, 90, 0], [190, 10, 0]]],
+  ]);
+  for (const product of PRODUCTS.filter(product => product.category === "pipe")) {
+    assert.equal(product.pipeFaces?.length, 2);
+    assert.ok(product.pipeFaces?.every(face => !("pole" in face)));
+  }
+  const left = place(createInitialState(), "pipe-st1", 50, 50);
+  const right = tryPlace(left.state, "pipe-st2", { x: 150, y: 130, z: 110 }, 180);
+  assert.equal(right.ok, true);
+  if (!right.ok || !right.item) return;
+  assert.deepEqual([right.item.x, right.item.y, right.item.rotation], [150, 130, 180]);
+  const product = getProduct("pipe-st2");
+  assert.deepEqual(product.bottomMagnets.map(point => transformPoint(point, product, right.item!)), [[190, 90, 110], [110, 90, 110]]);
+  const matchingPlacement = getPlacements(left.state, product.id, 180).find(candidate => candidate.x === 150 && candidate.y === 130);
+  assert.equal(matchingPlacement?.magnetCount, 2);
+  assert.deepEqual(validateAssembly(right.state), right.state);
+  assert.throws(() => validateAssembly({ ...right.state, items: right.state.items.map(item => item.id === right.item!.id ? { ...item, x: 151 } : item) }), /磁吸位/);
+  assert.throws(() => validateAssembly({ ...right.state, items: right.state.items.map(item => item.id === right.item!.id ? { ...item, x: 50 } : item) }), /磁吸位/);
 });
 test("pool variant is rejected when it would remove occupied magnets or intersect the opening", () => {
   const cube = place(createInitialState(), "cube-house", 50, 50);
@@ -310,7 +339,7 @@ test("each bundled part color survives encode/decode and parent movement carries
   }
 });
 
-test("all original colors remain available; only the requested bow changes to gold", () => {
+test("all original colors remain available; the gift decoration defaults to gold", () => {
   assert.equal(COLORS.length, 8);
   const entries = modelIndex as Record<
     string,
@@ -663,7 +692,7 @@ test("moving the second platform into overhanging furniture is rejected without 
   if (!blocked.ok) assert.match(blocked.reason, /碰撞/);
 });
 
-test("gift ribbon and bow are independent color slots appended after eight physical kit parts", () => {
+test("gift ribbon and star retain the two stable color slots after eight physical kit parts", () => {
   const physical = getProduct("villa").parts.map(part => part.id);
   assert.equal(physical.length, 8);
   assert.deepEqual(getProductColorParts("villa").map(part => part.id), [...physical, "A01-ribbon", "A01-bow"]);
@@ -671,10 +700,44 @@ test("gift ribbon and bow are independent color slots appended after eight physi
   const defaults = getDefaultColors("villa");
   assert.equal(defaults["A01-ribbon"], "butter");
   assert.equal(defaults["A01-bow"], "butter");
+  assert.equal(getProductColorParts("villa").at(-1)?.role, "五角星");
   assert.deepEqual(getProductColorParts("cube-house"), getProduct("cube-house").parts);
 });
 
-test("ribbon changes survive HM2, local migration and movement without recoloring the bow or other parts", () => {
+test("Gold ribbon and Gold star use independent component IDs before the material fallback", () => {
+  const selected: AssemblyItem["colors"] = { ...getDefaultColors("villa"), "A01-ribbon": "rose", "A01-bow": "sky" };
+  const bodies = [
+    { sourcePart: "A01_Gold", colorKey: "Gold" },
+    { sourcePart: "A01_StarGold", colorKey: "Gold" },
+  ];
+  assert.deepEqual(bodies.map(body => selected[getSourceColorSlot("A01", body.sourcePart, body.colorKey)!]), ["rose", "sky"]);
+  assert.equal(getSourceColorSlot("A01", "A01_BowGold", "Gold"), "A01-bow");
+  assert.equal(getSourceColorSlot("A01", "A01_ChristmasRed", "ChristmasRed"), "A01-bow");
+  assert.equal(getSourceColorSlot("A01", undefined, "ChristmasRed"), "A01-bow");
+  assert.equal(getSourceColorSlot("A01", undefined, "Gold"), "A01-ribbon");
+  assert.equal(getSourceColorSlot("A01", "A01_PineGreen", "PineGreen"), undefined);
+  assert.equal(getSourceColorSlot("LHR", "A01_StarGold", "Gold"), undefined);
+});
+
+test("existing HM2 and local bow choices carry over to the star without changing the configuration code", () => {
+  const decoded = decodeConfig(LEGACY_BOW_HM2_CODE);
+  const previousLocal = {
+    ...decoded,
+    items: [{ ...decoded.items[0], colors: {
+      A01: "pine", A02: "cream", G05: "red", G15: "pine", G16: "pine", G17: "pine", W01: "cream", W02: "cream",
+      "A01-ribbon": "rose", "A01-bow": "sky",
+    } }],
+  };
+  for (const state of [decoded, migrateAssembly(previousLocal).state]) {
+    assert.equal(state.items[0].colors["A01-ribbon"], "rose");
+    assert.equal(state.items[0].colors["A01-bow"], "sky");
+    assert.equal(encodeConfig(state), LEGACY_BOW_HM2_CODE);
+    assert.equal(state.items[0].colors[getSourceColorSlot("A01", "A01_StarGold", "Gold")!], "sky");
+    assert.equal(getOrderLines(state).find(line => line.sku === "HM-HS-001")?.parts.length, 8);
+  }
+});
+
+test("ribbon changes survive HM2, local migration and movement without recoloring the star or other parts", () => {
   const villa = place(createInitialState(), "villa", 150, 190);
   const before = encodeConfig(villa.state);
   const changed = { ...villa.state, items: [{ ...villa.item, colors: { ...villa.item.colors, "A01-ribbon": "rose" as const } }] };

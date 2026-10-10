@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "2668172cba9a6b03c0e99b1f7874ec3cf01db7988aaeab9ed2d828865f4212d0",
-  "sourceVersion": "Complete 8x4 V4",
+  "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d",
+  "sourceVersion": "Complete 8x4 V7",
   "supplementalSources": [
     {
       "sourceDirectory": "christmas_villa_v30_pool_cover",
@@ -33,7 +33,12 @@
           "boundsMaxErrorMm": 0.000342,
           "volumeRelativeError": 1.06e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "H02": {
       "bytes": 113928,
@@ -46,7 +51,12 @@
           "boundsMaxErrorMm": 7.9e-05,
           "volumeRelativeError": 1e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "H03": {
       "bytes": 113724,
@@ -59,7 +69,12 @@
           "boundsMaxErrorMm": 0.000233,
           "volumeRelativeError": 1.29e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "H04": {
       "bytes": 113652,
@@ -72,7 +87,12 @@
           "boundsMaxErrorMm": 0.000233,
           "volumeRelativeError": 1.36e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "H05": {
       "bytes": 113784,
@@ -85,7 +105,12 @@
           "boundsMaxErrorMm": 8e-06,
           "volumeRelativeError": 1.17e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "H06": {
       "bytes": 167144,
@@ -98,7 +123,12 @@
           "boundsMaxErrorMm": 0.001383,
           "volumeRelativeError": 1.105e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "P01": {
       "bytes": 1924328,
@@ -111,7 +141,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 7.58e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "L01": {
       "bytes": 31984,
@@ -124,7 +159,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "L02": {
       "bytes": 31988,
@@ -137,7 +177,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "L03": {
       "bytes": 31988,
@@ -150,7 +195,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "L04": {
       "bytes": 31992,
@@ -163,7 +213,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "X01": {
       "bytes": 31988,
@@ -176,7 +231,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "X02": {
       "bytes": 31992,
@@ -189,7 +249,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "X03": {
       "bytes": 31992,
@@ -202,7 +267,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "X04": {
       "bytes": 31996,
@@ -215,7 +285,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "G03": {
       "bytes": 339036,
@@ -237,336 +312,10 @@
           "volumeRelativeError": 0.00027478
         }
       ],
-      "derivedSource": {
-        "sourceFile": "/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v4/assembly_meshes.json",
-        "sourceSha256": "2668172cba9a6b03c0e99b1f7874ec3cf01db7988aaeab9ed2d828865f4212d0",
-        "derivedSourceFile": "/Users/chachacha/Documents/ChatGPT/仓鼠屋配件选购网站/hamilymart/.site-workflow/derived-models/g03-dual-floor/assembly_meshes.json",
-        "derivedSourceSha256": "0622375b327e6db357f663a87022f7c044a8231eb1ecf2df9545c22da799f338",
-        "generator": "scripts/derive-g03-dual-floor.py",
-        "generatorSha256": "73d437f649eb2ba5bc563403c4682e0aa5fdd59ff48ce90b92166b21c70764fd",
-        "bounds": [
-          -3.0,
-          179.60000610351562,
-          200.0,
-          133.0,
-          298.0,
-          373.3333435058594
-        ],
-        "dimensionsMm": [
-          136.0,
-          118.39999389648438,
-          173.33334350585938
-        ],
-        "originMm": [
-          78.0,
-          239.0,
-          200.0
-        ],
-        "magnetContactPointsMm": [
-          [
-            5.0,
-            192.0,
-            200.0
-          ],
-          [
-            5.0,
-            286.0,
-            200.0
-          ],
-          [
-            125.0,
-            192.0,
-            200.0
-          ],
-          [
-            125.0,
-            286.0,
-            200.0
-          ]
-        ],
-        "magnetLocalContactPointsMm": [
-          [
-            -73.0,
-            -47.0,
-            0.0
-          ],
-          [
-            -73.0,
-            47.0,
-            0.0
-          ],
-          [
-            47.0,
-            -47.0,
-            0.0
-          ],
-          [
-            47.0,
-            47.0,
-            0.0
-          ]
-        ],
-        "magnetPockets": [
-          {
-            "contactMm": [
-              5.0,
-              192.0,
-              200.0
-            ],
-            "centerMm": [
-              5.0,
-              192.0,
-              202.0
-            ],
-            "diameterMm": 8.2,
-            "depthMm": 4.2,
-            "occupiedMm3": 0.0
-          },
-          {
-            "contactMm": [
-              5.0,
-              286.0,
-              200.0
-            ],
-            "centerMm": [
-              5.0,
-              286.0,
-              202.0
-            ],
-            "diameterMm": 8.2,
-            "depthMm": 4.2,
-            "occupiedMm3": 0.0
-          },
-          {
-            "contactMm": [
-              125.0,
-              192.0,
-              200.0
-            ],
-            "centerMm": [
-              125.0,
-              192.0,
-              202.0
-            ],
-            "diameterMm": 8.2,
-            "depthMm": 4.2,
-            "occupiedMm3": 0.0
-          },
-          {
-            "contactMm": [
-              125.0,
-              286.0,
-              200.0
-            ],
-            "centerMm": [
-              125.0,
-              286.0,
-              202.0
-            ],
-            "diameterMm": 8.2,
-            "depthMm": 4.2,
-            "occupiedMm3": 0.0
-          }
-        ],
-        "physicalPositiveBodies": 1,
-        "protectedLeftDifferenceMm3": 0.0,
-        "protectedRightDifferenceMm3": 0.0,
-        "clearDoorwayProbeMm": [
-          67,
-          50
-        ],
-        "clearDoorwayProbeOverlapMm3": 0.0,
-        "canonicalUpperCollisionsMm3": {
-          "A02": 2.451493895326625e-12,
-          "G15": 0.0,
-          "G16": 0.0,
-          "G17": 0.0
-        },
-        "sampledShellCrossings": [
-          {
-            "y": 200,
-            "z": 202,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 239,
-            "z": 202,
-            "xCrossingWidthsMm": [
-              5.0
-            ]
-          },
-          {
-            "y": 275,
-            "z": 202,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 200,
-            "z": 210,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 239,
-            "z": 210,
-            "xCrossingWidthsMm": [
-              5.0
-            ]
-          },
-          {
-            "y": 275,
-            "z": 210,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 200,
-            "z": 230,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 239,
-            "z": 230,
-            "xCrossingWidthsMm": [
-              5.0
-            ]
-          },
-          {
-            "y": 275,
-            "z": 230,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 200,
-            "z": 250,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 239,
-            "z": 250,
-            "xCrossingWidthsMm": [
-              5.0
-            ]
-          },
-          {
-            "y": 275,
-            "z": 250,
-            "xCrossingWidthsMm": [
-              5.0,
-              5.0
-            ]
-          },
-          {
-            "y": 200,
-            "z": 270,
-            "xCrossingWidthsMm": [
-              5.483968976095176,
-              5.48396897609517
-            ]
-          },
-          {
-            "y": 239,
-            "z": 270,
-            "xCrossingWidthsMm": [
-              5.483968976095176,
-              5.48396897609517
-            ]
-          },
-          {
-            "y": 275,
-            "z": 270,
-            "xCrossingWidthsMm": [
-              5.483968976095177,
-              5.48396897609517
-            ]
-          },
-          {
-            "y": 200,
-            "z": 300,
-            "xCrossingWidthsMm": [
-              82.59486086699785
-            ]
-          },
-          {
-            "y": 239,
-            "z": 300,
-            "xCrossingWidthsMm": [
-              5.19540878457671,
-              5.195408784576713
-            ]
-          },
-          {
-            "y": 275,
-            "z": 300,
-            "xCrossingWidthsMm": [
-              88.18517980670211
-            ]
-          },
-          {
-            "y": 239,
-            "z": 330,
-            "xCrossingWidthsMm": [
-              4.9068485930582355,
-              4.906848593058228
-            ]
-          },
-          {
-            "y": 239,
-            "z": 350,
-            "xCrossingWidthsMm": [
-              4.7144751320459335,
-              4.7144751320459335
-            ]
-          }
-        ],
-        "shifted26UpperCollisionsMm3": {
-          "A02": 4.3706514043056186e-14,
-          "G15": 0.0,
-          "G16": 0.0,
-          "G17": 0.0
-        },
-        "components": [
-          {
-            "id": "G03_ChristmasRed",
-            "watertight": true,
-            "consistentWinding": true,
-            "triangles": 8180,
-            "printStlSha256": "f3ab8bc2bcb080f1b1339850f666c60a17490a86891ce20088dfc8bc965a9b32",
-            "positiveMaterialBodies": 2
-          },
-          {
-            "id": "G03_Snow",
-            "watertight": true,
-            "consistentWinding": true,
-            "triangles": 20834,
-            "printStlSha256": "a6ca76542f40e2c1c2dad4d12778f937aa65b4e9efd382bd2364aafab061b45d",
-            "positiveMaterialBodies": 3
-          }
-        ],
-        "webGlbSha256": "171585d564de0ad9d6f4ff6df76600281aeec8eb2c5193437284c506bc721b25",
-        "glbBoundsErrorMm": 0.0,
-        "combinedDiagnosticStl": "/Users/chachacha/Documents/ChatGPT/仓鼠屋配件选购网站/hamilymart/.site-workflow/derived-models/g03-dual-floor/G03_combined_print.stl",
-        "physicalTested": false,
-        "note": "Geometry checks only; new print requires slicer review/supports as with original G03."
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
       }
     },
     "G05": {
@@ -588,7 +337,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "G06": {
       "bytes": 91384,
@@ -609,7 +363,12 @@
           "boundsMaxErrorMm": 3e-05,
           "volumeRelativeError": 0.00011444
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "B01": {
       "bytes": 188540,
@@ -630,7 +389,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LHB": {
       "bytes": 268968,
@@ -643,7 +407,12 @@
           "boundsMaxErrorMm": 0.000604,
           "volumeRelativeError": 5.135e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LHR": {
       "bytes": 122096,
@@ -656,7 +425,12 @@
           "boundsMaxErrorMm": 0.000856,
           "volumeRelativeError": 1.915e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "SHB": {
       "bytes": 177124,
@@ -669,7 +443,12 @@
           "boundsMaxErrorMm": 0.000269,
           "volumeRelativeError": 3.836e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "SHR": {
       "bytes": 58072,
@@ -682,7 +461,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "ST1T": {
       "bytes": 52048,
@@ -695,20 +479,30 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "ST1B": {
-      "bytes": 94044,
+      "bytes": 62112,
       "components": [
         {
           "id": "ST1B_Snow",
-          "sourceTriangles": 3080,
-          "triangles": 3080,
+          "sourceTriangles": 2330,
+          "triangles": 2330,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "ST2T": {
       "bytes": 82312,
@@ -721,20 +515,30 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "ST2B": {
-      "bytes": 94044,
+      "bytes": 62112,
       "components": [
         {
           "id": "ST2B_Snow",
-          "sourceTriangles": 3080,
-          "triangles": 3080,
+          "sourceTriangles": 2330,
+          "triangles": 2330,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "ST3T": {
       "bytes": 52048,
@@ -747,20 +551,30 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "ST3B": {
-      "bytes": 94044,
+      "bytes": 62112,
       "components": [
         {
           "id": "ST3B_Snow",
-          "sourceTriangles": 3080,
-          "triangles": 3080,
+          "sourceTriangles": 2330,
+          "triangles": 2330,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LT1T": {
       "bytes": 52048,
@@ -773,20 +587,30 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LT1B": {
-      "bytes": 94044,
+      "bytes": 62112,
       "components": [
         {
           "id": "LT1B_Snow",
-          "sourceTriangles": 3080,
-          "triangles": 3080,
+          "sourceTriangles": 2330,
+          "triangles": 2330,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LT2T": {
       "bytes": 709324,
@@ -799,20 +623,30 @@
           "boundsMaxErrorMm": 0.001933,
           "volumeRelativeError": 2.732e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LT2B": {
-      "bytes": 433748,
+      "bytes": 420956,
       "components": [
         {
           "id": "LT2B_Snow",
-          "sourceTriangles": 90298,
-          "triangles": 21670,
-          "sampledMaxErrorMm": 0.005045,
+          "sourceTriangles": 90214,
+          "triangles": 21650,
+          "sampledMaxErrorMm": 0.005146,
           "boundsMaxErrorMm": 0.001715,
-          "volumeRelativeError": 1.779e-05
+          "volumeRelativeError": 1.947e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LT3T": {
       "bytes": 52048,
@@ -825,49 +659,64 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "LT3B": {
-      "bytes": 94044,
+      "bytes": 72972,
       "components": [
         {
           "id": "LT3B_Snow",
-          "sourceTriangles": 3080,
-          "triangles": 3080,
-          "sampledMaxErrorMm": 0.0,
+          "sourceTriangles": 3466,
+          "triangles": 3044,
+          "sampledMaxErrorMm": 0.007245,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0
+          "volumeRelativeError": 2.97e-06
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "A01": {
-      "bytes": 235540,
+      "bytes": 192956,
       "components": [
         {
           "id": "A01_PineGreen",
-          "sourceTriangles": 9288,
-          "triangles": 7452,
-          "sampledMaxErrorMm": 0.016724,
+          "sourceTriangles": 9382,
+          "triangles": 7432,
+          "sampledMaxErrorMm": 0.016112,
           "boundsMaxErrorMm": 0.001377,
-          "volumeRelativeError": 0.000133
+          "volumeRelativeError": 0.00013177
         },
         {
           "id": "A01_Gold",
-          "sourceTriangles": 660,
-          "triangles": 660,
+          "sourceTriangles": 480,
+          "triangles": 480,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         },
         {
-          "id": "A01_ChristmasRed",
-          "sourceTriangles": 1610,
-          "triangles": 1610,
+          "id": "A01_StarGold",
+          "sourceTriangles": 436,
+          "triangles": 436,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "W01": {
       "bytes": 44432,
@@ -880,7 +729,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "W02": {
       "bytes": 44432,
@@ -893,7 +747,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "A02": {
       "bytes": 300652,
@@ -906,7 +765,12 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 8.1e-07
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "G15": {
       "bytes": 141584,
@@ -919,7 +783,12 @@
           "boundsMaxErrorMm": 0.001847,
           "volumeRelativeError": 4.538e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "G16": {
       "bytes": 54704,
@@ -932,7 +801,12 @@
           "boundsMaxErrorMm": 0.002759,
           "volumeRelativeError": 7.016e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "G17": {
       "bytes": 54484,
@@ -945,7 +819,12 @@
           "boundsMaxErrorMm": 0.002759,
           "volumeRelativeError": 6.82e-05
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_8x4_v7",
+        "sourceVersion": "Complete 8x4 V7",
+        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+      }
     },
     "O01": {
       "bytes": 95804,
@@ -966,7 +845,23 @@
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
-      ]
+      ],
+      "source": {
+        "sourceDirectory": "christmas_villa_v30_pool_cover",
+        "sourceVersion": "V30",
+        "sourceSha256": "3d25c19b4a9c6584a12cb06fbf76ce217666a8623638c1b270a8a59796feed9f",
+        "groups": [
+          "O01"
+        ],
+        "magnetMm": [
+          8,
+          2
+        ],
+        "pocketMm": [
+          8.1,
+          2.1
+        ]
+      }
     }
   }
 }

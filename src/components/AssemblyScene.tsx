@@ -13,7 +13,7 @@ import {
   COLORS,
   SOURCE_TRIM_COLORS,
   SOURCE_PART_TRIM_COLORS,
-  SOURCE_PART_COLOR_SLOTS,
+  getSourceColorSlot,
   PRIMARY_COLOR_KEYS,
   getProduct,
   getBaseParts,
@@ -339,7 +339,7 @@ function createRuntime(
               const primaryKey =
                 PRIMARY_COLOR_KEYS[part.id] ??
                 index[part.id].components[0]?.colorKey;
-              const slot = SOURCE_PART_COLOR_SLOTS[part.id]?.[ck];
+              const slot = getSourceColorSlot(part.id, o.userData.sourcePart, ck);
               if (slot && colors[slot]) next.color.set(colorHex(colors[slot]));
               else if (!ck || ck === primaryKey) next.color.set(colorHex(tint));
               else if (SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck])

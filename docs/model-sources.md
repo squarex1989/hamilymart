@@ -1,103 +1,81 @@
 # HamilyMart 模型资产来源与维护
 
-网页模型来自已核对的正式装配目录：
+## 当前正式源
+
+网站主体使用 `unified_complete_8x4_v7/assembly_meshes.json`，与同目录的完整 V7 3MF 共用实际几何。完整目录位于：
 
 ```
-/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v4/
+/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v7/
 ```
 
-主体几何输入是该目录的 `assembly_meshes.json`（schema 3），使用 `groups[].components[].vertices/triangles`。另外，圣诞食盆 O01 来自独立注明的历史 V30 选配资产；G03 使用下文说明的双层兼容派生几何。所有 GLB 使用装配坐标，不使用打印排版坐标；没有改动任何源打印文件。
+输入为 schema 3 的 `groups[].components[].vertices/triangles`。导出使用装配坐标，不使用打印排盘坐标。V7 完整打印套装有 43 个零件、49 个颜色体；网站保留当前目录使用的 42 个主体零件及历史 O01 食盆，共 43 个网页组、50 个颜色体。V5 新增的 LT2NT 无上部开孔弯管保留在完整 3MF 中，本次不改变网站商品目录。
 
-主体版本为 **Complete 8x4 V4**。礼物盒小屋套餐由 `A01,A02,G05,G15,G16,G17,W01,W02` 八个组构成。A01 源文件包含绿色房体、金色饰条、红色蝴蝶结三个颜色体。按用户的新配色要求，网页与商品图将 A01 的蝴蝶结显示为 Gold `#C99B46`；使用 `SOURCE_PART_TRIM_COLORS` 做零件级映射，保留源文件与其他红色部件。
+`public/models/validation.json` 记录主源 SHA-256、版本、每组实际来源及简化指标。`groups.O01.source` 单独记录历史食盆，不能把它认作统一 8×4 套装零件。
 
-源文件 SHA-256：`2668172cba9a6b03c0e99b1f7874ec3cf01db7988aaeab9ed2d828865f4212d0`。
+## V7 五角星与管道支撑
 
-## G03 圣诞帽阁楼的双层兼容派生版
+A01 礼物盒的蝴蝶结替换为尖端向上的实心黄色五角星，位于原丝带十字交点。重建了原蝴蝶结留在绿墙和丝带中的凹位，避免留下旧装饰轮廓。模型仍由三个独立颜色体组成：
 
-用户授权调整阁楼尺寸，同时兼容一层和二层。原 G03 四孔矩形为 146 × 94 mm；二层 A02 的最左两个孔为 `(5,192)`、`(5,286)`，心距 94 mm。V4 一层 P01 的 100 mm 格内，孔心距格边 10 mm，同格四孔心距 80 mm。例如 `[200,300]²` 格的四孔为 `(210,210)`、`(210,290)`、`(290,210)`、`(290,290)`。已在 P01 实际网格 z=107 mm 截面交叉验证，孔边缘为 205.899994 / 214.100006 mm 等，孔径为 Ø8.2 mm。不能将格宽 100 mm 当成磁孔心距。
+| 组件 | 含义 | 默认颜色 |
+| --- | --- | --- |
+| A01_PineGreen | 绿色房体 | PineGreen `#174A3A` |
+| A01_Gold | 十字丝带 | Gold `#C99B46` |
+| A01_StarGold | 五角星 | Gold `#C99B46` |
 
-在保留二层 94 mm 纵向孔距、仅允许四个直角方向的约束下，一层格点可用的横向孔距中，120 mm 最接近原 146 mm。因此只将阁楼宽度从 162 mm 缩短 26 mm，变为 **136 × 118.4 × 173.333 mm**。`scripts/derive-g03-dual-floor.py` 保留原闭合网格拓扑，在 x=14..142 mm 中段做连续单调的分段压缩；x≤14 的左磁座/侧墙完全不动，x≥142 的右磁座/侧墙整体左移 26 mm。它重建真实网格、打印 STL 与 GLB，不使用前端缩放，磁孔不会缩成椭圆。原 5 mm 侧墙、y 向 70 mm 入口与 Ø8.2 × 4.2 mm 底孔保留。
+网页按 `sourcePart` 组件 ID 优先选择颜色槽，不能按相同的 Gold 材质合并。`getSourceColorSlot(groupId, sourcePart, colorKey)` 同时用于交互画面与商品图。五角星沿用内部 `A01-bow` 键及原颜色数组位置，旧搭配编号和本地保存的蝴蝶结颜色会自然应用到五角星；界面名称显示“五角星”。源 CAD 的 `color_slot: A01-star` 是源组件语义，并非网站历史存储键。
 
-- 新装配 bounds：`[-3,179.60000610351562,200,133,298,373.3333435058594]`。
-- 业务 origin 保持 `[78,239,200]`，避免隐式改变安装参考点。
-- 磁孔接触点：`(5,192,200)`、`(5,286,200)`、`(125,192,200)`、`(125,286,200)`；对应 local XY 为 `(-73,-47)`、`(-73,47)`、`(47,-47)`、`(47,47)`。
-- 二层保留左侧两个 94 mm 孔吸附；一层使用前侧或后侧的 120 mm 双孔吸附。每次实际匹配两孔，并非宣称四孔同时匹配两个平台。
+六个管道支撑 ST1B、ST2B、ST3B、LT1B、LT2B、LT3B 各取消两个侧面磁吸孔，共 12 个；底部十二个磁吸孔、顶部定位槽与管道配合面保留。LT2NT 共用 LT2B，不重复计数。V7 硬件总数为 92 枚 Ø8×4 mm 磁铁（包含四枚备用长腿磁铁），46 个封闭磁腔与埋磁暂停保持。网站移除了侧面 N/S 磁极限制，保留底部至少两孔匹配、碰撞与相邻端面几何朝向检查。
 
-派生源保存在本项目忽略目录 `.site-workflow/derived-models/g03-dual-floor/assembly_meshes.json`，SHA-256 为 `0622375b327e6db357f663a87022f7c044a8231eb1ecf2df9545c22da799f338`。同目录保存双色打印 STL、`G03_combined_print.stl`、`geometry-validation.json`、`printability-analysis.json` 和四视图预览。原始 V4 目录保持不动。
+V7 源包保留生成脚本和几何检查。`assembly_validation.json` 检查装配，`printability_analysis.json` 对七个改变的实体重新分析，其余 36 件仅在打印 STL 字节相同时继承 V6 分析；`3mf_validation.json` 与 `embedded_magnet_validation.json` 对本版重新切片和实际暂停刀路核验。实物打印尚未验证。
 
-验证结果：两色打印 STL 均水密且法向一致，合并后为一个实体；四个圆孔的空腔检查通过，左右磁座的实体差集小于 0.001 mm³，67 × 50 mm 保守入口净空探针通过。实际派生实体在原二层位置和右移 26 mm 的另一合法位置，与 A02/G15/G16/G17 均无实体干涉。技能 `analyze.py --repair --printer H2C --unit mm` 检查评分 9.7/10，未执行任何修复，零边界边/非流形边/退化面；2000 点壁厚抽样最小 1.9 mm、95% 表面至少 4.03 mm，适配 H2C。尚未重新原生切片或实体打印，仍需像原阁楼一样在切片器检查窗框等局部支撑；抽样结果不等于穷尽式壁厚证明。
+## G03 圣诞帽双层兼容几何
 
-网页 G03 为 13,608 个三角形、339,036 字节。它的来源和验证数据记录在 `public/models/validation.json` 的 `groups.G03.derivedSource`；当前全部 43 组共 299,242 个三角形、7,158,576 字节。
+V7 保留 V6 的 G03，宽度由旧版 162 mm 缩至 136 mm，前后尺寸和高度保持，实际尺寸约为 **136 × 118.4 × 173.333 mm**。底孔矩形从 146×94 mm 改为 120×94 mm。
+
+- 四孔接触点：`(5,192,200)`、`(5,286,200)`、`(125,192,200)`、`(125,286,200)`。
+- 二层 A02 保留最左两个孔 `(5,192)`、`(5,286)`；一层使用 120 mm 横向孔对，例如 `(90,190)`、`(210,190)`。
+- 安装只要求两个实际磁位重合，不代表四孔能同时对上两个平台。
+- 一层 P01 的 100 mm 格内孔心距边 10 mm，同格孔心距是 80 mm；94 mm 属于二层左侧接口。
+- 业务 origin 保持 `[78,239,200]`，装配 bounds 为 `[-3,179.60000610351562,200,133,298,373.3333435058594]`。
+
+原派生过程在 `scripts/derive-g03-dual-floor.py`：只压缩原 x=14..142 mm 中间区域，左右磁座作刚性保留/平移，保留 Ø8.2×4.2 mm 圆孔与入口净空。旧 V4 及派生证据均保留。该脚本仅供从旧 V4 复现历史推导，**不要再对 V6/V7 重复派生**；正常导出直接使用当前正式源中的 G03。
 
 ## 圣诞食盆的独立来源
 
-O01 是现有历史选配件，来自 `christmas_villa_v30_pool_cover/assembly_meshes.json`（版本 V30），不是 V4 的 42 件之一。源 SHA-256 为 `3d25c19b4a9c6584a12cb06fbf76ce217666a8623638c1b270a8a59796feed9f`。它保留红色盆身与白色盆沿、55 × 60 × 21 mm 尺寸及原坐标 `[94.5,96,180,149.5,156,201]`，网站没有另造食盆几何。
+O01 来自 `christmas_villa_v30_pool_cover/assembly_meshes.json`（V30），SHA-256 为 `3d25c19b4a9c6584a12cb06fbf76ce217666a8623638c1b270a8a59796feed9f`。保留红色盆身、白色盆沿和 55×60×21 mm 尺寸，原 bounds 为 `[94.5,96,180,149.5,156,201]`。
 
-原始 `magnet_interfaces.json` 记录两个底孔中心为 `(127,124,180)`、`(141,124,180)`，间距 14 mm，可匹配 A02 的花圃磁位。**O01 的硬件仍为 Ø8 × 2 mm 磁铁、Ø8.1 × 2.1 mm 孔，并未改成主体 V4 的 8 × 4 mm 规格。** 食盆与圣诞袜花圃占用同一个安装位置，不能重叠安装。
+其两个底孔中心 `(127,124,180)`、`(141,124,180)` 相距 14 mm，可匹配 A02 花圃磁位；食盆与花圃不能重叠安装。**它仍使用 Ø8×2 mm 磁铁和 Ø8.1×2.1 mm 孔**，未混入当前统一 8×4 mm 打印套装。
 
-`public/models/validation.json` 的 `supplementalSources` 独立记录其来源、校验值与硬件尺寸。网页共提供 43 组、50 个颜色体；其中 V4 主体 42 组、48 个颜色体，O01 增补 1 组、2 个颜色体。
+## 坐标、材质和简化
 
-## 坐标与加载约定
+- 所有 GLB 保持毫米、Z 向上的源世界坐标。套餐的组保留相对位置；前端统一减去套餐 `origin` 再旋转和平移，不逐零件居中。
+- P01 平台 Z 为 100–110 mm；L01–L04 腿为 0–100 mm，X01–X04 为 -100–100 mm。选择长腿后整套向上补偿 100 mm。
+- `model-index.json` 保存 group ID、URL、bounds、组件 ID 与源色。节点和 mesh extras 含 `sourcePart/sourceGroup/colorKey/defaultColor`，有源色槽时另含 `colorSlot`。
+- Three.js 读取 extras 进行独立配色。Blender 渲染商品图时撤销 glTF 导入器的 Y-up 轴转换。
+- GLB 无需外部解码器。材质颜色从 sRGB 转为 glTF 线性值，40° 锐边分裂用于保留硬表面。
+- 小于 3,200 面的颜色体保留原网格；密集网格使用保守 QEM 简化。包围盒或最多 1,600 个确定性顶点样本到面距离误差超过 0.06 mm，或相对体积误差超过 0.1%，则使用原网格。
 
-- 单位为毫米，**Z 向上**。每个 GLB 保留源装配世界坐标；除上述有来源记录的 G03 派生重建外，导出没有归零、翻转、缩放或替换几何。
-- `src/data/model-index.json` 按原始 group ID 索引，提供 `/models/{groupId}.glb`、源包围盒 `[minX,minY,minZ,maxX,maxY,maxZ]`、中文名称、各颜色体 ID 与原始色。
-- P01 平台源范围为 `[0,0,100,300,300,110]`。L01–L04 支撑腿的 Z 为 0–100，X01–X04 为 -100–100。选择 20 cm 腿后，前端整体向上补偿 100 mm 才能让脚底保持地面位置。
-- 套餐组合的各个 group 直接保留相对位置；前端统一减去 `catalog.ts` 中的套餐 `origin`，再旋转、平移。不要逐零件分别居中，否则真实组装关系会消失。
-- 原始节点和 mesh 的 glTF `extras` 都包含 `sourcePart`、`sourceGroup`、`colorKey`、`defaultColor`。Three.js `GLTFLoader` 将其暴露为 `mesh.userData`，便于按零件或原颜色体调整颜色。
-- GLB 用标准位置、法线和三角索引，不需要 Draco、Meshopt 或外部 CDN 解码器；每组独立文件，适合懒加载和缓存。
-- 虽然标准 glTF 查看器通常假定 Y-up，这些业务资产有意保留模型 Z-up。Three.js 中应将模型放在统一转换父组中，或将 camera/controls 的 up 设置为 Z。Blender 生成缩略图时显式撤销导入器的轴转换。
+简化检查是抽样验证，不是完整 Hausdorff 距离证明。网页模型仅用于选购预览，生产使用正式 3MF；磁吸位置由正式孔位数据决定。
 
-## 轻量化与验证
+## 重新生成网站资产
 
-原始 V4 模型为 42 组、48 个颜色体，共 906,924 个三角形。未应用 G03 派生版前，网页主体总计 295,514 个三角形、7,064,392 字节。增补 O01 原始 7,422 个三角形，网页简化为 3,814 个；当时总计 43 组、50 个颜色体、299,328 个三角形。G03 派生版后的当前统计见上节；磁孔、接合结构、房屋、楼梯和管道仍来自各自注明的实际几何。
-
-密集曲面的三角划分使用保守 QEM 简化；小于 3,200 三角形的颜色体直接保留。每次简化检查包围盒、体积及确定性采样的最近面距离，超限时保留原网格。法线按 40° 分开锐边，使板面与圆角正确着色。材质源颜色由 sRGB 转换成 glTF 所需线性值。
-
-本次导出验证：
-
-- 全部 42 个 GLB 重新加载成功，顶点和三角索引有效，节点原零件编号一致。
-- 导出网格与源包围盒最大差异为 **0.002899 mm**。
-- 每个参与简化的颜色体最多抽取 1,600 个原始顶点，采样最近面距离最大为 **0.017028 mm**。
-- 体积相对差异最大为 **0.022495%**。
-
-采样误差不是完整 Hausdorff 距离证明；网页资产用于选购预览，不能替代原始生产文件。磁吸匹配仍以正式模型磁铁坐标数据计算，不根据简化后的三角网格推断。
-
-O01 另外通过 GLB 重新加载与包围盒校验。`public/models/validation.json` 保存主体与增补源文件 SHA-256、版本、每个颜色体简化前后面数和验证指标。
-
-## 商品缩略图
-
-`public/thumbnails/{productId}.png` 与 `base.png` 使用同一批真实 GLB 组合经 Blender 渲染，有透明背景，可直接放在奶油色卡片上。没有加入套餐外部件。商品图直接读取 `catalog.ts` 的 `COLORS`、各零件 `defaultColor`、`SOURCE_TRIM_COLORS`、`SOURCE_PART_TRIM_COLORS` 和 `PRIMARY_COLOR_KEYS`，与交互画面的八色库存及默认配色保持一致。主颜色体使用零件默认色，其余装饰色使用同一八色板的映射；G05 楼梯主色明确采用红色源颜色体。保留源模型的 Snow `#F1EADB`、PineGreen `#174A3A`、ChristmasRed `#B8273C`、Gold `#C99B46`，再增加四种可选色，A01 蝴蝶结按用户要求默认改为金黄色。几何仍完全来自原 GLB。相机按投影后的模型范围自动留白，避免方糖屋等较高模型被裁切。
-
-现有 16 张商品图规格为 480 × 400 RGBA，已按新增食盆与黄色蝴蝶结重新生成，透明边界检查通过。其余 14 张像素未变的图片保留原文件，避免仅由 PNG 元数据引起无效变更。商品目录与默认配色变化自动反映到图片中。
-
-## 重新生成
-
-使用 Python 3.11 或更新版本：
+安装所需的 Python 库后，从已批准的 V7 源更新当前目录使用的全部组：
 
 ```sh
-python3 -m pip install numpy trimesh fast-simplification rtree pillow
-python3 scripts/prepare-models.py --source '/absolute/path/to/assembly_meshes.json'
-python3 scripts/derive-g03-dual-floor.py --source '/absolute/path/to/V4/assembly_meshes.json'
+python3 - <<'PYTHON'
+import json, subprocess
+from pathlib import Path
+ids = list(json.loads(Path('src/data/model-index.json').read_text()))
+subprocess.run(['python3', 'scripts/prepare-models.py', '--only', *ids, '--thumbnails'], check=True)
+PYTHON
 ```
 
-脚本默认从相邻历史 V30 目录导入 O01。源目录不同时使用 `--food-bowl-source '/absolute/path/to/V30/assembly_meshes.json'`。只重建某个已有组可用 `--only O01`；它保留其他现有 GLB 与校验项。
+`--source` 可显式指定正式 `assembly_meshes.json`；`--food-bowl-source` 可指定历史 O01 源。`--only A01 ST1B` 可局部更新，保留其他 GLB 和来源记录。省略 `--only` 会导出完整源中所有组（包括尚未上架的 LT2NT），更新商品目录时应一起检查测试与索引覆盖。
 
-全量导出或 `--only G03` 后，必须再次运行 `derive-g03-dual-floor.py`，才能保持网站的双层兼容版。派生脚本额外需要 `manifold3d`，只更新 G03 GLB/index/validation 和本地工件，不改其他组。打印检查复现命令：
-
-```sh
-python3 /Users/chachacha/.agents/skills/bambu-studio-ai/scripts/analyze.py .site-workflow/derived-models/g03-dual-floor/G03_combined_print.stl --repair --printer H2C --unit mm --material PLA --purpose functional --json
-```
-
-同时生成商品图（无需 Blender 插件）：
-
-```sh
-python3 scripts/prepare-models.py --source '/absolute/path/to/assembly_meshes.json' --thumbnails --blender '/Applications/Blender.app/Contents/MacOS/Blender'
-```
-
-仅在已生成的 GLB 上重新渲染：
+仅重新渲染已有 GLB：
 
 ```sh
 python3 scripts/prepare-models.py --thumbnails-only
 ```
 
-新增产品时，在 `catalog.ts` 中配置组合、默认颜色与连接规则；缩略图脚本会通过本地 `tsx` 自动读取目录，无需重复维护产品列表。渲染缩略图前需在应用目录运行 `npm install`。新增几何时先更新正式源模型，再重新导出；不要手改二进制 GLB。
+商品图由真实套餐 GLB、`catalog.ts` 的库存色和默认色槽经 Blender 渲染，透明背景 480×400，镜头按实际投影范围留白。修改模型后应同时更新商品图。新增产品在 `catalog.ts` 配置组合和真实接口，无需在缩略图脚本重复维护列表。

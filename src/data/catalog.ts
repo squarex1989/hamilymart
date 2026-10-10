@@ -1,5 +1,5 @@
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
- * Magnet coordinates are transcribed from unified_complete_8x4_v4/hardware_complete.json.
+ * Magnet coordinates follow unified_complete_8x4_v7/hardware_complete.json.
  * Contact planes, rather than embedded magnet centers, are used for assembly transforms.
  */
 export type Vec3 = [number, number, number];
@@ -41,9 +41,27 @@ export interface ProductPart {
 export const SOURCE_PART_COLOR_SLOTS: Record<string, Record<string, string>> = {
   A01: { Gold: "A01-ribbon", ChristmasRed: "A01-bow" },
 };
+/** Source IDs distinguish decorative bodies even when both have the Gold material. */
+export const SOURCE_COMPONENT_COLOR_SLOTS: Record<string, Record<string, string>> = {
+  A01: {
+    A01_Gold: "A01-ribbon",
+    A01_StarGold: "A01-bow",
+    A01_BowGold: "A01-bow",
+    A01_ChristmasRed: "A01-bow",
+  },
+};
+export function getSourceColorSlot(
+  groupId: string,
+  sourcePart?: string,
+  colorKey?: string,
+): string | undefined {
+  return (sourcePart ? SOURCE_COMPONENT_COLOR_SLOTS[groupId]?.[sourcePart] : undefined)
+    ?? (colorKey ? SOURCE_PART_COLOR_SLOTS[groupId]?.[colorKey] : undefined);
+}
 export const COLOR_SLOTS: Record<string, ProductPart> = {
   "A01-ribbon": { id: "A01-ribbon", role: "礼物盒丝带", defaultColor: "butter" },
-  "A01-bow": { id: "A01-bow", role: "蝴蝶结", defaultColor: "butter" },
+  // Keep the persisted key and position so previous bow colors become the star colors.
+  "A01-bow": { id: "A01-bow", role: "五角星", defaultColor: "butter" },
 };
 /** Stable order: real part controls first, then decorative slots in source mapping order. */
 export function getColorParts(parts: ProductPart[]): ProductPart[] {
@@ -58,7 +76,6 @@ export interface MagnetSurface {
 export interface PipeFace {
   center: Vec3;
   normal: Vec3;
-  pole: "N" | "S";
 }
 export interface Product {
   id: string;
@@ -146,8 +163,8 @@ function pipe(
   };
 }
 const straightFaces = (x: number, y: number): PipeFace[] => [
-  { center: [x, y + 88, 11], normal: [-1, 0, 0], pole: "N" },
-  { center: [x + 100, y + 88, 11], normal: [1, 0, 0], pole: "S" },
+  { center: [x, y + 88, 11], normal: [-1, 0, 0] },
+  { center: [x + 100, y + 88, 11], normal: [1, 0, 0] },
 ];
 export const PRODUCTS: Product[] = [
   {
@@ -348,8 +365,8 @@ export const PRODUCTS: Product[] = [
     ],
     [100, 100, 0, 196, 196, 89.6],
     [
-      { center: [100, 188, 11], normal: [-1, 0, 0], pole: "N" },
-      { center: [188, 100, 11], normal: [0, -1, 0], pole: "S" },
+      { center: [100, 188, 11], normal: [-1, 0, 0] },
+      { center: [188, 100, 11], normal: [0, -1, 0] },
     ],
     3900,
   ),
@@ -363,8 +380,8 @@ export const PRODUCTS: Product[] = [
     ],
     [106.8, 0, 0, 196, 100, 89.6],
     [
-      { center: [188, 100, 11], normal: [0, 1, 0], pole: "N" },
-      { center: [188, 0, 11], normal: [0, -1, 0], pole: "S" },
+      { center: [188, 100, 11], normal: [0, 1, 0] },
+      { center: [188, 0, 11], normal: [0, -1, 0] },
     ],
   ),
   {

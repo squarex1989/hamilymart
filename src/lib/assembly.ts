@@ -224,7 +224,6 @@ function facesFor(
   return (product.pipeFaces ?? []).map((face) => ({
     center: transformPoint(face.center, product, item),
     normal: rotateVector(face.normal, item.rotation),
-    pole: face.pole,
   }));
 }
 function compatiblePlacement(
@@ -287,7 +286,8 @@ function compatiblePlacement(
       for (const b of facesFor(otherProduct, other)) {
         if (samePoint(a.center, b.center)) {
           const opposing = a.normal.every((n, i) => close(n, -b.normal[i]));
-          if (!opposing || a.pole === b.pole) return false;
+          // Revised supports have no side magnets; adjacent end faces only need to oppose.
+          if (!opposing) return false;
         }
       }
   }
