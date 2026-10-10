@@ -1,0 +1,749 @@
+{
+  "H01": {
+    "url": "/models/H01.glb",
+    "bounds": [
+      16.999999999999993,
+      217.0,
+      105.0,
+      83.0,
+      283.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H01"
+  },
+  "H02": {
+    "url": "/models/H02.glb",
+    "bounds": [
+      117.0,
+      217.0,
+      105.0,
+      183.0,
+      283.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H02"
+  },
+  "H03": {
+    "url": "/models/H03.glb",
+    "bounds": [
+      217.0,
+      217.0,
+      105.0,
+      283.0,
+      283.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H03_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H03"
+  },
+  "H04": {
+    "url": "/models/H04.glb",
+    "bounds": [
+      217.0,
+      117.0,
+      105.0,
+      283.0,
+      183.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H04_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H04"
+  },
+  "H05": {
+    "url": "/models/H05.glb",
+    "bounds": [
+      217.0,
+      16.999999999999993,
+      105.0,
+      283.0,
+      83.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H05_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H05"
+  },
+  "H06": {
+    "url": "/models/H06.glb",
+    "bounds": [
+      21.80000000000001,
+      21.80000000000001,
+      102.0,
+      178.19997626728662,
+      178.2,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H06_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "大圆磁吸齐平盖"
+  },
+  "P01": {
+    "url": "/models/P01.glb",
+    "bounds": [
+      0.0,
+      0.0,
+      100.0,
+      300.0,
+      300.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "P01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "300毫米主平台_全部8x4磁铁_连续环槽"
+  },
+  "L01": {
+    "url": "/models/L01.glb",
+    "bounds": [
+      7.5,
+      7.5,
+      0.0,
+      22.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "L02": {
+    "url": "/models/L02.glb",
+    "bounds": [
+      7.5,
+      277.5,
+      0.0,
+      22.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L02_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "L03": {
+    "url": "/models/L03.glb",
+    "bounds": [
+      277.5,
+      7.5,
+      0.0,
+      292.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L03_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "L04": {
+    "url": "/models/L04.glb",
+    "bounds": [
+      277.5,
+      277.5,
+      0.0,
+      292.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L04_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "X01": {
+    "url": "/models/X01.glb",
+    "bounds": [
+      7.5,
+      7.5,
+      -100.0,
+      22.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "X02": {
+    "url": "/models/X02.glb",
+    "bounds": [
+      7.5,
+      277.5,
+      -100.0,
+      22.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X02_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "X03": {
+    "url": "/models/X03.glb",
+    "bounds": [
+      277.5,
+      7.5,
+      -100.0,
+      292.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X03_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "X04": {
+    "url": "/models/X04.glb",
+    "bounds": [
+      277.5,
+      277.5,
+      -100.0,
+      292.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X04_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "A01": {
+    "url": "/models/A01.glb",
+    "bounds": [
+      2.0,
+      181.3000030517578,
+      110.0,
+      198.0,
+      298.0,
+      192.0
+    ],
+    "components": [
+      {
+        "id": "A01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      },
+      {
+        "id": "A01_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "nameZh": "纯绿房间_金色丝带_前右圆拱_跨行磁吸"
+  },
+  "A02": {
+    "url": "/models/A02.glb",
+    "bounds": [
+      -5.0,
+      180.0,
+      110.0,
+      305.0,
+      300.0,
+      200.0
+    ],
+    "components": [
+      {
+        "id": "A02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "上层平台_圆柱承托_与磁网格对齐"
+  },
+  "G03": {
+    "url": "/models/G03.glb",
+    "bounds": [
+      -3.0,
+      179.60000610351562,
+      200.0,
+      159.0,
+      298.0,
+      373.3333435058594
+    ],
+    "components": [
+      {
+        "id": "G03_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "G03_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "红帽房与白窗框_一体多色打印"
+  },
+  "G05": {
+    "url": "/models/G05.glb",
+    "bounds": [
+      219.0,
+      82.0,
+      110.0,
+      300.0,
+      194.0,
+      201.42300415039062
+    ],
+    "components": [
+      {
+        "id": "G05_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      },
+      {
+        "id": "G05_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "nameZh": "波浪楼梯_开放搭板与两对磁铁"
+  },
+  "G06": {
+    "url": "/models/G06.glb",
+    "bounds": [
+      269.0,
+      220.0,
+      200.0,
+      301.0,
+      294.0,
+      261.5
+    ],
+    "components": [
+      {
+        "id": "G06_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "G06_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "圣诞袜花圃_双磁吸"
+  },
+  "G15": {
+    "url": "/models/G15.glb",
+    "bounds": [
+      159.0,
+      196.0,
+      190.0,
+      304.3999938964844,
+      299.3999938964844,
+      238.5
+    ],
+    "components": [
+      {
+        "id": "G15_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "缩短5毫米圆浪草栏"
+  },
+  "B01": {
+    "url": "/models/B01.glb",
+    "bounds": [
+      22.0,
+      22.0,
+      30.649999618530273,
+      178.0,
+      178.0,
+      113.6500015258789
+    ],
+    "components": [
+      {
+        "id": "B01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      },
+      {
+        "id": "B01_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "nameZh": "原尺寸圆形池盆_D156_内径138_净深80"
+  },
+  "LHB": {
+    "url": "/models/LHB.glb",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      198.0,
+      80.0
+    ],
+    "components": [
+      {
+        "id": "LHB_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "三格L形房屋_加宽门根_连续底面"
+  },
+  "LHR": {
+    "url": "/models/LHR.glb",
+    "bounds": [
+      1.9999999970197677,
+      1.9999999970197677,
+      72.0,
+      198.00000000298024,
+      198.00000000298024,
+      85.6
+    ],
+    "components": [
+      {
+        "id": "LHR_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "nameZh": "L房_顶盖_单格四磁位_8mm定位凸条"
+  },
+  "SHB": {
+    "url": "/models/SHB.glb",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      98.0,
+      98.0,
+      80.0
+    ],
+    "components": [
+      {
+        "id": "SHB_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "单格小房屋_两个对角磁座"
+  },
+  "SHR": {
+    "url": "/models/SHR.glb",
+    "bounds": [
+      1.9999999970197677,
+      1.9999999970197677,
+      72.0,
+      98.00000000298023,
+      98.00000000298023,
+      83.4
+    ],
+    "components": [
+      {
+        "id": "SHR_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "nameZh": "小房_顶盖_8mm定位凸条"
+  },
+  "ST1T": {
+    "url": "/models/ST1T.glb",
+    "bounds": [
+      0.0,
+      6.799999999999997,
+      2.200000077486038,
+      100.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "ST1T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST1_标准直管_独立管体"
+  },
+  "ST1B": {
+    "url": "/models/ST1B.glb",
+    "bounds": [
+      0.0,
+      46.0,
+      0.0,
+      100.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "ST1B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST1_竖直端面双磁铁底座"
+  },
+  "ST2T": {
+    "url": "/models/ST2T.glb",
+    "bounds": [
+      100.0,
+      6.799999999999997,
+      2.200000077486038,
+      200.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "ST2T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST2_侧开口直管_独立管体"
+  },
+  "ST2B": {
+    "url": "/models/ST2B.glb",
+    "bounds": [
+      100.0,
+      46.0,
+      0.0,
+      200.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "ST2B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST2_竖直端面双磁铁底座"
+  },
+  "ST3T": {
+    "url": "/models/ST3T.glb",
+    "bounds": [
+      200.0,
+      6.799999999999997,
+      2.200000077486038,
+      300.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "ST3T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST3_标准直管_独立管体"
+  },
+  "ST3B": {
+    "url": "/models/ST3B.glb",
+    "bounds": [
+      200.0,
+      46.0,
+      0.0,
+      300.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "ST3B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST3_竖直端面双磁铁底座"
+  },
+  "LT1T": {
+    "url": "/models/LT1T.glb",
+    "bounds": [
+      0.0,
+      106.8,
+      2.200000077486038,
+      100.0,
+      193.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "LT1T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT1_标准直管_独立管体"
+  },
+  "LT1B": {
+    "url": "/models/LT1B.glb",
+    "bounds": [
+      0.0,
+      146.0,
+      0.0,
+      100.0,
+      196.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "LT1B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT1_竖直端面双磁铁底座"
+  },
+  "LT2T": {
+    "url": "/models/LT2T.glb",
+    "bounds": [
+      100.0,
+      100.0,
+      2.200000077486038,
+      193.20000000298023,
+      193.20000000298023,
+      89.60000000149012
+    ],
+    "components": [
+      {
+        "id": "LT2T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT2_顶部开口转角管_独立管体"
+  },
+  "LT2B": {
+    "url": "/models/LT2B.glb",
+    "bounds": [
+      100.0,
+      100.0,
+      0.0,
+      196.0,
+      196.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "LT2B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT2_竖直端面双磁铁底座"
+  },
+  "LT3T": {
+    "url": "/models/LT3T.glb",
+    "bounds": [
+      106.8,
+      0.0,
+      2.200000077486038,
+      193.2,
+      100.0,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "LT3T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT3_标准直管_独立管体"
+  },
+  "LT3B": {
+    "url": "/models/LT3B.glb",
+    "bounds": [
+      146.0,
+      0.0,
+      0.0,
+      196.0,
+      100.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "LT3B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT3_竖直端面双磁铁底座"
+  }
+}

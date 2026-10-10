@@ -1,0 +1,543 @@
+{
+  "sourceSha256": "5e7ef46d4b187f4f9f21acc3633c0f15df9ab4922abf7795bece64b7b08de95d",
+  "sourceVersion": "Complete 8x4 V1",
+  "units": "millimeter",
+  "upAxis": "Z",
+  "groups": {
+    "H01": {
+      "bytes": 113892,
+      "components": [
+        {
+          "id": "H01_Snow",
+          "sourceTriangles": 21590,
+          "triangles": 5180,
+          "sampledMaxErrorMm": 0.003629,
+          "boundsMaxErrorMm": 0.000342,
+          "volumeRelativeError": 1.06e-06
+        }
+      ]
+    },
+    "H02": {
+      "bytes": 113928,
+      "components": [
+        {
+          "id": "H02_Snow",
+          "sourceTriangles": 21580,
+          "triangles": 5178,
+          "sampledMaxErrorMm": 0.003836,
+          "boundsMaxErrorMm": 7.9e-05,
+          "volumeRelativeError": 1e-06
+        }
+      ]
+    },
+    "H03": {
+      "bytes": 113724,
+      "components": [
+        {
+          "id": "H03_Snow",
+          "sourceTriangles": 21552,
+          "triangles": 5172,
+          "sampledMaxErrorMm": 0.003836,
+          "boundsMaxErrorMm": 0.000233,
+          "volumeRelativeError": 1.29e-06
+        }
+      ]
+    },
+    "H04": {
+      "bytes": 113652,
+      "components": [
+        {
+          "id": "H04_Snow",
+          "sourceTriangles": 21550,
+          "triangles": 5172,
+          "sampledMaxErrorMm": 0.00443,
+          "boundsMaxErrorMm": 0.000233,
+          "volumeRelativeError": 1.36e-06
+        }
+      ]
+    },
+    "H05": {
+      "bytes": 113784,
+      "components": [
+        {
+          "id": "H05_Snow",
+          "sourceTriangles": 21558,
+          "triangles": 5172,
+          "sampledMaxErrorMm": 0.003707,
+          "boundsMaxErrorMm": 8e-06,
+          "volumeRelativeError": 1.17e-06
+        }
+      ]
+    },
+    "H06": {
+      "bytes": 167144,
+      "components": [
+        {
+          "id": "H06_Snow",
+          "sourceTriangles": 26108,
+          "triangles": 6264,
+          "sampledMaxErrorMm": 0.014121,
+          "boundsMaxErrorMm": 0.001383,
+          "volumeRelativeError": 1.105e-05
+        }
+      ]
+    },
+    "P01": {
+      "bytes": 1924328,
+      "components": [
+        {
+          "id": "P01_Snow",
+          "sourceTriangles": 335012,
+          "triangles": 80402,
+          "sampledMaxErrorMm": 0.009666,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 7.58e-06
+        }
+      ]
+    },
+    "L01": {
+      "bytes": 31984,
+      "components": [
+        {
+          "id": "L01_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "L02": {
+      "bytes": 31988,
+      "components": [
+        {
+          "id": "L02_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "L03": {
+      "bytes": 31988,
+      "components": [
+        {
+          "id": "L03_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "L04": {
+      "bytes": 31992,
+      "components": [
+        {
+          "id": "L04_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "X01": {
+      "bytes": 31988,
+      "components": [
+        {
+          "id": "X01_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "X02": {
+      "bytes": 31992,
+      "components": [
+        {
+          "id": "X02_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "X03": {
+      "bytes": 31992,
+      "components": [
+        {
+          "id": "X03_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "X04": {
+      "bytes": 31996,
+      "components": [
+        {
+          "id": "X04_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "A01": {
+      "bytes": 324932,
+      "components": [
+        {
+          "id": "A01_PineGreen",
+          "sourceTriangles": 18808,
+          "triangles": 10264,
+          "sampledMaxErrorMm": 0.013434,
+          "boundsMaxErrorMm": 4.4e-05,
+          "volumeRelativeError": 8.39e-06
+        },
+        {
+          "id": "A01_Gold",
+          "sourceTriangles": 4760,
+          "triangles": 4760,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0,
+          "keptOriginal": true
+        }
+      ]
+    },
+    "A02": {
+      "bytes": 378328,
+      "components": [
+        {
+          "id": "A02_Snow",
+          "sourceTriangles": 14498,
+          "triangles": 12636,
+          "sampledMaxErrorMm": 0.008554,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 3.07e-06
+        }
+      ]
+    },
+    "G03": {
+      "bytes": 340656,
+      "components": [
+        {
+          "id": "G03_ChristmasRed",
+          "sourceTriangles": 8180,
+          "triangles": 6770,
+          "sampledMaxErrorMm": 0.010007,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 6.39e-06
+        },
+        {
+          "id": "G03_Snow",
+          "sourceTriangles": 20834,
+          "triangles": 6924,
+          "sampledMaxErrorMm": 0.016817,
+          "boundsMaxErrorMm": 1.4e-05,
+          "volumeRelativeError": 0.00022495
+        }
+      ]
+    },
+    "G05": {
+      "bytes": 121556,
+      "components": [
+        {
+          "id": "G05_Snow",
+          "sourceTriangles": 4582,
+          "triangles": 3196,
+          "sampledMaxErrorMm": 0.016167,
+          "boundsMaxErrorMm": 0.002895,
+          "volumeRelativeError": 1e-05
+        },
+        {
+          "id": "G05_ChristmasRed",
+          "sourceTriangles": 724,
+          "triangles": 724,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "G06": {
+      "bytes": 91384,
+      "components": [
+        {
+          "id": "G06_ChristmasRed",
+          "sourceTriangles": 3960,
+          "triangles": 1890,
+          "sampledMaxErrorMm": 0.008113,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 3.085e-05
+        },
+        {
+          "id": "G06_Snow",
+          "sourceTriangles": 5760,
+          "triangles": 2136,
+          "sampledMaxErrorMm": 0.00806,
+          "boundsMaxErrorMm": 3e-05,
+          "volumeRelativeError": 0.00011444
+        }
+      ]
+    },
+    "G15": {
+      "bytes": 302804,
+      "components": [
+        {
+          "id": "G15_PineGreen",
+          "sourceTriangles": 36464,
+          "triangles": 14780,
+          "sampledMaxErrorMm": 0.011189,
+          "boundsMaxErrorMm": 0.000136,
+          "volumeRelativeError": 0.0003482
+        }
+      ]
+    },
+    "B01": {
+      "bytes": 188540,
+      "components": [
+        {
+          "id": "B01_Snow",
+          "sourceTriangles": 4156,
+          "triangles": 4156,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        },
+        {
+          "id": "B01_ChristmasRed",
+          "sourceTriangles": 2560,
+          "triangles": 2560,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "LHB": {
+      "bytes": 268968,
+      "components": [
+        {
+          "id": "LHB_PineGreen",
+          "sourceTriangles": 21842,
+          "triangles": 11954,
+          "sampledMaxErrorMm": 0.015495,
+          "boundsMaxErrorMm": 0.000604,
+          "volumeRelativeError": 5.135e-05
+        }
+      ]
+    },
+    "LHR": {
+      "bytes": 122096,
+      "components": [
+        {
+          "id": "LHR_Gold",
+          "sourceTriangles": 7052,
+          "triangles": 4906,
+          "sampledMaxErrorMm": 0.015479,
+          "boundsMaxErrorMm": 0.000856,
+          "volumeRelativeError": 1.915e-05
+        }
+      ]
+    },
+    "SHB": {
+      "bytes": 177124,
+      "components": [
+        {
+          "id": "SHB_PineGreen",
+          "sourceTriangles": 11848,
+          "triangles": 7632,
+          "sampledMaxErrorMm": 0.017028,
+          "boundsMaxErrorMm": 0.000269,
+          "volumeRelativeError": 3.836e-05
+        }
+      ]
+    },
+    "SHR": {
+      "bytes": 58072,
+      "components": [
+        {
+          "id": "SHR_Gold",
+          "sourceTriangles": 3004,
+          "triangles": 3004,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "ST1T": {
+      "bytes": 52048,
+      "components": [
+        {
+          "id": "ST1T_Snow",
+          "sourceTriangles": 1688,
+          "triangles": 1688,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "ST1B": {
+      "bytes": 94044,
+      "components": [
+        {
+          "id": "ST1B_Snow",
+          "sourceTriangles": 3080,
+          "triangles": 3080,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "ST2T": {
+      "bytes": 82312,
+      "components": [
+        {
+          "id": "ST2T_Snow",
+          "sourceTriangles": 2700,
+          "triangles": 2700,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "ST2B": {
+      "bytes": 94044,
+      "components": [
+        {
+          "id": "ST2B_Snow",
+          "sourceTriangles": 3080,
+          "triangles": 3080,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "ST3T": {
+      "bytes": 52048,
+      "components": [
+        {
+          "id": "ST3T_Snow",
+          "sourceTriangles": 1688,
+          "triangles": 1688,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "ST3B": {
+      "bytes": 94044,
+      "components": [
+        {
+          "id": "ST3B_Snow",
+          "sourceTriangles": 3080,
+          "triangles": 3080,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "LT1T": {
+      "bytes": 52048,
+      "components": [
+        {
+          "id": "LT1T_Snow",
+          "sourceTriangles": 1688,
+          "triangles": 1688,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "LT1B": {
+      "bytes": 94044,
+      "components": [
+        {
+          "id": "LT1B_Snow",
+          "sourceTriangles": 3080,
+          "triangles": 3080,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "LT2T": {
+      "bytes": 709324,
+      "components": [
+        {
+          "id": "LT2T_Snow",
+          "sourceTriangles": 155836,
+          "triangles": 37400,
+          "sampledMaxErrorMm": 0.005677,
+          "boundsMaxErrorMm": 0.001933,
+          "volumeRelativeError": 2.732e-05
+        }
+      ]
+    },
+    "LT2B": {
+      "bytes": 433748,
+      "components": [
+        {
+          "id": "LT2B_Snow",
+          "sourceTriangles": 90298,
+          "triangles": 21670,
+          "sampledMaxErrorMm": 0.005045,
+          "boundsMaxErrorMm": 0.001715,
+          "volumeRelativeError": 1.779e-05
+        }
+      ]
+    },
+    "LT3T": {
+      "bytes": 52048,
+      "components": [
+        {
+          "id": "LT3T_Snow",
+          "sourceTriangles": 1688,
+          "triangles": 1688,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "LT3B": {
+      "bytes": 94044,
+      "components": [
+        {
+          "id": "LT3B_Snow",
+          "sourceTriangles": 3080,
+          "triangles": 3080,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    }
+  }
+}
