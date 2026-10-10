@@ -70,7 +70,7 @@ test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and 
   assert.equal(Object.keys(modelIndex).length, 48);
   assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 55);
   assert.equal(CATALOG_VERSION, 6);
-  assert.equal(COLORS.length, 11);
+  assert.equal(COLORS.length, 14);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
 });
 test("base starts with exactly four 10 cm legs; 20 cm substitutes the complete set", () => {
@@ -342,7 +342,7 @@ test("each bundled part color survives encode/decode and parent movement carries
 });
 
 test("all original colors remain available; the gift decoration defaults to gold", () => {
-  assert.equal(COLORS.length, 11);
+  assert.equal(COLORS.length, 14);
   const entries = modelIndex as Record<
     string,
     { components: { colorKey: string; color: string }[] }
@@ -1008,12 +1008,12 @@ test("hat migration reserves a restricted upper host before moving a first-floor
   assert.equal(codes[0], codes[1]);
 });
 
-test("new palette offers nine choices while keeping every original serialized color index", () => {
-  assert.deepEqual(COLORS.slice(0, 8).map(color => color.id), ["cream", "pine", "red", "butter", "sage", "rose", "sky", "lilac"]);
-  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "marble", "jade"]);
+test("palette adds three woods and retires marble while keeping every serialized color index", () => {
+  assert.deepEqual(COLORS.slice(0, 11).map(color => color.id), ["cream", "pine", "red", "butter", "sage", "rose", "sky", "lilac", "white", "marble", "jade"]);
+  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "jade", "peachwood", "wood", "darkwood"]);
   assert.equal(AVAILABLE_COLORS.find(color => color.id === "cream")?.name, "杏色");
   assert.equal(AVAILABLE_COLORS.find(color => color.id === "jade")?.name, "琉璃绿");
-  assert.deepEqual(COLORS.slice(8).map(color => color.hex), ["#FAFAF7", "#E2E2DE", "#299C82"]);
+  assert.deepEqual(COLORS.slice(8, 11).map(color => color.hex), ["#FAFAF7", "#E2E2DE", "#299C82"]);
   const previous = decodeConfig(LEGACY_CATALOG_2_CODE);
   assert.equal(previous.baseColors.P01, "lilac");
   assert.equal(previous.items.find(item => item.productId === "villa")?.colors.A01, "sage");

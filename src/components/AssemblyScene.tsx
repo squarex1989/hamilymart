@@ -9,7 +9,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
-  CATALOG_VERSION,
+  MODEL_ASSET_VERSION,
   SOURCE_TRIM_COLORS,
   SOURCE_PART_TRIM_COLORS,
   getSourceColorSlot,
@@ -65,7 +65,7 @@ function loadPart(id: string) {
   if (!cache.has(id))
     cache.set(
       id,
-      loader.loadAsync(`${index[id].url}?v=${CATALOG_VERSION}`).then((g) => g.scene),
+      loader.loadAsync(`${index[id].url}?v=${MODEL_ASSET_VERSION}`).then((g) => g.scene),
     );
   return cache.get(id)!;
 }

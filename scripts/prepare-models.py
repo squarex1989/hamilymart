@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v12/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v13/assembly_meshes.json')
 DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
 
 

@@ -709,3 +709,27 @@ h1, h2, h3, p { margin: 0; }
   .control-dock .swatches { grid-template-columns: repeat(5, minmax(44px, 1fr)); }
   .control-dock .selection-actions { justify-content: flex-end; }
 }
+
+/* Shared global controls stay above the two independent workbenches. */
+.header-price, .header-global { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 0 13px; border: 1px solid #d9e2d1; border-radius: 10px; background: #f1f5eb; color: #345e48; font-size: 13px; white-space: nowrap; }
+.header-price { font-weight: 650; }
+.header-global { background: transparent; }
+.desktop-workbench.control-dock { grid-template-rows: 48px minmax(0, 1fr); }
+.desktop-dock-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid var(--line); }
+.desktop-dock-heading strong { color: #607954; font-size: 13px; font-weight: 500; }
+.desktop-workbench .swatches { grid-template-columns: repeat(auto-fit, minmax(34px, 1fr)); }
+.canvas-notice { position: absolute; right: 12px; bottom: 31px; left: 12px; display: flex; align-items: center; gap: 8px; min-height: 42px; padding: 4px 8px 4px 11px; border: 1px solid #d5ddcb; border-radius: 10px; background: #fafcf1f5; color: #61764b; box-shadow: 0 3px 12px #27362b10; font-size: 11px; line-height: 1.5; }
+.canvas-notice > svg { flex-shrink: 0; }
+.canvas-notice span { flex: 1; }
+.canvas-notice button { display: flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; background: transparent; color: inherit; }
+.global-section { padding: 20px 0; border-top: 1px solid var(--line); }
+.global-section h3 { margin: 0 0 12px; color: #4e6844; font-size: 14px; font-weight: 550; }
+.global-view-actions { display: flex; gap: 8px; }
+.global-view-actions button { display: flex; flex: 1; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 4px; border: 1px solid #dde4d4; border-radius: 9px; background: #f6f8ef; color: #607954; font-size: 11px; }
+.global-view-actions button[aria-pressed=true] { border-color: #7a9668; background: #e7efdd; }
+.global-links { display: grid; }
+.global-links button { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 5px 0; border-top: 1px solid var(--line); background: transparent; color: #4e6a40; text-align: left; font-size: 12px; }
+.global-links button span { flex: 1; }
+.global-links strong { color: #355e48; font-size: 14px; }
+.modal .environment-panel { padding: 0 0 20px; }
+.modal .environment-heading h2 { font-size: 15px; }

@@ -19,25 +19,27 @@ import {
   RotateCcw,
   RotateCw,
   ShoppingBag,
+  SlidersHorizontal,
   Sparkles,
   Trash2,
   X,
 } from "lucide-react";
 import AssemblyScene from "./components/AssemblyScene";
+import MobileWorkbench from "./components/MobileWorkbench";
 import type { SceneHandle } from "./components/AssemblyScene";
 import {
   AVAILABLE_COLORS,
   BASE_PRODUCT,
-  CATALOG_VERSION,
+  MODEL_ASSET_VERSION,
   COLORS,
   COLOR_SLOTS,
   PRODUCTS,
   getBaseParts,
+  getColorSwatch,
   getDefaultColors,
   getProduct,
   getProductColorParts,
 } from "./data/catalog";
-import { HAMSTER_VARIANTS } from "./data/hamsters";
 import { FEATURES } from "./data/features";
 import type { ColorId, Rotation } from "./data/catalog";
 import {
@@ -53,7 +55,6 @@ import {
   removePlatform,
   rotateItem,
   setBedding,
-  setHamster,
   setPlatformColors,
   setCoverRemoved,
   setLegHeight,
@@ -109,7 +110,19 @@ function HamsterMark() {
   );
 }
 
+function useMobileWorkbench() {
+  const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 760px), (pointer: coarse) and (max-width: 1024px)").matches);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 760px), (pointer: coarse) and (max-width: 1024px)");
+    const update = () => setMobile(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  return mobile;
+}
+
 export default function App() {
+  const mobile = useMobileWorkbench();
   const [startup] = useState(initial);
   const [state, setState] = useState<AssemblyState>(startup.state),
     [selectedId, setSelectedId] = useState<string | null>(null);
@@ -118,10 +131,8 @@ export default function App() {
     [rotation, setRotation] = useState<Rotation>(0);
   const [category, setCategory] = useState("all"),
     [panel, setPanel] = useState<"catalog" | "selected" | "settings">("catalog");
-  const [toolTab, setToolTab] = useState<"build" | "bedding" | "hamster">("build");
-  const [hamsterSpecies, setHamsterSpecies] = useState("all");
   const [showMagnets, setShowMagnets] = useState(false),
-    [modal, setModal] = useState<"code" | "order" | "help" | null>(null);
+    [modal, setModal] = useState<"code" | "order" | "help" | "global" | null>(null);
   const [importCode, setImportCode] = useState(""),
     [importError, setImportError] = useState(""),
     [toast, setToast] = useState("");
@@ -193,11 +204,11 @@ export default function App() {
       const addedPool = getPlatforms(result.state).find(p => p.baseInsert === "pool" && platforms.find(old => old.id === p.id)?.baseInsert !== "pool");
       if (addedPool) select(`pool:${addedPool.id}`);
     }
-    notify(productId === "pool" ? "泳池已装好，大圆盖已自动移除" : "已安排到最合适的磁吸位置");
+
   }
   function addNextPlatform() {
     const result = addPlatform(state);
-    if (applyAction(result, "新平台已贴合在右侧")) {
+    if (applyAction(result)) {
       select(getPlatforms(result.ok ? result.state : state).at(-1)!.id);
     }
   }
@@ -208,7 +219,7 @@ export default function App() {
   }
   useEffect(() => {
     controlScroll.current?.scrollTo({ top: 0 });
-  }, [selectedId, panel, toolTab]);
+  }, [selectedId, panel]);
   useEffect(() => {
     try {
       if (startup.recovery) {
@@ -265,7 +276,6 @@ export default function App() {
     setSelectedId(id);
     setActiveProduct(null);
     if (id) {
-      setToolTab("build");
       setPanel("settings");
       const item = state.items.find((i) => i.id === id);
       setRotation(item?.rotation ?? 0);
@@ -345,7 +355,7 @@ export default function App() {
     if (result.ok) {
       commit(result.state);
       setRotation(result.item.rotation);
-      notify(`已旋转至 ${result.item.rotation}°，并吸附到匹配位置`);
+
     } else notify(result.reason);
   }
   function removeSelected() {
@@ -426,8 +436,13 @@ export default function App() {
     URL.revokeObjectURL(url);
     notify("配件编号、颜色和价格清单已下载");
   }
+  function undo() {
+    const last = history.at(-1);
+    if (last) { setState(last); setHistory(h => h.slice(0, -1)); select(null); }
+  }
+  const selectedTitle = selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圣诞泳池" : editingPlatform ? platformName(selectedId!) : selectedProduct?.name ?? "组件设置";
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${mobile ? "is-mobile" : "is-desktop"}`}>
       <header className="site-header">
         <a
           className="brand"
@@ -455,20 +470,8 @@ export default function App() {
             <span className={saved ? "status-dot" : "status-dot error"} />
             {saved ? "已保存在此设备" : "未能保存，请复制编号"}
           </span>
-          <button
-            className="outline-button header-code"
-            onClick={() => setModal("code")}
-          >
-            <Link size={15} />
-            搭配编号
-          </button>
-          <button
-            className="round-button mobile-help"
-            aria-label="搭建指南"
-            onClick={() => setModal("help")}
-          >
-            <Info size={19} />
-          </button>
+          <button className="header-price" onClick={() => setModal("order")} aria-label={`搭配清单，总价 ${money(total)}`}><span>{money(total)}</span><ChevronDown size={14} /></button>
+          <button className="header-global" aria-label="全局设置" onClick={() => setModal("global")}><SlidersHorizontal size={20} /><span>全局设置</span></button>
         </div>
       </header>
       <main className="workspace">
@@ -490,23 +493,25 @@ export default function App() {
             onError={notify}
           />
           <div className="canvas-caption"><Move size={13} /><span>拖动空白处旋转 · 双指缩放</span></div>
+          {mobile && (migrationNotice || toast || !saved) && <div className="canvas-notice" role="status"><Info size={16} /><span>{migrationNotice || toast || "暂未保存，请在右上角复制搭配编号"}</span><button aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); }}><X size={16} /></button></div>}
         </section>
-        <aside className="catalog-panel control-dock" aria-label="搭建与场景设置">
-          <div className="workspace-tabs" role="tablist" aria-label="场景设置">
-            {([["build", "搭建"], ["bedding", "垫料"], ["hamster", "仓鼠"]] as const).filter(([id]) => id !== "hamster" || FEATURES.hamsterPreview).map(([id, label]) =>
-              <button key={id} role="tab" aria-selected={toolTab === id} className={toolTab === id ? "active" : ""}
-                onClick={() => { setToolTab(id); setActiveProduct(null); }}>{label}</button>)}
-            <button className="round-button undo-action" aria-label="撤销上一步" disabled={!history.length} onClick={() => {
-              const last = history.at(-1);
-              if (last) { setState(last); setHistory(h => h.slice(0, -1)); select(null); }
-            }}><RotateCcw size={17} /></button>
-          </div>
+        {mobile ? <MobileWorkbench
+          state={state} ready={ready} saved={saved} selectedId={selectedId} title={selectedTitle}
+          products={visibleProducts} parts={selectedParts} colorPart={colorPart} currentColor={currentColor}
+          category={category} canUndo={!!history.length} editingPlatform={editingPlatform} platformId={selectedPlatformId}
+          canRotate={!!selectedItem} canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}
+          onCategory={setCategory} onSelect={select} onAdd={addProduct} onAddPlatform={addNextPlatform}
+          onColorPart={setColorPart} onColor={setColor} onRestoreColors={restoreOriginalColors} onRotate={rotateSelected}
+          onRemove={removeSelected} onLegHeight={height => applyAction(setLegHeight(state, height))}
+          onRestoreCover={(platform, cover) => applyAction(setCoverRemoved(state, platform, cover, false))} onUndo={undo}
+        /> : <aside className="catalog-panel control-dock desktop-workbench" aria-label="桌面组件工作台">
+          <div className="desktop-dock-heading"><strong>搭建你的仓鼠小家</strong><button className="round-button" aria-label="撤销上一步" disabled={!history.length} onClick={undo}><RotateCcw size={18} /></button></div>
           <div className="control-scroll" ref={controlScroll}>
             {(migrationNotice || toast) && <div className={`dock-notice ${migrationNotice ? "migration-notice" : ""}`} role="status">
               <Info size={16} /><span>{migrationNotice || toast}</span>
               <button className="round-button" aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); }}><X size={15} /></button>
             </div>}
-            {toolTab === "build" && <>
+            {<>
               {panel === "settings" && selectedId ? <div className="settings-panel">
                 <div className="settings-navigation">
                   <button className="back-to-catalog" onClick={() => select(null)}><ArrowLeft size={16} />配件</button>
@@ -614,12 +619,12 @@ export default function App() {
                     </select>
                     <ChevronDown size={13} />
                   </label>
-                  <div className="swatches" aria-label="九种可选颜色">
+                  <div className="swatches" aria-label="可选颜色">
                     {AVAILABLE_COLORS.map((c) => (
                       <button
                         key={c.id}
                         className={`swatch ${currentColor === c.id ? "selected" : ""}`}
-                        style={{ "--swatch": c.hex } as React.CSSProperties}
+                        style={{ "--swatch": getColorSwatch(c.id) } as React.CSSProperties}
                         aria-label={c.name}
                         title={c.name}
                         aria-pressed={currentColor === c.id}
@@ -700,7 +705,7 @@ export default function App() {
               <div className="catalog-intro">
                 <div>
                   <h2>给小家添点喜欢</h2>
-                  <p>点选配件，自动安排合适的位置。</p>
+                  <p>选组件，配颜色，搭建喜欢的小家。</p>
                 </div>
                 <span className="sparkle-stamp">
                   <Sparkles size={23} />
@@ -776,7 +781,7 @@ export default function App() {
                         }}
                       >
                         <img
-                          src={`/thumbnails/${product.id}.png?v=${CATALOG_VERSION}`}
+                          src={`/thumbnails/${product.id}.png?v=${MODEL_ASSET_VERSION}`}
                           alt={product.name}
                           draggable={false}
                         />
@@ -834,7 +839,7 @@ export default function App() {
                   className={`selected-row ${selectedId === platform.id ? "active" : ""}`}
                   onClick={() => select(platform.id)}
                 >
-                  <img src={`/thumbnails/base.png?v=${CATALOG_VERSION}`} alt="基础平台" />
+                  <img src={`/thumbnails/base.png?v=${MODEL_ASSET_VERSION}`} alt="基础平台" />
                   <span>
                     <strong>{platformName(platform.id)}</strong>
                     <small>{state.legHeight === 0 ? "无支撑脚" : `四根 ${state.legHeight / 10} cm 腿`}{platform.removedCovers.length ? ` · ${platform.removedCovers.length} 个留洞` : ""}</small>
@@ -843,7 +848,7 @@ export default function App() {
                   <ChevronDown size={15} />
                 </button>
                 {platform.baseInsert === "pool" && <button className={`selected-row ${selectedId === `pool:${platform.id}` ? "active" : ""}`} onClick={() => select(`pool:${platform.id}`)}>
-                  <img src={`/thumbnails/pool.png?v=${CATALOG_VERSION}`} alt="圣诞泳池" />
+                  <img src={`/thumbnails/pool.png?v=${MODEL_ASSET_VERSION}`} alt="圣诞泳池" />
                   <span><strong>圣诞泳池</strong><small>{platformName(platform.id)} · 嵌入大圆洞</small><em>{money(BASE_PRODUCT.poolSurcharge)}</em></span>
                   <ChevronDown size={15} />
                 </button>}
@@ -856,7 +861,7 @@ export default function App() {
                     className={`selected-row ${selectedId === item.id ? "active" : ""}`}
                     onClick={() => select(item.id)}
                   >
-                    <img src={`/thumbnails/${product.id}.png?v=${CATALOG_VERSION}`} alt="" />
+                    <img src={`/thumbnails/${product.id}.png?v=${MODEL_ASSET_VERSION}`} alt="" />
                     <span>
                       <strong>{product.name}</strong>
                       <small>
@@ -880,55 +885,8 @@ export default function App() {
 
               </>}
             </>}
-            {toolTab === "bedding" && <section className="environment-panel" aria-label="垫料设置">
-              <div className="environment-heading"><h2>铺上软软的垫料</h2><span>{state.bedding.mode === "thin" ? "薄铺" : "厚铺"} {state.bedding.depth / 10} cm</span></div>
-              <div className="bedding-options">
-                <button className={`bedding-option ${state.bedding.mode === "thin" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thin"} onClick={() => chooseBedding({ mode: "thin", depth: 50 })}>
-                  <span className="bedding-preview"><i style={{ height: "18%" }} /></span><strong>薄铺</strong><span>5 cm</span>
-                </button>
-                {([100, 200, 300] as const).map(depth => <button key={depth} className={`bedding-option ${state.bedding.mode === "thick" && state.bedding.depth === depth ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thick" && state.bedding.depth === depth} onClick={() => chooseBedding({ mode: "thick", depth })}>
-                  <span className="bedding-preview"><i style={{ height: `${depth / 4}%` }} /></span><strong>厚铺</strong><span>{depth / 10} cm</span>
-                </button>)}
-              </div>
-              <p className="setting-note"><Info size={15} /><span>垫料高度和腿长独立选择，例如 30 cm 腿搭配 20 cm 厚铺。无腿平台放在垫料上。</span></p>
-            </section>}
-            {FEATURES.hamsterPreview && toolTab === "hamster" && <section className="environment-panel hamster-panel" aria-label="仓鼠品种与花色">
-              <div className="environment-heading"><h2>请小家人入住</h2>{state.hamster && <button className="remove-hamster" onClick={() => applyAction(setHamster(state, null), "仓鼠预览已移除")}><Trash2 size={14} />移除</button>}</div>
-              <p className="setting-description">选择一种品种与花色，看看它在小家里的样子。</p>
-              <div className="species-tabs" aria-label="仓鼠品种筛选">
-                <button className={hamsterSpecies === "all" ? "active" : ""} onClick={() => setHamsterSpecies("all")}>全部</button>
-                {[...new Set(HAMSTER_VARIANTS.map(variant => variant.species))].map(species => <button key={species} className={hamsterSpecies === species ? "active" : ""} onClick={() => setHamsterSpecies(species)}>{species.match(/（(.*?)）/)?.[1] ?? species}</button>)}
-              </div>
-              <div className="hamster-grid">
-                {HAMSTER_VARIANTS.filter(variant => hamsterSpecies === "all" || variant.species === hamsterSpecies).map(variant => <button key={variant.id} className={`hamster-choice ${state.hamster === variant.id ? "selected" : ""}`} aria-pressed={state.hamster === variant.id} onClick={() => applyAction(setHamster(state, variant.id), `${variant.name}已入住`)}>
-                  <svg className="hamster-portrait" viewBox="0 0 100 70" aria-hidden="true">
-                    <ellipse cx="50" cy="63" rx="32" ry="4" fill="#273C3520" />
-                    <ellipse cx="28" cy="21" rx="12" ry="13" fill={variant.primary} /><ellipse cx="72" cy="21" rx="12" ry="13" fill={variant.primary} />
-                    <ellipse cx="28" cy="22" rx="7" ry="8" fill="#EBC7BF" /><ellipse cx="72" cy="22" rx="7" ry="8" fill="#EBC7BF" />
-                    <ellipse cx="50" cy="41" rx="34" ry="25" fill={variant.primary} />
-                    {variant.pattern === "banded" && <ellipse cx="50" cy="40" rx="12" ry="24" fill={variant.secondary} />}
-                    {variant.pattern === "dorsal" && <path d="M46 17h8l-1 23h-6z" fill={variant.id === "winter-pearl" ? "#ACA99F" : "#534C47"} opacity=".55" />}
-                    {variant.pattern === "panda" && <ellipse cx="50" cy="42" rx="23" ry="25" fill={variant.secondary} />}
-                    <ellipse cx="50" cy="51" rx="22" ry="14" fill={variant.secondary} />
-                    <circle cx="34" cy="39" r="3" fill="#342D29" /><circle cx="66" cy="39" r="3" fill="#342D29" />
-                    <circle cx="35" cy="38" r=".9" fill="#FFF" /><circle cx="67" cy="38" r=".9" fill="#FFF" />
-                    <path d="M46 48h8l-4 4z" fill="#BB8C83" /><path d="M50 52v4m0 0-4 2m4-2 4 2" fill="none" stroke="#927B71" strokeWidth="1.2" strokeLinecap="round" />
-                  </svg>
-                  <strong>{variant.name}</strong><small>{variant.coat}</small>{state.hamster === variant.id && <Check className="hamster-selected" size={15} />}
-                </button>)}
-              </div>
-              {!state.hamster && <p className="setting-note">当前未添加仓鼠，点选即可预览。仓鼠仅用于展示比例，不计入配件价格。</p>}
-            </section>}
           </div>
-          <footer className="checkout-bar">
-            <div className="checkout-total">
-              <span>共 <b>{groupCount}</b> 组 <span className="price-note">· 演示价格</span></span>
-              <strong>{money(total)}</strong>
-            </div>
-            <button className="outline-button footer-share" aria-label="分享搭配" onClick={() => setModal("code")}><Link size={16} /></button>
-            <button className="primary-button" onClick={() => setModal("order")}><span>搭配清单</span><ArrowRight size={17} /></button>
-          </footer>
-        </aside>
+        </aside>}
       </main>
       {modal && (
         <div
@@ -950,6 +908,32 @@ export default function App() {
             >
               <X size={20} />
             </button>
+            {modal === "global" && <>
+              <h2 id="modal-title">小家的全局设置</h2>
+              <p className="modal-lead">{saved ? "搭配已保存在此设备" : "未能保存，请复制编号备份"}</p>
+            <section className="environment-panel" aria-label="垫料设置">
+              <div className="environment-heading"><h2>铺上软软的垫料</h2><span>{state.bedding.mode === "thin" ? "薄铺" : "厚铺"} {state.bedding.depth / 10} cm</span></div>
+              <div className="bedding-options">
+                <button className={`bedding-option ${state.bedding.mode === "thin" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thin"} onClick={() => chooseBedding({ mode: "thin", depth: 50 })}>
+                  <span className="bedding-preview"><i style={{ height: "18%" }} /></span><strong>薄铺</strong><span>5 cm</span>
+                </button>
+                {([100, 200, 300] as const).map(depth => <button key={depth} className={`bedding-option ${state.bedding.mode === "thick" && state.bedding.depth === depth ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thick" && state.bedding.depth === depth} onClick={() => chooseBedding({ mode: "thick", depth })}>
+                  <span className="bedding-preview"><i style={{ height: `${depth / 4}%` }} /></span><strong>厚铺</strong><span>{depth / 10} cm</span>
+                </button>)}
+              </div>
+              <p className="setting-note"><Info size={15} /><span>垫料高度和腿长独立选择，例如 30 cm 腿搭配 20 cm 厚铺。无腿平台放在垫料上。</span></p>
+            </section>
+              <div className="global-section"><h3>查看模型</h3><div className="global-view-actions">
+                <button onClick={() => { scene.current?.home(); setModal(null); }}><Expand size={18} />恢复视角</button>
+                <button onClick={() => { scene.current?.top(); setModal(null); }}><Layers2 size={18} />俯视</button>
+                <button aria-pressed={showMagnets} onClick={() => setShowMagnets(value => !value)}><Magnet size={18} />磁吸位</button>
+              </div></div>
+              <div className="global-links">
+                <button onClick={() => setModal("order")}><ShoppingBag size={18} /><span>价格与搭配清单</span><strong>{money(total)}</strong></button>
+                <button onClick={() => setModal("code")}><Link size={18} /><span>分享 / 还原搭配编号</span><ArrowRight size={16} /></button>
+                <button onClick={() => setModal("help")}><Info size={18} /><span>搭建指南</span><ArrowRight size={16} /></button>
+              </div>
+            </>}
             {modal === "code" && (
               <>
                 <div className="modal-symbol">

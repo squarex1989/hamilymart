@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-  "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+  "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+  "sourceVersion": "Steel receivers V13 flush stair landing",
   "supplementalSources": [],
   "units": "millimeter",
   "upAxis": "Z",
@@ -18,10 +18,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "H02": {
@@ -37,10 +37,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "H03": {
@@ -56,10 +56,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "H04": {
@@ -75,10 +75,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "H05": {
@@ -94,10 +94,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "H06": {
@@ -113,10 +113,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "P01": {
@@ -132,10 +132,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "L01": {
@@ -151,10 +151,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "L02": {
@@ -170,10 +170,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "L03": {
@@ -189,10 +189,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "L04": {
@@ -208,10 +208,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "X01": {
@@ -227,10 +227,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "X02": {
@@ -246,10 +246,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "X03": {
@@ -265,10 +265,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "X04": {
@@ -284,10 +284,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "G03": {
@@ -311,22 +311,22 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "G05": {
-      "bytes": 192460,
+      "bytes": 152140,
       "components": [
         {
           "id": "G05_Snow",
-          "sourceTriangles": 5702,
-          "triangles": 4374,
-          "sampledMaxErrorMm": 0.015273,
+          "sourceTriangles": 4522,
+          "triangles": 3030,
+          "sampledMaxErrorMm": 0.016167,
           "boundsMaxErrorMm": 0.002895,
-          "volumeRelativeError": 8.86e-06
+          "volumeRelativeError": 1.07e-05
         },
         {
           "id": "G05_ChristmasRed",
@@ -338,9 +338,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
       }
     },
     "G06": {
@@ -364,10 +364,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "B01": {
@@ -391,10 +391,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LHB": {
@@ -410,10 +410,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LHR": {
@@ -429,10 +429,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "SHB": {
@@ -448,10 +448,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "SHR": {
@@ -467,10 +467,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "ST1T": {
@@ -486,10 +486,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "ST1B": {
@@ -505,10 +505,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "ST2T": {
@@ -524,10 +524,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "ST2B": {
@@ -543,10 +543,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "ST3T": {
@@ -562,10 +562,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "ST3B": {
@@ -581,10 +581,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LT1T": {
@@ -600,10 +600,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LT1B": {
@@ -619,10 +619,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LT2T": {
@@ -638,10 +638,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LT2B": {
@@ -657,10 +657,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LT3T": {
@@ -676,10 +676,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "LT3B": {
@@ -695,10 +695,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "A01": {
@@ -730,10 +730,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "W01": {
@@ -749,10 +749,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "W02": {
@@ -768,29 +768,28 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "A02": {
-      "bytes": 240252,
+      "bytes": 263116,
       "components": [
         {
           "id": "A02_Snow",
-          "sourceTriangles": 8078,
-          "triangles": 7948,
-          "sampledMaxErrorMm": 0.006058,
+          "sourceTriangles": 9102,
+          "triangles": 8710,
+          "sampledMaxErrorMm": 0.008645,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 1.04e-06
+          "volumeRelativeError": 2.1e-07
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
       }
     },
     "G15": {
@@ -806,10 +805,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "G16": {
@@ -825,10 +824,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "G17": {
@@ -844,10 +843,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "O01": {
@@ -871,10 +870,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
-        "geometryUnchangedFrom": "unified_complete_steel_v9"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     },
     "Y01": {
@@ -890,9 +889,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
         "derivedFrom": "X01",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -911,9 +910,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
         "derivedFrom": "X02",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -932,9 +931,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
         "derivedFrom": "X03",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -953,9 +952,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
         "derivedFrom": "X04",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -974,9 +973,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v12",
-        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
-        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f"
+        "sourceDirectory": "unified_complete_steel_v13",
+        "sourceVersion": "Steel receivers V13 flush stair landing",
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "geometryUnchangedFrom": "unified_complete_steel_v12"
       }
     }
   }

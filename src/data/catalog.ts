@@ -1,3 +1,6 @@
+// Mesh/thumbnail cache revision is separate from saved configuration indices.
+export const MODEL_ASSET_VERSION = "steel-v13";
+
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v12/hardware_complete.json.
  * Contact planes, rather than embedded magnet centers, are used for assembly transforms.
@@ -17,11 +20,22 @@ export const COLORS = [
   { id: "white", name: "白色", hex: "#FAFAF7" },
   { id: "marble", name: "大理石色", hex: "#E2E2DE" },
   { id: "jade", name: "琉璃绿", hex: "#299C82" },
+  { id: "peachwood", name: "桃木", hex: "#BE896F" },
+  { id: "wood", name: "仿木", hex: "#CCAB7A" },
+  { id: "darkwood", name: "深棕", hex: "#654333" },
 ] as const;
-/** Keep legacy sage/lilac decodable without offering them for new color selections. */
-export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac");
+/** Serialized color indices are append-only; retired finishes still open in older designs. */
+export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac" && color.id !== "marble");
 export type ColorId = (typeof COLORS)[number]["id"];
-/** Secondary decorative bodies use the same eight-color stock palette. */
+export const WOOD_COLOR_IDS = ["peachwood", "wood", "darkwood"] as const satisfies readonly ColorId[];
+/** Use the same tint and a quiet grain in every color picker. */
+export function getColorSwatch(colorId: string): string {
+  const hex = COLORS.find(color => color.id === colorId)?.hex ?? COLORS[0].hex;
+  return WOOD_COLOR_IDS.some(id => id === colorId)
+    ? `repeating-linear-gradient(96deg, transparent 0 3px, #3b24141c 4px, transparent 5px 9px), linear-gradient(100deg, #ffffff12, transparent 45%, #38201316), ${hex}`
+    : hex;
+}
+/** Secondary decorative bodies use the same stock palette. */
 export const SOURCE_TRIM_COLORS: Record<string, ColorId> = {
   Snow: "cream",
   Gold: "butter",
