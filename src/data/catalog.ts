@@ -26,12 +26,29 @@ export const SOURCE_TRIM_COLORS: Record<string, ColorId> = {
 export const PRIMARY_COLOR_KEYS: Record<string, string> = {
   G05: "ChristmasRed",
 };
+/** User-approved decorative overrides; all other source colors remain unchanged. */
+export const SOURCE_PART_TRIM_COLORS: Record<string, Record<string, ColorId>> = {
+  A01: { ChristmasRed: "butter" },
+};
 export type ColorMap = Record<string, ColorId>;
 export interface ProductPart {
   id: string;
   role: string;
   defaultColor: ColorId;
   offset?: Vec3;
+}
+/** Independent decorative color slots; these are color controls, not separately sold parts. */
+export const SOURCE_PART_COLOR_SLOTS: Record<string, Record<string, string>> = {
+  A01: { Gold: "A01-ribbon", ChristmasRed: "A01-bow" },
+};
+export const COLOR_SLOTS: Record<string, ProductPart> = {
+  "A01-ribbon": { id: "A01-ribbon", role: "礼物盒丝带", defaultColor: "butter" },
+  "A01-bow": { id: "A01-bow", role: "蝴蝶结", defaultColor: "butter" },
+};
+/** Stable order: real part controls first, then decorative slots in source mapping order. */
+export function getColorParts(parts: ProductPart[]): ProductPart[] {
+  const slots = [...new Set(parts.flatMap(part => Object.values(SOURCE_PART_COLOR_SLOTS[part.id] ?? {})))];
+  return [...parts, ...slots.map(id => COLOR_SLOTS[id])];
 }
 export interface MagnetSurface {
   id: string;
@@ -51,6 +68,7 @@ export interface Product {
   price: number;
   description: string;
   badge?: string;
+  installation?: "magnet" | "insert";
   parts: ProductPart[];
   /** Source-space pivot; renderer subtracts this before rotating and translating. */
   origin: Vec3;
@@ -78,22 +96,24 @@ export const BASE_PRODUCT = {
   name: "云朵基础平台",
   price: 12900,
   tallLegSurcharge: 2400,
+  noLegDiscount: 2000,
   poolSurcharge: 2900,
   description: "30 × 30 cm 平台 · 含四支撑脚与六个孔盖",
 };
 export function getBaseParts(
-  legHeight: 100 | 200,
+  legHeight: 0 | 100 | 200,
   pool: boolean | "lid" | "pool" = false,
+  removedCovers: string[] = [],
 ): ProductPart[] {
   return [
     part("P01", "平台", "cream"),
-    ...[1, 2, 3, 4, 5].map((n) => part(`H0${n}`, `小圆盖 ${n}`, "cream")),
+    ...[1, 2, 3, 4, 5].filter(n => !removedCovers.includes(`H0${n}`)).map((n) => part(`H0${n}`, `小圆盖 ${n}`, "cream")),
     part(
       pool === true || pool === "pool" ? "B01" : "H06",
       pool === true || pool === "pool" ? "嵌入池盆" : "大圆盖",
       "cream",
     ),
-    ...[1, 2, 3, 4].map((n) =>
+    ...(legHeight === 0 ? [] : [1, 2, 3, 4]).map((n) =>
       part(`${legHeight === 100 ? "L" : "X"}0${n}`, `支撑脚 ${n}`, "pine"),
     ),
   ];
@@ -133,11 +153,11 @@ export const PRODUCTS: Product[] = [
   {
     id: "villa",
     sku: "HM-HS-001",
-    name: "花园复式小屋",
+    name: "礼物盒小屋",
     category: "house",
     price: 15900,
     badge: "人气套餐",
-    description: "绿色小屋 + 二层平台 + 楼梯 + 草丛",
+    description: "礼物盒小屋 + 二层平台 + 楼梯 + 三边草栏 + 双支柱",
     origin: [150, 190, 110],
     parts: [
       part("A01", "一层小屋", "pine"),
@@ -188,7 +208,7 @@ export const PRODUCTS: Product[] = [
           ],
           200,
         ),
-        bounds: [265, 215, 200, 305, 300, 200],
+        bounds: [240, 215, 200, 305, 300, 200],
       },
     ],
     allowedParents: ["base"],
@@ -196,7 +216,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "l-house",
     sku: "HM-HS-002",
-    name: "L 型转角屋",
+    name: "L型转角屋",
     category: "house",
     price: 8900,
     description: "L 型房屋 + 顶盖板 · 屋顶可继续搭建",
@@ -253,23 +273,24 @@ export const PRODUCTS: Product[] = [
   {
     id: "roof-cottage",
     sku: "HM-HS-004",
-    name: "尖顶阁楼",
+    name: "圣诞帽小屋",
     category: "house",
     price: 7900,
-    description: "四点磁吸 · 安装于花园复式二层平台",
+    description: "兼容一层与二层 · 两孔对齐即可磁吸安装",
+    // Keep the old pivot for saved configurations; the revised mesh moves only its right wall/holes.
     origin: [78, 239, 200],
     parts: [part("G03", "阁楼", "red")],
     bottomMagnets: down(
       [
         [5, 192],
         [5, 286],
-        [151, 192],
-        [151, 286],
+        [125, 192],
+        [125, 286],
       ],
       200,
     ),
-    collisionBoxes: [[-3, 179.6, 200, 159, 298, 373.333]],
-    allowedParents: ["villa"],
+    collisionBoxes: [[-3, 179.60000610351562, 200, 133, 298, 373.3333435058594]],
+    allowedParents: ["base", "villa"],
     allowedRelativeRotations: [0],
   },
   pipe(
@@ -349,10 +370,10 @@ export const PRODUCTS: Product[] = [
   {
     id: "planter",
     sku: "HM-GD-001",
-    name: "小小花圃",
+    name: "圣诞袜花圃",
     category: "garden",
     price: 1900,
-    description: "双点磁吸 · 安装于花园复式二层平台",
+    description: "双点磁吸 · 安装于礼物盒二层平台",
     origin: [285.5, 264, 200],
     parts: [part("G06", "花圃", "red")],
     bottomMagnets: down(
@@ -366,17 +387,48 @@ export const PRODUCTS: Product[] = [
     allowedParents: ["villa"],
     allowedRelativeRotations: [0],
   },
+  {
+    id: "food-bowl",
+    sku: "HM-GD-002",
+    name: "圣诞食盆",
+    category: "garden",
+    price: 1900,
+    description: "红白食盆 · 与圣诞袜花圃共用二层磁位",
+    origin: [134, 124, 180],
+    parts: [part("O01", "食盆", "red")],
+    bottomMagnets: down([[127, 124], [141, 124]], 180),
+    collisionBoxes: [[94.5, 96, 180, 149.5, 156, 201]],
+    allowedParents: ["villa"],
+    allowedRelativeRotations: [0],
+  },
+  {
+    id: "pool",
+    sku: "HM-GD-003",
+    name: "圣诞泳池",
+    category: "garden",
+    price: BASE_PRODUCT.poolSurcharge,
+    description: "嵌入平台大圆洞 · 自动移除大圆盖 · 需要支撑脚",
+    installation: "insert",
+    origin: [100, 100, 110],
+    parts: [part("B01", "泳池", "cream")],
+    bottomMagnets: [],
+    collisionBoxes: [[22, 22, 30.65, 178, 178, 113.65]],
+    allowedParents: ["base"],
+  },
 ];
 export function getProduct(id: string): Product {
   const product = PRODUCTS.find((p) => p.id === id);
   if (!product) throw new Error(`未知组件：${id}`);
   return product;
 }
+export function getProductColorParts(productId: string): ProductPart[] {
+  return getColorParts(getProduct(productId).parts);
+}
 export function getDefaultColors(productId: string): ColorMap {
   return Object.fromEntries(
-    getProduct(productId).parts.map((p) => [p.id, p.defaultColor]),
+    getProductColorParts(productId).map((p) => [p.id, p.defaultColor]),
   );
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 3;
+export const CATALOG_VERSION = 4;

@@ -6,6 +6,7 @@ import {
   getBaseParts,
   getDefaultColors,
   getProduct,
+  getProductColorParts,
 } from "../data/catalog";
 import type {
   Bounds,
@@ -29,11 +30,36 @@ export interface AssemblyItem {
 export interface AssemblyState {
   version: 1;
   catalogVersion: typeof CATALOG_VERSION;
-  legHeight: 100 | 200;
+  legHeight: 0 | 100 | 200;
+  removedCovers: string[];
+  extension: PlatformExtension | null;
   baseInsert: "lid" | "pool";
   baseColors: ColorMap;
   items: AssemblyItem[];
 }
+export type PlatformDirection = "left" | "right" | "front" | "back";
+export type PlatformId = "base" | "base2";
+export interface PlatformExtension {
+  direction: PlatformDirection;
+  baseInsert: "lid" | "pool";
+  baseColors: ColorMap;
+  removedCovers: string[];
+}
+export interface PlatformView {
+  id: PlatformId;
+  x: number;
+  y: number;
+  baseInsert: "lid" | "pool";
+  baseColors: ColorMap;
+  removedCovers: string[];
+}
+export type ActionResult =
+  | { ok: true; state: AssemblyState; item?: AssemblyItem }
+  | { ok: false; state: AssemblyState; reason: string };
+export const PLATFORM_OFFSETS: Record<PlatformDirection, [number, number]> = {
+  left: [-300, 0], right: [300, 0], front: [0, -300], back: [0, 300],
+};
+export const REMOVABLE_COVERS = ["H01", "H02", "H03", "H04", "H05"] as const;
 export interface Placement {
   x: number;
   y: number;
@@ -65,6 +91,8 @@ export function createInitialState(): AssemblyState {
     version: 1,
     catalogVersion: CATALOG_VERSION,
     legHeight: 100,
+    removedCovers: [],
+    extension: null,
     baseInsert: "lid",
     baseColors: {
       P01: "cream",
@@ -79,6 +107,14 @@ export function createInitialState(): AssemblyState {
     },
     items: [],
   };
+}
+export function getPlatforms(state: AssemblyState): PlatformView[] {
+  const result: PlatformView[] = [{ id: "base", x: 0, y: 0, baseInsert: state.baseInsert, baseColors: state.baseColors, removedCovers: state.removedCovers }];
+  if (state.extension) {
+    const [x, y] = PLATFORM_OFFSETS[state.extension.direction];
+    result.push({ id: "base2", x, y, baseInsert: state.extension.baseInsert, baseColors: state.extension.baseColors, removedCovers: state.extension.removedCovers });
+  }
+  return result;
 }
 export function rotateVector([x, y, z]: Vec3, rotation: Rotation): Vec3 {
   switch (rotation) {
@@ -150,26 +186,15 @@ interface Surface {
 }
 function getSurfaces(state: AssemblyState, excluded: Set<string>): Surface[] {
   const grid = [10, 90, 110, 190, 210, 290];
-  const points: Vec3[] = [];
-  for (const x of grid)
-    for (const y of grid) {
-      if (
-        state.baseInsert === "pool" &&
-        (x === 90 || x === 110) &&
-        (y === 90 || y === 110)
-      )
-        continue;
-      points.push([x, y, 110]);
+  const surfaces: Surface[] = getPlatforms(state).map(platform => {
+    const points: Vec3[] = [];
+    for (const x of grid) for (const y of grid) {
+      if (platform.baseInsert === "pool" && [90, 110].includes(x) && [90, 110].includes(y)) continue;
+      points.push([x + platform.x, y + platform.y, 110]);
     }
-  const surfaces: Surface[] = [
-    {
-      id: "platform",
-      parentId: "base",
-      parentProduct: "base",
-      points,
-      bounds: [0, 0, 110, 300, 300, 110],
-    },
-  ];
+    return { id: `platform-${platform.id}`, parentId: platform.id, parentProduct: "base", points,
+      bounds: [platform.x, platform.y, 110, platform.x + 300, platform.y + 300, 110] as Bounds };
+  });
   for (const item of state.items) {
     if (excluded.has(item.id)) continue;
     const product = getProduct(item.productId);
@@ -212,7 +237,7 @@ function compatiblePlacement(
   const boxes = product.collisionBoxes.map((b) =>
     transformBox(b, product, placement),
   );
-  const overhang = surface.parentId === "base" ? 6 : 2;
+  const overhang = surface.parentProduct === "base" ? 6 : 2;
   // Bounds describe reserved assembly space, not mesh boolean collision. Conservative on purpose.
   if (
     boxes.some(
@@ -224,7 +249,9 @@ function compatiblePlacement(
     )
   )
     return false;
-  if (state.baseInsert === "pool" && placement.parentId === "base") {
+  const hostPlatform = getPlatforms(state).find(p => p.id === placement.parentId);
+  if (hostPlatform?.baseInsert === "pool") {
+    const centerX = hostPlatform.x + 100, centerY = hostPlatform.y + 100;
     // Reserve the real opening/upper rim, not the whole square around the circular basin.
     if (
       boxes.some(
@@ -232,8 +259,8 @@ function compatiblePlacement(
           b[2] < 113.65 &&
           b[5] > 110 &&
           Math.hypot(
-            Math.max(b[0], Math.min(100, b[3])) - 100,
-            Math.max(b[1], Math.min(100, b[4])) - 100,
+            Math.max(b[0], Math.min(centerX, b[3])) - centerX,
+            Math.max(b[1], Math.min(centerY, b[4])) - centerY,
           ) <
             78 - EPS,
       )
@@ -266,7 +293,7 @@ function compatiblePlacement(
   }
   return true;
 }
-/** Enumerates only transforms where EVERY external bottom magnet has a matching host magnet. */
+/** Enumerates source-backed transforms with at least two distinct magnetic contacts. */
 export function getPlacements(
   state: AssemblyState,
   productId: string,
@@ -290,30 +317,32 @@ export function getPlacements(
     const parentRotation =
       state.items.find((i) => i.id === surface.parentId)?.rotation ?? 0;
     if (
+      surface.parentProduct !== "base" &&
       product.allowedRelativeRotations &&
       !product.allowedRelativeRotations.includes(
         ((rotation - parentRotation + 360) % 360) as Rotation,
       )
     )
       continue;
-    for (const anchor of surface.points) {
-      const shift = anchor.map((v, i) => round(v - local[0][i])) as Vec3;
-      if (
-        !local.every((m) =>
-          surface.points.some((n) =>
-            samePoint(m.map((v, i) => v + shift[i]) as Vec3, n),
-          ),
-        )
-      )
-        continue;
+    // Every foot may be the matching anchor; a two-magnet fit need not involve the first foot.
+    const seen = new Set<string>();
+    for (const anchor of surface.points) for (const foot of local) {
+      const shift = anchor.map((v, i) => round(v - foot[i])) as Vec3;
+      const key = `${surface.parentId}:${shift.join(",")}:${rotation}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const magnetCount = local.filter((m, index) =>
+        local.findIndex(n => samePoint(m, n)) === index && surface.points.some((n) => samePoint(m.map((v, i) => v + shift[i]) as Vec3, n)),
+      ).length;
+      if (magnetCount < 2) continue;
       const placement: Placement = {
         x: shift[0],
         y: shift[1],
         z: shift[2],
         rotation,
         parentId: surface.parentId,
-        key: `${surface.parentId}:${shift.join(",")}:${rotation}`,
-        magnetCount: local.length,
+        key,
+        magnetCount,
       };
       if (
         compatiblePlacement(state, product, placement, surface, excluded) &&
@@ -395,8 +424,8 @@ export function tryPlace(
       (point.z !== undefined && !Number.isFinite(point.z))
     )
       throw new Error("放置坐标无效");
-    if (!ignoreId && state.items.length >= 48)
-      throw new Error("单个平台最多支持 48 组组件");
+    if (!ignoreId && state.items.length >= (state.extension ? 96 : 48))
+      throw new Error("组件数量已达到上限");
     const candidates = getPlacements(state, productId, rotation, ignoreId);
     const distance = (p: Placement) =>
       Math.hypot(
@@ -420,7 +449,7 @@ export function tryPlace(
       ...position,
       colors: normalizeColors(
         colors,
-        product.parts.map((p) => p.id),
+        getProductColorParts(productId).map((p) => p.id),
         getDefaultColors(productId),
       ),
     };
@@ -453,41 +482,92 @@ export function rotateItem(
   const previous = state.items.find((i) => i.id === id);
   if (!previous) return { ok: false, state, reason: "未找到组件" };
   const rotation = ((previous.rotation + step) % 360) as Rotation;
-  const match = getPlacements(state, previous.productId, rotation, id).find(
-    (p) =>
-      close(p.x, previous.x) &&
-      close(p.y, previous.y) &&
-      close(p.z, previous.z) &&
-      p.parentId === previous.parentId,
-  );
-  if (!match)
-    return {
-      ok: false,
-      state,
-      reason: "这个方向的磁吸孔位不匹配，或与其他组件重叠",
-    };
-  return tryPlace(
-    state,
-    previous.productId,
-    previous,
-    rotation,
-    previous.colors,
-    id,
-  );
-}
-export function changeBaseInsert(
-  state: AssemblyState,
-  baseInsert: "lid" | "pool",
-): { ok: boolean; state: AssemblyState; reason?: string } {
-  try {
-    return { ok: true, state: validateAssembly({ ...state, baseInsert }) };
-  } catch {
-    return {
-      ok: false,
-      state,
-      reason: "池盆会占用中央磁吸位，请先移开中央组件",
-    };
+  // A source pivot may not be the magnetic pattern's center. Keep the current
+  // position when possible, otherwise resnap on the same supporting surface.
+  const candidates = getPlacements(state, previous.productId, rotation, id)
+    .filter(candidate => candidate.parentId === previous.parentId && close(candidate.z, previous.z))
+    .sort((a, b) => Math.hypot(a.x - previous.x, a.y - previous.y) - Math.hypot(b.x - previous.x, b.y - previous.y) || a.key.localeCompare(b.key));
+  for (const candidate of candidates) {
+    const result = tryPlace(state, previous.productId, candidate, rotation, previous.colors, id);
+    if (result.ok && result.item.parentId === previous.parentId && close(result.item.z, previous.z)) return result;
+    // Parent-only placement can pass while a carried descendant hits another
+    // component. Try the next nearest candidate before refusing the whole turn.
   }
+  return { ok: false, state, reason: "这个方向没有可用的磁吸位置，或旋转后会与其他组件重叠" };
+}
+function action(state: AssemblyState, next: AssemblyState, reason?: string): ActionResult {
+  try { return { ok: true, state: validateAssembly(next) }; }
+  catch (error) { return { ok: false, state, reason: reason ?? (error instanceof Error ? error.message : "装配不匹配") }; }
+}
+export function addPlatform(state: AssemblyState, direction: PlatformDirection): ActionResult {
+  if (state.extension) return { ok: false, state, reason: "最多可以添加两个平台" };
+  if (!Object.hasOwn(PLATFORM_OFFSETS, direction)) return { ok: false, state, reason: "平台方向无效" };
+  const initial = createInitialState();
+  return action(state, { ...state, extension: { direction, baseInsert: "lid", baseColors: initial.baseColors, removedCovers: [] } });
+}
+export function movePlatform(state: AssemblyState, direction: PlatformDirection): ActionResult {
+  if (!state.extension) return { ok: false, state, reason: "请先添加第二个平台" };
+  if (!Object.hasOwn(PLATFORM_OFFSETS, direction)) return { ok: false, state, reason: "平台方向无效" };
+  const previous = PLATFORM_OFFSETS[state.extension.direction], next = PLATFORM_OFFSETS[direction];
+  const family = descendants(state, "base2");
+  return action(state, { ...state, extension: { ...state.extension, direction }, items: state.items.map(item => family.has(item.id) ? { ...item, x: round(item.x + next[0] - previous[0]), y: round(item.y + next[1] - previous[1]) } : item) }, "这个方向会与已有组件碰撞，请先移开边缘组件");
+}
+export function removePlatform(state: AssemblyState): ActionResult {
+  return action(state, { ...removeItem(state, "base2"), extension: null });
+}
+export function setLegHeight(state: AssemblyState, legHeight: 0 | 100 | 200): ActionResult {
+  if (legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) return { ok: false, state, reason: "无腿平台不兼容泳池，请先移除泳池" };
+  return action(state, { ...state, legHeight });
+}
+export function setCoverRemoved(state: AssemblyState, platformId: PlatformId, coverId: string, removed: boolean): ActionResult {
+  if (!REMOVABLE_COVERS.includes(coverId as typeof REMOVABLE_COVERS[number])) return { ok: false, state, reason: "只能移除小圆盖，大圆盖会随泳池自动替换" };
+  const platform = getPlatforms(state).find(p => p.id === platformId);
+  if (!platform) return { ok: false, state, reason: "未找到平台" };
+  const removedCovers = removed ? [...new Set([...platform.removedCovers, coverId])].sort() : platform.removedCovers.filter(id => id !== coverId);
+  return action(state, platformId === "base" ? { ...state, removedCovers } : { ...state, extension: { ...state.extension!, removedCovers } });
+}
+export function setPlatformPool(state: AssemblyState, platformId: PlatformId, enabled: boolean): ActionResult {
+  if (!getPlatforms(state).some(platform => platform.id === platformId)) return { ok: false, state, reason: "未找到平台" };
+  if (enabled && state.legHeight === 0) return { ok: false, state, reason: "无腿平台不兼容泳池，请先选择支撑脚" };
+  const baseInsert = enabled ? "pool" as const : "lid" as const;
+  return action(state, platformId === "base" ? { ...state, baseInsert } : { ...state, extension: { ...state.extension!, baseInsert } }, "泳池位置已被占用，请先移开组件");
+}
+export function changeBaseInsert(state: AssemblyState, baseInsert: "lid" | "pool"): ActionResult {
+  return setPlatformPool(state, "base", baseInsert === "pool");
+}
+/** Choose the strongest available magnetic fit, then a compact position; never leave a pending placement. */
+export function autoPlace(state: AssemblyState, productId: string, preferredPlatformId?: PlatformId): ActionResult {
+  if (productId === "pool") {
+    if (state.legHeight === 0) return { ok: false, state, reason: "无腿平台不兼容泳池，请先选择支撑脚" };
+    for (const platform of getPlatforms(state).sort((a, b) => Number(b.id === preferredPlatformId) - Number(a.id === preferredPlatformId))) {
+      if (platform.baseInsert === "pool") continue;
+      const result = setPlatformPool(state, platform.id, true);
+      if (result.ok) return result;
+    }
+    return { ok: false, state, reason: "放不下去了" };
+  }
+  try {
+    const candidates = ([0, 90, 180, 270] as Rotation[]).flatMap(rotation => getPlacements(state, productId, rotation));
+    const rootOf = (parentId: string): string => { const parent = state.items.find(item => item.id === parentId); return parent ? rootOf(parent.parentId) : parentId; };
+    const compactScore = (placement: Placement) => {
+      const siblings = state.items.filter(item => item.parentId === placement.parentId);
+      if (siblings.length) return Math.min(...siblings.map(item => Math.hypot(item.x - placement.x, item.y - placement.y)));
+      const platform = getPlatforms(state).find(p => p.id === rootOf(placement.parentId));
+      const product = getProduct(productId);
+      return Math.hypot(placement.x - product.origin[0] - (platform?.x ?? 0), placement.y - product.origin[1] - (platform?.y ?? 0));
+    };
+    candidates.sort((a, b) => b.magnetCount - a.magnetCount || Number(rootOf(b.parentId) === preferredPlatformId) - Number(rootOf(a.parentId) === preferredPlatformId) || compactScore(a) - compactScore(b) || a.z - b.z || a.rotation - b.rotation || a.key.localeCompare(b.key));
+    for (const candidate of candidates) {
+      const result = tryPlace(state, productId, candidate, candidate.rotation);
+      if (result.ok) return result;
+    }
+  } catch { /* Unknown products or unavailable placements must not change the assembly. */ }
+  return { ok: false, state, reason: "放不下去了" };
+}
+function normalizeRemovedCovers(value: unknown): string[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.some(id => !REMOVABLE_COVERS.includes(id)) || new Set(value).size !== value.length) throw new Error("小圆盖配置无效");
+  return [...value].sort();
 }
 /** Strict schema, coordinates, bundle contents, collision, and attachment validation on every import. */
 export function validateAssembly(value: unknown): AssemblyState {
@@ -497,17 +577,19 @@ export function validateAssembly(value: unknown): AssemblyState {
   if (input.version !== 1) throw new Error("暂不支持这个搭配版本");
   if (input.catalogVersion !== undefined && input.catalogVersion !== CATALOG_VERSION)
     throw new Error("搭配目录版本不兼容，请先迁移旧搭配");
-  if (input.legHeight !== 100 && input.legHeight !== 200)
+  if (input.legHeight !== 0 && input.legHeight !== 100 && input.legHeight !== 200)
     throw new Error("支撑脚长度无效");
   if (input.baseInsert !== "lid" && input.baseInsert !== "pool")
     throw new Error("平台嵌件无效");
-  if (!Array.isArray(input.items) || input.items.length > 48)
+  if (!Array.isArray(input.items) || input.items.length > (input.extension ? 96 : 48))
     throw new Error("组件数量无效");
   const defaults = createInitialState();
   const state: AssemblyState = {
     version: 1,
     catalogVersion: CATALOG_VERSION,
     legHeight: input.legHeight,
+    removedCovers: normalizeRemovedCovers(input.removedCovers),
+    extension: null,
     baseInsert: input.baseInsert,
     baseColors: normalizeColors(
       input.baseColors,
@@ -516,6 +598,12 @@ export function validateAssembly(value: unknown): AssemblyState {
     ),
     items: [],
   };
+  if (input.extension !== null && input.extension !== undefined) {
+    const extension = input.extension;
+    if (!extension || typeof extension !== "object" || Array.isArray(extension) || !Object.hasOwn(PLATFORM_OFFSETS, extension.direction) || !["lid", "pool"].includes(extension.baseInsert)) throw new Error("第二个平台数据无效");
+    state.extension = { direction: extension.direction, baseInsert: extension.baseInsert, baseColors: normalizeColors(extension.baseColors, Object.keys(defaults.baseColors), defaults.baseColors), removedCovers: normalizeRemovedCovers(extension.removedCovers) };
+  }
+  if (state.legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) throw new Error("无腿平台不兼容泳池");
   const ids = new Set<string>();
   const pending = input.items.map((raw) => {
     if (
@@ -523,13 +611,14 @@ export function validateAssembly(value: unknown): AssemblyState {
       typeof raw !== "object" ||
       typeof raw.id !== "string" ||
       !/^[A-Za-z0-9_-]{1,40}$/.test(raw.id) ||
-      raw.id === "base" ||
+      (raw.id === "base" || raw.id === "base2") ||
       ids.has(raw.id)
     )
       throw new Error("组件编号无效或重复");
     ids.add(raw.id);
     const product = getProduct(raw.productId);
-    if (product.id === "villa" && (!raw.colors || Object.keys(raw.colors).length !== product.parts.length))
+    if (product.id === "pool") throw new Error("泳池必须安装在平台预留孔中");
+    if (product.id === "villa" && (!raw.colors || product.parts.some(part => !Object.hasOwn(raw.colors, part.id))))
       throw new Error("V4 花园复式套餐颜色不完整，请先迁移旧搭配");
     if (
       typeof raw.parentId !== "string" ||
@@ -550,7 +639,7 @@ export function validateAssembly(value: unknown): AssemblyState {
       parentId: raw.parentId,
       colors: normalizeColors(
         raw.colors,
-        product.parts.map((p) => p.id),
+        getProductColorParts(product.id).map((p) => p.id),
         getDefaultColors(product.id),
       ),
     };
@@ -558,7 +647,7 @@ export function validateAssembly(value: unknown): AssemblyState {
   while (pending.length) {
     const index = pending.findIndex(
       (i) =>
-        i.parentId === "base" || state.items.some((p) => p.id === i.parentId),
+        getPlatforms(state).some(p => p.id === i.parentId) || state.items.some((p) => p.id === i.parentId),
     );
     if (index === -1) throw new Error("组件依赖缺失或循环");
     const item = pending.splice(index, 1)[0];
@@ -589,14 +678,15 @@ function hasLegacyVillaColors(value: unknown): boolean {
 }
 /**
  * Explicit migration boundary for catalog 2 and old unversioned local storage.
- * Never repair a current catalog-3 state, including an unversioned state with eight-part colors.
+ * Catalog 3 adds the new platform fields without repairing component directions.
+ * Never repair current states or unversioned states with eight-part colors.
  * Only the known legacy reversed loft is corrected; all other geometry remains strictly validated.
  */
-export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3): AssemblyMigrationResult {
+export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4): AssemblyMigrationResult {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("搭配数据格式不正确");
   const raw = value as Record<string, unknown>;
   if (!Array.isArray(raw.items)) throw new Error("组件数量无效");
-  if (sourceCatalogVersion !== undefined && sourceCatalogVersion !== 2 && sourceCatalogVersion !== CATALOG_VERSION)
+  if (sourceCatalogVersion !== undefined && sourceCatalogVersion !== 2 && sourceCatalogVersion !== 3 && sourceCatalogVersion !== CATALOG_VERSION)
     throw new Error("搭配目录版本不兼容");
   if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion)
     throw new Error("搭配目录版本标记冲突");
@@ -605,6 +695,7 @@ export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3): A
   const inferredLegacy = raw.catalogVersion === undefined && villas.length > 0 && villas.every(item => hasLegacyVillaColors(item.colors));
   const source = sourceCatalogVersion ?? raw.catalogVersion ?? (inferredLegacy ? 2 : CATALOG_VERSION);
   if (source === CATALOG_VERSION) return { state: validateAssembly(value), messages: [] };
+  if (source === 3) return { state: validateAssembly({ ...raw, catalogVersion: CATALOG_VERSION, extension: null, removedCovers: [] }), messages: ["搭配已升级，原有组件、配色与位置已保留。"] };
   if (source !== 2) throw new Error("搭配目录版本不兼容");
   if (!villas.every(item => hasLegacyVillaColors(item.colors))) throw new Error("旧版复式套餐的四色数据不完整");
   let adjustedLofts = 0;
@@ -617,48 +708,36 @@ export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3): A
     if (item.productId === "roof-cottage") {
       const parent = rawItems.find(candidate => candidate && candidate.id === item.parentId);
       if (parent?.productId === "villa" && [0, 90, 180, 270].includes(parent.rotation) && [0, 90, 180, 270].includes(item.rotation) && (item.rotation - parent.rotation + 360) % 360 === 180) {
-        // G03's source pivot is the four-magnet center, so this rotation retains every interface XY.
+        // Retain the legacy pivot/position and restore its safe orientation. The resized G03 keeps the left two source contacts.
         next.rotation = parent.rotation;
         adjustedLofts++;
       }
     }
     return next;
   });
-  const state = validateAssembly({ ...raw, catalogVersion: CATALOG_VERSION, items });
+  const state = validateAssembly({ ...raw, catalogVersion: CATALOG_VERSION, extension: null, removedCovers: [], items });
   const messages = [villas.length ? "旧搭配已升级为 V4 八件复式套餐：新增白柱继承二层平台颜色，左右草栏继承原草栏颜色。" : "旧搭配目录已升级为 V4，原有配色与位置已保留。"];
-  if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个尖顶阁楼按 V4 围栏安全方向调整，磁吸中心和自定义配色已保留。`);
+  if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个圣诞帽小屋按 V4 围栏安全方向调整，装配位置和自定义配色已保留。`);
   return { state, messages };
 }
 
 export function getOrderLines(state: AssemblyState): OrderLine[] {
-  const basePrice =
-    BASE_PRODUCT.price +
-    (state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : 0) +
-    (state.baseInsert === "pool" ? BASE_PRODUCT.poolSurcharge : 0);
-  const baseParts = getBaseParts(state.legHeight, state.baseInsert);
-  const baseColorKeys = [
-    ...baseParts.filter((p) => !/^[LX]0[1-4]$/.test(p.id)).map((p) => p.id),
-    "legs",
-  ];
-  const orderBaseColors = Object.fromEntries(
-    baseColorKeys.map((key) => [key, state.baseColors[key]]),
-  );
-  const lines: OrderLine[] = [
-    {
-      id: "base",
-      sku: `${BASE_PRODUCT.sku}-${state.legHeight}${state.baseInsert === "pool" ? "-POOL" : ""}`,
-      name: `${BASE_PRODUCT.name} · ${state.legHeight / 10} cm 腿${state.baseInsert === "pool" ? " · 池盆款" : ""}`,
-      quantity: 1,
-      unitPrice: basePrice,
-      total: basePrice,
-      parts: baseParts.map((p) => p.id),
-      colors: orderBaseColors,
-    },
-  ];
+  const basePrice = BASE_PRODUCT.price + (state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : 0) - (state.legHeight === 0 ? BASE_PRODUCT.noLegDiscount : 0);
+  const lines: OrderLine[] = [];
+  for (const platform of getPlatforms(state)) {
+    const baseParts = getBaseParts(state.legHeight, platform.baseInsert).filter(part => part.id !== "B01" && !platform.removedCovers.includes(part.id));
+    const baseColorKeys = [...baseParts.filter(part => !/^[LX]0[1-4]$/.test(part.id)).map(part => part.id), ...(state.legHeight ? ["legs"] : [])];
+    lines.push({ id: platform.id, sku: `${BASE_PRODUCT.sku}-${state.legHeight}`, name: `${BASE_PRODUCT.name} · ${state.legHeight ? `${state.legHeight / 10} cm 腿` : "无腿"}${platform.id === "base2" ? " · 第二平台" : ""}`, quantity: 1, unitPrice: basePrice, total: basePrice, parts: baseParts.map(part => part.id), colors: Object.fromEntries(baseColorKeys.map(key => [key, platform.baseColors[key]])) });
+    if (platform.baseInsert === "pool") {
+      const pool = getProduct("pool");
+      lines.push({ id: `pool-${platform.id}`, sku: pool.sku, name: pool.name, quantity: 1, unitPrice: pool.price, total: pool.price, parts: ["B01"], colors: { B01: platform.baseColors.B01 } });
+    }
+  }
   for (const item of state.items) {
     const product = getProduct(item.productId);
+    const colors = normalizeColors(item.colors, getProductColorParts(product.id).map(part => part.id), getDefaultColors(product.id));
     const colorKey = JSON.stringify(
-      Object.entries(item.colors).sort(([a], [b]) => a.localeCompare(b)),
+      Object.entries(colors).sort(([a], [b]) => a.localeCompare(b)),
     );
     const same = lines.find(
       (line) =>
@@ -680,7 +759,7 @@ export function getOrderLines(state: AssemblyState): OrderLine[] {
         unitPrice: product.price,
         total: product.price,
         parts: product.parts.map((p) => p.id),
-        colors: item.colors,
+        colors,
       });
   }
   return lines;

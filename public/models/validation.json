@@ -1,6 +1,24 @@
 {
   "sourceSha256": "2668172cba9a6b03c0e99b1f7874ec3cf01db7988aaeab9ed2d828865f4212d0",
   "sourceVersion": "Complete 8x4 V4",
+  "supplementalSources": [
+    {
+      "sourceDirectory": "christmas_villa_v30_pool_cover",
+      "sourceVersion": "V30",
+      "sourceSha256": "3d25c19b4a9c6584a12cb06fbf76ce217666a8623638c1b270a8a59796feed9f",
+      "groups": [
+        "O01"
+      ],
+      "magnetMm": [
+        8,
+        2
+      ],
+      "pocketMm": [
+        8.1,
+        2.1
+      ]
+    }
+  ],
   "units": "millimeter",
   "upAxis": "Z",
   "groups": {
@@ -200,25 +218,356 @@
       ]
     },
     "G03": {
-      "bytes": 340656,
+      "bytes": 339036,
       "components": [
         {
           "id": "G03_ChristmasRed",
           "sourceTriangles": 8180,
-          "triangles": 6770,
-          "sampledMaxErrorMm": 0.010007,
+          "triangles": 6776,
+          "sampledMaxErrorMm": 0.009439,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 6.39e-06
+          "volumeRelativeError": 6.28e-06
         },
         {
           "id": "G03_Snow",
           "sourceTriangles": 20834,
-          "triangles": 6924,
-          "sampledMaxErrorMm": 0.016817,
-          "boundsMaxErrorMm": 1.4e-05,
-          "volumeRelativeError": 0.00022495
+          "triangles": 6832,
+          "sampledMaxErrorMm": 0.010723,
+          "boundsMaxErrorMm": 1.3e-05,
+          "volumeRelativeError": 0.00027478
         }
-      ]
+      ],
+      "derivedSource": {
+        "sourceFile": "/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v4/assembly_meshes.json",
+        "sourceSha256": "2668172cba9a6b03c0e99b1f7874ec3cf01db7988aaeab9ed2d828865f4212d0",
+        "derivedSourceFile": "/Users/chachacha/Documents/ChatGPT/仓鼠屋配件选购网站/hamilymart/.site-workflow/derived-models/g03-dual-floor/assembly_meshes.json",
+        "derivedSourceSha256": "0622375b327e6db357f663a87022f7c044a8231eb1ecf2df9545c22da799f338",
+        "generator": "scripts/derive-g03-dual-floor.py",
+        "generatorSha256": "73d437f649eb2ba5bc563403c4682e0aa5fdd59ff48ce90b92166b21c70764fd",
+        "bounds": [
+          -3.0,
+          179.60000610351562,
+          200.0,
+          133.0,
+          298.0,
+          373.3333435058594
+        ],
+        "dimensionsMm": [
+          136.0,
+          118.39999389648438,
+          173.33334350585938
+        ],
+        "originMm": [
+          78.0,
+          239.0,
+          200.0
+        ],
+        "magnetContactPointsMm": [
+          [
+            5.0,
+            192.0,
+            200.0
+          ],
+          [
+            5.0,
+            286.0,
+            200.0
+          ],
+          [
+            125.0,
+            192.0,
+            200.0
+          ],
+          [
+            125.0,
+            286.0,
+            200.0
+          ]
+        ],
+        "magnetLocalContactPointsMm": [
+          [
+            -73.0,
+            -47.0,
+            0.0
+          ],
+          [
+            -73.0,
+            47.0,
+            0.0
+          ],
+          [
+            47.0,
+            -47.0,
+            0.0
+          ],
+          [
+            47.0,
+            47.0,
+            0.0
+          ]
+        ],
+        "magnetPockets": [
+          {
+            "contactMm": [
+              5.0,
+              192.0,
+              200.0
+            ],
+            "centerMm": [
+              5.0,
+              192.0,
+              202.0
+            ],
+            "diameterMm": 8.2,
+            "depthMm": 4.2,
+            "occupiedMm3": 0.0
+          },
+          {
+            "contactMm": [
+              5.0,
+              286.0,
+              200.0
+            ],
+            "centerMm": [
+              5.0,
+              286.0,
+              202.0
+            ],
+            "diameterMm": 8.2,
+            "depthMm": 4.2,
+            "occupiedMm3": 0.0
+          },
+          {
+            "contactMm": [
+              125.0,
+              192.0,
+              200.0
+            ],
+            "centerMm": [
+              125.0,
+              192.0,
+              202.0
+            ],
+            "diameterMm": 8.2,
+            "depthMm": 4.2,
+            "occupiedMm3": 0.0
+          },
+          {
+            "contactMm": [
+              125.0,
+              286.0,
+              200.0
+            ],
+            "centerMm": [
+              125.0,
+              286.0,
+              202.0
+            ],
+            "diameterMm": 8.2,
+            "depthMm": 4.2,
+            "occupiedMm3": 0.0
+          }
+        ],
+        "physicalPositiveBodies": 1,
+        "protectedLeftDifferenceMm3": 0.0,
+        "protectedRightDifferenceMm3": 0.0,
+        "clearDoorwayProbeMm": [
+          67,
+          50
+        ],
+        "clearDoorwayProbeOverlapMm3": 0.0,
+        "canonicalUpperCollisionsMm3": {
+          "A02": 2.451493895326625e-12,
+          "G15": 0.0,
+          "G16": 0.0,
+          "G17": 0.0
+        },
+        "sampledShellCrossings": [
+          {
+            "y": 200,
+            "z": 202,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 239,
+            "z": 202,
+            "xCrossingWidthsMm": [
+              5.0
+            ]
+          },
+          {
+            "y": 275,
+            "z": 202,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 200,
+            "z": 210,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 239,
+            "z": 210,
+            "xCrossingWidthsMm": [
+              5.0
+            ]
+          },
+          {
+            "y": 275,
+            "z": 210,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 200,
+            "z": 230,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 239,
+            "z": 230,
+            "xCrossingWidthsMm": [
+              5.0
+            ]
+          },
+          {
+            "y": 275,
+            "z": 230,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 200,
+            "z": 250,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 239,
+            "z": 250,
+            "xCrossingWidthsMm": [
+              5.0
+            ]
+          },
+          {
+            "y": 275,
+            "z": 250,
+            "xCrossingWidthsMm": [
+              5.0,
+              5.0
+            ]
+          },
+          {
+            "y": 200,
+            "z": 270,
+            "xCrossingWidthsMm": [
+              5.483968976095176,
+              5.48396897609517
+            ]
+          },
+          {
+            "y": 239,
+            "z": 270,
+            "xCrossingWidthsMm": [
+              5.483968976095176,
+              5.48396897609517
+            ]
+          },
+          {
+            "y": 275,
+            "z": 270,
+            "xCrossingWidthsMm": [
+              5.483968976095177,
+              5.48396897609517
+            ]
+          },
+          {
+            "y": 200,
+            "z": 300,
+            "xCrossingWidthsMm": [
+              82.59486086699785
+            ]
+          },
+          {
+            "y": 239,
+            "z": 300,
+            "xCrossingWidthsMm": [
+              5.19540878457671,
+              5.195408784576713
+            ]
+          },
+          {
+            "y": 275,
+            "z": 300,
+            "xCrossingWidthsMm": [
+              88.18517980670211
+            ]
+          },
+          {
+            "y": 239,
+            "z": 330,
+            "xCrossingWidthsMm": [
+              4.9068485930582355,
+              4.906848593058228
+            ]
+          },
+          {
+            "y": 239,
+            "z": 350,
+            "xCrossingWidthsMm": [
+              4.7144751320459335,
+              4.7144751320459335
+            ]
+          }
+        ],
+        "shifted26UpperCollisionsMm3": {
+          "A02": 4.3706514043056186e-14,
+          "G15": 0.0,
+          "G16": 0.0,
+          "G17": 0.0
+        },
+        "components": [
+          {
+            "id": "G03_ChristmasRed",
+            "watertight": true,
+            "consistentWinding": true,
+            "triangles": 8180,
+            "printStlSha256": "f3ab8bc2bcb080f1b1339850f666c60a17490a86891ce20088dfc8bc965a9b32",
+            "positiveMaterialBodies": 2
+          },
+          {
+            "id": "G03_Snow",
+            "watertight": true,
+            "consistentWinding": true,
+            "triangles": 20834,
+            "printStlSha256": "a6ca76542f40e2c1c2dad4d12778f937aa65b4e9efd382bd2364aafab061b45d",
+            "positiveMaterialBodies": 3
+          }
+        ],
+        "webGlbSha256": "171585d564de0ad9d6f4ff6df76600281aeec8eb2c5193437284c506bc721b25",
+        "glbBoundsErrorMm": 0.0,
+        "combinedDiagnosticStl": "/Users/chachacha/Documents/ChatGPT/仓鼠屋配件选购网站/hamilymart/.site-workflow/derived-models/g03-dual-floor/G03_combined_print.stl",
+        "physicalTested": false,
+        "note": "Geometry checks only; new print requires slicer review/supports as with original G03."
+      }
     },
     "G05": {
       "bytes": 121556,
@@ -595,6 +944,27 @@
           "sampledMaxErrorMm": 0.011994,
           "boundsMaxErrorMm": 0.002759,
           "volumeRelativeError": 6.82e-05
+        }
+      ]
+    },
+    "O01": {
+      "bytes": 95804,
+      "components": [
+        {
+          "id": "O01_ChristmasRed",
+          "sourceTriangles": 6622,
+          "triangles": 3014,
+          "sampledMaxErrorMm": 0.010257,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.00024139
+        },
+        {
+          "id": "O01_Snow",
+          "sourceTriangles": 800,
+          "triangles": 800,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
         }
       ]
     }

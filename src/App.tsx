@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDownToLine,
-  ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
@@ -12,10 +11,8 @@ import {
   Info,
   Layers2,
   Link,
-  LoaderCircle,
   Magnet,
   Minus,
-  MousePointer2,
   Move,
   Plus,
   RotateCcw,
@@ -31,27 +28,38 @@ import {
   BASE_PRODUCT,
   CATALOG_VERSION,
   COLORS,
+  COLOR_SLOTS,
   PRODUCTS,
   getBaseParts,
   getDefaultColors,
   getProduct,
+  getProductColorParts,
 } from "./data/catalog";
 import type { ColorId, Rotation } from "./data/catalog";
 import {
+  addPlatform,
+  autoPlace,
   createInitialState,
+  getPlatforms,
   getOrderLines,
   getPlacements,
   getTotalPrice,
   migrateAssembly,
+  movePlatform,
   removeItem,
+  removePlatform,
   rotateItem,
+  setCoverRemoved,
+  setLegHeight,
+  setPlatformPool,
   tryPlace,
-  validateAssembly,
 } from "./lib/assembly";
-import type { AssemblyState } from "./lib/assembly";
+import type { ActionResult, AssemblyState, PlatformDirection, PlatformId } from "./lib/assembly";
 import { decodeConfigWithMigration, encodeConfig } from "./lib/config-code";
 
 const STORAGE = "hamilymart.assembly.v2";
+const DIRECTIONS: [PlatformDirection, string][] = [["left", "左侧"], ["right", "右侧"], ["front", "前侧"], ["back", "后侧"]];
+const HOUSE_ORDER = ["villa", "roof-cottage", "l-house", "cube-house"];
 const money = (cents: number) =>
   new Intl.NumberFormat("zh-CN", {
     style: "currency",
@@ -114,6 +122,7 @@ export default function App() {
     [saved, setSaved] = useState(true),
     [bounce, setBounce] = useState<string | null>(null);
   const [history, setHistory] = useState<AssemblyState[]>([]);
+  const [showPlatformDirections, setShowPlatformDirections] = useState(false);
   const dragFinishedAt = useRef(0);
   const scene = useRef<SceneHandle>(null),
     toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined),
@@ -121,18 +130,27 @@ export default function App() {
   const configurationCode = useMemo(() => encodeConfig(state), [state]);
   const orderLines = useMemo(() => getOrderLines(state), [state]);
   const total = getTotalPrice(state);
+  const platforms = getPlatforms(state);
+  const selectedCover = selectedId?.startsWith("cover:") ? selectedId.split(":")[2] : null;
+  const selectedPool = selectedId?.startsWith("pool:") ?? false;
+  const selectedPlatformId = (selectedId === "base" || selectedId === "base2"
+    ? selectedId : selectedCover || selectedPool ? selectedId!.split(":")[1] : null) as PlatformId | null;
+  const selectedPlatform = platforms.find(p => p.id === selectedPlatformId);
+  const editingPlatform = selectedId === "base" || selectedId === "base2";
+  const hasPool = platforms.some(p => p.baseInsert === "pool");
+  const groupCount = platforms.length + state.items.length + platforms.filter(p => p.baseInsert === "pool").length;
   const selectedItem = state.items.find((i) => i.id === selectedId);
   const selectedProduct = selectedItem
     ? getProduct(selectedItem.productId)
     : null;
   const selectedParts =
-    selectedId === "base"
-      ? getBaseParts(state.legHeight, state.baseInsert).filter(
-          (p) => !p.id.startsWith("H0") && !/^[LX]0[234]$/.test(p.id),
+    selectedPlatform
+      ? getBaseParts(state.legHeight, selectedPlatform.baseInsert, selectedPlatform.removedCovers).filter(
+          (p) => selectedCover ? p.id === selectedCover : selectedPool ? p.id === "B01" : p.id === "P01" || /^[LX]01$/.test(p.id),
         )
-      : (selectedProduct?.parts ?? []);
+      : (selectedProduct ? getProductColorParts(selectedProduct.id) : []);
   const selectedColors =
-    selectedId === "base" ? state.baseColors : (selectedItem?.colors ?? {});
+    selectedPlatform ? selectedPlatform.baseColors : (selectedItem?.colors ?? {});
   const colorKey = /^[LX]01$/.test(colorPart) ? "legs" : colorPart;
   const currentColor =
     selectedColors[colorKey] ??
@@ -140,7 +158,7 @@ export default function App() {
     "cream";
   const visibleProducts = PRODUCTS.filter(
     (p) => category === "all" || p.category === category,
-  );
+  ).sort((a, b) => (HOUSE_ORDER.includes(a.id) ? HOUSE_ORDER.indexOf(a.id) : 20) - (HOUSE_ORDER.includes(b.id) ? HOUSE_ORDER.indexOf(b.id) : 20));
   function notify(message: string) {
     setToast(message);
     clearTimeout(toastTimer.current);
@@ -150,6 +168,36 @@ export default function App() {
     if (next === state) return;
     setHistory((h) => [...h.slice(-19), state]);
     setState(next);
+  }
+  function applyAction(result: ActionResult, message?: string) {
+    if (!result.ok) { notify(result.reason); return false; }
+    commit(result.state);
+    if (message) notify(message);
+    return true;
+  }
+  function withPlatformColors(colors: typeof state.baseColors): AssemblyState {
+    return selectedPlatformId === "base2" && state.extension
+      ? { ...state, extension: { ...state.extension, baseColors: colors } }
+      : { ...state, baseColors: colors };
+  }
+  function addProduct(productId: string) {
+    setActiveProduct(null);
+    const result = autoPlace(state, productId, selectedPlatformId ?? undefined);
+    if (!result.ok) { notify(result.reason); return; }
+    commit(result.state);
+    if (result.item) select(result.item.id);
+    else {
+      const addedPool = getPlatforms(result.state).find(p => p.baseInsert === "pool" && platforms.find(old => old.id === p.id)?.baseInsert !== "pool");
+      if (addedPool) select(`pool:${addedPool.id}`);
+    }
+    notify(productId === "pool" ? "泳池已装好，大圆盖已自动移除" : "已安排到最合适的磁吸位置");
+  }
+  function changePlatformDirection(direction: PlatformDirection) {
+    const result = state.extension ? movePlatform(state, direction) : addPlatform(state, direction);
+    if (applyAction(result, "第二个平台已贴合在平台边上")) {
+      select("base2");
+      setShowPlatformDirections(false);
+    }
   }
   useEffect(() => {
     try {
@@ -168,12 +216,8 @@ export default function App() {
     }
   }, [state, startup]);
   useEffect(() => {
-    const keys =
-      selectedId === "base"
-        ? getBaseParts(state.legHeight, state.baseInsert)
-        : (selectedProduct?.parts ?? []);
-    setColorPart(keys[0]?.id ?? "P01");
-  }, [selectedId, state.legHeight, state.baseInsert, selectedProduct]);
+    setColorPart(selectedParts[0]?.id ?? "P01");
+  }, [selectedId, state.legHeight, selectedPlatform?.baseInsert, selectedProduct]);
   useEffect(() => {
     if (!modal) return;
     const previous = document.activeElement as HTMLElement | null;
@@ -243,8 +287,11 @@ export default function App() {
     }
   }
   function restoreOriginalColors() {
-    if (selectedId === "base")
-      commit({ ...state, baseColors: createInitialState().baseColors });
+    if (selectedPlatform) {
+      const defaults = createInitialState().baseColors;
+      const colors = selectedCover || selectedPool ? { ...selectedPlatform.baseColors, [selectedCover ?? "B01"]: defaults[selectedCover ?? "B01"] } : defaults;
+      commit(withPlatformColors(colors));
+    }
     else if (selectedItem)
       commit({
         ...state,
@@ -257,11 +304,11 @@ export default function App() {
     notify("已恢复这组组件的原模型配色");
   }
   function setColor(color: ColorId) {
-    if (selectedId === "base") {
-      const colors = { ...state.baseColors, [colorKey]: color };
+    if (selectedPlatform) {
+      const colors = { ...selectedPlatform.baseColors, [colorKey]: color };
       if (colorPart === "P01")
         for (const n of [1, 2, 3, 4, 5, 6]) colors[`H0${n}`] = color;
-      commit({ ...state, baseColors: colors });
+      commit(withPlatformColors(colors));
     } else if (selectedItem) {
       commit({
         ...state,
@@ -286,10 +333,22 @@ export default function App() {
     if (result.ok) {
       commit(result.state);
       setRotation(result.item.rotation);
-      notify(`已切换到 ${result.item.rotation}°，磁吸位匹配`);
+      notify(`已旋转至 ${result.item.rotation}°，并吸附到匹配位置`);
     } else notify(result.reason);
   }
   function removeSelected() {
+    if (selectedCover && selectedPlatformId) {
+      if (applyAction(setCoverRemoved(state, selectedPlatformId, selectedCover, true), "小圆盖已移除，可以看到留洞效果")) select(selectedPlatformId);
+      return;
+    }
+    if (selectedPool && selectedPlatformId) {
+      if (applyAction(setPlatformPool(state, selectedPlatformId, false), "泳池已移除，大圆盖已放回")) select(selectedPlatformId);
+      return;
+    }
+    if (selectedId === "base2") {
+      if (applyAction(removePlatform(state), "第二个平台及其上方组件已移除")) select("base");
+      return;
+    }
     if (!selectedItem) return;
     const next = removeItem(state, selectedItem.id);
     const removed = state.items.length - next.items.length;
@@ -300,15 +359,6 @@ export default function App() {
         ? `已移除套餐及其上方 ${removed - 1} 件配件`
         : "已移除这件配件",
     );
-  }
-  function changeInsert(insert: "pool" | "lid") {
-    try {
-      const next = { ...state, baseInsert: insert };
-      validateAssembly(next);
-      commit(next);
-    } catch {
-      notify("当前有配件使用大圆盖的磁位，请先移除对应配件，再切换泳池。");
-    }
   }
   async function copy(text: string) {
     try {
@@ -346,7 +396,7 @@ export default function App() {
           )
             .map(
               ([part, c]) =>
-                `${part} ${COLORS.find((v) => v.id === c)?.name ?? c}`,
+                `${COLOR_SLOTS[part]?.role ?? part} ${COLORS.find((v) => v.id === c)?.name ?? c}`,
             )
             .join("、")} | 包含：${l.parts.join("、")}`,
       ),
@@ -410,20 +460,6 @@ export default function App() {
           </button>
         </div>
       </header>
-      <div className="intro-strip">
-        <div>
-          <span className="eyebrow">A LITTLE HOME, A LOT OF LOVE.</span>
-          <h1>
-            小小的家，<span>大大的喜欢。</span>
-            <Heart className="intro-heart" size={24} />
-          </h1>
-        </div>
-        <p>
-          选一件，搭一下。
-          <br />
-          为你的小小家人，拼出独一份的日常。
-        </p>
-      </div>
       <main className="workspace">
         <section className="studio" aria-label="3D 搭建工作台">
           <div className="studio-heading">
@@ -541,7 +577,7 @@ export default function App() {
               <div className="selection-card">
                 <div className="selection-head">
                   <div className="selection-icon">
-                    {selectedId === "base" ? (
+                    {selectedPlatform ? (
                       <Layers2 size={21} />
                     ) : (
                       <House size={21} />
@@ -550,8 +586,10 @@ export default function App() {
                   <div>
                     <span className="mini-label">正在编辑</span>
                     <strong>
-                      {selectedId === "base"
-                        ? BASE_PRODUCT.name
+                      {selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}`
+                        : selectedPool ? "圣诞泳池"
+                        : editingPlatform
+                        ? `${selectedId === "base2" ? "第二" : "基础"}平台`
                         : selectedProduct?.name}
                     </strong>
                   </div>
@@ -564,20 +602,20 @@ export default function App() {
                     >
                       <RotateCcw size={17} />
                     </button>
-                    {selectedId !== "base" && (
+                    {(selectedItem || selectedCover || selectedPool || selectedId === "base2") && (
                       <>
-                        <button
+                        {selectedItem && <button
                           className="round-button"
                           aria-label="旋转已选配件"
                           title="切换到下一个可安装方向"
                           onClick={rotateSelected}
                         >
                           <RotateCw size={18} />
-                        </button>
+                        </button>}
                         <button
                           className="round-button danger"
                           aria-label="移除已选配件"
-                          title="移除套餐"
+                          title="移除所选组件"
                           onClick={removeSelected}
                         >
                           <Trash2 size={17} />
@@ -593,46 +631,36 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-                {selectedId === "base" && (
+                {editingPlatform && selectedPlatform && (
                   <div className="base-options">
                     <div>
-                      <span>支撑脚</span>
+                      <span>支撑脚{state.extension ? " · 两个平台同步" : ""}</span>
                       <div className="segmented">
                         <button
+                          className={state.legHeight === 0 ? "active" : ""}
+                          disabled={hasPool}
+                          title={hasPool ? "请先移除泳池，再选择无腿" : "平台不配支撑脚"}
+                          onClick={() => applyAction(setLegHeight(state, 0))}
+                        >无腿</button>
+                        <button
                           className={state.legHeight === 100 ? "active" : ""}
-                          onClick={() => commit({ ...state, legHeight: 100 })}
+                          onClick={() => applyAction(setLegHeight(state, 100))}
                         >
                           10 cm
                         </button>
                         <button
                           className={state.legHeight === 200 ? "active" : ""}
-                          onClick={() => commit({ ...state, legHeight: 200 })}
+                          onClick={() => applyAction(setLegHeight(state, 200))}
                         >
-                          20 cm{" "}
-                          <small>+{money(BASE_PRODUCT.tallLegSurcharge)}</small>
+                          20 cm
                         </button>
                       </div>
                     </div>
-                    <div>
-                      <span>平台中心</span>
-                      <div className="segmented">
-                        <button
-                          className={state.baseInsert === "lid" ? "active" : ""}
-                          onClick={() => changeInsert("lid")}
-                        >
-                          齐平圆盖
-                        </button>
-                        <button
-                          className={
-                            state.baseInsert === "pool" ? "active" : ""
-                          }
-                          onClick={() => changeInsert("pool")}
-                        >
-                          泳池{" "}
-                          <small>+{money(BASE_PRODUCT.poolSurcharge)}</small>
-                        </button>
-                      </div>
-                    </div>
+                    {hasPool && <p className="platform-hint">泳池需要支撑脚</p>}
+                    {selectedPlatform.removedCovers.length > 0 && <div className="restore-covers">
+                      <span>放回圆盖</span>
+                      {selectedPlatform.removedCovers.map(id => <button key={id} onClick={() => applyAction(setCoverRemoved(state, selectedPlatform.id, id, false), "圆盖已放回")}>小圆盖 {Number(id.slice(-1))}</button>)}
+                    </div>}
                   </div>
                 )}
                 <div className="color-editor">
@@ -694,7 +722,7 @@ export default function App() {
               onClick={() => setPanel("selected")}
             >
               <Layers2 size={17} />
-              已选搭配 <span>{state.items.length + 1}</span>
+              已选搭配 <span>{groupCount}</span>
             </button>
           </div>
           {panel === "catalog" ? (
@@ -702,11 +730,23 @@ export default function App() {
               <div className="catalog-intro">
                 <div>
                   <h2>给小家添点喜欢</h2>
-                  <p>整套配好，拖进画布就能搭。</p>
+                  <p>点选配件，自动安排合适的位置。</p>
                 </div>
                 <span className="sparkle-stamp">
                   <Sparkles size={23} />
                 </span>
+              </div>
+              <div className="platform-tools">
+                <div className="platform-tools-heading">
+                  <span><Layers2 size={15} />{state.extension ? "双平台 · 贴边组合" : "想给小家多一点空间？"}</span>
+                  <button className="outline-button" onClick={() => setShowPlatformDirections(v => !v)} aria-expanded={showPlatformDirections}>
+                    {state.extension ? "调整方向" : <><Plus size={14} />增加平台</>}
+                  </button>
+                </div>
+                {showPlatformDirections && <div className="platform-directions" aria-label="第二个平台方向">
+                  {DIRECTIONS.map(([direction, label]) => <button key={direction} className={state.extension?.direction === direction ? "active" : ""} onClick={() => changePlatformDirection(direction)}>{label}</button>)}
+                  <small>与基础平台边缘贴合，最多两块平台。</small>
+                </div>}
               </div>
               <div
                 className="category-tabs"
@@ -732,19 +772,23 @@ export default function App() {
               </div>
               <div className="product-grid">
                 {visibleProducts.map((product) => {
-                  const available =
-                    getPlacements(state, product.id, rotation).length > 0;
+                  const available = product.id === "pool" ? state.legHeight > 0 && platforms.some(p => p.baseInsert === "lid") :
+                    ([0, 90, 180, 270] as Rotation[]).some(r => getPlacements(state, product.id, r).length > 0);
                   return (
                     <article
                       key={product.id}
                       className={`product-card ${activeProduct === product.id ? "is-active" : ""} ${bounce === product.id ? "bounce-back" : ""}`}
+                      onClick={(event) => {
+                        if (!ready || (event.target instanceof Element && event.target.closest("button"))) return;
+                        addProduct(product.id);
+                      }}
                     >
                       <button
                         className="product-visual"
                         aria-label={`拖动或选择${product.name}`}
                         disabled={!ready}
                         onPointerDown={(e) => {
-                          if (e.button !== 0 || !ready) return;
+                          if (e.button !== 0 || !ready || product.id === "pool") return;
                           setActiveProduct(product.id);
                           setRotation(0);
                           scene.current?.startDrag(
@@ -756,14 +800,7 @@ export default function App() {
                         }}
                         onClick={() => {
                           if (Date.now() - dragFinishedAt.current < 350) return;
-                          setActiveProduct(product.id);
-                          setRotation(0);
-                          if (!getPlacements(state, product.id, 0).length)
-                            notify(
-                              product.allowedParents?.includes("villa")
-                                ? "先放入花园复式小屋，才有对应的二层磁吸位"
-                                : "当前没有可用的匹配位置，可调整现有配件后再试。",
-                            );
+                          addProduct(product.id);
                         }}
                       >
                         <img
@@ -776,7 +813,7 @@ export default function App() {
                         )}
                         <span className="drag-hint">
                           <Move size={12} />
-                          拖动搭建
+                          点击搭建
                         </span>
                       </button>
                       <div className="product-info">
@@ -784,7 +821,7 @@ export default function App() {
                         <p>
                           {product.parts.length > 1
                             ? `${product.parts.length} 件组合 · 套餐`
-                            : "磁吸配件"}
+                            : product.id === "pool" ? "自动替换大圆盖" : "磁吸配件"}
                           {!available && (
                             <span className="needs-parent">
                               {" "}
@@ -797,10 +834,8 @@ export default function App() {
                           <button
                             className="add-button"
                             aria-label={`选择${product.name}`}
-                            onClick={() => {
-                              setActiveProduct(product.id);
-                              setRotation(0);
-                            }}
+                            disabled={!ready}
+                            onClick={() => addProduct(product.id)}
                           >
                             <Plus size={16} />
                           </button>
@@ -813,7 +848,7 @@ export default function App() {
               <div className="catalog-note">
                 <Magnet size={16} />
                 <p>
-                  只在匹配的磁吸位“咔哒”到位。
+                  至少两处磁吸位对齐，就能“咔哒”到位。
                   <br />
                   小屋、管道与支撑成套搭配，不会漏买。
                 </p>
@@ -822,31 +857,25 @@ export default function App() {
           ) : (
             <div className="selected-list">
               <h2>你的小家，由这些组成</h2>
-              <button
-                className={`selected-row ${selectedId === "base" ? "active" : ""}`}
-                onClick={() => select("base")}
-              >
-                <img src={`/thumbnails/base.png?v=${CATALOG_VERSION}`} alt="基础平台" />
-                <span>
-                  <strong>{BASE_PRODUCT.name}</strong>
-                  <small>
-                    四根 {state.legHeight / 10} cm 腿 ·{" "}
-                    {state.baseInsert === "pool" ? "泳池" : "圆盖"}
-                  </small>
-                  <em>
-                    {money(
-                      BASE_PRODUCT.price +
-                        (state.legHeight === 200
-                          ? BASE_PRODUCT.tallLegSurcharge
-                          : 0) +
-                        (state.baseInsert === "pool"
-                          ? BASE_PRODUCT.poolSurcharge
-                          : 0),
-                    )}
-                  </em>
-                </span>
-                <ChevronDown size={15} />
-              </button>
+              {platforms.map(platform => <div key={platform.id}>
+                <button
+                  className={`selected-row ${selectedId === platform.id ? "active" : ""}`}
+                  onClick={() => select(platform.id)}
+                >
+                  <img src={`/thumbnails/base.png?v=${CATALOG_VERSION}`} alt="基础平台" />
+                  <span>
+                    <strong>{platform.id === "base2" ? "第二平台" : BASE_PRODUCT.name}</strong>
+                    <small>{state.legHeight === 0 ? "无支撑脚" : `四根 ${state.legHeight / 10} cm 腿`}{platform.removedCovers.length ? ` · ${platform.removedCovers.length} 个留洞` : ""}</small>
+                    <em>{money(BASE_PRODUCT.price + (state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : state.legHeight === 0 ? -BASE_PRODUCT.noLegDiscount : 0))}</em>
+                  </span>
+                  <ChevronDown size={15} />
+                </button>
+                {platform.baseInsert === "pool" && <button className={`selected-row ${selectedId === `pool:${platform.id}` ? "active" : ""}`} onClick={() => select(`pool:${platform.id}`)}>
+                  <img src={`/thumbnails/pool.png?v=${CATALOG_VERSION}`} alt="圣诞泳池" />
+                  <span><strong>圣诞泳池</strong><small>{platform.id === "base2" ? "第二平台" : "基础平台"} · 嵌入大圆洞</small><em>{money(BASE_PRODUCT.poolSurcharge)}</em></span>
+                  <ChevronDown size={15} />
+                </button>}
+              </div>)}
               {state.items.map((item) => {
                 const product = getProduct(item.productId);
                 return (
@@ -891,7 +920,7 @@ export default function App() {
         </div>
         <div className="checkout-total">
           <span>
-            共 <b>{state.items.length + 1}</b> 组配件{" "}
+            共 <b>{groupCount}</b> 组配件{" "}
             <span className="price-note">· 演示价格</span>
           </span>
           <strong>{money(total)}</strong>
@@ -955,7 +984,7 @@ export default function App() {
                 <span className="eyebrow">SAME LITTLE HOME.</span>
                 <h2 id="modal-title">把这份喜欢，分享出去</h2>
                 <p className="modal-lead">
-                  完整搭配编号包含组件、颜色、位置和脚长。
+                  完整搭配编号包含平台、组件、颜色、位置、留洞和脚长。
                   <br />
                   复制给朋友，粘贴即可还原同一个小家。
                 </p>
@@ -1035,7 +1064,7 @@ export default function App() {
                         {Object.entries(line.colors)
                           .map(
                             ([part, c]) =>
-                              `${part} ${COLORS.find((v) => v.id === c)?.name ?? c}`,
+                              `${COLOR_SLOTS[part]?.role ?? part} ${COLORS.find((v) => v.id === c)?.name ?? c}`,
                           )
                           .join(" · ")}
                       </p>
@@ -1081,17 +1110,16 @@ export default function App() {
                     <div>
                       <h3>从一张平台开始</h3>
                       <p>
-                        已包含四根 10 cm 支撑脚。选中平台，就能切换 20 cm
-                        脚、中心泳池和颜色。
+                        默认配四根 10 cm 支撑脚，可切换 20 cm 或无腿。也能选择方向增加第二个平台，两块平台始终贴边，支撑脚高度同步。
                       </p>
                     </div>
                   </article>
                   <article>
                     <span>02</span>
                     <div>
-                      <h3>挑一件，拖进去</h3>
+                      <h3>挑一件，自动搭好</h3>
                       <p>
-                        将配件图片拖到画布，靠近绿色圆环便会吸附。也可以先点选配件，再轻点画布里的圆环。不匹配的位置会退回。
+                        点选配件即可自动安排位置，也可拖到绿色圆环附近。至少两个真实磁吸孔对齐，且不会与已有组件碰撞，才能安装；没有位置会提示“放不下去了”。
                       </p>
                     </div>
                   </article>
@@ -1108,7 +1136,7 @@ export default function App() {
                 <div className="help-note">
                   <Magnet size={19} />
                   <p>
-                    泳池和圆盖是平台内置选项；房屋顶盖、管道底座随套餐一起提供。移除底层小屋时，上面的配件也会一起移除。
+                    点选小圆盖可移除，预览留洞；选中平台可放回圆盖。圣诞泳池自动替换大圆盖，无腿平台不能安装泳池。房屋顶盖、管道底座随套餐提供；移除平台或底层小屋时，上方配件也会一起移除。
                   </p>
                 </div>
                 <button

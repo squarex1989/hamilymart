@@ -12,11 +12,13 @@ import {
   CATALOG_VERSION,
   COLORS,
   SOURCE_TRIM_COLORS,
+  SOURCE_PART_TRIM_COLORS,
+  SOURCE_PART_COLOR_SLOTS,
   PRIMARY_COLOR_KEYS,
   getProduct,
   getBaseParts,
 } from "../data/catalog";
-import { getPlacements, getMagnetPoints, getItemBounds } from "../lib/assembly";
+import { getPlacements, getMagnetPoints, getItemBounds, getPlatforms } from "../lib/assembly";
 import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
 
@@ -54,7 +56,7 @@ const loader = new GLTFLoader();
 const cache = new Map<string, Promise<THREE.Group>>();
 const index = modelIndex as Record<
   string,
-  { url: string; components: { colorKey: string }[] }
+  { url: string; bounds: number[]; components: { colorKey: string }[] }
 >;
 function loadPart(id: string) {
   if (!cache.has(id))
@@ -70,6 +72,7 @@ function colorHex(id: string) {
 function release(root: THREE.Object3D) {
   root.traverse((o) => {
     if (o instanceof THREE.Mesh) {
+      if (o.userData.ownedGeometry) o.geometry.dispose();
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       mats.forEach((m) => m.dispose());
     }
@@ -172,13 +175,13 @@ function createRuntime(
   renderer.domElement.style.touchAction = "none";
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(34, 1, 1, 3500);
+  const camera = new THREE.PerspectiveCamera(34, 1, 10, 4500);
   camera.up.set(0, 0, 1);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.minDistance = 300;
-  controls.maxDistance = 1500;
+  controls.maxDistance = 2200;
   controls.maxPolarAngle = Math.PI * 0.485;
   controls.enablePan = true;
   controls.target.set(150, 150, 80);
@@ -188,15 +191,24 @@ function createRuntime(
       ...props().state.items.flatMap((item) =>
         getItemBounds(item).map((b) => b[5]),
       ),
-    ) + (props().state.legHeight === 200 ? 100 : 0);
+    ) + props().state.legHeight - 100;
   let framedTop = contentTop();
+  let framedDirection = props().state.extension?.direction;
+  const sceneCenter = () => {
+    const platforms = getPlatforms(props().state);
+    return new THREE.Vector3(
+      platforms.reduce((sum, p) => sum + p.x + 150, 0) / platforms.length,
+      platforms.reduce((sum, p) => sum + p.y + 150, 0) / platforms.length,
+      contentTop() * .48,
+    );
+  };
   const home = () => {
     const height = contentTop();
-    controls.target.set(150, 150, height * 0.48);
+    controls.target.copy(sceneCenter());
     camera.position.copy(
       new THREE.Vector3(480, -710, 445)
         .normalize()
-        .multiplyScalar(Math.max(1000, height * 2.85))
+        .multiplyScalar(Math.max(props().state.extension ? 1450 : 1000, height * 2.85))
         .add(controls.target),
     );
     controls.update();
@@ -255,7 +267,7 @@ function createRuntime(
     point: Point | null;
     placement: Placement | null;
   } | null = null;
-  const elevation = () => (props().state.legHeight === 200 ? 100 : 0);
+  const elevation = () => props().state.legHeight - 100;
   function pointAt(x: number, y: number, z = 110): Point | null {
     const b = renderer.domElement.getBoundingClientRect();
     if (x < b.left || x > b.right || y < b.top || y > b.bottom) return null;
@@ -279,8 +291,8 @@ function createRuntime(
     ray.setFromCamera(pointer, camera);
     const hit = ray.intersectObjects(objects.children, true)[0];
     let o: THREE.Object3D | undefined = hit?.object;
-    while (o && !o.userData.itemId) o = o.parent ?? undefined;
-    return o?.userData.itemId as string | undefined;
+    while (o && !o.userData.selectionId && !o.userData.itemId) o = o.parent ?? undefined;
+    return (o?.userData.selectionId ?? o?.userData.itemId) as string | undefined;
   }
   async function build(
     parts: ReturnType<typeof getBaseParts>,
@@ -288,12 +300,17 @@ function createRuntime(
     colors: Record<string, string>,
     selected = false,
     preview = false,
+    ownerId?: string,
   ) {
     const group = new THREE.Group();
     await Promise.all(
       parts.map(async (part) => {
         const loaded = await loadPart(part.id);
         const child = loaded.clone(true);
+        const selectionId = ownerId && /^(base|base2)$/.test(ownerId)
+          ? (/^H0[1-5]$/.test(part.id) ? `cover:${ownerId}:${part.id}` : part.id === "B01" ? `pool:${ownerId}` : ownerId)
+          : ownerId;
+        child.userData.selectionId = selectionId;
         child.position.set(
           -origin[0] + (part.offset?.[0] ?? 0),
           -origin[1] + (part.offset?.[1] ?? 0),
@@ -322,10 +339,18 @@ function createRuntime(
               const primaryKey =
                 PRIMARY_COLOR_KEYS[part.id] ??
                 index[part.id].components[0]?.colorKey;
-              if (!ck || ck === primaryKey) next.color.set(colorHex(tint));
-              else if (SOURCE_TRIM_COLORS[ck])
-                next.color.set(colorHex(SOURCE_TRIM_COLORS[ck]));
-              if (selected) {
+              const slot = SOURCE_PART_COLOR_SLOTS[part.id]?.[ck];
+              if (slot && colors[slot]) next.color.set(colorHex(colors[slot]));
+              else if (!ck || ck === primaryKey) next.color.set(colorHex(tint));
+              else if (SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck])
+                next.color.set(colorHex(SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck]));
+              // The source stair has coincident red/white faces; keep its top finish stable.
+              if (part.id === "G05" && ck === "ChristmasRed") {
+                next.polygonOffset = true;
+                next.polygonOffsetFactor = -1;
+                next.polygonOffsetUnits = -1;
+              }
+              if (selected || (!!selectionId && props().selectedId === selectionId)) {
                 next.emissive = new THREE.Color("#77aa81");
                 next.emissiveIntensity = 0.12;
               }
@@ -339,6 +364,20 @@ function createRuntime(
             o.material = Array.isArray(o.material) ? mats : mats[0];
           }
         });
+        // Flush covers share the platform color. A fine seam makes each removable lid discoverable.
+        if (/^H0[1-5]$/.test(part.id) && !preview) {
+          const b = index[part.id].bounds;
+          const radius = (b[3] - b[0]) / 2;
+          const seam = new THREE.Mesh(
+            new THREE.RingGeometry(radius - 1, radius, 64),
+            new THREE.MeshBasicMaterial({
+              color: "#89977e", transparent: true, opacity: 0.6, depthWrite: false,
+            }),
+          );
+          seam.position.set((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] + 0.08);
+          seam.userData.ownedGeometry = true;
+          child.add(seam);
+        }
         group.add(child);
       }),
     );
@@ -347,8 +386,9 @@ function createRuntime(
   async function update() {
     const rev = ++revision;
     const s = props().state;
-    if (Math.abs(contentTop() - framedTop) > 30) {
+    if (Math.abs(contentTop() - framedTop) > 30 || s.extension?.direction !== framedDirection) {
       framedTop = contentTop();
+      framedDirection = s.extension?.direction;
       home();
     }
     const old = [...objects.children];
@@ -357,16 +397,16 @@ function createRuntime(
       release(o);
     });
     const definitions = [
-      {
-        id: "base",
-        parts: getBaseParts(s.legHeight, s.baseInsert),
+      ...getPlatforms(s).map(platform => ({
+        id: platform.id,
+        parts: getBaseParts(s.legHeight, platform.baseInsert, platform.removedCovers),
         origin: [0, 0, 0],
-        colors: s.baseColors,
-        x: 0,
-        y: 0,
+        colors: platform.baseColors,
+        x: platform.x,
+        y: platform.y,
         z: 0,
         rotation: 0,
-      },
+      })),
       ...s.items.map((item) => ({
         ...item,
         parts: getProduct(item.productId).parts,
@@ -381,6 +421,8 @@ function createRuntime(
             def.origin,
             def.colors,
             props().selectedId === def.id,
+            false,
+            def.id,
           );
           if (disposed || revision !== rev) {
             release(g);
@@ -673,8 +715,9 @@ function createRuntime(
       startDrag(productId, x, y, undefined, pointerId),
     home,
     top: () => {
-      camera.position.set(150, 149.9, 1000);
-      controls.target.set(150, 150, 100);
+      const center = sceneCenter();
+      camera.position.set(center.x, center.y - .1, props().state.extension ? 1450 : 1000);
+      controls.target.copy(center);
       controls.update();
     },
     zoom: (amount: number) => {

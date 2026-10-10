@@ -21,6 +21,20 @@ import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v4/assembly_meshes.json')
+DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
+
+
+def food_bowl_group(source: Path) -> tuple[dict, dict]:
+    """Import the real historical optional bowl without changing its 8x2 mm pockets."""
+    source_bytes = source.read_bytes()
+    data = json.loads(source_bytes)
+    group = next(group for group in data['groups'] if group['id'] == 'O01')
+    bounds = np.asarray([trimesh.Trimesh(component['vertices'], component['triangles'], process=False).bounds
+                         for component in group['components']])
+    group['assembly_bounds_mm'] = [*bounds[:, 0, :].min(axis=0).tolist(), *bounds[:, 1, :].max(axis=0).tolist()]
+    return group, {'sourceDirectory': source.parent.name, 'sourceVersion': data.get('version'),
+                   'sourceSha256': hashlib.sha256(source_bytes).hexdigest(), 'groups': ['O01'],
+                   'magnetMm': [8, 2], 'pocketMm': [8.1, 2.1]}
 
 
 def simplified_mesh(component: dict) -> tuple[trimesh.Trimesh, dict]:
@@ -101,12 +115,13 @@ def write_glb(path: Path, group: dict, meshes: list[trimesh.Trimesh]) -> None:
 # default stock colours, and primary/trim colour rules as the interactive scene.
 def thumbnail_catalog() -> dict:
     exporter = """
-import { COLORS, PRODUCTS, getBaseParts, SOURCE_TRIM_COLORS, PRIMARY_COLOR_KEYS } from './src/data/catalog.ts';
+import { COLORS, PRODUCTS, getBaseParts, SOURCE_TRIM_COLORS, SOURCE_PART_TRIM_COLORS, PRIMARY_COLOR_KEYS } from './src/data/catalog.ts';
 const base = getBaseParts(100, false);
 const pool = getBaseParts(100, true).find(part => part.id === 'B01');
 console.log(JSON.stringify({
   colors: Object.fromEntries(COLORS.map(color => [color.id, color.hex])),
   trimColors: SOURCE_TRIM_COLORS,
+  partTrimColors: SOURCE_PART_TRIM_COLORS,
   primaryColorKeys: PRIMARY_COLOR_KEYS,
   groups: Object.fromEntries([
     ['base', base], ...PRODUCTS.map(product => [product.id, product.parts]),
@@ -169,7 +184,8 @@ for product, product_parts in groups.items():
             obj.rotation_euler = (-math.pi / 2,0,0)
             obj.location = part.get('offset', [0,0,0])
             source_key = obj.get('colorKey')
-            color_id = part['defaultColor'] if not source_key or source_key == primary_key else catalog['trimColors'].get(source_key, part['defaultColor'])
+            trim_colors = {**catalog['trimColors'], **catalog['partTrimColors'].get(group_id, {})}
+            color_id = part['defaultColor'] if not source_key or source_key == primary_key else trim_colors.get(source_key, part['defaultColor'])
             rgba = linear_rgba(catalog['colors'][color_id])
             for slot in obj.material_slots:
                 material = slot.material.copy()
@@ -241,6 +257,9 @@ def thumbnails(models_dir: Path, output: Path, blender: str):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=DEFAULT_SOURCE)
+    parser.add_argument('--food-bowl-source', type=Path, default=DEFAULT_FOOD_BOWL_SOURCE,
+                        help='Historical V30 assembly containing the real optional O01 food bowl')
+    parser.add_argument('--only', nargs='+', help='Regenerate selected group IDs while preserving other existing assets')
     parser.add_argument('--thumbnails', action='store_true')
     parser.add_argument('--thumbnails-only', action='store_true')
     parser.add_argument('--blender', default=shutil.which('blender') or '/Applications/Blender.app/Contents/MacOS/Blender')
@@ -250,8 +269,17 @@ def main():
     if not args.thumbnails_only:
         source_bytes = args.source.read_bytes()
         source = json.loads(source_bytes)
-        index, metrics = {}, {}
-        for group in source['groups']:
+        bowl, bowl_source = food_bowl_group(args.food_bowl_source)
+        groups = [*source['groups'], bowl]
+        index_path = ROOT / 'src/data/model-index.json'
+        validation_path = models_dir / 'validation.json'
+        index = json.loads(index_path.read_text()) if args.only else {}
+        metrics = json.loads(validation_path.read_text())['groups'] if args.only else {}
+        if args.only and set(args.only) - {group['id'] for group in groups}:
+            raise ValueError('Unknown group in --only')
+        for group in groups:
+            if args.only and group['id'] not in args.only:
+                continue
             meshes, checks = [], []
             for component in group['components']:
                 mesh, stats = simplified_mesh(component)
@@ -264,9 +292,10 @@ def main():
                                   'nameZh': group['name_zh']}
             metrics[group['id']] = {'bytes': file.stat().st_size, 'components': checks}
             print(f"{group['id']}: {sum(c['sourceTriangles'] for c in checks):,} → {sum(c['triangles'] for c in checks):,} triangles, {file.stat().st_size / 1000:.1f} KB", flush=True)
-        (ROOT / 'src/data/model-index.json').write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
-        (models_dir / 'validation.json').write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
-            'sourceVersion': source.get('version'), 'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
+        index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
+        validation_path.write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
+            'sourceVersion': source.get('version'), 'supplementalSources': [bowl_source],
+            'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
         print(f"Total: {sum(v['bytes'] for v in metrics.values()) / 1e6:.2f} MB", flush=True)
     if args.thumbnails or args.thumbnails_only:
         thumbnails(models_dir, ROOT / 'public/thumbnails', args.blender)

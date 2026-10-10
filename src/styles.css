@@ -43,7 +43,7 @@ h1, h2, h3, p { margin: 0; }
 
 .app-shell {
   display: grid;
-  grid-template-rows: var(--header-height) var(--intro-height) minmax(0, 1fr) var(--checkout-height);
+  grid-template-rows: var(--header-height) minmax(0, 1fr) var(--checkout-height);
   width: 100%;
   height: 100vh;
   height: 100dvh;
@@ -122,9 +122,13 @@ h1, h2, h3, p { margin: 0; }
 .selection-actions .round-button { flex-basis: 36px; width: 36px; }
 .selection-actions .danger { color: #a98478; }
 .selection-actions .danger:hover { background: #f4e6de; color: #a25f50; }
-.base-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.base-options { display: grid; grid-template-columns: 1fr; gap: 5px; margin-top: 8px; }
 .base-options > div { min-width: 0; }
 .base-options > div > span { display: block; margin: 0 0 5px; color: #969f8e; font-size: 9px; }
+.platform-hint { color: #8a7760; font-size: 10px; }
+.restore-covers { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.restore-covers > button { min-height: 34px; padding: 0 7px; border-radius: 6px; background: #edf2e7; color: #426149; font-size: 10px; }
+.restore-covers > span { margin: 0 5px 0 0 !important; }
 .segmented { display: flex; width: 100%; padding: 3px; border: 1px solid #e5e9dd; border-radius: 7px; background: #f1f4eb; }
 .segmented > button { flex: 1; min-width: 0; min-height: 32px; padding: 4px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: #94a08c; font-size: 10px; white-space: nowrap; }
 .segmented > button.active { border-color: #dde4d4; background: #fffef8; color: #55784c; box-shadow: 0 1px 2px #596b3d06; }
@@ -156,6 +160,14 @@ h1, h2, h3, p { margin: 0; }
 .scene-loading > button { margin-top: 8px; padding: 0 20px; border: 1px solid #a4b498; border-radius: 7px; background: #fafcf4; color: var(--green); font-size: 12px; }
 
 .catalog-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow-y: auto; border-left: 1px solid #dde5d7; background: #fbfaf6; scrollbar-gutter: stable; overscroll-behavior-y: contain; }
+.platform-tools { margin: 0 24px 12px; padding: 8px 10px; border: 1px solid #dae4d5; border-radius: 10px; background: #f0f4eb; }
+.platform-tools-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.platform-tools-heading > span { display: flex; align-items: center; gap: 6px; font-size: 10px; }
+.platform-tools-heading .outline-button { min-height: 36px; padding: 0 9px; font-size: 10px; background: #fafbf6; }
+.platform-directions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+.platform-directions > button { min-height: 44px; border: 1px solid #dae3d4; border-radius: 6px; background: #fbfcf8; font-size: 11px; }
+.platform-directions > button.active { color: #fff; background: var(--green); }
+.platform-directions > small { grid-column: 1 / -1; color: #86917e; font-size: 9px; }
 .panel-tabs { position: sticky; z-index: 5; top: 0; display: flex; flex-shrink: 0; min-height: 54px; padding: 0 21px; border-bottom: 1px solid var(--line); background: #fbfaf6f7; }
 .panel-tabs > button { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; padding: 0 4px; background: transparent; color: #9aa393; font-size: 11px; }
 .panel-tabs > button.active { color: #466541; font-weight: 600; }
@@ -398,6 +410,11 @@ h1, h2, h3, p { margin: 0; }
   .scene-loading > span:last-child { font-size: 9px; }
 
   .catalog-panel { border-left: 0; scrollbar-gutter: auto; }
+  .platform-tools { margin: 0 16px 8px; padding: 4px 8px; }
+  .platform-tools-heading .outline-button { min-height: 44px; }
+  .platform-tools-heading > span { font-size: 10px; }
+  .restore-covers > button { min-height: 44px; }
+  .base-options:has(.restore-covers) { max-height: 106px; overflow-y: auto; }
   .panel-tabs { min-height: 47px; padding: 0 15px; }
   .panel-tabs > button { min-height: 47px; gap: 6px; font-size: 11px; }
   .panel-tabs > button.active::after { right: 24px; left: 24px; }
