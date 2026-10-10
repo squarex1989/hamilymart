@@ -10,7 +10,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   CATALOG_VERSION,
-  COLORS,
   SOURCE_TRIM_COLORS,
   SOURCE_PART_TRIM_COLORS,
   getSourceColorSlot,
@@ -18,9 +17,12 @@ import {
   getProduct,
   getBaseParts,
 } from "../data/catalog";
-import { getPlacements, getMagnetPoints, getItemBounds, getPlatforms } from "../lib/assembly";
+import { getPlacements, getMagnetPoints, getItemBounds, getPlatforms, getDisplayElevation } from "../lib/assembly";
 import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
+import { applyFinish } from "../lib/scene-finishes";
+import { createBedding } from "../lib/bedding-scene";
+import { createHamsterSimulation } from "../lib/hamster-scene";
 
 type Point = { x: number; y: number; z: number };
 export type SceneHandle = {
@@ -65,9 +67,6 @@ function loadPart(id: string) {
       loader.loadAsync(`${index[id].url}?v=${CATALOG_VERSION}`).then((g) => g.scene),
     );
   return cache.get(id)!;
-}
-function colorHex(id: string) {
-  return COLORS.find((c) => c.id === id)?.hex ?? "#f1eadb";
 }
 function release(root: THREE.Object3D) {
   root.traverse((o) => {
@@ -175,13 +174,14 @@ function createRuntime(
   renderer.domElement.style.touchAction = "none";
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(34, 1, 10, 4500);
+  scene.background = new THREE.Color("#DDE0E2");
+  const camera = new THREE.PerspectiveCamera(34, host.clientWidth / Math.max(1, host.clientHeight), 10, 4500);
   camera.up.set(0, 0, 1);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.minDistance = 300;
-  controls.maxDistance = 2200;
+  controls.maxDistance = 4000;
   controls.maxPolarAngle = Math.PI * 0.485;
   controls.enablePan = true;
   controls.target.set(150, 150, 80);
@@ -191,9 +191,9 @@ function createRuntime(
       ...props().state.items.flatMap((item) =>
         getItemBounds(item).map((b) => b[5]),
       ),
-    ) + props().state.legHeight - 100;
+    ) + getDisplayElevation(props().state);
   let framedTop = contentTop();
-  let framedDirection = props().state.extension?.direction;
+  let framedLayout = JSON.stringify(getPlatforms(props().state).map(p => [p.x, p.y]));
   const sceneCenter = () => {
     const platforms = getPlatforms(props().state);
     return new THREE.Vector3(
@@ -208,7 +208,7 @@ function createRuntime(
     camera.position.copy(
       new THREE.Vector3(480, -710, 445)
         .normalize()
-        .multiplyScalar(Math.max(props().state.extension ? 1450 : 1000, height * 2.85))
+        .multiplyScalar(Math.max(1000 + (getPlatforms(props().state).length - 1) * 540, height * 2.85) * Math.max(1, .95 / camera.aspect))
         .add(controls.target),
     );
     controls.update();
@@ -219,10 +219,10 @@ function createRuntime(
   sun.position.set(-220, -300, 650);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
-  sun.shadow.camera.left = -550;
-  sun.shadow.camera.right = 550;
-  sun.shadow.camera.top = 550;
-  sun.shadow.camera.bottom = -550;
+  sun.shadow.camera.left = -850;
+  sun.shadow.camera.right = 850;
+  sun.shadow.camera.top = 850;
+  sun.shadow.camera.bottom = -850;
   sun.shadow.camera.far = 1600;
   sun.shadow.normalBias = 0.5;
   sun.shadow.bias = -0.0003;
@@ -238,14 +238,17 @@ function createRuntime(
   floor.position.set(150, 150, -0.6);
   floor.receiveShadow = true;
   scene.add(floor);
-  const grid = new THREE.GridHelper(1100, 44, "#d5ddcc", "#e0e5d6");
+  const grid = new THREE.GridHelper(1100, 44, "#CBD0D3", "#D5DADD");
   grid.rotation.x = Math.PI / 2;
   grid.position.set(150, 150, -0.8);
   (grid.material as THREE.Material).transparent = true;
   (grid.material as THREE.Material).opacity = 0.47;
   scene.add(grid);
   const objects = new THREE.Group();
+  objects.userData.hamsterEnvironment = true;
   scene.add(objects);
+  const bedding = createBedding(scene);
+  const hamster = createHamsterSimulation(scene);
   const targets = new THREE.Group();
   scene.add(targets);
   let ghost: THREE.Group | null = null;
@@ -267,7 +270,7 @@ function createRuntime(
     point: Point | null;
     placement: Placement | null;
   } | null = null;
-  const elevation = () => props().state.legHeight - 100;
+  const elevation = () => getDisplayElevation(props().state);
   function pointAt(x: number, y: number, z = 110): Point | null {
     const b = renderer.domElement.getBoundingClientRect();
     if (x < b.left || x > b.right || y < b.top || y > b.bottom) return null;
@@ -307,8 +310,9 @@ function createRuntime(
       parts.map(async (part) => {
         const loaded = await loadPart(part.id);
         const child = loaded.clone(true);
-        const selectionId = ownerId && /^(base|base2)$/.test(ownerId)
-          ? (/^H0[1-5]$/.test(part.id) ? `cover:${ownerId}:${part.id}` : part.id === "B01" ? `pool:${ownerId}` : ownerId)
+        const editingOwner = !!ownerId && (props().selectedId === ownerId || props().selectedId?.startsWith(`cover:${ownerId}:`));
+        const selectionId = ownerId && /^(base|base2|base3)$/.test(ownerId)
+          ? (/^H0[1-5]$/.test(part.id) && editingOwner ? `cover:${ownerId}:${part.id}` : part.id === "B01" ? `pool:${ownerId}` : ownerId)
           : ownerId;
         child.userData.selectionId = selectionId;
         child.position.set(
@@ -326,12 +330,13 @@ function createRuntime(
             const primary = part.defaultColor;
             const tint =
               colors[part.id] ??
-              (part.id.startsWith("L0") || part.id.startsWith("X0")
+              (part.id.startsWith("L0") || (part.id.startsWith("X0") || part.id.startsWith("Y0"))
                 ? colors.legs
                 : undefined) ??
               primary;
             const mats = originals.map((m) => {
-              const next = (m as THREE.MeshStandardMaterial).clone();
+              const next = new THREE.MeshPhysicalMaterial();
+              THREE.MeshStandardMaterial.prototype.copy.call(next, m);
               next.roughness = 0.72;
               next.metalness = 0;
               // A part's chosen primary color changes together; original trim remains its source color.
@@ -340,10 +345,10 @@ function createRuntime(
                 PRIMARY_COLOR_KEYS[part.id] ??
                 index[part.id].components[0]?.colorKey;
               const slot = getSourceColorSlot(part.id, o.userData.sourcePart, ck);
-              if (slot && colors[slot]) next.color.set(colorHex(colors[slot]));
-              else if (!ck || ck === primaryKey) next.color.set(colorHex(tint));
-              else if (SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck])
-                next.color.set(colorHex(SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck]));
+              const finish = slot && colors[slot] ? colors[slot]
+                : !ck || ck === primaryKey ? tint
+                : SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck] ?? tint;
+              applyFinish(next, finish);
               // The source stair has coincident red/white faces; keep its top finish stable.
               if (part.id === "G05" && ck === "ChristmasRed") {
                 next.polygonOffset = true;
@@ -365,7 +370,7 @@ function createRuntime(
           }
         });
         // Flush covers share the platform color. A fine seam makes each removable lid discoverable.
-        if (/^H0[1-5]$/.test(part.id) && !preview) {
+        if (/^H0[1-5]$/.test(part.id) && !preview && editingOwner) {
           const b = index[part.id].bounds;
           const radius = (b[3] - b[0]) / 2;
           const seam = new THREE.Mesh(
@@ -386,9 +391,11 @@ function createRuntime(
   async function update() {
     const rev = ++revision;
     const s = props().state;
-    if (Math.abs(contentTop() - framedTop) > 30 || s.extension?.direction !== framedDirection) {
+    const layout = JSON.stringify(getPlatforms(s).map(p => [p.x, p.y]));
+    bedding.update(s);
+    if (Math.abs(contentTop() - framedTop) > 30 || layout !== framedLayout) {
       framedTop = contentTop();
-      framedDirection = s.extension?.direction;
+      framedLayout = layout;
       home();
     }
     const old = [...objects.children];
@@ -435,6 +442,11 @@ function createRuntime(
         }),
       );
       if (rev === revision && !disposed) {
+        objects.updateMatrixWorld(true);
+        hamster.update(s);
+        const center = sceneCenter();
+        sun.position.set(center.x - 370, center.y - 450, contentTop() + 420);
+        sun.target.position.set(center.x, center.y, 0);
         ready();
         updateTargets();
       }
@@ -482,8 +494,8 @@ function createRuntime(
       );
       placements.forEach((pos) => targets.add(ring(pos.x, pos.y, pos.z, 10)));
     } else if (p.showMagnets) {
-      for (const { point } of getMagnetPoints(p.state))
-        targets.add(ring(...point, 3.5));
+      for (const { point, sourcePart } of getMagnetPoints(p.state))
+        targets.add(ring(...point, 6, sourcePart === "H06" ? "#B18441" : "#4E876B"));
     }
   }
   async function makeGhost(productId: string, itemId?: string) {
@@ -697,14 +709,18 @@ function createRuntime(
       h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h);
+    const aspectChanged = Math.abs(camera.aspect - w / h) > .05;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    if (aspectChanged) home();
   });
   resize.observe(host);
+  const clock = new THREE.Clock();
   const draw = () => {
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     controls.update();
+    hamster.tick(Math.min(clock.getDelta(), .05));
     renderer.render(scene, camera);
   };
   draw();
@@ -716,7 +732,8 @@ function createRuntime(
     home,
     top: () => {
       const center = sceneCenter();
-      camera.position.set(center.x, center.y - .1, props().state.extension ? 1450 : 1000);
+      const distance = Math.max(900, getPlatforms(props().state).length * 350 / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
+      camera.position.set(center.x, center.y - .1, contentTop() + distance);
       controls.target.copy(center);
       controls.update();
     },
@@ -737,6 +754,8 @@ function createRuntime(
       cancelAnimationFrame(frame);
       resize.disconnect();
       controls.dispose();
+      hamster.dispose();
+      bedding.dispose();
       window.removeEventListener("pointerdown", touchStart, true);
       element.removeEventListener("pointerdown", down);
       element.removeEventListener("pointerup", up);

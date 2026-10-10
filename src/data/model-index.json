@@ -850,5 +850,81 @@
       }
     ],
     "nameZh": "选配红白食碗_单磁铁_共用钢片位"
+  },
+  "Y01": {
+    "url": "/models/Y01.glb",
+    "bounds": [
+      7.5,
+      7.5,
+      -200.0,
+      22.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚1"
+  },
+  "Y02": {
+    "url": "/models/Y02.glb",
+    "bounds": [
+      7.5,
+      277.5,
+      -200.0,
+      22.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y02_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚2"
+  },
+  "Y03": {
+    "url": "/models/Y03.glb",
+    "bounds": [
+      277.5,
+      7.5,
+      -200.0,
+      292.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y03_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚3"
+  },
+  "Y04": {
+    "url": "/models/Y04.glb",
+    "bounds": [
+      277.5,
+      277.5,
+      -200.0,
+      292.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y04_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚4"
   }
 }

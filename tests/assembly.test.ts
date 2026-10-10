@@ -1,9 +1,10 @@
+import { HAMSTER_VARIANTS } from "../src/data/hamsters";
 import test from "node:test";
 import modelIndex from "../src/data/model-index.json";
 import assert from "node:assert/strict";
 import {
   CATALOG_VERSION,
-  COLORS,
+  COLORS, AVAILABLE_COLORS, P01_TOP_XY, H06_TOP_XY,
   PRODUCTS,
   PRIMARY_COLOR_KEYS,
   SOURCE_TRIM_COLORS,
@@ -16,7 +17,7 @@ import {
   getProduct,
 } from "../src/data/catalog";
 import {
-  changeBaseInsert,
+  changeBaseInsert, setBedding, setHamster, getDisplayElevation, setPlatformColors,
   createInitialState,
   getMagnetPoints,
   getOrderLines,
@@ -30,7 +31,7 @@ import {
   transformPoint,
   addPlatform, movePlatform, removePlatform, getPlatforms, setLegHeight, setCoverRemoved, setPlatformPool, autoPlace,
 } from "../src/lib/assembly";
-import type { AssemblyItem, AssemblyState, ActionResult } from "../src/lib/assembly";
+import type { AssemblyItem, AssemblyState, ActionResult, Placement } from "../src/lib/assembly";
 import { decodeConfig, decodeConfigWithMigration, encodeConfig } from "../src/lib/config-code";
 
 /** Frozen before V4 changes using the actual catalog-2 encoder (custom colors + reversed loft). */
@@ -58,17 +59,18 @@ function place(
   return result;
 }
 
-test("catalog covers all 43 Steel V9 groups across bundles and alternatives", () => {
+test("catalog covers 43 Steel V9 groups and four 30 cm legs across bundles and alternatives", () => {
   const ids = new Set([
     ...PRODUCTS.flatMap((p) => p.parts.map((part) => part.id)),
     ...getBaseParts(100).map((p) => p.id),
     ...getBaseParts(200, true).map((p) => p.id),
+    ...getBaseParts(300).map((p) => p.id),
   ]);
-  assert.equal(ids.size, 43);
-  assert.equal(Object.keys(modelIndex).length, 43);
-  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 50);
-  assert.equal(CATALOG_VERSION, 5);
-  assert.equal(COLORS.length, 8);
+  assert.equal(ids.size, 47);
+  assert.equal(Object.keys(modelIndex).length, 47);
+  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 54);
+  assert.equal(CATALOG_VERSION, 6);
+  assert.equal(COLORS.length, 11);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
 });
 test("base starts with exactly four 10 cm legs; 20 cm substitutes the complete set", () => {
@@ -134,14 +136,14 @@ test("incomplete magnetic match and intersections are rejected on strict import"
   const collision = tryPlace(result.state, "cube-house", { x: 50, y: 50 });
   assert.equal(collision.ok, false);
 });
-test("Steel V9 hat and planter require a villa; planter cannot rotate into fence", () => {
+test("Steel V9 hat requires a villa and its planter cannot rotate into the fence", () => {
   assert.equal(getPlacements(createInitialState(), "roof-cottage").length, 0);
-  assert.equal(getPlacements(createInitialState(), "planter").length, 0);
+  assert.ok(getPlacements(createInitialState(), "planter").length > 0);
   const villa = place(createInitialState(), "villa", 150, 190);
   const loft = place(villa.state, "roof-cottage", 78, 239, 200);
   const planter = place(loft.state, "planter", 285.5, 264, 200);
   assert.equal(planter.item.parentId, villa.item.id);
-  assert.equal(getPlacements(loft.state, "planter", 180).length, 0);
+  assert.equal(getPlacements(loft.state, "planter", 180).filter(position => position.parentId === villa.item.id).length, 0);
   assert.equal(rotateItem(planter.state, planter.item.id).ok, false);
   assert.equal(removeItem(planter.state, villa.item.id).items.length, 0);
 });
@@ -205,7 +207,7 @@ test("config is self-contained, stable across item ids and input order, and repr
   const cottage = place(villa.state, "roof-cottage", 78, 239, 200);
   const state = place(cottage.state, "cube-house", 50, 50).state;
   const code = encodeConfig(state);
-  assert.match(code, /^HM2\.[A-Za-z0-9_-]+\.[A-F0-9]{8}$/);
+  assert.match(code, /^HM3\.[A-Za-z0-9_-]+\.[A-F0-9]{8}$/);
   assert.equal(encodeConfig(decodeConfig(code)), code);
   assert.equal(getTotalPrice(decodeConfig(code)), getTotalPrice(state));
   const renamed = state.items
@@ -245,7 +247,7 @@ test("config changes with color, leg length, rotation or placement and checks co
     () => decodeConfig(code.slice(0, -1) + (code.endsWith("0") ? "1" : "0")),
     /校验/,
   );
-  assert.throws(() => decodeConfig(code.replace("HM2.", "HM3.")), /版本/);
+  assert.throws(() => decodeConfig(code.replace("HM3.", "HM9.")), /版本/);
 });
 test("import rejects unknown products/colors, invalid lengths, circular dependencies and duplicates", () => {
   const cube = place(createInitialState(), "cube-house", 50, 50);
@@ -340,7 +342,7 @@ test("each bundled part color survives encode/decode and parent movement carries
 });
 
 test("all original colors remain available; the gift decoration defaults to gold", () => {
-  assert.equal(COLORS.length, 8);
+  assert.equal(COLORS.length, 11);
   const entries = modelIndex as Record<
     string,
     { components: { colorKey: string; color: string }[] }
@@ -399,7 +401,7 @@ test("cottage follows the villa safe direction at all four parent orientations",
   }
 });
 function assertLegacyUpgrade(state: AssemblyState) {
-  assert.equal(state.catalogVersion, 5);
+  assert.equal(state.catalogVersion, 6);
   assert.equal(state.legHeight, 200);
   assert.equal(state.baseColors.P01, "lilac");
   assert.equal(state.items.length, 2);
@@ -451,7 +453,7 @@ test("current states and unversioned eight-color villas never receive legacy dir
   const { catalogVersion: _catalogVersion, ...unversioned } = bad;
   assert.throws(() => migrateAssembly(unversioned), /磁吸位/);
   assert.throws(() => migrateAssembly(bad, 2), /版本标记冲突/);
-  assert.throws(() => migrateAssembly({ ...valid, catalogVersion: 6 }), /版本/);
+  assert.throws(() => migrateAssembly({ ...valid, catalogVersion: 7 }), /版本/);
 });
 test("legacy migration only repairs the documented 180-degree loft, never malformed positions or 90-degree lofts", () => {
   assert.throws(() => migrateAssembly({ ...LEGACY_LOCAL_STATE, items: LEGACY_LOCAL_STATE.items.map(item => item.productId === "roof-cottage" ? { ...item, rotation: 90 } : item) }), /磁吸位/);
@@ -459,7 +461,7 @@ test("legacy migration only repairs the documented 180-degree loft, never malfor
   assert.throws(() => migrateAssembly({ ...LEGACY_LOCAL_STATE, catalogVersion: 3 }), /颜色不完整/);
   const { catalogVersion: _catalogVersion, ...oldEmpty } = createInitialState();
   assert.deepEqual(migrateAssembly(oldEmpty).messages, []);
-  assert.equal(migrateAssembly(oldEmpty).state.catalogVersion, 5);
+  assert.equal(migrateAssembly(oldEmpty).state.catalogVersion, 6);
 });
 
 test("catalog-3 code with a valid checksum still rejects an unsafe reversed loft", () => {
@@ -474,34 +476,36 @@ function success(result: ActionResult): AssemblyState {
   return result.state;
 }
 
-test("second platform shares exactly one complete 300 mm edge in each allowed direction", () => {
-  const offsets = { left: [-300, 0], right: [300, 0], front: [0, -300], back: [0, 300] };
-  for (const direction of ["left", "right", "front", "back"] as const) {
-    const state = success(addPlatform(createInitialState(), direction));
-    assert.deepEqual(getPlatforms(state).map(platform => [platform.id, platform.x, platform.y]), [["base", 0, 0], ["base2", ...offsets[direction]]]);
-    assert.equal(getMagnetPoints(state).length, 72);
-    const extra = addPlatform(state, "left");
-    assert.equal(extra.ok, false);
-    assert.equal(extra.state, state);
-    const candidate = getPlacements(state, "cube-house").find(p => p.parentId === "base2");
-    assert.ok(candidate);
+test("three platforms share full 300 mm edges in a rightward row and reject other directions or a fourth", () => {
+  let state = createInitialState();
+  for (let count = 2; count <= 3; count++) {
+    state = success(addPlatform(state));
+    assert.deepEqual(getPlatforms(state).map(platform => [platform.id, platform.x, platform.y]), [["base", 0, 0], ["base2", 300, 0], ...(count === 3 ? [["base3", 600, 0]] : [])]);
+    assert.equal(getMagnetPoints(state).length, 36 * count);
+    const candidate = getPlacements(state, "cube-house").find(position => position.parentId === `base${count}`)!;
     assert.ok(tryPlace(state, "cube-house", candidate).ok);
+  }
+  assert.equal(addPlatform(state).ok, false);
+  for (const direction of ["left", "front", "back"] as const) {
+    assert.equal(addPlatform(createInitialState(), direction).ok, false);
+    assert.equal(movePlatform(state, direction).ok, false);
   }
 });
 
-test("moving a platform carries its entire assembly and removing it keeps the first platform intact", () => {
+test("removing the middle platform shifts the third platform and its whole family left", () => {
   const first = place(createInitialState(), "cube-house", 50, 50);
-  const second = success(addPlatform(first.state, "right"));
-  const villa = place(second, "villa", 450, 190, 110);
-  assert.equal(villa.item.parentId, "base2");
-  const loft = place(villa.state, "roof-cottage", 378, 239, 200);
-  assert.equal(loft.item.parentId, villa.item.id);
-  const moved = success(movePlatform(loft.state, "back"));
+  let state = success(addPlatform(success(addPlatform(first.state))));
+  state = success(setPlatformColors(state, "base3", { ...state.thirdPlatform!.baseColors, P01: "jade" }));
+  const villa = place(state, "villa", 750, 190, 110);
+  const loft = place(villa.state, "roof-cottage", 678, 239, 200);
+  const moved = success(removePlatform(loft.state, "base2"));
   assert.deepEqual(moved.items.find(item => item.id === first.item.id), first.item);
+  assert.equal(moved.thirdPlatform, null);
+  assert.equal(moved.extension?.baseColors.P01, "jade");
   const movedVilla = moved.items.find(item => item.id === villa.item.id)!;
   const movedLoft = moved.items.find(item => item.id === loft.item.id)!;
-  assert.deepEqual([movedVilla.x, movedVilla.y, movedVilla.rotation], [150, 490, 0]);
-  assert.deepEqual([movedLoft.x, movedLoft.y, movedLoft.z], [78, 539, 200]);
+  assert.deepEqual([movedVilla.x, movedVilla.y, movedVilla.rotation, movedVilla.parentId], [450, 190, 0, "base2"]);
+  assert.deepEqual([movedLoft.x, movedLoft.y, movedLoft.z, movedLoft.parentId], [378, 239, 200, movedVilla.id]);
   const removed = success(removePlatform(moved));
   assert.equal(removed.extension, null);
   assert.deepEqual(removed.items, [first.item]);
@@ -535,7 +539,7 @@ test("auto placement chooses a real strongest fit and adds components in one act
   const withPool = success(autoPlace(villa.state, "pool"));
   assert.equal(withPool.baseInsert, "pool");
   assert.equal(withPool.items.length, 1);
-  const second = success(addPlatform(initial, "left"));
+  const second = success(addPlatform(initial));
   const preferred = autoPlace(second, "cube-house", "base2");
   assert.equal(preferred.ok, true);
   if (preferred.ok) assert.equal(preferred.item?.parentId, "base2");
@@ -556,7 +560,7 @@ test("auto placement fills all available space then reports the exact no-space m
 });
 
 test("small covers may be removed independently and restored; pool owns the large opening", () => {
-  let state = success(addPlatform(createInitialState(), "back"));
+  let state = success(addPlatform(createInitialState()));
   const price = getTotalPrice(state);
   state = success(setCoverRemoved(state, "base", "H01", true));
   state = success(setCoverRemoved(state, "base2", "H04", true));
@@ -623,25 +627,25 @@ test("Steel V9 food bowl uses the real center-magnet interface and cannot overla
   if (!bowl.ok || !bowl.item) return;
   assert.equal(bowl.item.parentId, villa.item.id);
   assert.deepEqual([bowl.item.x, bowl.item.y, bowl.item.z], [285.5, 264, 200]);
-  assert.equal(getPlacements(bowl.state, "planter").length, 0);
-  assert.equal(autoPlace(bowl.state, "planter").ok, false);
+  assert.equal(getPlacements(bowl.state, "planter").filter(position => position.parentId === villa.item.id).length, 0);
+  assert.equal(autoPlace(bowl.state, "planter").ok, true, "the other single-contact accessory may use a free first-floor position");
   assert.deepEqual(getOrderLines(bowl.state).at(-1)?.parts, ["O01"]);
   assert.deepEqual(decodeConfig(encodeConfig(bowl.state)).items.map(i => i.productId).sort(), ["food-bowl", "villa"]);
 });
 
-test("HM2 preserves both platforms, pool, missing covers, colors, parent families and canonical ordering", () => {
-  let state = success(addPlatform(createInitialState(), "front"));
+test("HM3 preserves platforms, pool, missing covers, colors, parent families and canonical ordering", () => {
+  let state = success(addPlatform(createInitialState()));
   state = success(setCoverRemoved(state, "base", "H03", true));
   state = success(setCoverRemoved(state, "base2", "H05", true));
   state = success(setPlatformPool(state, "base2", true));
   state = success(setLegHeight(state, 200));
   state = { ...state, extension: { ...state.extension!, baseColors: { ...state.extension!.baseColors, P01: "lilac", B01: "sky" } } };
-  const villa = place(state, "villa", 150, -110, 110);
-  const loft = place(villa.state, "roof-cottage", 78, -61, 200);
+  const villa = place(state, "villa", 450, 190, 110);
+  const loft = place(villa.state, "roof-cottage", 378, 239, 200);
   state = place(loft.state, "cube-house", 50, 50).state;
   const code = encodeConfig(state), restored = decodeConfig(code);
   assert.equal(encodeConfig(restored), code);
-  assert.equal(restored.extension?.direction, "front");
+  assert.equal(restored.extension?.direction, "right");
   assert.deepEqual(restored.removedCovers, ["H03"]);
   assert.deepEqual(restored.extension?.removedCovers, ["H05"]);
   assert.equal(restored.extension?.baseColors.P01, "lilac");
@@ -650,15 +654,15 @@ test("HM2 preserves both platforms, pool, missing covers, colors, parent familie
   assert.equal(getTotalPrice(restored), getTotalPrice(state));
   const reordered = { ...state, items: state.items.map(item => ({ ...item, id: `new-${item.id}`, parentId: ["base", "base2"].includes(item.parentId) ? item.parentId : `new-${item.parentId}` })).reverse() };
   assert.equal(encodeConfig(reordered), code);
-  const differentDirection = success(movePlatform(state, "right"));
-  assert.notEqual(encodeConfig(differentDirection), code);
+  const third = success(addPlatform(state));
+  assert.notEqual(encodeConfig(third), code);
   assert.notEqual(encodeConfig(success(setCoverRemoved(state, "base", "H03", false))), code);
 });
 
 test("valid HM1 catalog 3 migrates without moving, recoloring or dropping the existing pool", () => {
   const code = "HM1.WzEsMywxMDAsMSxbMCwxLDAsMCwwLDAsMCwwLDZdLFtbMCwxNTAsMTkwLDExMCwwLFsxLDAsMiwxLDQsNSw2LDddLC0xXSxbMyw3OCwyMzksMjAwLDAsWzJdLDBdXV0.3B0F2D99";
   const result = decodeConfigWithMigration(code);
-  assert.equal(result.state.catalogVersion, 5);
+  assert.equal(result.state.catalogVersion, 6);
   assert.equal(result.state.extension, null);
   assert.deepEqual(result.state.removedCovers, []);
   assert.equal(result.state.baseInsert, "pool");
@@ -680,16 +684,18 @@ test("strict import rejects bad extension direction, missing platform parent, du
   assert.throws(() => validateAssembly({ ...cube.state, items: [{ ...cube.item, productId: "pool" }] }), /泳池/);
 });
 
-test("moving the second platform into overhanging furniture is rejected without moving any descendant", () => {
+test("changing platform direction is rejected without moving any descendant", () => {
   const main = place(createInitialState(), "villa", 150, 190);
-  const expanded = success(addPlatform(main.state, "back"));
-  const second = place(expanded, "villa", 150, 490);
+  const expanded = success(addPlatform(main.state));
+  const second = tryPlace(expanded, "villa", { x: 490, y: 150, z: 110 }, 90);
+  assert.equal(second.ok, true);
+  if (!second.ok) return;
   const before = JSON.stringify(second.state);
-  const blocked = movePlatform(second.state, "right");
+  const blocked = movePlatform(second.state, "left");
   assert.equal(blocked.ok, false);
   assert.equal(blocked.state, second.state);
   assert.equal(JSON.stringify(second.state), before);
-  if (!blocked.ok) assert.match(blocked.reason, /碰撞/);
+  if (!blocked.ok) assert.match(blocked.reason, /向右/);
 });
 
 test("gift ribbon and star retain the two stable color slots after eight physical kit parts", () => {
@@ -732,7 +738,7 @@ test("existing HM2 and local bow choices carry over to the star across the catal
     assert.equal(state.items[0].colors["A01-ribbon"], "rose");
     assert.equal(state.items[0].colors["A01-bow"], "sky");
     assert.equal(encodeConfig(state), encodeConfig(decoded));
-    assert.equal(state.catalogVersion, 5);
+    assert.equal(state.catalogVersion, 6);
     assert.equal(state.items[0].colors[getSourceColorSlot("A01", "A01_StarGold", "Gold")!], "sky");
     assert.equal(getOrderLines(state).find(line => line.sku === "HM-HS-001")?.parts.length, 8);
   }
@@ -784,8 +790,10 @@ test("pre-slot catalog-4 HM2 and local data add default yellow slots while prese
 
 test("different decorative colors produce separate order lines without adding physical kit parts", () => {
   const main = place(createInitialState(), "villa", 150, 190);
-  const expanded = success(addPlatform(main.state, "back"));
-  const second = place(expanded, "villa", 150, 490);
+  const expanded = success(addPlatform(main.state));
+  const second = tryPlace(expanded, "villa", { x: 490, y: 150, z: 110 }, 90);
+  assert.equal(second.ok, true);
+  if (!second.ok) return;
   assert.equal(getOrderLines(second.state).find(line => line.sku === "HM-HS-001")?.quantity, 2);
   const changed = { ...second.state, items: second.state.items.map(item => item.id === second.item.id ? { ...item, colors: { ...item.colors, "A01-ribbon": "lilac" as const } } : item) };
   const lines = getOrderLines(changed).filter(line => line.sku === "HM-HS-001");
@@ -838,7 +846,7 @@ test("frozen pre-resize HM2 keeps its hat position and upgrades the catalog with
 test("rotation resnapping carries the whole villa family as a rigid transform with independent colors", () => {
   const villa = place(createInitialState(), "villa", 150, 190);
   const cottage = place(villa.state, "roof-cottage", 78, 239, 200);
-  const bowl = autoPlace(cottage.state, "food-bowl");
+  const bowl = tryPlace(cottage.state, "food-bowl", { x: 285.5, y: 264, z: 200 });
   assert.equal(bowl.ok, true);
   if (!bowl.ok || !bowl.item) return;
   const state = { ...bowl.state, items: bowl.state.items.map(item => item.id === villa.item.id ? { ...item, colors: { ...item.colors, "A01-ribbon": "rose" as const, "A01-bow": "sky" as const } } : item.id === cottage.item.id ? { ...item, colors: { G03: "lilac" as const } } : item) };
@@ -885,14 +893,14 @@ test("Steel V9 exposes exactly five upper contacts and single-center accessories
     for (const id of ["planter", "food-bowl"]) {
       assert.deepEqual(getProduct(id).bottomMagnets, [[285.5, 264, 200]]);
       assert.equal(getProduct(id).minimumMagnetMatches, 1);
-      assert.equal(getPlacements(initial, id, rotation).length, 0);
-      const placements = getPlacements(villa.state, id, rotation);
+      assert.ok(getPlacements(initial, id, rotation).length > 0);
+      const placements: Placement[] = getPlacements(villa.state, id, rotation).filter(position => position.parentId === villa.item.id);
       assert.equal(placements.length, 1, `${id} must not use hat holes or overhang the platform`);
       assert.deepEqual([placements[0].x, placements[0].y, placements[0].z], target);
       assert.equal(placements[0].magnetCount, 1);
       const added = tryPlace(villa.state, id, placements[0], rotation);
       assert.equal(added.ok, true);
-      if (added.ok) assert.equal(getPlacements(added.state, id === "planter" ? "food-bowl" : "planter", rotation).length, 0);
+      if (added.ok) assert.equal(getPlacements(added.state, id === "planter" ? "food-bowl" : "planter", rotation).filter(position => position.parentId === villa.item.id).length, 0);
     }
   }
   for (const product of PRODUCTS.filter(product => product.installation !== "insert" && product.minimumMagnetMatches !== 1)) {
@@ -974,20 +982,22 @@ test("hat migration refuses missing or occupied hosts without deleting, adding, 
 });
 
 test("hat migration reserves a restricted upper host before moving a first-floor hat regardless of input order", () => {
-  const first = place(success(addPlatform(createInitialState(), "back")), "villa", 150, 190);
-  const second = place(first.state, "villa", 150, 490);
+  const first = place(success(addPlatform(createInitialState())), "villa", 150, 190);
+  const second = tryPlace(first.state, "villa", { x: 490, y: 150, z: 110 }, 90);
+  assert.equal(second.ok, true);
+  if (!second.ok) return;
   const groundHat = { id: "ground-hat", productId: "roof-cottage", x: 163, y: 57, z: 110, rotation: 0, parentId: "base", colors: { G03: "rose" } };
   const upperHat = { id: "upper-hat", productId: "roof-cottage", x: 104, y: 239, z: 200, rotation: 0, parentId: first.item.id, colors: { G03: "sky" } };
   const codes: string[] = [];
   for (const hats of [[groundHat, upperHat], [upperHat, groundHat]]) {
-    const old = { ...second.state, catalogVersion: 4, items: [...second.state.items, ...hats] };
-    const before = JSON.stringify(old);
+    const old: unknown = { ...second.state, catalogVersion: 4, items: [...second.state.items, ...hats] };
+    const before: string = JSON.stringify(old);
     const { state, messages } = migrateAssembly(old);
     assert.equal(state.items.length, 4);
     const ground = state.items.find(item => item.id === groundHat.id)!;
     const upper = state.items.find(item => item.id === upperHat.id)!;
     assert.deepEqual([upper.x, upper.y, upper.z, upper.parentId], [78, 239, 200, first.item.id]);
-    assert.deepEqual([ground.x, ground.y, ground.z, ground.parentId], [78, 539, 200, second.item.id]);
+    assert.deepEqual([ground.x, ground.y, ground.z, ground.parentId], [441, 78, 200, second.item.id]);
     assert.deepEqual(upper.colors, upperHat.colors);
     assert.deepEqual(ground.colors, groundHat.colors);
     assert.match(messages.join(" "), /旧一层.*二层/);
@@ -995,4 +1005,191 @@ test("hat migration reserves a restricted upper host before moving a first-floor
     codes.push(encodeConfig(state));
   }
   assert.equal(codes[0], codes[1]);
+});
+
+test("new palette offers nine choices while keeping every original serialized color index", () => {
+  assert.deepEqual(COLORS.slice(0, 8).map(color => color.id), ["cream", "pine", "red", "butter", "sage", "rose", "sky", "lilac"]);
+  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "marble", "jade"]);
+  assert.equal(AVAILABLE_COLORS.find(color => color.id === "cream")?.name, "杏色");
+  assert.equal(AVAILABLE_COLORS.find(color => color.id === "jade")?.name, "琉璃绿");
+  assert.deepEqual(COLORS.slice(8).map(color => color.hex), ["#FAFAF7", "#E2E2DE", "#299C82"]);
+  const previous = decodeConfig(LEGACY_CATALOG_2_CODE);
+  assert.equal(previous.baseColors.P01, "lilac");
+  assert.equal(previous.items.find(item => item.productId === "villa")?.colors.A01, "sage");
+});
+
+test("P01 and H06 receiver provenance remains exact on every platform and H06 disappears with the pool", () => {
+  assert.equal(P01_TOP_XY.length, 32);
+  assert.equal(H06_TOP_XY.length, 4);
+  assert.equal(new Set([...P01_TOP_XY, ...H06_TOP_XY].map(point => point.join(","))).size, 36);
+  let state = success(addPlatform(success(addPlatform(createInitialState()))));
+  for (const platform of getPlatforms(state)) {
+    const markers = getMagnetPoints(state).filter(point => point.parentId === platform.id);
+    assert.equal(markers.filter(point => point.sourcePart === "P01").length, 32);
+    assert.equal(markers.filter(point => point.sourcePart === "H06").length, 4);
+    assert.deepEqual(markers.filter(point => point.sourcePart === "H06").map(point => point.point), H06_TOP_XY.map(([x, y]) => [x + platform.x, y, 110]));
+  }
+  state = success(setPlatformPool(state, "base3", true));
+  assert.equal(getMagnetPoints(state).filter(point => point.parentId === "base3").length, 32);
+  assert.equal(getMagnetPoints(state).filter(point => point.parentId === "base3" && point.sourcePart === "H06").length, 0);
+});
+
+test("thirty-centimeter legs use complete Y parts and prices on all three platforms", () => {
+  const initial = createInitialState();
+  const tall = success(setLegHeight(initial, 300));
+  assert.deepEqual(getBaseParts(300).filter(part => /^Y/.test(part.id)).map(part => part.id), ["Y01", "Y02", "Y03", "Y04"]);
+  assert.equal(getTotalPrice(tall) - getTotalPrice(initial), 4800);
+  const triple = success(addPlatform(success(addPlatform(tall))));
+  const lines = getOrderLines(triple);
+  assert.equal(lines.length, 3);
+  for (const line of lines) {
+    assert.match(line.sku, /-300$/);
+    assert.equal(line.parts.filter(id => /^Y0/.test(id)).length, 4);
+    assert.equal(line.colors.legs, "pine");
+    assert.ok(!Object.keys(line.colors).some(id => /^Y0/.test(id)));
+  }
+  assert.equal(getTotalPrice(triple), 3 * getTotalPrice(tall));
+});
+
+test("bedding drives leg height and display elevation while legless platforms rest on the bedding", () => {
+  let state = createInitialState();
+  assert.deepEqual(state.bedding, { mode: "thin", depth: 50 });
+  assert.equal(getDisplayElevation(state), 0);
+  for (const depth of [100, 200, 300] as const) {
+    state = success(setBedding(state, { mode: "thick", depth }));
+    assert.equal(state.legHeight, depth);
+    assert.equal(getDisplayElevation(state), depth - 100);
+  }
+  state = success(setLegHeight(state, 200));
+  assert.deepEqual(state.bedding, { mode: "thick", depth: 200 });
+  state = success(setLegHeight(state, 0));
+  state = success(setBedding(state, { mode: "thick", depth: 300 }));
+  assert.equal(state.legHeight, 0);
+  assert.equal(getDisplayElevation(state), 200);
+  state = success(setBedding(state, { mode: "thin", depth: 50 }));
+  assert.equal(state.legHeight, 0);
+  assert.equal(getDisplayElevation(state), -50);
+  state = success(setLegHeight(state, 300));
+  state = success(setBedding(state, { mode: "thin", depth: 50 }));
+  assert.equal(state.legHeight, 100);
+  assert.throws(() => validateAssembly({ ...state, bedding: { mode: "thick", depth: 50 } }), /垫料/);
+  assert.throws(() => validateAssembly({ ...state, bedding: { mode: "thick", depth: 200 } }), /一致/);
+  assert.throws(() => validateAssembly({ ...state, bedding: { mode: "thin", depth: 100 } }), /垫料/);
+});
+
+test("hamster variants are saved in the code and never add merchandise or change assembly geometry", () => {
+  const state = createInitialState(), price = getTotalPrice(state), parts = getOrderLines(state);
+  assert.equal(state.hamster, null);
+  for (const variant of HAMSTER_VARIANTS) {
+    const selected = success(setHamster(state, variant.id));
+    assert.equal(decodeConfig(encodeConfig(selected)).hamster, variant.id);
+    assert.equal(getTotalPrice(selected), price);
+    assert.deepEqual(getOrderLines(selected), parts);
+    assert.notEqual(encodeConfig(selected), encodeConfig(state));
+  }
+  assert.equal(setHamster(state, "not-a-hamster").ok, false);
+  assert.throws(() => validateAssembly({ ...state, hamster: 5 }), /仓鼠/);
+});
+
+test("HM3 round-trips third-platform state, long legs, bedding, hamster and independent new colors", () => {
+  let state = success(addPlatform(success(addPlatform(createInitialState()))));
+  state = success(setBedding(state, { mode: "thick", depth: 300 }));
+  state = success(setHamster(state, HAMSTER_VARIANTS[0].id));
+  state = success(setPlatformColors(state, "base2", { ...state.extension!.baseColors, P01: "marble" }));
+  state = success(setPlatformColors(state, "base3", { ...state.thirdPlatform!.baseColors, P01: "white", legs: "jade", B01: "rose" }));
+  state = success(setCoverRemoved(state, "base3", "H05", true));
+  state = success(setPlatformPool(state, "base3", true));
+  const villa = place(state, "villa", 750, 190);
+  state = place(villa.state, "roof-cottage", 678, 239, 200).state;
+  const code = encodeConfig(state), restored = decodeConfig(code);
+  assert.match(code, /^HM3\./);
+  assert.equal(encodeConfig(restored), code);
+  assert.equal(restored.legHeight, 300);
+  assert.deepEqual(restored.bedding, { mode: "thick", depth: 300 });
+  assert.equal(restored.hamster, HAMSTER_VARIANTS[0].id);
+  assert.equal(restored.thirdPlatform?.baseColors.legs, "jade");
+  assert.equal(restored.thirdPlatform?.baseInsert, "pool");
+  assert.deepEqual(restored.thirdPlatform?.removedCovers, ["H05"]);
+  assert.equal(restored.items.find(item => item.productId === "villa")?.parentId, "base3");
+  const renamed = { ...state, items: state.items.map(item => ({ ...item, id: `z-${item.id}`, parentId: ["base", "base2", "base3"].includes(item.parentId) ? item.parentId : `z-${item.parentId}` })).reverse() };
+  assert.equal(encodeConfig(renamed), code);
+  assert.throws(() => validateAssembly({ ...state, extension: null }), /第三个/);
+  assert.throws(() => validateAssembly({ ...state, thirdPlatform: { ...state.thirdPlatform, direction: "left" } }), /第三个/);
+  assert.throws(() => validateAssembly({ ...state, items: [{ ...state.items[0], id: "base3" }] }), /编号/);
+});
+
+test("removing the first platform shifts later platforms, properties and descendants without losing colors", () => {
+  let state = success(addPlatform(success(addPlatform(createInitialState()))));
+  state = success(setPlatformColors(state, "base2", { ...state.extension!.baseColors, P01: "jade" }));
+  state = success(setCoverRemoved(state, "base2", "H03", true));
+  state = place(state, "cube-house", 350, 50).state;
+  const removed = success(removePlatform(state, "base"));
+  assert.equal(removed.baseColors.P01, "jade");
+  assert.deepEqual(removed.removedCovers, ["H03"]);
+  assert.equal(removed.items[0].parentId, "base");
+  assert.deepEqual([removed.items[0].x, removed.items[0].y], [50, 50]);
+  assert.equal(removed.thirdPlatform, null);
+  assert.equal(removePlatform(createInitialState(), "base").ok, false);
+});
+
+const OLD_DIRECTION_CODES = [
+  "HM2.WzIsNSwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzAsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFtdXSxbWzAsLTE1MCwxOTAsMTEwLDAsWzEsMCwyLDEsMSwxLDAsMCwzLDNdLC0yXSxbMywtMjIyLDIzOSwyMDAsMCxbMl0sMF1dXQ.5E142F07",
+  "HM2.WzIsNSwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzIsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFtdXSxbWzAsMTUwLC0xMTAsMTEwLDAsWzEsMCwyLDEsMSwxLDAsMCwzLDNdLC0yXSxbMyw3OCwtNjEsMjAwLDAsWzJdLDBdXV0.15BDD589",
+  "HM2.WzIsNSwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzMsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFtdXSxbWzAsMTUwLDQ5MCwxMTAsMCxbMSwwLDIsMSwxLDEsMCwwLDMsM10sLTJdLFszLDc4LDUzOSwyMDAsMCxbMl0sMF1dXQ.FED47E31",
+  "HM2.WzIsNSwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFtdXSxbWzAsNDUwLDE5MCwxMTAsMCxbMSwwLDIsMSwxLDEsMCwwLDMsM10sLTJdLFszLDM3OCwyMzksMjAwLDAsWzJdLDBdXV0.46703915",
+];
+
+test("all frozen legacy platform directions migrate to one rightward layout with descendants and original codes intact", () => {
+  const updated: string[] = [];
+  for (const [index, code] of OLD_DIRECTION_CODES.entries()) {
+    const { state, messages } = decodeConfigWithMigration(code);
+    assert.equal(state.extension?.direction, "right");
+    assert.equal(state.thirdPlatform, null);
+    assert.deepEqual(state.bedding, { mode: "thin", depth: 50 });
+    assert.equal(state.hamster, null);
+    const villa = state.items.find(item => item.productId === "villa")!, hat = state.items.find(item => item.productId === "roof-cottage")!;
+    assert.deepEqual([villa.x, villa.y, hat.x, hat.y], [450, 190, 378, 239]);
+    if (index < 3) assert.match(messages.join(" "), /向右贴合.*随动/);
+    updated.push(encodeConfig(state));
+  }
+  assert.equal(new Set(updated).size, 1);
+});
+
+test("legacy platform reflow collision refuses migration and preserves the original local data", () => {
+  const first = place(createInitialState(), "villa", 150, 190);
+  const raw = { ...first.state, catalogVersion: 5, extension: { direction: "back", baseInsert: "lid", baseColors: first.state.baseColors, removedCovers: [] }, items: [...first.state.items, { ...first.item, id: "second-villa", y: 490, parentId: "base2" }] };
+  const before = JSON.stringify(raw);
+  assert.throws(() => migrateAssembly(raw), /旧平台布局无法兼容.*原存档已保留/);
+  assert.equal(JSON.stringify(raw), before);
+});
+
+test("single-magnet accessories can use every real platform point while permitting edge overhang", () => {
+  for (const id of ["planter", "food-bowl"]) {
+    const initial = createInitialState();
+    const receivers = getMagnetPoints(initial).map(marker => marker.point.join(","));
+    const available = new Set<string>();
+    for (const rotation of [0, 90, 180, 270] as const) {
+      const positions = getPlacements(initial, id, rotation);
+      assert.equal(positions.length, 36);
+      assert.ok(positions.every(position => position.magnetCount === 1));
+      for (const position of positions) available.add([position.x, position.y, position.z].join(","));
+      assert.equal(tryPlace(initial, id, positions[0], rotation).ok, true);
+    }
+    assert.deepEqual([...available].sort(), receivers.sort());
+    const house = place(initial, "l-house", 100, 100);
+    for (const rotation of [0, 90, 180, 270] as const) assert.equal(getPlacements(house.state, id, rotation).filter(position => position.parentId === house.item.id).length, 4);
+    const withoutCover = success(setCoverRemoved(initial, "base", "H01", true));
+    assert.equal(getPlacements(withoutCover, id).length, 36, "small covers contain no receiver, so removing one does not erase a supported magnetic anchor");
+    const closed = getPlacements(initial, id).find(position => position.x === 90 && position.y === 210)!;
+    const occupied = tryPlace(initial, id, closed);
+    assert.equal(occupied.ok, true);
+    if (occupied.ok) {
+      assert.equal(setCoverRemoved(occupied.state, "base", "H01", true).ok, true);
+      const sameAnchor = getPlacements(occupied.state, id).find(position => position.x === 90 && position.y === 210);
+      assert.equal(sameAnchor, undefined);
+      assert.throws(() => validateAssembly({ ...occupied.state, items: [{ ...occupied.item, x: 50, y: 250 }] }), /磁吸位/);
+    }
+    const pool = success(setPlatformPool(initial, "base", true));
+    assert.ok(getPlacements(pool, id).every(position => !(position.x === 90 && position.y === 90)));
+  }
 });

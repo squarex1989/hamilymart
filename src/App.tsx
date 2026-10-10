@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDownToLine,
+  ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
   Copy,
   Expand,
-  Heart,
   House,
   Info,
   Layers2,
@@ -25,6 +25,7 @@ import {
 import AssemblyScene from "./components/AssemblyScene";
 import type { SceneHandle } from "./components/AssemblyScene";
 import {
+  AVAILABLE_COLORS,
   BASE_PRODUCT,
   CATALOG_VERSION,
   COLORS,
@@ -35,6 +36,7 @@ import {
   getProduct,
   getProductColorParts,
 } from "./data/catalog";
+import { HAMSTER_VARIANTS } from "./data/hamsters";
 import type { ColorId, Rotation } from "./data/catalog";
 import {
   addPlatform,
@@ -45,20 +47,22 @@ import {
   getPlacements,
   getTotalPrice,
   migrateAssembly,
-  movePlatform,
   removeItem,
   removePlatform,
   rotateItem,
+  setBedding,
+  setHamster,
+  setPlatformColors,
   setCoverRemoved,
   setLegHeight,
   setPlatformPool,
   tryPlace,
 } from "./lib/assembly";
-import type { ActionResult, AssemblyState, PlatformDirection, PlatformId } from "./lib/assembly";
+import type { ActionResult, AssemblyState, Bedding, PlatformId } from "./lib/assembly";
 import { decodeConfigWithMigration, encodeConfig } from "./lib/config-code";
 
 const STORAGE = "hamilymart.assembly.v2";
-const DIRECTIONS: [PlatformDirection, string][] = [["left", "左侧"], ["right", "右侧"], ["front", "前侧"], ["back", "后侧"]];
+const platformName = (id: string) => id === "base3" ? "第三平台" : id === "base2" ? "第二平台" : "基础平台";
 const HOUSE_ORDER = ["villa", "roof-cottage", "l-house", "cube-house"];
 const money = (cents: number) =>
   new Intl.NumberFormat("zh-CN", {
@@ -106,12 +110,14 @@ function HamsterMark() {
 export default function App() {
   const [startup] = useState(initial);
   const [state, setState] = useState<AssemblyState>(startup.state),
-    [selectedId, setSelectedId] = useState<string | null>("base");
+    [selectedId, setSelectedId] = useState<string | null>(null);
   const [migrationNotice, setMigrationNotice] = useState(startup.messages.join(" "));
   const [activeProduct, setActiveProduct] = useState<string | null>(null),
     [rotation, setRotation] = useState<Rotation>(0);
   const [category, setCategory] = useState("all"),
-    [panel, setPanel] = useState<"catalog" | "selected">("catalog");
+    [panel, setPanel] = useState<"catalog" | "selected" | "settings">("catalog");
+  const [toolTab, setToolTab] = useState<"build" | "bedding" | "hamster">("build");
+  const [hamsterSpecies, setHamsterSpecies] = useState("all");
   const [showMagnets, setShowMagnets] = useState(false),
     [modal, setModal] = useState<"code" | "order" | "help" | null>(null);
   const [importCode, setImportCode] = useState(""),
@@ -122,7 +128,7 @@ export default function App() {
     [saved, setSaved] = useState(true),
     [bounce, setBounce] = useState<string | null>(null);
   const [history, setHistory] = useState<AssemblyState[]>([]);
-  const [showPlatformDirections, setShowPlatformDirections] = useState(false);
+  const controlScroll = useRef<HTMLDivElement>(null);
   const dragFinishedAt = useRef(0);
   const scene = useRef<SceneHandle>(null),
     toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined),
@@ -133,10 +139,10 @@ export default function App() {
   const platforms = getPlatforms(state);
   const selectedCover = selectedId?.startsWith("cover:") ? selectedId.split(":")[2] : null;
   const selectedPool = selectedId?.startsWith("pool:") ?? false;
-  const selectedPlatformId = (selectedId === "base" || selectedId === "base2"
+  const selectedPlatformId = (selectedId === "base" || selectedId === "base2" || selectedId === "base3"
     ? selectedId : selectedCover || selectedPool ? selectedId!.split(":")[1] : null) as PlatformId | null;
   const selectedPlatform = platforms.find(p => p.id === selectedPlatformId);
-  const editingPlatform = selectedId === "base" || selectedId === "base2";
+  const editingPlatform = selectedId === "base" || selectedId === "base2" || selectedId === "base3";
   const hasPool = platforms.some(p => p.baseInsert === "pool");
   const groupCount = platforms.length + state.items.length + platforms.filter(p => p.baseInsert === "pool").length;
   const selectedItem = state.items.find((i) => i.id === selectedId);
@@ -146,12 +152,12 @@ export default function App() {
   const selectedParts =
     selectedPlatform
       ? getBaseParts(state.legHeight, selectedPlatform.baseInsert, selectedPlatform.removedCovers).filter(
-          (p) => selectedCover ? p.id === selectedCover : selectedPool ? p.id === "B01" : p.id === "P01" || /^[LX]01$/.test(p.id),
+          (p) => selectedCover ? p.id === selectedCover : selectedPool ? p.id === "B01" : p.id === "P01" || /^[LXY]01$/.test(p.id),
         )
       : (selectedProduct ? getProductColorParts(selectedProduct.id) : []);
   const selectedColors =
     selectedPlatform ? selectedPlatform.baseColors : (selectedItem?.colors ?? {});
-  const colorKey = /^[LX]01$/.test(colorPart) ? "legs" : colorPart;
+  const colorKey = /^[LXY]01$/.test(colorPart) ? "legs" : colorPart;
   const currentColor =
     selectedColors[colorKey] ??
     selectedParts.find((p) => p.id === colorPart)?.defaultColor ??
@@ -175,11 +181,6 @@ export default function App() {
     if (message) notify(message);
     return true;
   }
-  function withPlatformColors(colors: typeof state.baseColors): AssemblyState {
-    return selectedPlatformId === "base2" && state.extension
-      ? { ...state, extension: { ...state.extension, baseColors: colors } }
-      : { ...state, baseColors: colors };
-  }
   function addProduct(productId: string) {
     setActiveProduct(null);
     const result = autoPlace(state, productId, selectedPlatformId ?? undefined);
@@ -192,13 +193,20 @@ export default function App() {
     }
     notify(productId === "pool" ? "泳池已装好，大圆盖已自动移除" : "已安排到最合适的磁吸位置");
   }
-  function changePlatformDirection(direction: PlatformDirection) {
-    const result = state.extension ? movePlatform(state, direction) : addPlatform(state, direction);
-    if (applyAction(result, "第二个平台已贴合在平台边上")) {
-      select("base2");
-      setShowPlatformDirections(false);
+  function addNextPlatform() {
+    const result = addPlatform(state);
+    if (applyAction(result, "新平台已贴合在右侧")) {
+      select(getPlatforms(result.ok ? result.state : state).at(-1)!.id);
     }
   }
+  function chooseBedding(bedding: Bedding) {
+    applyAction(setBedding(state, bedding), state.legHeight === 0
+      ? "垫料已更新，无腿平台已放在垫料上"
+      : bedding.mode === "thin" ? "已薄铺 5 cm 垫料，支撑脚为 10 cm" : `垫料和所有支撑脚已同步为 ${bedding.depth / 10} cm`);
+  }
+  useEffect(() => {
+    controlScroll.current?.scrollTo({ top: 0 });
+  }, [selectedId, panel, toolTab]);
   useEffect(() => {
     try {
       if (startup.recovery) {
@@ -255,9 +263,11 @@ export default function App() {
     setSelectedId(id);
     setActiveProduct(null);
     if (id) {
+      setToolTab("build");
+      setPanel("settings");
       const item = state.items.find((i) => i.id === id);
       setRotation(item?.rotation ?? 0);
-    }
+    } else setPanel("catalog");
   }
   function drop(
     productId: string,
@@ -277,7 +287,7 @@ export default function App() {
     );
     if (result.ok) {
       commit(result.state);
-      setSelectedId(result.item.id);
+      select(result.item.id);
       setActiveProduct(null);
       notify(itemId ? "已经移到新的磁吸位" : "咔哒！已吸附到匹配位置");
     } else {
@@ -290,7 +300,7 @@ export default function App() {
     if (selectedPlatform) {
       const defaults = createInitialState().baseColors;
       const colors = selectedCover || selectedPool ? { ...selectedPlatform.baseColors, [selectedCover ?? "B01"]: defaults[selectedCover ?? "B01"] } : defaults;
-      commit(withPlatformColors(colors));
+      applyAction(setPlatformColors(state, selectedPlatform.id, colors));
     }
     else if (selectedItem)
       commit({
@@ -308,7 +318,7 @@ export default function App() {
       const colors = { ...selectedPlatform.baseColors, [colorKey]: color };
       if (colorPart === "P01")
         for (const n of [1, 2, 3, 4, 5, 6]) colors[`H0${n}`] = color;
-      commit(withPlatformColors(colors));
+      applyAction(setPlatformColors(state, selectedPlatform.id, colors));
     } else if (selectedItem) {
       commit({
         ...state,
@@ -345,8 +355,8 @@ export default function App() {
       if (applyAction(setPlatformPool(state, selectedPlatformId, false), "泳池已移除，大圆盖已放回")) select(selectedPlatformId);
       return;
     }
-    if (selectedId === "base2") {
-      if (applyAction(removePlatform(state), "第二个平台及其上方组件已移除")) select("base");
+    if (selectedId === "base2" || selectedId === "base3") {
+      if (applyAction(removePlatform(state, selectedId), `${platformName(selectedId)}及其上方组件已移除`)) select("base");
       return;
     }
     if (!selectedItem) return;
@@ -414,7 +424,6 @@ export default function App() {
     URL.revokeObjectURL(url);
     notify("配件编号、颜色和价格清单已下载");
   }
-  const actionProduct = activeProduct ? getProduct(activeProduct) : null;
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -462,21 +471,6 @@ export default function App() {
       </header>
       <main className="workspace">
         <section className="studio" aria-label="3D 搭建工作台">
-          <div className="studio-heading">
-            <div className="studio-badge">
-              <span />
-              我的小小家 <span className="badge-divider" />
-              3D 搭建中
-            </div>
-            <button
-              className={`magnet-toggle ${showMagnets ? "is-on" : ""}`}
-              onClick={() => setShowMagnets((v) => !v)}
-              aria-pressed={showMagnets}
-            >
-              <Magnet size={15} />
-              <span>磁吸位置</span>
-            </button>
-          </div>
           <AssemblyScene
             ref={scene}
             state={state}
@@ -493,7 +487,159 @@ export default function App() {
             onReady={() => setReady(true)}
             onError={notify}
           />
-          <div className="view-tools">
+          <div className="canvas-caption"><Move size={13} /><span>拖动空白处旋转 · 双指缩放</span></div>
+        </section>
+        <aside className="catalog-panel control-dock" aria-label="搭建与场景设置">
+          <div className="workspace-tabs" role="tablist" aria-label="场景设置">
+            {([["build", "搭建"], ["bedding", "垫料"], ["hamster", "仓鼠"]] as const).map(([id, label]) =>
+              <button key={id} role="tab" aria-selected={toolTab === id} className={toolTab === id ? "active" : ""}
+                onClick={() => { setToolTab(id); setActiveProduct(null); }}>{label}</button>)}
+            <button className="round-button undo-action" aria-label="撤销上一步" disabled={!history.length} onClick={() => {
+              const last = history.at(-1);
+              if (last) { setState(last); setHistory(h => h.slice(0, -1)); select(null); }
+            }}><RotateCcw size={17} /></button>
+          </div>
+          <div className="control-scroll" ref={controlScroll}>
+            {(migrationNotice || toast) && <div className={`dock-notice ${migrationNotice ? "migration-notice" : ""}`} role="status">
+              <Info size={16} /><span>{migrationNotice || toast}</span>
+              <button className="round-button" aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); }}><X size={15} /></button>
+            </div>}
+            {toolTab === "build" && <>
+              {panel === "settings" && selectedId ? <div className="settings-panel">
+                <div className="settings-navigation">
+                  <button className="back-to-catalog" onClick={() => select(null)}><ArrowLeft size={16} />配件</button>
+                  <span>{selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圣诞泳池" : editingPlatform ? platformName(selectedId) : selectedProduct?.name}</span>
+                  <button className="finish-editing" onClick={() => select(null)}><Check size={15} />完成</button>
+                </div>
+              <div className="selection-card">
+                <div className="selection-head">
+                  <div className="selection-icon">
+                    {selectedPlatform ? (
+                      <Layers2 size={21} />
+                    ) : (
+                      <House size={21} />
+                    )}
+                  </div>
+                  <div>
+                    <span className="mini-label">组件设置</span>
+                    <strong>
+                      {selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}`
+                        : selectedPool ? "圣诞泳池"
+                        : editingPlatform
+                        ? platformName(selectedId ?? "base")
+                        : selectedProduct?.name}
+                    </strong>
+                  </div>
+                  <div className="selection-actions">
+                    <button
+                      className="round-button"
+                      aria-label="恢复原模型配色"
+                      title="恢复原模型配色"
+                      onClick={restoreOriginalColors}
+                    >
+                      <RotateCcw size={17} /><small>原色</small>
+                    </button>
+                    {(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3") && (
+                      <>
+                        {selectedItem && <button
+                          className="round-button"
+                          aria-label="旋转已选配件"
+                          title="切换到下一个可安装方向"
+                          onClick={rotateSelected}
+                        >
+                          <RotateCw size={18} /><small>旋转</small>
+                        </button>}
+                        <button
+                          className="round-button danger"
+                          aria-label="移除已选配件"
+                          title="移除所选组件"
+                          onClick={removeSelected}
+                        >
+                          <Trash2 size={17} /><small>移除</small>
+                        </button>
+                      </>
+                    )}
+
+                  </div>
+                </div>
+                {editingPlatform && selectedPlatform && (
+                  <div className="base-options">
+                    <div>
+                      <span>支撑脚{platforms.length > 1 ? ` · ${platforms.length} 个平台同步` : ""}</span>
+                      <div className="segmented">
+                        <button
+                          className={state.legHeight === 0 ? "active" : ""}
+                          disabled={hasPool}
+                          title={hasPool ? "请先移除泳池，再选择无腿" : "平台不配支撑脚"}
+                          onClick={() => applyAction(setLegHeight(state, 0))}
+                        >无腿</button>
+                        <button
+                          className={state.legHeight === 100 ? "active" : ""}
+                          onClick={() => applyAction(setLegHeight(state, 100))}
+                        >
+                          10 cm
+                        </button>
+                        <button
+                          className={state.legHeight === 200 ? "active" : ""}
+                          onClick={() => applyAction(setLegHeight(state, 200))}
+                        >
+                          20 cm
+                        </button>
+                        <button className={state.legHeight === 300 ? "active" : ""}
+                          onClick={() => applyAction(setLegHeight(state, 300))}>30 cm</button>
+                      </div>
+                    </div>
+                    <p className="platform-hint">{hasPool ? "泳池需要支撑脚。" : ""}{state.bedding.mode === "thick" ? "厚铺时，支撑脚与垫料高度同步；无腿平台放在垫料上。" : "薄铺 5 cm 垫料，无腿平台放在垫料上。"}</p>
+                    <p className="platform-hint">先选平台，再点小圆盖可移除留洞。平台有 32 个磁吸位，大圆盖另有 4 个。</p>
+                    {selectedPlatform.removedCovers.length > 0 && <div className="restore-covers">
+                      <span>放回圆盖</span>
+                      {selectedPlatform.removedCovers.map(id => <button key={id} onClick={() => applyAction(setCoverRemoved(state, selectedPlatform.id, id, false), "圆盖已放回")}>小圆盖 {Number(id.slice(-1))}</button>)}
+                    </div>}
+                  </div>
+                )}
+                <div className="color-editor">
+                  <label className="part-select">
+                    <select
+                      aria-label="选择要换色的部位"
+                      value={colorPart}
+                      onChange={(e) => setColorPart(e.target.value)}
+                    >
+                      {selectedParts.map((p) => (
+                        <option value={p.id} key={p.id}>
+                          {/^[LXY]01$/.test(p.id) ? "四根支撑脚" : p.role}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown size={13} />
+                  </label>
+                  <div className="swatches" aria-label="九种可选颜色">
+                    {AVAILABLE_COLORS.map((c) => (
+                      <button
+                        key={c.id}
+                        className={`swatch ${currentColor === c.id ? "selected" : ""}`}
+                        style={{ "--swatch": c.hex } as React.CSSProperties}
+                        aria-label={c.name}
+                        title={c.name}
+                        aria-pressed={currentColor === c.id}
+                        onClick={() => setColor(c.id)}
+                      >
+                        {currentColor === c.id && <Check size={13} />}
+                      </button>
+                    ))}
+                  </div>
+                  <span className="color-name">
+                    {COLORS.find((c) => c.id === currentColor)?.name}
+                  </span>
+                </div>
+              </div>
+              </div> : <>
+                <div className="build-navigation">
+                  <div className="panel-tabs">
+                    <button className={panel === "catalog" ? "active" : ""} onClick={() => setPanel("catalog")}><ShoppingBag size={16} />配件</button>
+                    <button className={panel === "selected" ? "active" : ""} onClick={() => setPanel("selected")}><Layers2 size={16} />已搭建 {groupCount}</button>
+                  </div>
+                  <details className="view-settings"><summary aria-label="视角和磁吸位置"><Expand size={16} /><span>视角</span></summary>
+          <div className="dock-view-tools">
             <button
               className="round-button"
               title="恢复视角"
@@ -542,189 +688,11 @@ export default function App() {
               <RotateCcw size={17} />
             </button>
           </div>
-          <div className="scale-label">
-            <span />
-            30 cm
-            <span />
-          </div>
-          {activeProduct ? (
-            <div className="placement-card">
-              <div className="placement-icon">
-                <Magnet size={23} />
-              </div>
-              <div>
-                <strong>把「{actionProduct?.name}」放进小家</strong>
-                <p>拖到绿色圆环附近，或轻点圆环安装</p>
-              </div>
-              <button
-                className="round-button"
-                aria-label="旋转待放置组件"
-                onClick={rotateSelected}
-              >
-                <RotateCw size={18} />
-                <small>{rotation}°</small>
-              </button>
-              <button
-                className="round-button"
-                aria-label="取消放置"
-                onClick={() => setActiveProduct(null)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-          ) : (
-            selectedId && (
-              <div className="selection-card">
-                <div className="selection-head">
-                  <div className="selection-icon">
-                    {selectedPlatform ? (
-                      <Layers2 size={21} />
-                    ) : (
-                      <House size={21} />
-                    )}
-                  </div>
-                  <div>
-                    <span className="mini-label">正在编辑</span>
-                    <strong>
-                      {selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}`
-                        : selectedPool ? "圣诞泳池"
-                        : editingPlatform
-                        ? `${selectedId === "base2" ? "第二" : "基础"}平台`
-                        : selectedProduct?.name}
-                    </strong>
-                  </div>
-                  <div className="selection-actions">
-                    <button
-                      className="round-button"
-                      aria-label="恢复原模型配色"
-                      title="恢复原模型配色"
-                      onClick={restoreOriginalColors}
-                    >
-                      <RotateCcw size={17} />
-                    </button>
-                    {(selectedItem || selectedCover || selectedPool || selectedId === "base2") && (
-                      <>
-                        {selectedItem && <button
-                          className="round-button"
-                          aria-label="旋转已选配件"
-                          title="切换到下一个可安装方向"
-                          onClick={rotateSelected}
-                        >
-                          <RotateCw size={18} />
-                        </button>}
-                        <button
-                          className="round-button danger"
-                          aria-label="移除已选配件"
-                          title="移除所选组件"
-                          onClick={removeSelected}
-                        >
-                          <Trash2 size={17} />
-                        </button>
-                      </>
-                    )}
-                    <button
-                      className="round-button"
-                      aria-label="收起编辑"
-                      onClick={() => select(null)}
-                    >
-                      <X size={17} />
-                    </button>
-                  </div>
+
+                    <button className={`magnet-toggle ${showMagnets ? "is-on" : ""}`} onClick={() => setShowMagnets(v => !v)} aria-pressed={showMagnets}><Magnet size={15} />显示磁吸位</button>
+                    <p>平台本体 32 个，大圆盖另有 4 个。</p>
+                  </details>
                 </div>
-                {editingPlatform && selectedPlatform && (
-                  <div className="base-options">
-                    <div>
-                      <span>支撑脚{state.extension ? " · 两个平台同步" : ""}</span>
-                      <div className="segmented">
-                        <button
-                          className={state.legHeight === 0 ? "active" : ""}
-                          disabled={hasPool}
-                          title={hasPool ? "请先移除泳池，再选择无腿" : "平台不配支撑脚"}
-                          onClick={() => applyAction(setLegHeight(state, 0))}
-                        >无腿</button>
-                        <button
-                          className={state.legHeight === 100 ? "active" : ""}
-                          onClick={() => applyAction(setLegHeight(state, 100))}
-                        >
-                          10 cm
-                        </button>
-                        <button
-                          className={state.legHeight === 200 ? "active" : ""}
-                          onClick={() => applyAction(setLegHeight(state, 200))}
-                        >
-                          20 cm
-                        </button>
-                      </div>
-                    </div>
-                    {hasPool && <p className="platform-hint">泳池需要支撑脚</p>}
-                    {selectedPlatform.removedCovers.length > 0 && <div className="restore-covers">
-                      <span>放回圆盖</span>
-                      {selectedPlatform.removedCovers.map(id => <button key={id} onClick={() => applyAction(setCoverRemoved(state, selectedPlatform.id, id, false), "圆盖已放回")}>小圆盖 {Number(id.slice(-1))}</button>)}
-                    </div>}
-                  </div>
-                )}
-                <div className="color-editor">
-                  <label className="part-select">
-                    <select
-                      aria-label="选择要换色的部位"
-                      value={colorPart}
-                      onChange={(e) => setColorPart(e.target.value)}
-                    >
-                      {selectedParts.map((p) => (
-                        <option value={p.id} key={p.id}>
-                          {/^[LX]01$/.test(p.id) ? "四根支撑脚" : p.role}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown size={13} />
-                  </label>
-                  <div className="swatches" aria-label="八种基础颜色">
-                    {COLORS.map((c) => (
-                      <button
-                        key={c.id}
-                        className={`swatch ${currentColor === c.id ? "selected" : ""}`}
-                        style={{ "--swatch": c.hex } as React.CSSProperties}
-                        aria-label={c.name}
-                        title={c.name}
-                        aria-pressed={currentColor === c.id}
-                        onClick={() => setColor(c.id)}
-                      >
-                        {currentColor === c.id && <Check size={13} />}
-                      </button>
-                    ))}
-                  </div>
-                  <span className="color-name">
-                    {COLORS.find((c) => c.id === currentColor)?.name}
-                  </span>
-                </div>
-              </div>
-            )
-          )}
-          <div className="canvas-help">
-            <Move size={13} />
-            <span>拖动空白处旋转 · 双指缩放</span>
-            <span className="help-separator">/</span>
-            <span>选中配件可移动、旋转和换色</span>
-          </div>
-          <span className="studio-watermark">made for tiny friends ♡</span>
-        </section>
-        <aside className="catalog-panel" aria-label="组件商店">
-          <div className="panel-tabs">
-            <button
-              className={panel === "catalog" ? "active" : ""}
-              onClick={() => setPanel("catalog")}
-            >
-              <ShoppingBag size={17} />
-              挑选配件
-            </button>
-            <button
-              className={panel === "selected" ? "active" : ""}
-              onClick={() => setPanel("selected")}
-            >
-              <Layers2 size={17} />
-              已选搭配 <span>{groupCount}</span>
-            </button>
-          </div>
           {panel === "catalog" ? (
             <>
               <div className="catalog-intro">
@@ -738,15 +706,11 @@ export default function App() {
               </div>
               <div className="platform-tools">
                 <div className="platform-tools-heading">
-                  <span><Layers2 size={15} />{state.extension ? "双平台 · 贴边组合" : "想给小家多一点空间？"}</span>
-                  <button className="outline-button" onClick={() => setShowPlatformDirections(v => !v)} aria-expanded={showPlatformDirections}>
-                    {state.extension ? "调整方向" : <><Plus size={14} />增加平台</>}
+                  <span><Layers2 size={15} />{platforms.length} / 3 块平台 · 依次贴边</span>
+                  <button className="outline-button" disabled={platforms.length >= 3} onClick={addNextPlatform}>
+                    <Plus size={14} />向右增加平台
                   </button>
                 </div>
-                {showPlatformDirections && <div className="platform-directions" aria-label="第二个平台方向">
-                  {DIRECTIONS.map(([direction, label]) => <button key={direction} className={state.extension?.direction === direction ? "active" : ""} onClick={() => changePlatformDirection(direction)}>{label}</button>)}
-                  <small>与基础平台边缘贴合，最多两块平台。</small>
-                </div>}
               </div>
               <div
                 className="category-tabs"
@@ -771,6 +735,11 @@ export default function App() {
                 ))}
               </div>
               <div className="product-grid">
+                <button className="add-platform-card" disabled={platforms.length >= 3} onClick={addNextPlatform}>
+                  <span><Plus size={22} /><Layers2 size={27} /></span>
+                  <strong>{platforms.length >= 3 ? "已放满三块" : "向右增加平台"}</strong>
+                  <small>{platforms.length} / 3 块 · 自动贴边</small>
+                </button>
                 {visibleProducts.map((product) => {
                   const available = product.id === "pool" ? state.legHeight > 0 && platforms.some(p => p.baseInsert === "lid") :
                     ([0, 90, 180, 270] as Rotation[]).some(r => getPlacements(state, product.id, r).length > 0);
@@ -864,15 +833,15 @@ export default function App() {
                 >
                   <img src={`/thumbnails/base.png?v=${CATALOG_VERSION}`} alt="基础平台" />
                   <span>
-                    <strong>{platform.id === "base2" ? "第二平台" : BASE_PRODUCT.name}</strong>
+                    <strong>{platformName(platform.id)}</strong>
                     <small>{state.legHeight === 0 ? "无支撑脚" : `四根 ${state.legHeight / 10} cm 腿`}{platform.removedCovers.length ? ` · ${platform.removedCovers.length} 个留洞` : ""}</small>
-                    <em>{money(BASE_PRODUCT.price + (state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : state.legHeight === 0 ? -BASE_PRODUCT.noLegDiscount : 0))}</em>
+                    <em>{money(BASE_PRODUCT.price + (state.legHeight === 300 ? BASE_PRODUCT.extraTallLegSurcharge : state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : state.legHeight === 0 ? -BASE_PRODUCT.noLegDiscount : 0))}</em>
                   </span>
                   <ChevronDown size={15} />
                 </button>
                 {platform.baseInsert === "pool" && <button className={`selected-row ${selectedId === `pool:${platform.id}` ? "active" : ""}`} onClick={() => select(`pool:${platform.id}`)}>
                   <img src={`/thumbnails/pool.png?v=${CATALOG_VERSION}`} alt="圣诞泳池" />
-                  <span><strong>圣诞泳池</strong><small>{platform.id === "base2" ? "第二平台" : "基础平台"} · 嵌入大圆洞</small><em>{money(BASE_PRODUCT.poolSurcharge)}</em></span>
+                  <span><strong>圣诞泳池</strong><small>{platformName(platform.id)} · 嵌入大圆洞</small><em>{money(BASE_PRODUCT.poolSurcharge)}</em></span>
                   <ChevronDown size={15} />
                 </button>}
               </div>)}
@@ -905,57 +874,59 @@ export default function App() {
               </button>
             </div>
           )}
+
+              </>}
+            </>}
+            {toolTab === "bedding" && <section className="environment-panel" aria-label="垫料设置">
+              <div className="environment-heading"><h2>铺上软软的垫料</h2><span>{state.bedding.mode === "thin" ? "薄铺" : "厚铺"} {state.bedding.depth / 10} cm</span></div>
+              <div className="bedding-options">
+                <button className={`bedding-option ${state.bedding.mode === "thin" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thin"} onClick={() => chooseBedding({ mode: "thin", depth: 50 })}>
+                  <span className="bedding-preview"><i style={{ height: "18%" }} /></span><strong>薄铺</strong><span>5 cm</span>
+                </button>
+                {([100, 200, 300] as const).map(depth => <button key={depth} className={`bedding-option ${state.bedding.mode === "thick" && state.bedding.depth === depth ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thick" && state.bedding.depth === depth} onClick={() => chooseBedding({ mode: "thick", depth })}>
+                  <span className="bedding-preview"><i style={{ height: `${depth / 4}%` }} /></span><strong>厚铺</strong><span>{depth / 10} cm</span>
+                </button>)}
+              </div>
+              <p className="setting-note"><Info size={15} /><span>厚铺时，所有有腿平台的脚长自动与垫料同高；薄铺 5 cm 使用 10 cm 腿。无腿平台始终放在垫料上。</span></p>
+            </section>}
+            {toolTab === "hamster" && <section className="environment-panel hamster-panel" aria-label="仓鼠品种与花色">
+              <div className="environment-heading"><h2>请小家人入住</h2>{state.hamster && <button className="remove-hamster" onClick={() => applyAction(setHamster(state, null), "仓鼠预览已移除")}><Trash2 size={14} />移除</button>}</div>
+              <p className="setting-description">选择一种品种与花色，看看它在小家里的样子。</p>
+              <div className="species-tabs" aria-label="仓鼠品种筛选">
+                <button className={hamsterSpecies === "all" ? "active" : ""} onClick={() => setHamsterSpecies("all")}>全部</button>
+                {[...new Set(HAMSTER_VARIANTS.map(variant => variant.species))].map(species => <button key={species} className={hamsterSpecies === species ? "active" : ""} onClick={() => setHamsterSpecies(species)}>{species.match(/（(.*?)）/)?.[1] ?? species}</button>)}
+              </div>
+              <div className="hamster-grid">
+                {HAMSTER_VARIANTS.filter(variant => hamsterSpecies === "all" || variant.species === hamsterSpecies).map(variant => <button key={variant.id} className={`hamster-choice ${state.hamster === variant.id ? "selected" : ""}`} aria-pressed={state.hamster === variant.id} onClick={() => applyAction(setHamster(state, variant.id), `${variant.name}已入住`)}>
+                  <svg className="hamster-portrait" viewBox="0 0 100 70" aria-hidden="true">
+                    <ellipse cx="50" cy="63" rx="32" ry="4" fill="#273C3520" />
+                    <ellipse cx="28" cy="21" rx="12" ry="13" fill={variant.primary} /><ellipse cx="72" cy="21" rx="12" ry="13" fill={variant.primary} />
+                    <ellipse cx="28" cy="22" rx="7" ry="8" fill="#EBC7BF" /><ellipse cx="72" cy="22" rx="7" ry="8" fill="#EBC7BF" />
+                    <ellipse cx="50" cy="41" rx="34" ry="25" fill={variant.primary} />
+                    {variant.pattern === "banded" && <ellipse cx="50" cy="40" rx="12" ry="24" fill={variant.secondary} />}
+                    {variant.pattern === "dorsal" && <path d="M46 17h8l-1 23h-6z" fill={variant.id === "winter-pearl" ? "#ACA99F" : "#534C47"} opacity=".55" />}
+                    {variant.pattern === "panda" && <ellipse cx="50" cy="42" rx="23" ry="25" fill={variant.secondary} />}
+                    <ellipse cx="50" cy="51" rx="22" ry="14" fill={variant.secondary} />
+                    <circle cx="34" cy="39" r="3" fill="#342D29" /><circle cx="66" cy="39" r="3" fill="#342D29" />
+                    <circle cx="35" cy="38" r=".9" fill="#FFF" /><circle cx="67" cy="38" r=".9" fill="#FFF" />
+                    <path d="M46 48h8l-4 4z" fill="#BB8C83" /><path d="M50 52v4m0 0-4 2m4-2 4 2" fill="none" stroke="#927B71" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                  <strong>{variant.name}</strong><small>{variant.coat}</small>{state.hamster === variant.id && <Check className="hamster-selected" size={15} />}
+                </button>)}
+              </div>
+              {!state.hamster && <p className="setting-note">当前未添加仓鼠，点选即可预览。仓鼠仅用于展示比例，不计入配件价格。</p>}
+            </section>}
+          </div>
+          <footer className="checkout-bar">
+            <div className="checkout-total">
+              <span>共 <b>{groupCount}</b> 组 <span className="price-note">· 演示价格</span></span>
+              <strong>{money(total)}</strong>
+            </div>
+            <button className="outline-button footer-share" aria-label="分享搭配" onClick={() => setModal("code")}><Link size={16} /></button>
+            <button className="primary-button" onClick={() => setModal("order")}><span>搭配清单</span><ArrowRight size={17} /></button>
+          </footer>
         </aside>
       </main>
-      <footer className="checkout-bar">
-        <div className="checkout-message">
-          <span className="tiny-house">
-            <House size={21} />
-            <Heart size={9} />
-          </span>
-          <span>
-            <strong>小小家人，值得满满用心</strong>
-            <small>每一种搭配，都是独一份的喜欢。</small>
-          </span>
-        </div>
-        <div className="checkout-total">
-          <span>
-            共 <b>{groupCount}</b> 组配件{" "}
-            <span className="price-note">· 演示价格</span>
-          </span>
-          <strong>{money(total)}</strong>
-        </div>
-        <button
-          className="outline-button footer-share"
-          onClick={() => setModal("code")}
-        >
-          <Link size={16} />
-          <span>分享搭配</span>
-        </button>
-        <button className="primary-button" onClick={() => setModal("order")}>
-          <span>查看搭配清单</span>
-          <ArrowRight size={17} />
-        </button>
-      </footer>
-      {migrationNotice && (
-        <div className="toast migration-notice" role="status">
-          <Info size={18} />
-          <span>{migrationNotice}</span>
-          <button
-            className="round-button"
-            aria-label="关闭模型更新提示"
-            onClick={() => setMigrationNotice("")}
-          >
-            <X size={18} />
-          </button>
-        </div>
-      )}
-      {toast && !migrationNotice && (
-        <div className="toast" role="status">
-          <Info size={17} />
-          {toast}
-        </div>
-      )}
       {modal && (
         <div
           className="modal-backdrop"
@@ -984,7 +955,7 @@ export default function App() {
                 <span className="eyebrow">SAME LITTLE HOME.</span>
                 <h2 id="modal-title">把这份喜欢，分享出去</h2>
                 <p className="modal-lead">
-                  完整搭配编号包含平台、组件、颜色、位置、留洞和脚长。
+                  完整搭配编号包含平台、组件、颜色、留洞、脚长、垫料与仓鼠。
                   <br />
                   复制给朋友，粘贴即可还原同一个小家。
                 </p>
@@ -1016,7 +987,7 @@ export default function App() {
                   id="restore-code"
                   rows={3}
                   className="code-field"
-                  placeholder="在这里粘贴完整的 HM 搭配编号…"
+                  placeholder="粘贴完整的 HM1 / HM2 / HM3 搭配编号…"
                   value={importCode}
                   onChange={(e) => {
                     setImportCode(e.target.value);
@@ -1110,7 +1081,7 @@ export default function App() {
                     <div>
                       <h3>从一张平台开始</h3>
                       <p>
-                        默认配四根 10 cm 支撑脚，可切换 20 cm 或无腿。也能选择方向增加第二个平台，两块平台始终贴边，支撑脚高度同步。
+                        默认配四根 10 cm 支撑脚，可切换 20 / 30 cm 或无腿。增加平台会依次向右贴边，最多三块，支撑脚高度同步。厚铺垫料时，腿与垫料同步升高；无腿平台放在垫料上。
                       </p>
                     </div>
                   </article>
@@ -1128,7 +1099,7 @@ export default function App() {
                     <div>
                       <h3>转一转，涂上喜欢的颜色</h3>
                       <p>
-                        选中配件可移动、旋转和换色；拖动画布空白处查看全貌。满意后复制搭配编号，或下载完整配件清单。
+                        选中配件后，在下方或右侧设置区旋转、换色或移除，点击完成继续挑选。拖动画布空白处查看全貌；还能添加仓鼠预览比例。满意后复制搭配编号，或下载完整配件清单。
                       </p>
                     </div>
                   </article>
@@ -1136,7 +1107,7 @@ export default function App() {
                 <div className="help-note">
                   <Magnet size={19} />
                   <p>
-                    点选小圆盖可移除，预览留洞；选中平台可放回圆盖。圣诞泳池自动替换大圆盖，无腿平台不能安装泳池。房屋顶盖、管道底座随套餐提供；移除平台或底层小屋时，上方配件也会一起移除。
+                    先选平台，再点小圆盖可移除，预览留洞；选中平台可放回圆盖。P01 本体提供 32 个磁吸位，H06 大圆盖另有 4 个。圣诞泳池自动替换大圆盖，无腿平台不能安装泳池。房屋顶盖、管道底座随套餐提供；移除平台或底层小屋时，上方配件也会一起移除。
                   </p>
                 </div>
                 <button

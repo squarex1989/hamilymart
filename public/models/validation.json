@@ -834,6 +834,90 @@
         "sourceVersion": "Steel receivers V9 inset grass slots",
         "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
+    },
+    "Y01": {
+      "bytes": 31988,
+      "components": [
+        {
+          "id": "Y01_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "derivedFrom": "X01",
+        "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
+        "production3mfIncluded": false
+      }
+    },
+    "Y02": {
+      "bytes": 31992,
+      "components": [
+        {
+          "id": "Y02_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "derivedFrom": "X02",
+        "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
+        "production3mfIncluded": false
+      }
+    },
+    "Y03": {
+      "bytes": 31992,
+      "components": [
+        {
+          "id": "Y03_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "derivedFrom": "X03",
+        "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
+        "production3mfIncluded": false
+      }
+    },
+    "Y04": {
+      "bytes": 31996,
+      "components": [
+        {
+          "id": "Y04_PineGreen",
+          "sourceTriangles": 1020,
+          "triangles": 1020,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "derivedFrom": "X04",
+        "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
+        "production3mfIncluded": false
+      }
     }
   }
 }

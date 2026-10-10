@@ -1,5 +1,7 @@
 # HamilyMart 商品与装配目录
 
+> 当前交互与状态版本为目录 6，三平台、九色、单磁位通用安装、垫料与仓鼠规则以 [目录 6 体验说明](experience-v6.md) 为准。下文保留 Steel V9 接口背景与旧编号迁移说明。
+
 主要模型来自本机 `unified_complete_steel_v9` 的 `hardware_complete.json`、`pipe_interfaces.json`、`print_manifest.json`、`L_house_parameters.json`、`small_house_parameters.json` 和 `source/build.py`。圣诞食盆 O01 直接采用该正式源中的单磁铁版本。网页使用装配坐标 GLB，单位为毫米，原始坐标 Z 朝上。
 
 ## 商品、套餐与颜色

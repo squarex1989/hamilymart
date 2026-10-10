@@ -6,15 +6,20 @@ export type Vec3 = [number, number, number];
 export type Rotation = 0 | 90 | 180 | 270;
 export type Bounds = [number, number, number, number, number, number];
 export const COLORS = [
-  { id: "cream", name: "雪白 · 原色", hex: "#F1EADB" },
-  { id: "pine", name: "松绿 · 原色", hex: "#174A3A" },
-  { id: "red", name: "圣诞红 · 原色", hex: "#B8273C" },
-  { id: "butter", name: "金色 · 原色", hex: "#C99B46" },
+  { id: "cream", name: "杏色", hex: "#F1EADB" },
+  { id: "pine", name: "绿色", hex: "#174A3A" },
+  { id: "red", name: "红色", hex: "#B8273C" },
+  { id: "butter", name: "黄色", hex: "#C99B46" },
   { id: "sage", name: "鼠尾草", hex: "#A7BEA4" },
-  { id: "rose", name: "草莓奶", hex: "#E9AEBC" },
-  { id: "sky", name: "晴空蓝", hex: "#A6C8DF" },
+  { id: "rose", name: "粉色", hex: "#E9AEBC" },
+  { id: "sky", name: "蓝色", hex: "#A6C8DF" },
   { id: "lilac", name: "香芋紫", hex: "#C7B4D8" },
+  { id: "white", name: "白色", hex: "#FAFAF7" },
+  { id: "marble", name: "大理石色", hex: "#E2E2DE" },
+  { id: "jade", name: "琉璃绿", hex: "#299C82" },
 ] as const;
+/** Keep legacy sage/lilac decodable without offering them for new color selections. */
+export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac");
 export type ColorId = (typeof COLORS)[number]["id"];
 /** Secondary decorative bodies use the same eight-color stock palette. */
 export const SOURCE_TRIM_COLORS: Record<string, ColorId> = {
@@ -109,18 +114,22 @@ const part = (
 ): ProductPart => ({ id, role, defaultColor });
 const down = (xy: number[][], z: number): Vec3[] =>
   xy.map(([x, y]) => [x, y, z]);
+/** Steel V9 P01/H06 receiver locations, transcribed and audited separately from source hardware. */
+export const P01_TOP_XY: [number, number][] = [[10, 10], [10, 90], [10, 110], [10, 190], [10, 210], [10, 290], [90, 10], [90, 190], [90, 210], [90, 290], [110, 10], [110, 190], [110, 210], [110, 290], [190, 10], [190, 90], [190, 110], [190, 190], [190, 210], [190, 290], [210, 10], [210, 90], [210, 110], [210, 190], [210, 210], [210, 290], [290, 10], [290, 90], [290, 110], [290, 190], [290, 210], [290, 290]];
+export const H06_TOP_XY: [number, number][] = [[90, 90], [90, 110], [110, 90], [110, 110]];
 export const BASE_PRODUCT = {
   id: "platform",
   sku: "HM-PL-001",
   name: "云朵基础平台",
   price: 12900,
   tallLegSurcharge: 2400,
+  extraTallLegSurcharge: 4800,
   noLegDiscount: 2000,
   poolSurcharge: 2900,
   description: "30 × 30 cm 平台 · 含四支撑脚与六个孔盖",
 };
 export function getBaseParts(
-  legHeight: 0 | 100 | 200,
+  legHeight: 0 | 100 | 200 | 300,
   pool: boolean | "lid" | "pool" = false,
   removedCovers: string[] = [],
 ): ProductPart[] {
@@ -133,7 +142,7 @@ export function getBaseParts(
       "cream",
     ),
     ...(legHeight === 0 ? [] : [1, 2, 3, 4]).map((n) =>
-      part(`${legHeight === 100 ? "L" : "X"}0${n}`, `支撑脚 ${n}`, "pine"),
+      part(`${legHeight === 100 ? "L" : legHeight === 200 ? "X" : "Y"}0${n}`, `支撑脚 ${n}`, "pine"),
     ),
   ];
 }
@@ -391,7 +400,7 @@ export const PRODUCTS: Product[] = [
     name: "圣诞袜花圃",
     category: "garden",
     price: 1900,
-    description: "中心单点磁吸 · 安装于礼物盒二层平台",
+    description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [285.5, 264, 200],
     parts: [part("G06", "花圃", "red")],
     bottomMagnets: down(
@@ -402,7 +411,7 @@ export const PRODUCTS: Product[] = [
     ),
     minimumMagnetMatches: 1,
     collisionBoxes: [[269, 220, 200, 301, 294, 261.5]],
-    allowedParents: ["villa"],
+    allowedParents: ["base", "villa", "l-house"],
     allowedRelativeRotations: [0],
   },
   {
@@ -411,13 +420,13 @@ export const PRODUCTS: Product[] = [
     name: "圣诞食盆",
     category: "garden",
     price: 1900,
-    description: "中心单点磁吸 · 与圣诞袜花圃共用二层磁位",
+    description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [285.5, 264, 200],
     parts: [part("O01", "食盆", "red")],
     bottomMagnets: down([[285.5, 264]], 200),
     minimumMagnetMatches: 1,
     collisionBoxes: [[246, 236, 200, 301, 296, 221]],
-    allowedParents: ["villa"],
+    allowedParents: ["base", "villa", "l-house"],
     allowedRelativeRotations: [0],
   },
   {
@@ -450,4 +459,4 @@ export function getDefaultColors(productId: string): ColorMap {
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 5;
+export const CATALOG_VERSION = 6;

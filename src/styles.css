@@ -523,3 +523,187 @@ h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* The canvas owns its space; every control lives in the adjacent dock. */
+:root { background: #DDE0E2; --header-height: 64px; }
+.app-shell { grid-template-rows: var(--header-height) minmax(0, 1fr); }
+.workspace { grid-template-columns: minmax(0, 1fr) minmax(360px, 33%); grid-template-rows: minmax(0, 1fr); }
+.studio, .scene-loading { background: #DDE0E2; }
+.canvas-caption { position: absolute; left: 20px; bottom: 16px; display: flex; align-items: center; gap: 6px; color: #69766F; font-size: 10px; pointer-events: none; }
+.control-dock { display: grid; grid-template-rows: 48px minmax(0, 1fr) auto; overflow: hidden; scrollbar-gutter: auto; }
+.workspace-tabs { display: flex; align-items: stretch; gap: 4px; padding: 0 14px; border-bottom: 1px solid var(--line); background: #FBFAF6; }
+.workspace-tabs > button[role="tab"] { position: relative; flex: 1; padding: 0 8px; border-radius: 0; background: transparent; color: #7A877C; font-size: 13px; }
+.workspace-tabs > button[role="tab"].active { color: var(--green); font-weight: 600; }
+.workspace-tabs > button[role="tab"].active::after { position: absolute; right: 22%; bottom: 0; left: 22%; height: 3px; border-radius: 3px 3px 0 0; background: var(--green); content: ''; }
+.workspace-tabs .undo-action { align-self: center; border-left: 1px solid var(--line); border-radius: 0; margin-left: 6px; }
+.control-scroll { min-width: 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.dock-notice { display: flex; align-items: center; gap: 7px; margin: 8px 12px; padding: 5px 8px 5px 12px; border: 1px solid #D8E1D0; border-radius: 8px; background: #EDF3E7; color: #526D47; font-size: 11px; line-height: 1.5; }
+.dock-notice > svg { flex-shrink: 0; }
+.dock-notice > span { flex: 1; }
+.dock-notice .round-button { flex-basis: 44px; width: 44px; height: 44px; margin: 0; }
+.build-navigation { display: flex; flex-wrap: wrap; align-items: flex-start; min-height: 44px; padding: 0 16px; }
+.build-navigation .panel-tabs { position: static; flex: 1; min-height: 44px; padding: 0; border: 0; background: transparent; }
+.build-navigation .panel-tabs > button { flex: 0 1 auto; min-height: 44px; padding: 0 12px; font-size: 11px; }
+.build-navigation .panel-tabs > button.active::after { display: none; }
+.view-settings { flex: 0 0 auto; max-width: 100%; }
+.view-settings > summary { display: flex; align-items: center; justify-content: flex-end; gap: 5px; min-height: 44px; padding: 0 3px 0 9px; color: #708067; font-size: 11px; list-style: none; cursor: pointer; }
+.view-settings > summary::-webkit-details-marker { display: none; }
+.view-settings[open] { flex: 0 0 100%; display: flex; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.view-settings[open] > summary { justify-content: flex-start; }
+.dock-view-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; margin: 0 0 7px; }
+.dock-view-tools > span { height: 24px; width: 1px; margin: 0 2px; background: var(--line); }
+.dock-view-tools .round-button { border: 1px solid #DEE5D9; background: #F3F5EF; }
+.view-settings .magnet-toggle { display: inline-flex; min-height: 44px; padding: 0 11px; border: 1px solid #D6DFCD; background: #F5F7F0; }
+.view-settings .magnet-toggle.is-on { background: #E2EBD9; }
+.view-settings > p { display: inline; margin-left: 8px; font-size: 10px; color: #7B8873; }
+.control-dock .catalog-intro { padding: 8px 22px 15px; }
+.control-dock .catalog-intro h2 { font-size: 16px; }
+.control-dock .platform-tools { margin: 0 20px 10px; }
+.control-dock .platform-tools-heading .outline-button { min-height: 44px; }
+.control-dock .product-grid { padding-right: 20px; padding-left: 20px; }
+.control-dock .category-tabs { padding-right: 20px; padding-left: 20px; }
+.control-dock .selected-row { width: 100%; }
+.settings-navigation { display: flex; align-items: center; gap: 8px; padding: 3px 16px; border-bottom: 1px solid var(--line); }
+.settings-navigation > button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; background: transparent; color: var(--green); font-size: 12px; }
+.settings-navigation > span { margin: 0 auto; color: #929C8A; font-size: 10px; }
+.settings-navigation .finish-editing { font-weight: 600; }
+.control-dock .selection-card { position: static; width: auto; margin: 0; padding: 14px 20px 20px; border: 0; border-radius: 0; background: transparent; box-shadow: none; animation: none; }
+.control-dock .selection-head { flex-wrap: wrap; gap: 8px; }
+.control-dock .selection-head strong { font-size: 13px; }
+.control-dock .selection-actions { margin-right: 0; }
+.control-dock .selection-actions .round-button { flex-basis: 44px; width: 44px; }
+.control-dock .base-options { gap: 9px; margin-top: 12px; max-height: none; overflow: visible; }
+.control-dock .base-options > div > span { display: block; color: #738167; font-size: 10px; }
+.control-dock .platform-hint { color: #7A846E; font-size: 10px; line-height: 1.65; }
+.control-dock .segmented > button { min-height: 44px; font-size: 11px; }
+.control-dock .restore-covers > button { min-height: 44px; }
+.control-dock .color-editor { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; padding-top: 9px; margin-top: 12px; }
+.control-dock .part-select { grid-column: 1; max-width: none; width: 100%; min-width: 0; }
+.control-dock .part-select select { padding-right: 22px; font-size: 12px; }
+.control-dock .swatches { grid-row: 2; grid-column: 1 / -1; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 0; overflow: visible; mask-image: none; }
+.control-dock .swatch { width: 100%; min-width: 0; height: 44px; }
+.control-dock .swatch::before { inset: auto; width: 24px; height: 24px; }
+.control-dock .color-name { display: block; grid-column: 2; grid-row: 1; color: #7A846E; font-size: 11px; }
+.control-dock .checkout-bar { min-height: 72px; gap: 8px; padding: 10px 16px; }
+.control-dock .checkout-total { align-items: flex-start; gap: 3px; margin-right: auto; }
+.control-dock .checkout-total > span { font-size: 9px; white-space: nowrap; }
+.control-dock .checkout-total > strong { font-size: 23px; }
+.control-dock .footer-share { flex: 0 0 44px; width: 44px; height: 44px; padding: 0; }
+.control-dock .checkout-bar .primary-button { flex: 0 0 auto; min-width: 112px; height: 44px; padding: 0 12px; gap: 9px; font-size: 12px; }
+.environment-panel { padding: 18px 20px 24px; }
+.environment-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 30px; margin-bottom: 14px; }
+.environment-heading h2 { color: #485F3F; font-size: 16px; font-weight: 500; }
+.environment-heading > span { color: #718267; font-size: 11px; }
+.bedding-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.bedding-option { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; padding: 10px 7px 12px; border: 1px solid #DFE4D7; border-radius: 9px; background: #F7F7F1; }
+.bedding-option.selected { border-color: #769365; background: #EAF0E2; box-shadow: inset 0 0 0 1px #769365; }
+.bedding-option strong { color: #4B6443; font-size: 12px; font-weight: 500; }
+.bedding-option > span:last-child { font-size: 11px; color: #7A896A; }
+.bedding-preview { position: relative; display: block; width: 100%; height: 55px; margin-bottom: 5px; overflow: hidden; border: 1px solid #CBD4C3; border-top: 0; border-radius: 0 0 5px 5px; background: #E8ECE8; }
+.bedding-preview > i { position: absolute; bottom: 0; left: 0; width: 100%; background: repeating-linear-gradient(25deg, #DCC7A3 0px, #DCC7A3 4px, #D0B68C 4px, #D0B68C 5px); }
+.setting-note { display: flex; align-items: flex-start; gap: 8px; margin-top: 15px; padding: 12px; border-radius: 8px; background: #F0F3EB; color: #7B896F; font-size: 10px; line-height: 1.8; }
+.setting-note > svg { flex-shrink: 0; margin-top: 2px; }
+.setting-description { color: #819076; font-size: 11px; line-height: 1.7; }
+.remove-hamster { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px; border-radius: 7px; background: #F4EAE3; color: #936F5C; font-size: 11px; }
+.hamster-panel .environment-heading { margin-bottom: 5px; }
+.species-tabs { display: flex; gap: 5px; margin: 11px 0; overflow-x: auto; overscroll-behavior: contain; }
+.species-tabs > button { flex-shrink: 0; min-height: 44px; padding: 0 11px; border-radius: 7px; background: transparent; color: #7B8A71; font-size: 11px; }
+.species-tabs > button.active { background: #E7EFDE; color: var(--green); }
+.hamster-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.hamster-choice { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; padding: 9px 4px 12px; border: 1px solid #E0E5D8; border-radius: 10px; background: #F6F5EF; }
+.hamster-choice.selected { border-color: #769365; background: #EDF3E6; box-shadow: inset 0 0 0 1px #769365; }
+.hamster-portrait { display: block; width: 100%; height: 67px; }
+.hamster-choice > strong { font-size: 10px; font-weight: 500; line-height: 1.5; }
+.hamster-choice > small { font-size: 9px; color: #8A947E; }
+.hamster-selected { position: absolute; top: 5px; right: 5px; color: #547845; }
+@media (min-width: 1600px) {
+  .workspace { grid-template-columns: minmax(0, 1fr) 455px; }
+}
+@media (max-width: 1100px) and (min-width: 761px) {
+  .workspace { grid-template-columns: minmax(0, 1fr) 360px; }
+  .main-nav { margin-left: 30px; }
+}
+@media (max-width: 760px) {
+  :root { --header-height: 56px; }
+  .app-shell { grid-template-rows: var(--header-height) minmax(0, 1fr); }
+  .site-header { padding-right: 12px; padding-left: 14px; }
+  .brand > span { font-size: 19px; }
+  .brand small { margin-top: 3px; }
+  .workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); }
+  .studio { border: 0; }
+  .canvas-caption { left: 13px; bottom: 10px; font-size: 9px; }
+  .control-dock { grid-template-rows: 44px minmax(0, 1fr) auto; border-top: 1px solid #CBD2CA; border-left: 0; }
+  .workspace-tabs { padding: 0 12px; }
+  .workspace-tabs > button[role="tab"] { font-size: 12px; }
+  .control-scroll { scrollbar-gutter: auto; }
+  .control-dock .checkout-bar { min-height: 60px; padding: 7px 12px calc(7px + env(safe-area-inset-bottom, 0px)); gap: 8px; }
+  .control-dock .checkout-total > strong { font-size: 21px; line-height: 1; }
+  .control-dock .checkout-total > span { font-size: 8px; }
+  .control-dock .checkout-bar .primary-button { min-width: 112px; font-size: 11px; }
+  .control-dock .catalog-intro { display: none; }
+  .build-navigation { padding: 0 12px; }
+  .build-navigation .panel-tabs > button { padding: 0 9px; font-size: 10px; }
+  .view-settings > summary { font-size: 10px; }
+  .control-dock .platform-tools { margin: 0 12px 5px; padding: 0 8px; }
+  .control-dock .platform-tools-heading > span { font-size: 9px; }
+  .control-dock .platform-tools-heading .outline-button { min-height: 44px; border: 0; background: transparent; }
+  .control-dock .category-tabs { gap: 4px; padding: 0 12px 5px; }
+  .control-dock .category-tabs > button { min-height: 44px; min-width: 46px; padding: 0 9px; }
+  .control-dock .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 9px; padding: 0 12px 14px; }
+  .control-dock .product-visual { aspect-ratio: 1.3; }
+  .control-dock .product-info h3 { font-size: 10px; }
+  .control-dock .product-info > p { font-size: 8px; }
+  .control-dock .product-info strong { font-size: 12px; }
+  .control-dock .product-badge { font-size: 7px; top: 5px; left: 4px; }
+  .control-dock .selected-list { padding: 10px 12px; }
+  .control-dock .selected-row { min-height: 74px; }
+  .control-dock .selected-row > img { width: 52px; height: 52px; }
+  .settings-navigation { padding: 0 12px; }
+  .control-dock .selection-card { padding: 6px 12px 16px; }
+  .control-dock .selection-icon { display: flex; }
+  .control-dock .selection-head strong { font-size: 12px; }
+  .control-dock .color-editor { margin-top: 6px; padding-top: 4px; }
+  .control-dock .base-options { margin-top: 8px; }
+  .control-dock .swatch::before { width: 23px; height: 23px; }
+  .environment-panel { padding: 9px 12px 18px; }
+  .environment-heading { margin-bottom: 8px; }
+  .environment-heading h2 { font-size: 13px; }
+  .environment-heading > span { font-size: 10px; }
+  .bedding-options { gap: 7px; }
+  .bedding-option { padding: 7px 6px 9px; gap: 3px; }
+  .bedding-preview { height: 35px; margin-bottom: 3px; }
+  .bedding-option strong { font-size: 11px; }
+  .bedding-option > span:last-child { font-size: 10px; }
+  .setting-note { padding: 9px; margin-top: 10px; font-size: 9px; }
+  .species-tabs { margin: 7px 0; }
+  .hamster-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .hamster-portrait { height: 59px; }
+  .dock-notice { margin: 5px 10px; padding: 2px 4px 2px 9px; font-size: 10px; }
+}
+@media (max-width: 375px) {
+  .control-dock .swatch::before { width: 21px; height: 21px; }
+  .control-dock .selection-icon { display: none; }
+  .control-dock .checkout-bar .primary-button { min-width: 104px; }
+  .control-dock .platform-tools-heading > span { font-size: 8px; }
+}
+.add-platform-card { display: none; }
+@media (max-width: 760px) {
+  .control-dock .platform-tools { display: none; }
+  .add-platform-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 7px; min-width: 0; padding: 0 0 12px; border-radius: 8px; background: #EFF3E9; }
+  .add-platform-card > span { display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%; aspect-ratio: 1.3; border: 1px dashed #ADBCA1; border-radius: 8px; color: #719061; background: #E9F0E0; }
+  .add-platform-card > strong { padding: 0 3px; font-size: 10px; font-weight: 500; line-height: 1.5; }
+  .add-platform-card > small { padding: 0 2px; color: #8A957B; font-size: 8px; }
+  .settings-navigation > span { overflow: hidden; color: #506747; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+  .control-dock .selection-head { justify-content: flex-end; min-height: 44px; }
+  .control-dock .selection-head > .selection-icon, .control-dock .selection-head > div:nth-child(2) { display: none; }
+  .control-dock .selection-actions { margin-left: 0; }
+  .control-dock .selection-actions::before { display: flex; align-items: center; margin-right: auto; color: #7A896D; font-size: 10px; content: '原色 / 旋转 / 移除'; }
+  .control-dock .selection-actions { width: 100%; }
+}
+.control-dock .selection-actions .round-button { flex-basis: 56px; width: 56px; flex-direction: column; gap: 3px; }
+.control-dock .selection-actions .round-button small { font-size: 8px; line-height: 1; }
+.control-dock .selection-actions::before { content: none; }
+@media (max-width: 760px) {
+  .control-dock .swatches { grid-template-columns: repeat(5, minmax(44px, 1fr)); }
+  .control-dock .selection-actions { justify-content: flex-end; }
+}

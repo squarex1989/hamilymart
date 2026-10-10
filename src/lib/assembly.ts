@@ -1,7 +1,9 @@
+import { HAMSTER_VARIANTS } from "../data/hamsters";
 import {
   BASE_PRODUCT,
   CATALOG_VERSION,
   COLOR_IDS,
+  P01_TOP_XY, H06_TOP_XY,
   SNAP_DISTANCE_MM,
   getBaseParts,
   getDefaultColors,
@@ -30,15 +32,19 @@ export interface AssemblyItem {
 export interface AssemblyState {
   version: 1;
   catalogVersion: typeof CATALOG_VERSION;
-  legHeight: 0 | 100 | 200;
+  legHeight: 0 | 100 | 200 | 300;
   removedCovers: string[];
   extension: PlatformExtension | null;
+  thirdPlatform: PlatformExtension | null;
+  bedding: Bedding;
+  hamster: string | null;
   baseInsert: "lid" | "pool";
   baseColors: ColorMap;
   items: AssemblyItem[];
 }
+export type Bedding = { mode: "thin"; depth: 50 } | { mode: "thick"; depth: 100 | 200 | 300 };
 export type PlatformDirection = "left" | "right" | "front" | "back";
-export type PlatformId = "base" | "base2";
+export type PlatformId = "base" | "base2" | "base3";
 export interface PlatformExtension {
   direction: PlatformDirection;
   baseInsert: "lid" | "pool";
@@ -93,6 +99,9 @@ export function createInitialState(): AssemblyState {
     legHeight: 100,
     removedCovers: [],
     extension: null,
+    thirdPlatform: null,
+    bedding: { mode: "thin", depth: 50 },
+    hamster: null,
     baseInsert: "lid",
     baseColors: {
       P01: "cream",
@@ -114,7 +123,11 @@ export function getPlatforms(state: AssemblyState): PlatformView[] {
     const [x, y] = PLATFORM_OFFSETS[state.extension.direction];
     result.push({ id: "base2", x, y, baseInsert: state.extension.baseInsert, baseColors: state.extension.baseColors, removedCovers: state.extension.removedCovers });
   }
+  if (state.thirdPlatform) result.push({ id: "base3", x: 600, y: 0, baseInsert: state.thirdPlatform.baseInsert, baseColors: state.thirdPlatform.baseColors, removedCovers: state.thirdPlatform.removedCovers });
   return result;
+}
+export function getDisplayElevation(state: AssemblyState): number {
+  return state.legHeight === 0 ? state.bedding.depth - 100 : state.legHeight - 100;
 }
 export function rotateVector([x, y, z]: Vec3, rotation: Rotation): Vec3 {
   switch (rotation) {
@@ -182,17 +195,13 @@ interface Surface {
   points: Vec3[];
   bounds: Bounds;
   id: string;
+  sourceParts?: ("P01" | "H06")[];
 }
 type ProductLookup = typeof getProduct;
 function getSurfaces(state: AssemblyState, excluded: Set<string>, lookup: ProductLookup = getProduct): Surface[] {
-  const grid = [10, 90, 110, 190, 210, 290];
   const surfaces: Surface[] = getPlatforms(state).map(platform => {
-    const points: Vec3[] = [];
-    for (const x of grid) for (const y of grid) {
-      if (platform.baseInsert === "pool" && [90, 110].includes(x) && [90, 110].includes(y)) continue;
-      points.push([x + platform.x, y + platform.y, 110]);
-    }
-    return { id: `platform-${platform.id}`, parentId: platform.id, parentProduct: "base", points,
+    const receivers = [...P01_TOP_XY.map(point => ({ point, sourcePart: "P01" as const })), ...(platform.baseInsert === "lid" ? H06_TOP_XY.map(point => ({ point, sourcePart: "H06" as const })) : [])];
+    return { id: `platform-${platform.id}`, parentId: platform.id, parentProduct: "base", points: receivers.map(({ point: [x, y] }) => [x + platform.x, y + platform.y, 110] as Vec3), sourceParts: receivers.map(receiver => receiver.sourcePart),
       bounds: [platform.x, platform.y, 110, platform.x + 300, platform.y + 300, 110] as Bounds };
   });
   for (const item of state.items) {
@@ -212,9 +221,9 @@ function getSurfaces(state: AssemblyState, excluded: Set<string>, lookup: Produc
 /** Visible magnet markers include only source-backed upward interfaces. */
 export function getMagnetPoints(
   state: AssemblyState,
-): { point: Vec3; parentId: string }[] {
+): { point: Vec3; parentId: string; sourcePart?: "P01" | "H06" }[] {
   return getSurfaces(state, new Set()).flatMap((s) =>
-    s.points.map((point) => ({ point, parentId: s.parentId })),
+    s.points.map((point, index) => ({ point, parentId: s.parentId, ...(s.sourceParts ? { sourcePart: s.sourceParts[index] } : {}) })),
   );
 }
 function facesFor(
@@ -238,9 +247,10 @@ function compatiblePlacement(
     transformBox(b, product, placement),
   );
   const overhang = surface.parentProduct === "base" ? 6 : 2;
+  const allowSingleContactOverhang = product.minimumMagnetMatches === 1 && (surface.parentProduct === "base" || surface.parentProduct === "l-house");
   // Bounds describe reserved assembly space, not mesh boolean collision. Conservative on purpose.
   if (
-    boxes.some(
+    !allowSingleContactOverhang && boxes.some(
       (b) =>
         b[0] < surface.bounds[0] - overhang ||
         b[1] < surface.bounds[1] - overhang ||
@@ -319,7 +329,7 @@ export function getPlacements(
     const parentRotation =
       state.items.find((i) => i.id === surface.parentId)?.rotation ?? 0;
     if (
-      surface.parentProduct !== "base" &&
+      (surface.parentProduct !== "base" && !(product.minimumMagnetMatches === 1 && surface.parentProduct === "l-house")) &&
       product.allowedRelativeRotations &&
       !product.allowedRelativeRotations.includes(
         ((rotation - parentRotation + 360) % 360) as Rotation,
@@ -426,7 +436,7 @@ export function tryPlace(
       (point.z !== undefined && !Number.isFinite(point.z))
     )
       throw new Error("放置坐标无效");
-    if (!ignoreId && state.items.length >= (state.extension ? 96 : 48))
+    if (!ignoreId && state.items.length >= (getPlatforms(state).length * 48))
       throw new Error("组件数量已达到上限");
     const candidates = getPlacements(state, productId, rotation, ignoreId);
     const distance = (p: Placement) =>
@@ -501,38 +511,75 @@ function action(state: AssemblyState, next: AssemblyState, reason?: string): Act
   try { return { ok: true, state: validateAssembly(next) }; }
   catch (error) { return { ok: false, state, reason: reason ?? (error instanceof Error ? error.message : "装配不匹配") }; }
 }
-export function addPlatform(state: AssemblyState, direction: PlatformDirection): ActionResult {
-  if (state.extension) return { ok: false, state, reason: "最多可以添加两个平台" };
-  if (!Object.hasOwn(PLATFORM_OFFSETS, direction)) return { ok: false, state, reason: "平台方向无效" };
-  const initial = createInitialState();
-  return action(state, { ...state, extension: { direction, baseInsert: "lid", baseColors: initial.baseColors, removedCovers: [] } });
+export function addPlatform(state: AssemblyState, direction: PlatformDirection = "right"): ActionResult {
+  if (direction !== "right") return { ok: false, state, reason: "新增平台只能向右贴合" };
+  if (state.thirdPlatform) return { ok: false, state, reason: "最多可以添加三个平台" };
+  const extension: PlatformExtension = { direction: "right", baseInsert: "lid", baseColors: createInitialState().baseColors, removedCovers: [] };
+  return action(state, state.extension ? { ...state, thirdPlatform: extension } : { ...state, extension });
 }
 export function movePlatform(state: AssemblyState, direction: PlatformDirection): ActionResult {
   if (!state.extension) return { ok: false, state, reason: "请先添加第二个平台" };
-  if (!Object.hasOwn(PLATFORM_OFFSETS, direction)) return { ok: false, state, reason: "平台方向无效" };
-  const previous = PLATFORM_OFFSETS[state.extension.direction], next = PLATFORM_OFFSETS[direction];
-  const family = descendants(state, "base2");
-  return action(state, { ...state, extension: { ...state.extension, direction }, items: state.items.map(item => family.has(item.id) ? { ...item, x: round(item.x + next[0] - previous[0]), y: round(item.y + next[1] - previous[1]) } : item) }, "这个方向会与已有组件碰撞，请先移开边缘组件");
+  if (direction !== "right") return { ok: false, state, reason: "平台固定向右连续贴合" };
+  return action(state, state);
 }
-export function removePlatform(state: AssemblyState): ActionResult {
-  return action(state, { ...removeItem(state, "base2"), extension: null });
+export function removePlatform(state: AssemblyState, id: PlatformId = "base2"): ActionResult {
+  const platforms = getPlatforms(state), index = platforms.findIndex(platform => platform.id === id);
+  if (index < 0) return { ok: false, state, reason: "未找到平台" };
+  if (platforms.length === 1) return { ok: false, state, reason: "至少保留一个平台" };
+  const remaining = platforms.filter(platform => platform.id !== id);
+  const removedFamily = descendants(state, id);
+  const newIds: PlatformId[] = ["base", "base2", "base3"];
+  const shifts = new Map<string, { id: PlatformId; x: number }>();
+  remaining.forEach((platform, i) => shifts.set(platform.id, { id: newIds[i], x: i * 300 - platform.x }));
+  const rootOf = (parentId: string): string => { const parent = state.items.find(item => item.id === parentId); return parent ? rootOf(parent.parentId) : parentId; };
+  const items = state.items.filter(item => !removedFamily.has(item.id)).map(item => {
+    const shift = shifts.get(rootOf(item.parentId))!;
+    return { ...item, x: round(item.x + shift.x), parentId: shifts.get(item.parentId)?.id ?? item.parentId };
+  });
+  const [base, second, third] = remaining;
+  const asExtension = (platform?: PlatformView): PlatformExtension | null => platform ? { direction: "right", baseInsert: platform.baseInsert, baseColors: platform.baseColors, removedCovers: platform.removedCovers } : null;
+  return action(state, { ...state, baseInsert: base.baseInsert, baseColors: base.baseColors, removedCovers: base.removedCovers, extension: asExtension(second), thirdPlatform: asExtension(third), items });
 }
-export function setLegHeight(state: AssemblyState, legHeight: 0 | 100 | 200): ActionResult {
+function normalizeBedding(value: unknown): Bedding {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("垫料设置无效");
+  const bedding = value as Bedding;
+  if (bedding.mode === "thin" && bedding.depth === 50) return { mode: "thin", depth: 50 };
+  if (bedding.mode === "thick" && [100, 200, 300].includes(bedding.depth)) return { mode: "thick", depth: bedding.depth };
+  throw new Error("薄垫料为5厘米，厚垫料可选10、20或30厘米");
+}
+export function setBedding(state: AssemblyState, value: Bedding): ActionResult {
+  try {
+    const bedding = normalizeBedding(value);
+    return action(state, { ...state, bedding, legHeight: state.legHeight === 0 ? 0 : bedding.mode === "thin" ? 100 : bedding.depth });
+  } catch (error) { return { ok: false, state, reason: error instanceof Error ? error.message : "垫料设置无效" }; }
+}
+export function setLegHeight(state: AssemblyState, legHeight: 0 | 100 | 200 | 300): ActionResult {
   if (legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) return { ok: false, state, reason: "无腿平台不兼容泳池，请先移除泳池" };
-  return action(state, { ...state, legHeight });
+  const bedding = state.bedding.mode === "thick" && legHeight !== 0 ? { mode: "thick" as const, depth: legHeight } : state.bedding;
+  return action(state, { ...state, legHeight, bedding });
+}
+export function setHamster(state: AssemblyState, hamster: string | null): ActionResult {
+  return action(state, { ...state, hamster });
+}
+function updatePlatform(state: AssemblyState, id: PlatformId, changes: Partial<Pick<PlatformExtension, "baseInsert" | "baseColors" | "removedCovers">>): AssemblyState {
+  return id === "base" ? { ...state, ...changes } : id === "base2" ? { ...state, extension: { ...state.extension!, ...changes } } : { ...state, thirdPlatform: { ...state.thirdPlatform!, ...changes } };
 }
 export function setCoverRemoved(state: AssemblyState, platformId: PlatformId, coverId: string, removed: boolean): ActionResult {
   if (!REMOVABLE_COVERS.includes(coverId as typeof REMOVABLE_COVERS[number])) return { ok: false, state, reason: "只能移除小圆盖，大圆盖会随泳池自动替换" };
   const platform = getPlatforms(state).find(p => p.id === platformId);
   if (!platform) return { ok: false, state, reason: "未找到平台" };
   const removedCovers = removed ? [...new Set([...platform.removedCovers, coverId])].sort() : platform.removedCovers.filter(id => id !== coverId);
-  return action(state, platformId === "base" ? { ...state, removedCovers } : { ...state, extension: { ...state.extension!, removedCovers } });
+  return action(state, updatePlatform(state, platformId, { removedCovers }));
+}
+export function setPlatformColors(state: AssemblyState, platformId: PlatformId, colors: ColorMap): ActionResult {
+  if (!getPlatforms(state).some(platform => platform.id === platformId)) return { ok: false, state, reason: "未找到平台" };
+  return action(state, updatePlatform(state, platformId, { baseColors: colors }));
 }
 export function setPlatformPool(state: AssemblyState, platformId: PlatformId, enabled: boolean): ActionResult {
   if (!getPlatforms(state).some(platform => platform.id === platformId)) return { ok: false, state, reason: "未找到平台" };
   if (enabled && state.legHeight === 0) return { ok: false, state, reason: "无腿平台不兼容泳池，请先选择支撑脚" };
   const baseInsert = enabled ? "pool" as const : "lid" as const;
-  return action(state, platformId === "base" ? { ...state, baseInsert } : { ...state, extension: { ...state.extension!, baseInsert } }, "泳池位置已被占用，请先移开组件");
+  return action(state, updatePlatform(state, platformId, { baseInsert }), "泳池位置已被占用，请先移开组件");
 }
 export function changeBaseInsert(state: AssemblyState, baseInsert: "lid" | "pool"): ActionResult {
   return setPlatformPool(state, "base", baseInsert === "pool");
@@ -575,18 +622,18 @@ function normalizeRemovedCovers(value: unknown): string[] {
 export function validateAssembly(value: unknown): AssemblyState {
   return validateAssemblyWithCatalog(value, getProduct);
 }
-function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup): AssemblyState {
+function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup, legacyLayout = false): AssemblyState {
   if (!value || typeof value !== "object" || Array.isArray(value))
     throw new Error("搭配数据格式不正确");
   const input = value as AssemblyState;
   if (input.version !== 1) throw new Error("暂不支持这个搭配版本");
   if (input.catalogVersion !== undefined && input.catalogVersion !== CATALOG_VERSION)
     throw new Error("搭配目录版本不兼容，请先迁移旧搭配");
-  if (input.legHeight !== 0 && input.legHeight !== 100 && input.legHeight !== 200)
+  if (![0, 100, 200, 300].includes(input.legHeight))
     throw new Error("支撑脚长度无效");
   if (input.baseInsert !== "lid" && input.baseInsert !== "pool")
     throw new Error("平台嵌件无效");
-  if (!Array.isArray(input.items) || input.items.length > (input.extension ? 96 : 48))
+  if (!Array.isArray(input.items) || input.items.length > (input.thirdPlatform ? 144 : input.extension ? 96 : 48))
     throw new Error("组件数量无效");
   const defaults = createInitialState();
   const state: AssemblyState = {
@@ -595,6 +642,9 @@ function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup): Ass
     legHeight: input.legHeight,
     removedCovers: normalizeRemovedCovers(input.removedCovers),
     extension: null,
+    thirdPlatform: null,
+    bedding: normalizeBedding(input.bedding ?? defaults.bedding),
+    hamster: input.hamster ?? null,
     baseInsert: input.baseInsert,
     baseColors: normalizeColors(
       input.baseColors,
@@ -603,11 +653,15 @@ function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup): Ass
     ),
     items: [],
   };
-  if (input.extension !== null && input.extension !== undefined) {
-    const extension = input.extension;
-    if (!extension || typeof extension !== "object" || Array.isArray(extension) || !Object.hasOwn(PLATFORM_OFFSETS, extension.direction) || !["lid", "pool"].includes(extension.baseInsert)) throw new Error("第二个平台数据无效");
-    state.extension = { direction: extension.direction, baseInsert: extension.baseInsert, baseColors: normalizeColors(extension.baseColors, Object.keys(defaults.baseColors), defaults.baseColors), removedCovers: normalizeRemovedCovers(extension.removedCovers) };
+  for (const [key, label] of [["extension", "第二个"], ["thirdPlatform", "第三个"]] as const) {
+    const extension = input[key];
+    if (extension === null || extension === undefined) continue;
+    if (!extension || typeof extension !== "object" || Array.isArray(extension) || !Object.hasOwn(PLATFORM_OFFSETS, extension.direction) || (!legacyLayout && extension.direction !== "right") || !["lid", "pool"].includes(extension.baseInsert)) throw new Error(`${label}平台数据无效`);
+    state[key] = { direction: extension.direction, baseInsert: extension.baseInsert, baseColors: normalizeColors(extension.baseColors, Object.keys(defaults.baseColors), defaults.baseColors), removedCovers: normalizeRemovedCovers(extension.removedCovers) };
   }
+  if (state.thirdPlatform && !state.extension) throw new Error("第三个平台依赖第二个平台");
+  if (state.bedding.mode === "thick" && state.legHeight !== 0 && state.legHeight !== state.bedding.depth) throw new Error("厚垫料与支撑脚高度必须一致");
+  if (state.hamster !== null && (typeof state.hamster !== "string" || !HAMSTER_VARIANTS.some(variant => variant.id === state.hamster))) throw new Error("仓鼠品种无效");
   if (state.legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) throw new Error("无腿平台不兼容泳池");
   const ids = new Set<string>();
   const pending = input.items.map((raw) => {
@@ -616,7 +670,7 @@ function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup): Ass
       typeof raw !== "object" ||
       typeof raw.id !== "string" ||
       !/^[A-Za-z0-9_-]{1,40}$/.test(raw.id) ||
-      (raw.id === "base" || raw.id === "base2") ||
+      (["base", "base2", "base3"].includes(raw.id)) ||
       ids.has(raw.id)
     )
       throw new Error("组件编号无效或重复");
@@ -682,12 +736,13 @@ function hasLegacyVillaColors(value: unknown): boolean {
   return keys.length === LEGACY_VILLA_PARTS.length && LEGACY_VILLA_PARTS.every(key => keys.includes(key));
 }
 /** Original catalog geometry is used only to validate historical imports before upgrading. */
-function legacyProductLookup(source: 2 | 3 | 4): ProductLookup {
+function legacyProductLookup(source: 2 | 3 | 4 | 5): ProductLookup {
   return id => {
     const product = getProduct(id);
+    if (source === 5) return id === "planter" || id === "food-bowl" ? { ...product, allowedParents: ["villa"] } : product;
     if (id === "villa") return { ...product, surfaces: product.surfaces!.map(surface => surface.id === "planter" ? { ...surface, points: [[278.5, 264, 200], [292.5, 264, 200]] } : surface) };
-    if (id === "planter") return { ...product, bottomMagnets: [[278.5, 264, 200], [292.5, 264, 200]], minimumMagnetMatches: 2 };
-    if (id === "food-bowl") return { ...product, origin: [134, 124, 180], bottomMagnets: [[127, 124, 180], [141, 124, 180]], minimumMagnetMatches: 2, collisionBoxes: [[94.5, 96, 180, 149.5, 156, 201]] };
+    if (id === "planter") return { ...product, bottomMagnets: [[278.5, 264, 200], [292.5, 264, 200]], minimumMagnetMatches: 2, allowedParents: ["villa"] };
+    if (id === "food-bowl") return { ...product, origin: [134, 124, 180], bottomMagnets: [[127, 124, 180], [141, 124, 180]], minimumMagnetMatches: 2, allowedParents: ["villa"], collisionBoxes: [[94.5, 96, 180, 149.5, 156, 201]] };
     if (id === "roof-cottage" && source === 4) return { ...product, bottomMagnets: [[5, 192, 200], [5, 286, 200], [125, 192, 200], [125, 286, 200]], collisionBoxes: [[-3, 179.60000610351562, 200, 133, 298, 373.3333435058594]] };
     return product;
   };
@@ -730,18 +785,19 @@ function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
   }
 }
 /** Validate historical geometry before migrating; current configurations never receive placement repairs. */
-export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5): AssemblyMigrationResult {
+export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5 | 6): AssemblyMigrationResult {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("搭配数据格式不正确");
   const raw = value as Record<string, unknown>;
   if (!Array.isArray(raw.items)) throw new Error("组件数量无效");
-  if (sourceCatalogVersion !== undefined && ![2, 3, 4, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
+  if (sourceCatalogVersion !== undefined && ![2, 3, 4, 5, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
   if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion) throw new Error("搭配目录版本标记冲突");
   const rawItems = raw.items;
   const villas = rawItems.filter(item => item && typeof item === "object" && item.productId === "villa");
   const inferredLegacy = raw.catalogVersion === undefined && villas.length > 0 && villas.every(item => hasLegacyVillaColors(item.colors));
   const source = sourceCatalogVersion ?? raw.catalogVersion ?? (inferredLegacy ? 2 : CATALOG_VERSION);
   if (source === CATALOG_VERSION) return { state: validateAssembly(value), messages: [] };
-  if (source !== 2 && source !== 3 && source !== 4) throw new Error("搭配目录版本不兼容");
+  if (source !== 2 && source !== 3 && source !== 4 && source !== 5) throw new Error("搭配目录版本不兼容");
+  if (![0, 100, 200].includes(raw.legHeight as number) || (raw.thirdPlatform !== undefined && raw.thirdPlatform !== null)) throw new Error("旧搭配包含该版本不支持的平台或脚长");
   const messages: string[] = [];
   let items = rawItems;
   if (source === 2) {
@@ -763,18 +819,30 @@ export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4
     messages.push(villas.length ? "旧搭配已升级为 V4 八件复式套餐：新增白柱继承二层平台颜色，左右草栏继承原草栏颜色。" : "旧搭配目录已升级，原有配色与位置已保留。");
     if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个圣诞帽小屋按 V4 围栏安全方向调整，装配位置和自定义配色已保留。`);
   }
-  const previous = validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION, ...(source < 4 ? { extension: null, removedCovers: [] } : {}), items }, legacyProductLookup(source));
-  const upgraded = upgradeSteelV9(previous);
-  return { state: upgraded.state, messages: [...messages, ...upgraded.messages] };
+  const previous = validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION, thirdPlatform: null, bedding: { mode: "thin", depth: 50 }, hamster: null, ...(source < 4 ? { extension: null, removedCovers: [] } : {}), items }, legacyProductLookup(source), true);
+  let relocated = previous;
+  if (previous.extension && previous.extension.direction !== "right") {
+    const [oldX, oldY] = PLATFORM_OFFSETS[previous.extension.direction];
+    const family = descendants(previous, "base2");
+    relocated = { ...previous, extension: { ...previous.extension, direction: "right" }, items: previous.items.map(item => family.has(item.id) ? { ...item, x: round(item.x + 300 - oldX), y: round(item.y - oldY) } : item) };
+    messages.push("第二个平台已调整为向右贴合，平台上的组件与子配件整体随动，原有配色已保留。");
+  }
+  try {
+    const upgraded = source < 5 ? upgradeSteelV9(relocated) : { state: validateAssembly(relocated), messages: ["搭配目录已升级，原有组件与配色已保留。"] };
+    return { state: upgraded.state, messages: [...messages, ...upgraded.messages] };
+  } catch (error) {
+    if (relocated !== previous) throw new Error(`旧平台布局无法兼容右侧连续布局，原存档已保留：${error instanceof Error ? error.message : "组件相撞"}`);
+    throw error;
+  }
 }
 
 export function getOrderLines(state: AssemblyState): OrderLine[] {
-  const basePrice = BASE_PRODUCT.price + (state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : 0) - (state.legHeight === 0 ? BASE_PRODUCT.noLegDiscount : 0);
+  const basePrice = BASE_PRODUCT.price + (state.legHeight === 300 ? BASE_PRODUCT.extraTallLegSurcharge : state.legHeight === 200 ? BASE_PRODUCT.tallLegSurcharge : 0) - (state.legHeight === 0 ? BASE_PRODUCT.noLegDiscount : 0);
   const lines: OrderLine[] = [];
   for (const platform of getPlatforms(state)) {
     const baseParts = getBaseParts(state.legHeight, platform.baseInsert).filter(part => part.id !== "B01" && !platform.removedCovers.includes(part.id));
-    const baseColorKeys = [...baseParts.filter(part => !/^[LX]0[1-4]$/.test(part.id)).map(part => part.id), ...(state.legHeight ? ["legs"] : [])];
-    lines.push({ id: platform.id, sku: `${BASE_PRODUCT.sku}-${state.legHeight}`, name: `${BASE_PRODUCT.name} · ${state.legHeight ? `${state.legHeight / 10} cm 腿` : "无腿"}${platform.id === "base2" ? " · 第二平台" : ""}`, quantity: 1, unitPrice: basePrice, total: basePrice, parts: baseParts.map(part => part.id), colors: Object.fromEntries(baseColorKeys.map(key => [key, platform.baseColors[key]])) });
+    const baseColorKeys = [...baseParts.filter(part => !/^[LXY]0[1-4]$/.test(part.id)).map(part => part.id), ...(state.legHeight ? ["legs"] : [])];
+    lines.push({ id: platform.id, sku: `${BASE_PRODUCT.sku}-${state.legHeight}`, name: `${BASE_PRODUCT.name} · ${state.legHeight ? `${state.legHeight / 10} cm 腿` : "无腿"}${platform.id === "base2" ? " · 第二平台" : platform.id === "base3" ? " · 第三平台" : ""}`, quantity: 1, unitPrice: basePrice, total: basePrice, parts: baseParts.map(part => part.id), colors: Object.fromEntries(baseColorKeys.map(key => [key, platform.baseColors[key]])) });
     if (platform.baseInsert === "pool") {
       const pool = getProduct("pool");
       lines.push({ id: `pool-${platform.id}`, sku: pool.sku, name: pool.name, quantity: 1, unitPrice: pool.price, total: pool.price, parts: ["B01"], colors: { B01: platform.baseColors.B01 } });

@@ -53,6 +53,10 @@ A02 草栏插槽向内移动：后侧、左侧各 0.8 mm，右侧 0.4 mm，外�
 
 简化检查是抽样验证，不是完整 Hausdorff 距离证明。网页模型仅用于选购预览，生产使用正式 3MF；磁吸位置由正式孔位数据决定。
 
+## 30 cm 腿的网页派生
+
+当前模型索引额外包含 Y01–Y04，共 47 组、54 个颜色体。运行 `python3 scripts/prepare-tall-legs.py` 从 V9 的 20 cm 腿延长中段生成；保留两端形状及磁座，总长 300 mm，网格水密。每件 provenance 标明 `derivedFrom` 和 `production3mfIncluded:false`，不把它认作原 V9 生产套装的一部分。
+
 ## 重新生成网站资产
 
 安装所需的 Python 库后，从已批准的 Steel V9 源更新当前目录使用的全部组：
@@ -61,8 +65,9 @@ A02 草栏插槽向内移动：后侧、左侧各 0.8 mm，右侧 0.4 mm，外�
 python3 - <<'PYTHON'
 import json, subprocess
 from pathlib import Path
-ids = list(json.loads(Path('src/data/model-index.json').read_text()))
+ids = [id for id in json.loads(Path('src/data/model-index.json').read_text()) if not id.startswith('Y0')]
 subprocess.run(['python3', 'scripts/prepare-models.py', '--only', *ids, '--thumbnails'], check=True)
+subprocess.run(['python3', 'scripts/prepare-tall-legs.py'], check=True)
 PYTHON
 ```
 
