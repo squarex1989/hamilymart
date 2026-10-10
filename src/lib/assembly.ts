@@ -1,5 +1,6 @@
 import {
   BASE_PRODUCT,
+  CATALOG_VERSION,
   COLOR_IDS,
   SNAP_DISTANCE_MM,
   getBaseParts,
@@ -27,6 +28,7 @@ export interface AssemblyItem {
 }
 export interface AssemblyState {
   version: 1;
+  catalogVersion: typeof CATALOG_VERSION;
   legHeight: 100 | 200;
   baseInsert: "lid" | "pool";
   baseColors: ColorMap;
@@ -61,6 +63,7 @@ const samePoint = (a: Vec3, b: Vec3) => a.every((v, i) => close(v, b[i]));
 export function createInitialState(): AssemblyState {
   return {
     version: 1,
+    catalogVersion: CATALOG_VERSION,
     legHeight: 100,
     baseInsert: "lid",
     baseColors: {
@@ -492,6 +495,8 @@ export function validateAssembly(value: unknown): AssemblyState {
     throw new Error("搭配数据格式不正确");
   const input = value as AssemblyState;
   if (input.version !== 1) throw new Error("暂不支持这个搭配版本");
+  if (input.catalogVersion !== undefined && input.catalogVersion !== CATALOG_VERSION)
+    throw new Error("搭配目录版本不兼容，请先迁移旧搭配");
   if (input.legHeight !== 100 && input.legHeight !== 200)
     throw new Error("支撑脚长度无效");
   if (input.baseInsert !== "lid" && input.baseInsert !== "pool")
@@ -501,6 +506,7 @@ export function validateAssembly(value: unknown): AssemblyState {
   const defaults = createInitialState();
   const state: AssemblyState = {
     version: 1,
+    catalogVersion: CATALOG_VERSION,
     legHeight: input.legHeight,
     baseInsert: input.baseInsert,
     baseColors: normalizeColors(
@@ -523,6 +529,8 @@ export function validateAssembly(value: unknown): AssemblyState {
       throw new Error("组件编号无效或重复");
     ids.add(raw.id);
     const product = getProduct(raw.productId);
+    if (product.id === "villa" && (!raw.colors || Object.keys(raw.colors).length !== product.parts.length))
+      throw new Error("V4 花园复式套餐颜色不完整，请先迁移旧搭配");
     if (
       typeof raw.parentId !== "string" ||
       ![0, 90, 180, 270].includes(raw.rotation) ||
@@ -569,6 +577,59 @@ export function validateAssembly(value: unknown): AssemblyState {
   }
   return state;
 }
+export interface AssemblyMigrationResult {
+  state: AssemblyState;
+  messages: string[];
+}
+const LEGACY_VILLA_PARTS = ["A01", "A02", "G05", "G15"] as const;
+function hasLegacyVillaColors(value: unknown): boolean {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const keys = Object.keys(value);
+  return keys.length === LEGACY_VILLA_PARTS.length && LEGACY_VILLA_PARTS.every(key => keys.includes(key));
+}
+/**
+ * Explicit migration boundary for catalog 2 and old unversioned local storage.
+ * Never repair a current catalog-3 state, including an unversioned state with eight-part colors.
+ * Only the known legacy reversed loft is corrected; all other geometry remains strictly validated.
+ */
+export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3): AssemblyMigrationResult {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("搭配数据格式不正确");
+  const raw = value as Record<string, unknown>;
+  if (!Array.isArray(raw.items)) throw new Error("组件数量无效");
+  if (sourceCatalogVersion !== undefined && sourceCatalogVersion !== 2 && sourceCatalogVersion !== CATALOG_VERSION)
+    throw new Error("搭配目录版本不兼容");
+  if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion)
+    throw new Error("搭配目录版本标记冲突");
+  const rawItems = raw.items;
+  const villas = rawItems.filter(item => item && typeof item === "object" && item.productId === "villa");
+  const inferredLegacy = raw.catalogVersion === undefined && villas.length > 0 && villas.every(item => hasLegacyVillaColors(item.colors));
+  const source = sourceCatalogVersion ?? raw.catalogVersion ?? (inferredLegacy ? 2 : CATALOG_VERSION);
+  if (source === CATALOG_VERSION) return { state: validateAssembly(value), messages: [] };
+  if (source !== 2) throw new Error("搭配目录版本不兼容");
+  if (!villas.every(item => hasLegacyVillaColors(item.colors))) throw new Error("旧版复式套餐的四色数据不完整");
+  let adjustedLofts = 0;
+  const items = rawItems.map(item => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) throw new Error("组件数据格式不正确");
+    const next = { ...item, colors: item.colors && typeof item.colors === "object" ? { ...item.colors } : item.colors };
+    if (item.productId === "villa") {
+      next.colors = { ...item.colors, G16: item.colors.G15, G17: item.colors.G15, W01: item.colors.A02, W02: item.colors.A02 };
+    }
+    if (item.productId === "roof-cottage") {
+      const parent = rawItems.find(candidate => candidate && candidate.id === item.parentId);
+      if (parent?.productId === "villa" && [0, 90, 180, 270].includes(parent.rotation) && [0, 90, 180, 270].includes(item.rotation) && (item.rotation - parent.rotation + 360) % 360 === 180) {
+        // G03's source pivot is the four-magnet center, so this rotation retains every interface XY.
+        next.rotation = parent.rotation;
+        adjustedLofts++;
+      }
+    }
+    return next;
+  });
+  const state = validateAssembly({ ...raw, catalogVersion: CATALOG_VERSION, items });
+  const messages = [villas.length ? "旧搭配已升级为 V4 八件复式套餐：新增白柱继承二层平台颜色，左右草栏继承原草栏颜色。" : "旧搭配目录已升级为 V4，原有配色与位置已保留。"];
+  if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个尖顶阁楼按 V4 围栏安全方向调整，磁吸中心和自定义配色已保留。`);
+  return { state, messages };
+}
+
 export function getOrderLines(state: AssemblyState): OrderLine[] {
   const basePrice =
     BASE_PRODUCT.price +

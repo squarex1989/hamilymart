@@ -29,6 +29,7 @@ import AssemblyScene from "./components/AssemblyScene";
 import type { SceneHandle } from "./components/AssemblyScene";
 import {
   BASE_PRODUCT,
+  CATALOG_VERSION,
   COLORS,
   PRODUCTS,
   getBaseParts,
@@ -41,13 +42,14 @@ import {
   getOrderLines,
   getPlacements,
   getTotalPrice,
+  migrateAssembly,
   removeItem,
   rotateItem,
   tryPlace,
   validateAssembly,
 } from "./lib/assembly";
 import type { AssemblyState } from "./lib/assembly";
-import { decodeConfig, encodeConfig } from "./lib/config-code";
+import { decodeConfigWithMigration, encodeConfig } from "./lib/config-code";
 
 const STORAGE = "hamilymart.assembly.v2";
 const money = (cents: number) =>
@@ -57,11 +59,21 @@ const money = (cents: number) =>
     maximumFractionDigits: 2,
   }).format(cents / 100);
 function initial() {
+  let original: string | null = null;
   try {
-    const saved = localStorage.getItem(STORAGE);
-    return saved ? validateAssembly(JSON.parse(saved)) : createInitialState();
-  } catch {
-    return createInitialState();
+    original = localStorage.getItem(STORAGE);
+    const result = original
+      ? migrateAssembly(JSON.parse(original))
+      : { state: createInitialState(), messages: [] };
+    return { ...result, recovery: null };
+  } catch (error) {
+    return {
+      state: createInitialState(),
+      messages: [
+        `本地搭配暂时无法载入：${error instanceof Error ? error.message : "存档读取失败"}。原存档已保留，你也可以粘贴搭配编号恢复。`,
+      ],
+      recovery: original,
+    };
   }
 }
 function HamsterMark() {
@@ -84,8 +96,10 @@ function HamsterMark() {
 }
 
 export default function App() {
-  const [state, setState] = useState<AssemblyState>(initial),
+  const [startup] = useState(initial);
+  const [state, setState] = useState<AssemblyState>(startup.state),
     [selectedId, setSelectedId] = useState<string | null>("base");
+  const [migrationNotice, setMigrationNotice] = useState(startup.messages.join(" "));
   const [activeProduct, setActiveProduct] = useState<string | null>(null),
     [rotation, setRotation] = useState<Rotation>(0);
   const [category, setCategory] = useState("all"),
@@ -139,12 +153,20 @@ export default function App() {
   }
   useEffect(() => {
     try {
+      if (startup.recovery) {
+        // Preserve unreadable/unsupported data before the user starts a replacement.
+        if (state === startup.state) {
+          setSaved(false);
+          return;
+        }
+        localStorage.setItem(`${STORAGE}.recovery`, startup.recovery);
+      }
       localStorage.setItem(STORAGE, JSON.stringify(state));
       setSaved(true);
     } catch {
       setSaved(false);
     }
-  }, [state]);
+  }, [state, startup]);
   useEffect(() => {
     const keys =
       selectedId === "base"
@@ -300,8 +322,9 @@ export default function App() {
   }
   function restore() {
     try {
-      const next = decodeConfig(importCode.trim());
-      commit(next);
+      const result = decodeConfigWithMigration(importCode.trim());
+      commit(result.state);
+      setMigrationNotice(result.messages.join(" "));
       select("base");
       setImportError("");
       setModal(null);
@@ -744,7 +767,7 @@ export default function App() {
                         }}
                       >
                         <img
-                          src={`/thumbnails/${product.id}.png`}
+                          src={`/thumbnails/${product.id}.png?v=${CATALOG_VERSION}`}
                           alt={product.name}
                           draggable={false}
                         />
@@ -803,7 +826,7 @@ export default function App() {
                 className={`selected-row ${selectedId === "base" ? "active" : ""}`}
                 onClick={() => select("base")}
               >
-                <img src="/thumbnails/base.png" alt="基础平台" />
+                <img src={`/thumbnails/base.png?v=${CATALOG_VERSION}`} alt="基础平台" />
                 <span>
                   <strong>{BASE_PRODUCT.name}</strong>
                   <small>
@@ -832,7 +855,7 @@ export default function App() {
                     className={`selected-row ${selectedId === item.id ? "active" : ""}`}
                     onClick={() => select(item.id)}
                   >
-                    <img src={`/thumbnails/${product.id}.png`} alt="" />
+                    <img src={`/thumbnails/${product.id}.png?v=${CATALOG_VERSION}`} alt="" />
                     <span>
                       <strong>{product.name}</strong>
                       <small>
@@ -885,7 +908,20 @@ export default function App() {
           <ArrowRight size={17} />
         </button>
       </footer>
-      {toast && (
+      {migrationNotice && (
+        <div className="toast migration-notice" role="status">
+          <Info size={18} />
+          <span>{migrationNotice}</span>
+          <button
+            className="round-button"
+            aria-label="关闭模型更新提示"
+            onClick={() => setMigrationNotice("")}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+      {toast && !migrationNotice && (
         <div className="toast" role="status">
           <Info size={17} />
           {toast}

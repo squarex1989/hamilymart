@@ -284,49 +284,6 @@
     ],
     "nameZh": "圆柱支撑腿_D15_H200"
   },
-  "A01": {
-    "url": "/models/A01.glb",
-    "bounds": [
-      2.0,
-      181.3000030517578,
-      110.0,
-      198.0,
-      298.0,
-      192.0
-    ],
-    "components": [
-      {
-        "id": "A01_PineGreen",
-        "colorKey": "PineGreen",
-        "color": "#174A3A"
-      },
-      {
-        "id": "A01_Gold",
-        "colorKey": "Gold",
-        "color": "#C99B46"
-      }
-    ],
-    "nameZh": "纯绿房间_金色丝带_前右圆拱_跨行磁吸"
-  },
-  "A02": {
-    "url": "/models/A02.glb",
-    "bounds": [
-      -5.0,
-      180.0,
-      110.0,
-      305.0,
-      300.0,
-      200.0
-    ],
-    "components": [
-      {
-        "id": "A02_Snow",
-        "colorKey": "Snow",
-        "color": "#F1EADB"
-      }
-    ],
-    "nameZh": "上层平台_圆柱承托_与磁网格对齐"
-  },
   "G03": {
     "url": "/models/G03.glb",
     "bounds": [
@@ -398,25 +355,6 @@
       }
     ],
     "nameZh": "圣诞袜花圃_双磁吸"
-  },
-  "G15": {
-    "url": "/models/G15.glb",
-    "bounds": [
-      159.0,
-      196.0,
-      190.0,
-      304.3999938964844,
-      299.3999938964844,
-      238.5
-    ],
-    "components": [
-      {
-        "id": "G15_PineGreen",
-        "colorKey": "PineGreen",
-        "color": "#174A3A"
-      }
-    ],
-    "nameZh": "缩短5毫米圆浪草栏"
   },
   "B01": {
     "url": "/models/B01.glb",
@@ -745,5 +683,148 @@
       }
     ],
     "nameZh": "LT3_竖直端面双磁铁底座"
+  },
+  "A01": {
+    "url": "/models/A01.glb",
+    "bounds": [
+      2.006274700164795,
+      178.1999969482422,
+      110.0,
+      198.0,
+      297.99371337890625,
+      190.0
+    ],
+    "components": [
+      {
+        "id": "A01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      },
+      {
+        "id": "A01_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      },
+      {
+        "id": "A01_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "nameZh": "纯绿房间_金色丝带_前右圆拱_跨行磁吸"
+  },
+  "W01": {
+    "url": "/models/W01.glb",
+    "bounds": [
+      282.5,
+      182.5,
+      110.0,
+      297.5,
+      197.5,
+      196.0
+    ],
+    "components": [
+      {
+        "id": "W01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "前柱_6mm贯穿扁插片"
+  },
+  "W02": {
+    "url": "/models/W02.glb",
+    "bounds": [
+      282.5,
+      282.5,
+      110.0,
+      297.5,
+      297.5,
+      200.0
+    ],
+    "components": [
+      {
+        "id": "W02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "后柱_10mm贯穿扁插片"
+  },
+  "A02": {
+    "url": "/models/A02.glb",
+    "bounds": [
+      -5.0,
+      180.0,
+      182.0,
+      305.0,
+      300.0,
+      200.0
+    ],
+    "components": [
+      {
+        "id": "A02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "二层白平台_贯穿防转柱槽_六封闭磁孔"
+  },
+  "G15": {
+    "url": "/models/G15.glb",
+    "bounds": [
+      -4.399999997019767,
+      297.0,
+      192.0,
+      303.9999999985099,
+      299.4,
+      237.99439507573842
+    ],
+    "components": [
+      {
+        "id": "G15_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "后侧波浪草_3插片"
+  },
+  "G16": {
+    "url": "/models/G16.glb",
+    "bounds": [
+      -4.4,
+      196.00000000149012,
+      192.0,
+      -2.0,
+      296.9999999985099,
+      237.99958757907152
+    ],
+    "components": [
+      {
+        "id": "G16_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "左侧波浪草_2插片"
+  },
+  "G17": {
+    "url": "/models/G17.glb",
+    "bounds": [
+      301.6,
+      196.00000000149012,
+      192.0,
+      304.0,
+      296.9999999985099,
+      237.99958757907152
+    ],
+    "components": [
+      {
+        "id": "G17_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "右侧波浪草_2插片"
   }
 }

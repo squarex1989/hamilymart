@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v1/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v4/assembly_meshes.json')
 
 
 def simplified_mesh(component: dict) -> tuple[trimesh.Trimesh, dict]:

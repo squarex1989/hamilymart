@@ -1,5 +1,5 @@
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
- * Magnet coordinates are transcribed from unified_complete_8x4_v1/hardware_complete.json.
+ * Magnet coordinates are transcribed from unified_complete_8x4_v4/hardware_complete.json.
  * Contact planes, rather than embedded magnet centers, are used for assembly transforms.
  */
 export type Vec3 = [number, number, number];
@@ -143,7 +143,11 @@ export const PRODUCTS: Product[] = [
       part("A01", "一层小屋", "pine"),
       part("A02", "二层平台", "cream"),
       part("G05", "波浪楼梯", "red"),
-      part("G15", "草丛围栏", "pine"),
+      part("G15", "后侧草栏", "pine"),
+      part("G16", "左侧草栏", "pine"),
+      part("G17", "右侧草栏", "pine"),
+      part("W01", "前侧白柱", "cream"),
+      part("W02", "后侧白柱", "cream"),
     ],
     bottomMagnets: down(
       [
@@ -158,7 +162,7 @@ export const PRODUCTS: Product[] = [
       110,
     ),
     collisionBoxes: [
-      [-5, 180, 110, 305, 300, 238.5],
+      [-5, 178.2, 110, 305, 300, 238],
       [219, 82, 110, 300, 194, 201.423],
     ],
     surfaces: [
@@ -266,6 +270,7 @@ export const PRODUCTS: Product[] = [
     ),
     collisionBoxes: [[-3, 179.6, 200, 159, 298, 373.333]],
     allowedParents: ["villa"],
+    allowedRelativeRotations: [0],
   },
   pipe(
     "ST1",
@@ -374,4 +379,4 @@ export function getDefaultColors(productId: string): ColorMap {
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 2;
+export const CATALOG_VERSION = 3;

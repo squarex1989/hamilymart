@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "5e7ef46d4b187f4f9f21acc3633c0f15df9ab4922abf7795bece64b7b08de95d",
-  "sourceVersion": "Complete 8x4 V1",
+  "sourceSha256": "2668172cba9a6b03c0e99b1f7874ec3cf01db7988aaeab9ed2d828865f4212d0",
+  "sourceVersion": "Complete 8x4 V4",
   "units": "millimeter",
   "upAxis": "Z",
   "groups": {
@@ -199,41 +199,6 @@
         }
       ]
     },
-    "A01": {
-      "bytes": 324932,
-      "components": [
-        {
-          "id": "A01_PineGreen",
-          "sourceTriangles": 18808,
-          "triangles": 10264,
-          "sampledMaxErrorMm": 0.013434,
-          "boundsMaxErrorMm": 4.4e-05,
-          "volumeRelativeError": 8.39e-06
-        },
-        {
-          "id": "A01_Gold",
-          "sourceTriangles": 4760,
-          "triangles": 4760,
-          "sampledMaxErrorMm": 0.0,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0,
-          "keptOriginal": true
-        }
-      ]
-    },
-    "A02": {
-      "bytes": 378328,
-      "components": [
-        {
-          "id": "A02_Snow",
-          "sourceTriangles": 14498,
-          "triangles": 12636,
-          "sampledMaxErrorMm": 0.008554,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 3.07e-06
-        }
-      ]
-    },
     "G03": {
       "bytes": 340656,
       "components": [
@@ -294,19 +259,6 @@
           "sampledMaxErrorMm": 0.00806,
           "boundsMaxErrorMm": 3e-05,
           "volumeRelativeError": 0.00011444
-        }
-      ]
-    },
-    "G15": {
-      "bytes": 302804,
-      "components": [
-        {
-          "id": "G15_PineGreen",
-          "sourceTriangles": 36464,
-          "triangles": 14780,
-          "sampledMaxErrorMm": 0.011189,
-          "boundsMaxErrorMm": 0.000136,
-          "volumeRelativeError": 0.0003482
         }
       ]
     },
@@ -536,6 +488,113 @@
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "A01": {
+      "bytes": 235540,
+      "components": [
+        {
+          "id": "A01_PineGreen",
+          "sourceTriangles": 9288,
+          "triangles": 7452,
+          "sampledMaxErrorMm": 0.016724,
+          "boundsMaxErrorMm": 0.001377,
+          "volumeRelativeError": 0.000133
+        },
+        {
+          "id": "A01_Gold",
+          "sourceTriangles": 660,
+          "triangles": 660,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        },
+        {
+          "id": "A01_ChristmasRed",
+          "sourceTriangles": 1610,
+          "triangles": 1610,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "W01": {
+      "bytes": 44432,
+      "components": [
+        {
+          "id": "W01_Snow",
+          "sourceTriangles": 1436,
+          "triangles": 1436,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "W02": {
+      "bytes": 44432,
+      "components": [
+        {
+          "id": "W02_Snow",
+          "sourceTriangles": 1436,
+          "triangles": 1436,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ]
+    },
+    "A02": {
+      "bytes": 300652,
+      "components": [
+        {
+          "id": "A02_Snow",
+          "sourceTriangles": 11664,
+          "triangles": 9962,
+          "sampledMaxErrorMm": 0.005828,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 8.1e-07
+        }
+      ]
+    },
+    "G15": {
+      "bytes": 141584,
+      "components": [
+        {
+          "id": "G15_PineGreen",
+          "sourceTriangles": 16972,
+          "triangles": 7256,
+          "sampledMaxErrorMm": 0.011631,
+          "boundsMaxErrorMm": 0.001847,
+          "volumeRelativeError": 4.538e-05
+        }
+      ]
+    },
+    "G16": {
+      "bytes": 54704,
+      "components": [
+        {
+          "id": "G16_PineGreen",
+          "sourceTriangles": 10630,
+          "triangles": 2618,
+          "sampledMaxErrorMm": 0.011994,
+          "boundsMaxErrorMm": 0.002759,
+          "volumeRelativeError": 7.016e-05
+        }
+      ]
+    },
+    "G17": {
+      "bytes": 54484,
+      "components": [
+        {
+          "id": "G17_PineGreen",
+          "sourceTriangles": 10630,
+          "triangles": 2610,
+          "sampledMaxErrorMm": 0.011994,
+          "boundsMaxErrorMm": 0.002759,
+          "volumeRelativeError": 6.82e-05
         }
       ]
     }

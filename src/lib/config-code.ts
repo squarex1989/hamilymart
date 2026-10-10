@@ -1,7 +1,7 @@
 import { CATALOG_VERSION, COLORS, PRODUCTS } from "../data/catalog";
 import type { ColorMap } from "../data/catalog";
-import { createInitialState, validateAssembly } from "./assembly";
-import type { AssemblyItem, AssemblyState } from "./assembly";
+import { createInitialState, migrateAssembly, validateAssembly } from "./assembly";
+import type { AssemblyItem, AssemblyState, AssemblyMigrationResult } from "./assembly";
 
 /** Full versioned configuration payload. CRC detects typos; it is NOT a database identifier or signature. */
 const PREFIX = "HM1";
@@ -90,7 +90,7 @@ export function encodeConfig(value: AssemblyState): string {
     .replace(/=+$/, "");
   return `${PREFIX}.${body}.${checksum(body)}`;
 }
-export function decodeConfig(input: string): AssemblyState {
+export function decodeConfigWithMigration(input: string): AssemblyMigrationResult {
   if (typeof input !== "string" || input.length > MAX_CODE_LENGTH)
     throw new Error("搭配编号过长或格式不正确");
   const code = input.trim();
@@ -114,10 +114,10 @@ export function decodeConfig(input: string): AssemblyState {
     !Array.isArray(payload) ||
     payload.length !== 6 ||
     payload[0] !== 1 ||
-    payload[1] !== CATALOG_VERSION
+    (payload[1] !== CATALOG_VERSION && payload[1] !== 2)
   )
     throw new Error("搭配目录版本不兼容");
-  const [, , legHeight, insert, baseColors, tuples] = payload;
+  const [, sourceCatalogVersion, legHeight, insert, baseColors, tuples] = payload;
   if (
     (insert !== 0 && insert !== 1) ||
     !Array.isArray(tuples) ||
@@ -125,8 +125,9 @@ export function decodeConfig(input: string): AssemblyState {
   )
     throw new Error("搭配编号内容无效");
   const initial = createInitialState();
-  const state: AssemblyState = {
+  const state: Omit<AssemblyState, "catalogVersion"> & { catalogVersion: number } = {
     ...initial,
+    catalogVersion: sourceCatalogVersion,
     legHeight,
     baseInsert: insert ? "pool" : "lid",
     baseColors: arrayToColors(baseColors, Object.keys(initial.baseColors)),
@@ -158,10 +159,15 @@ export function decodeConfig(input: string): AssemblyState {
       rotation: (turn * 90) as AssemblyItem["rotation"],
       colors: arrayToColors(
         colors,
-        product.parts.map((p) => p.id),
+        sourceCatalogVersion === 2 && product.id === "villa" ? ["A01", "A02", "G05", "G15"] : product.parts.map((p) => p.id),
       ),
       parentId: parent === -1 ? "base" : `c${parent + 1}`,
     });
   }
-  return validateAssembly(state);
+  return migrateAssembly(state, sourceCatalogVersion);
+}
+
+/** Compatibility wrapper; use decodeConfigWithMigration to show migration notices in the UI. */
+export function decodeConfig(input: string): AssemblyState {
+  return decodeConfigWithMigration(input).state;
 }
