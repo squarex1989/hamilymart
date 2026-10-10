@@ -705,6 +705,9 @@ function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
       if (unchanged) state = { ...state, items: [...state.items, item] };
       else moved.push(item);
     }
+    // Hats already on a villa must keep that parent. Reserve their only host before
+    // relocating first-floor hats, which may use any remaining villa.
+    moved.sort((a, b) => Number(a.parentId === "base" || a.parentId === "base2") - Number(b.parentId === "base" || b.parentId === "base2"));
     for (const item of moved) {
       const wasOnPlatform = item.parentId === "base" || item.parentId === "base2";
       const candidates = ([0, 90, 180, 270] as Rotation[]).flatMap(rotation => getPlacements(state, item.productId, rotation))

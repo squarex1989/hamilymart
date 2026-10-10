@@ -972,3 +972,27 @@ test("hat migration refuses missing or occupied hosts without deleting, adding, 
   const current = { ...old, catalogVersion: CATALOG_VERSION, items: [villa, old.items[2]] };
   assert.throws(() => migrateAssembly(current), /磁吸位/);
 });
+
+test("hat migration reserves a restricted upper host before moving a first-floor hat regardless of input order", () => {
+  const first = place(success(addPlatform(createInitialState(), "back")), "villa", 150, 190);
+  const second = place(first.state, "villa", 150, 490);
+  const groundHat = { id: "ground-hat", productId: "roof-cottage", x: 163, y: 57, z: 110, rotation: 0, parentId: "base", colors: { G03: "rose" } };
+  const upperHat = { id: "upper-hat", productId: "roof-cottage", x: 104, y: 239, z: 200, rotation: 0, parentId: first.item.id, colors: { G03: "sky" } };
+  const codes: string[] = [];
+  for (const hats of [[groundHat, upperHat], [upperHat, groundHat]]) {
+    const old = { ...second.state, catalogVersion: 4, items: [...second.state.items, ...hats] };
+    const before = JSON.stringify(old);
+    const { state, messages } = migrateAssembly(old);
+    assert.equal(state.items.length, 4);
+    const ground = state.items.find(item => item.id === groundHat.id)!;
+    const upper = state.items.find(item => item.id === upperHat.id)!;
+    assert.deepEqual([upper.x, upper.y, upper.z, upper.parentId], [78, 239, 200, first.item.id]);
+    assert.deepEqual([ground.x, ground.y, ground.z, ground.parentId], [78, 539, 200, second.item.id]);
+    assert.deepEqual(upper.colors, upperHat.colors);
+    assert.deepEqual(ground.colors, groundHat.colors);
+    assert.match(messages.join(" "), /旧一层.*二层/);
+    assert.equal(JSON.stringify(old), before);
+    codes.push(encodeConfig(state));
+  }
+  assert.equal(codes[0], codes[1]);
+});
