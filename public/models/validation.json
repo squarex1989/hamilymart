@@ -1,24 +1,7 @@
 {
-  "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d",
-  "sourceVersion": "Complete 8x4 V7",
-  "supplementalSources": [
-    {
-      "sourceDirectory": "christmas_villa_v30_pool_cover",
-      "sourceVersion": "V30",
-      "sourceSha256": "3d25c19b4a9c6584a12cb06fbf76ce217666a8623638c1b270a8a59796feed9f",
-      "groups": [
-        "O01"
-      ],
-      "magnetMm": [
-        8,
-        2
-      ],
-      "pocketMm": [
-        8.1,
-        2.1
-      ]
-    }
-  ],
+  "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+  "sourceVersion": "Steel receivers V9 inset grass slots",
+  "supplementalSources": [],
   "units": "millimeter",
   "upAxis": "Z",
   "groups": {
@@ -35,9 +18,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "H02": {
@@ -53,9 +36,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "H03": {
@@ -71,9 +54,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "H04": {
@@ -89,9 +72,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "H05": {
@@ -107,45 +90,45 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "H06": {
-      "bytes": 167144,
+      "bytes": 146284,
       "components": [
         {
           "id": "H06_Snow",
-          "sourceTriangles": 26108,
-          "triangles": 6264,
-          "sampledMaxErrorMm": 0.014121,
-          "boundsMaxErrorMm": 0.001383,
-          "volumeRelativeError": 1.105e-05
+          "sourceTriangles": 23604,
+          "triangles": 5664,
+          "sampledMaxErrorMm": 0.008701,
+          "boundsMaxErrorMm": 9e-06,
+          "volumeRelativeError": 2.25e-06
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "P01": {
-      "bytes": 1924328,
+      "bytes": 1686992,
       "components": [
         {
           "id": "P01_Snow",
-          "sourceTriangles": 335012,
-          "triangles": 80402,
-          "sampledMaxErrorMm": 0.009666,
+          "sourceTriangles": 318646,
+          "triangles": 76474,
+          "sampledMaxErrorMm": 0.007865,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 7.58e-06
+          "volumeRelativeError": 3.4e-06
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "L01": {
@@ -161,9 +144,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "L02": {
@@ -179,9 +162,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "L03": {
@@ -197,9 +180,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "L04": {
@@ -215,9 +198,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "X01": {
@@ -233,9 +216,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "X02": {
@@ -251,9 +234,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "X03": {
@@ -269,9 +252,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "X04": {
@@ -287,35 +270,35 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "G03": {
-      "bytes": 339036,
+      "bytes": 340656,
       "components": [
         {
           "id": "G03_ChristmasRed",
           "sourceTriangles": 8180,
-          "triangles": 6776,
-          "sampledMaxErrorMm": 0.009439,
+          "triangles": 6770,
+          "sampledMaxErrorMm": 0.010007,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 6.28e-06
+          "volumeRelativeError": 6.39e-06
         },
         {
           "id": "G03_Snow",
           "sourceTriangles": 20834,
-          "triangles": 6832,
-          "sampledMaxErrorMm": 0.010723,
-          "boundsMaxErrorMm": 1.3e-05,
-          "volumeRelativeError": 0.00027478
+          "triangles": 6924,
+          "sampledMaxErrorMm": 0.016817,
+          "boundsMaxErrorMm": 1.4e-05,
+          "volumeRelativeError": 0.00022495
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "G05": {
@@ -339,21 +322,21 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "G06": {
-      "bytes": 91384,
+      "bytes": 82396,
       "components": [
         {
           "id": "G06_ChristmasRed",
-          "sourceTriangles": 3960,
-          "triangles": 1890,
-          "sampledMaxErrorMm": 0.008113,
+          "sourceTriangles": 3446,
+          "triangles": 1600,
+          "sampledMaxErrorMm": 0.008139,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 3.085e-05
+          "volumeRelativeError": 2.71e-05
         },
         {
           "id": "G06_Snow",
@@ -365,9 +348,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "B01": {
@@ -391,9 +374,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LHB": {
@@ -409,27 +392,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LHR": {
-      "bytes": 122096,
+      "bytes": 106988,
       "components": [
         {
           "id": "LHR_Gold",
-          "sourceTriangles": 7052,
-          "triangles": 4906,
-          "sampledMaxErrorMm": 0.015479,
+          "sourceTriangles": 6028,
+          "triangles": 4388,
+          "sampledMaxErrorMm": 0.01552,
           "boundsMaxErrorMm": 0.000856,
-          "volumeRelativeError": 1.915e-05
+          "volumeRelativeError": 1.831e-05
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "SHB": {
@@ -445,9 +428,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "SHR": {
@@ -463,9 +446,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "ST1T": {
@@ -481,27 +464,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "ST1B": {
-      "bytes": 62112,
+      "bytes": 47960,
       "components": [
         {
           "id": "ST1B_Snow",
-          "sourceTriangles": 2330,
-          "triangles": 2330,
+          "sourceTriangles": 1544,
+          "triangles": 1544,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "ST2T": {
@@ -517,27 +500,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "ST2B": {
-      "bytes": 62112,
+      "bytes": 47964,
       "components": [
         {
           "id": "ST2B_Snow",
-          "sourceTriangles": 2330,
-          "triangles": 2330,
+          "sourceTriangles": 1544,
+          "triangles": 1544,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "ST3T": {
@@ -553,27 +536,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "ST3B": {
-      "bytes": 62112,
+      "bytes": 47964,
       "components": [
         {
           "id": "ST3B_Snow",
-          "sourceTriangles": 2330,
-          "triangles": 2330,
+          "sourceTriangles": 1544,
+          "triangles": 1544,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LT1T": {
@@ -589,27 +572,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LT1B": {
-      "bytes": 62112,
+      "bytes": 47964,
       "components": [
         {
           "id": "LT1B_Snow",
-          "sourceTriangles": 2330,
-          "triangles": 2330,
+          "sourceTriangles": 1544,
+          "triangles": 1544,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LT2T": {
@@ -625,27 +608,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LT2B": {
-      "bytes": 420956,
+      "bytes": 413792,
       "components": [
         {
           "id": "LT2B_Snow",
-          "sourceTriangles": 90214,
-          "triangles": 21650,
-          "sampledMaxErrorMm": 0.005146,
+          "sourceTriangles": 88650,
+          "triangles": 21276,
+          "sampledMaxErrorMm": 0.004759,
           "boundsMaxErrorMm": 0.001715,
-          "volumeRelativeError": 1.947e-05
+          "volumeRelativeError": 1.805e-05
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LT3T": {
@@ -661,61 +644,61 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "LT3B": {
-      "bytes": 72972,
+      "bytes": 47964,
       "components": [
         {
           "id": "LT3B_Snow",
-          "sourceTriangles": 3466,
-          "triangles": 3044,
-          "sampledMaxErrorMm": 0.007245,
+          "sourceTriangles": 1544,
+          "triangles": 1544,
+          "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 2.97e-06
+          "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "A01": {
-      "bytes": 192956,
+      "bytes": 233360,
       "components": [
         {
           "id": "A01_PineGreen",
-          "sourceTriangles": 9382,
-          "triangles": 7432,
-          "sampledMaxErrorMm": 0.016112,
+          "sourceTriangles": 9364,
+          "triangles": 7448,
+          "sampledMaxErrorMm": 0.014663,
           "boundsMaxErrorMm": 0.001377,
-          "volumeRelativeError": 0.00013177
+          "volumeRelativeError": 0.00013202
         },
         {
           "id": "A01_Gold",
-          "sourceTriangles": 480,
-          "triangles": 480,
+          "sourceTriangles": 516,
+          "triangles": 516,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         },
         {
-          "id": "A01_StarGold",
-          "sourceTriangles": 436,
-          "triangles": 436,
+          "id": "A01_ChristmasRed",
+          "sourceTriangles": 2442,
+          "triangles": 2442,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "W01": {
@@ -731,9 +714,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "W02": {
@@ -749,93 +732,93 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "A02": {
-      "bytes": 300652,
+      "bytes": 240252,
       "components": [
         {
           "id": "A02_Snow",
-          "sourceTriangles": 11664,
-          "triangles": 9962,
-          "sampledMaxErrorMm": 0.005828,
+          "sourceTriangles": 8078,
+          "triangles": 7948,
+          "sampledMaxErrorMm": 0.006058,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 8.1e-07
+          "volumeRelativeError": 1.04e-06
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "G15": {
-      "bytes": 141584,
+      "bytes": 142400,
       "components": [
         {
           "id": "G15_PineGreen",
-          "sourceTriangles": 16972,
-          "triangles": 7256,
-          "sampledMaxErrorMm": 0.011631,
-          "boundsMaxErrorMm": 0.001847,
-          "volumeRelativeError": 4.538e-05
+          "sourceTriangles": 17020,
+          "triangles": 7298,
+          "sampledMaxErrorMm": 0.011973,
+          "boundsMaxErrorMm": 0.001973,
+          "volumeRelativeError": 3.414e-05
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "G16": {
-      "bytes": 54704,
+      "bytes": 55136,
       "components": [
         {
           "id": "G16_PineGreen",
-          "sourceTriangles": 10630,
-          "triangles": 2618,
-          "sampledMaxErrorMm": 0.011994,
-          "boundsMaxErrorMm": 0.002759,
-          "volumeRelativeError": 7.016e-05
+          "sourceTriangles": 10640,
+          "triangles": 2642,
+          "sampledMaxErrorMm": 0.011086,
+          "boundsMaxErrorMm": 0.002703,
+          "volumeRelativeError": 6.56e-05
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "G17": {
-      "bytes": 54484,
+      "bytes": 54892,
       "components": [
         {
           "id": "G17_PineGreen",
-          "sourceTriangles": 10630,
-          "triangles": 2610,
-          "sampledMaxErrorMm": 0.011994,
-          "boundsMaxErrorMm": 0.002759,
-          "volumeRelativeError": 6.82e-05
+          "sourceTriangles": 10640,
+          "triangles": 2634,
+          "sampledMaxErrorMm": 0.011085,
+          "boundsMaxErrorMm": 0.002703,
+          "volumeRelativeError": 6.355e-05
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_8x4_v7",
-        "sourceVersion": "Complete 8x4 V7",
-        "sourceSha256": "147702d6456af81c2aa1d2cda243408b3f35e35a30d64eef941a8ef517f34d7d"
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     },
     "O01": {
-      "bytes": 95804,
+      "bytes": 80004,
       "components": [
         {
           "id": "O01_ChristmasRed",
-          "sourceTriangles": 6622,
-          "triangles": 3014,
-          "sampledMaxErrorMm": 0.010257,
+          "sourceTriangles": 2108,
+          "triangles": 2108,
+          "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.00024139
+          "volumeRelativeError": 0.0
         },
         {
           "id": "O01_Snow",
@@ -847,20 +830,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "christmas_villa_v30_pool_cover",
-        "sourceVersion": "V30",
-        "sourceSha256": "3d25c19b4a9c6584a12cb06fbf76ce217666a8623638c1b270a8a59796feed9f",
-        "groups": [
-          "O01"
-        ],
-        "magnetMm": [
-          8,
-          2
-        ],
-        "pocketMm": [
-          8.1,
-          2.1
-        ]
+        "sourceDirectory": "unified_complete_steel_v9",
+        "sourceVersion": "Steel receivers V9 inset grass slots",
+        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
       }
     }
   }

@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_8x4_v7/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v9/assembly_meshes.json')
 DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
 
 
@@ -267,7 +267,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=DEFAULT_SOURCE)
     parser.add_argument('--food-bowl-source', type=Path, default=DEFAULT_FOOD_BOWL_SOURCE,
-                        help='Historical V30 assembly containing the real optional O01 food bowl')
+                        help='Historical O01 fallback, used only when the primary assembly lacks O01')
     parser.add_argument('--only', nargs='+', help='Regenerate selected group IDs while preserving other existing assets')
     parser.add_argument('--thumbnails', action='store_true')
     parser.add_argument('--thumbnails-only', action='store_true')
@@ -278,8 +278,11 @@ def main():
     if not args.thumbnails_only:
         source_bytes = args.source.read_bytes()
         source = json.loads(source_bytes)
-        bowl, bowl_source = food_bowl_group(args.food_bowl_source)
-        groups = [*source['groups'], bowl]
+        groups = list(source['groups'])
+        bowl_source = None
+        if not any(group['id'] == 'O01' for group in groups):
+            bowl, bowl_source = food_bowl_group(args.food_bowl_source)
+            groups.append(bowl)
         index_path = ROOT / 'src/data/model-index.json'
         validation_path = models_dir / 'validation.json'
         index = json.loads(index_path.read_text()) if args.only else {}
@@ -299,7 +302,7 @@ def main():
             index[group['id']] = {'url': '/models/' + file.name, 'bounds': group['assembly_bounds_mm'],
                                   'components': [{'id': c['id'], 'colorKey': c['color_key'], 'color': c['color']} for c in group['components']],
                                   'nameZh': group['name_zh']}
-            provenance = bowl_source if group['id'] == 'O01' else {
+            provenance = bowl_source if group['id'] == 'O01' and bowl_source else {
                 'sourceDirectory': args.source.parent.name,
                 'sourceVersion': source.get('version'),
                 'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
@@ -309,7 +312,7 @@ def main():
             print(f"{group['id']}: {sum(c['sourceTriangles'] for c in checks):,} → {sum(c['triangles'] for c in checks):,} triangles, {file.stat().st_size / 1000:.1f} KB", flush=True)
         index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
         validation_path.write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
-            'sourceVersion': source.get('version'), 'supplementalSources': [bowl_source],
+            'sourceVersion': source.get('version'), 'supplementalSources': [bowl_source] if bowl_source else [],
             'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
         print(f"Total: {sum(v['bytes'] for v in metrics.values()) / 1e6:.2f} MB", flush=True)
     if args.thumbnails or args.thumbnails_only:

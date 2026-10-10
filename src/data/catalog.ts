@@ -1,5 +1,5 @@
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
- * Magnet coordinates follow unified_complete_8x4_v7/hardware_complete.json.
+ * Magnet coordinates follow unified_complete_steel_v9/hardware_complete.json.
  * Contact planes, rather than embedded magnet centers, are used for assembly transforms.
  */
 export type Vec3 = [number, number, number];
@@ -91,6 +91,8 @@ export interface Product {
   origin: Vec3;
   /** Source-space external downward magnet contact positions. */
   bottomMagnets: Vec3[];
+  /** Only source-defined single-contact accessories opt out of the two-contact minimum. */
+  minimumMagnetMatches?: number;
   /** Source-space conservative occupied volumes, separate boxes retain L-shaped clearance. */
   collisionBoxes: Bounds[];
   /** Source-space upward attachment positions and supporting area. */
@@ -220,8 +222,7 @@ export const PRODUCTS: Product[] = [
         id: "planter",
         points: down(
           [
-            [278.5, 264],
-            [292.5, 264],
+            [285.5, 264],
           ],
           200,
         ),
@@ -293,20 +294,20 @@ export const PRODUCTS: Product[] = [
     name: "圣诞帽小屋",
     category: "house",
     price: 7900,
-    description: "兼容一层与二层 · 两孔对齐即可磁吸安装",
-    // Keep the old pivot for saved configurations; the revised mesh moves only its right wall/holes.
+    description: "四点磁吸 · 安装于礼物盒二层平台",
+    // The original source pivot also preserves saved upper-floor placements.
     origin: [78, 239, 200],
     parts: [part("G03", "阁楼", "red")],
     bottomMagnets: down(
       [
         [5, 192],
         [5, 286],
-        [125, 192],
-        [125, 286],
+        [151, 192],
+        [151, 286],
       ],
       200,
     ),
-    collisionBoxes: [[-3, 179.60000610351562, 200, 133, 298, 373.3333435058594]],
+    collisionBoxes: [[-3, 179.60000610351562, 200, 159, 298, 373.3333435058594]],
     allowedParents: ["base", "villa"],
     allowedRelativeRotations: [0],
   },
@@ -390,16 +391,16 @@ export const PRODUCTS: Product[] = [
     name: "圣诞袜花圃",
     category: "garden",
     price: 1900,
-    description: "双点磁吸 · 安装于礼物盒二层平台",
+    description: "中心单点磁吸 · 安装于礼物盒二层平台",
     origin: [285.5, 264, 200],
     parts: [part("G06", "花圃", "red")],
     bottomMagnets: down(
       [
-        [278.5, 264],
-        [292.5, 264],
+        [285.5, 264],
       ],
       200,
     ),
+    minimumMagnetMatches: 1,
     collisionBoxes: [[269, 220, 200, 301, 294, 261.5]],
     allowedParents: ["villa"],
     allowedRelativeRotations: [0],
@@ -410,11 +411,12 @@ export const PRODUCTS: Product[] = [
     name: "圣诞食盆",
     category: "garden",
     price: 1900,
-    description: "红白食盆 · 与圣诞袜花圃共用二层磁位",
-    origin: [134, 124, 180],
+    description: "中心单点磁吸 · 与圣诞袜花圃共用二层磁位",
+    origin: [285.5, 264, 200],
     parts: [part("O01", "食盆", "red")],
-    bottomMagnets: down([[127, 124], [141, 124]], 180),
-    collisionBoxes: [[94.5, 96, 180, 149.5, 156, 201]],
+    bottomMagnets: down([[285.5, 264]], 200),
+    minimumMagnetMatches: 1,
+    collisionBoxes: [[246, 236, 200, 301, 296, 221]],
     allowedParents: ["villa"],
     allowedRelativeRotations: [0],
   },
@@ -448,4 +450,4 @@ export function getDefaultColors(productId: string): ColorMap {
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 4;
+export const CATALOG_VERSION = 5;

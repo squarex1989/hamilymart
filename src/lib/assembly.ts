@@ -155,8 +155,7 @@ function transformBox(
     Math.max(a[2], b[2]),
   ];
 }
-export function getItemBounds(item: AssemblyItem): Bounds[] {
-  const product = getProduct(item.productId);
+export function getItemBounds(item: AssemblyItem, product = getProduct(item.productId)): Bounds[] {
   return product.collisionBoxes.map((box) => transformBox(box, product, item));
 }
 function overlap(a: Bounds, b: Bounds): boolean {
@@ -184,7 +183,8 @@ interface Surface {
   bounds: Bounds;
   id: string;
 }
-function getSurfaces(state: AssemblyState, excluded: Set<string>): Surface[] {
+type ProductLookup = typeof getProduct;
+function getSurfaces(state: AssemblyState, excluded: Set<string>, lookup: ProductLookup = getProduct): Surface[] {
   const grid = [10, 90, 110, 190, 210, 290];
   const surfaces: Surface[] = getPlatforms(state).map(platform => {
     const points: Vec3[] = [];
@@ -197,7 +197,7 @@ function getSurfaces(state: AssemblyState, excluded: Set<string>): Surface[] {
   });
   for (const item of state.items) {
     if (excluded.has(item.id)) continue;
-    const product = getProduct(item.productId);
+    const product = lookup(item.productId);
     for (const surface of product.surfaces ?? [])
       surfaces.push({
         id: surface.id,
@@ -232,6 +232,7 @@ function compatiblePlacement(
   placement: Placement,
   surface: Surface,
   excluded: Set<string>,
+  lookup: ProductLookup = getProduct,
 ): boolean {
   const boxes = product.collisionBoxes.map((b) =>
     transformBox(b, product, placement),
@@ -272,7 +273,7 @@ function compatiblePlacement(
   const faces = facesFor(product, placement);
   for (const other of state.items) {
     if (excluded.has(other.id) || other.id === placement.parentId) continue;
-    const otherProduct = getProduct(other.productId);
+    const otherProduct = lookup(other.productId);
     if (other.parentId === placement.parentId) {
       const otherMagnets = otherProduct.bottomMagnets.map((m) =>
         transformPoint(m, otherProduct, other),
@@ -280,7 +281,7 @@ function compatiblePlacement(
       if (magnets.some((m) => otherMagnets.some((n) => samePoint(m, n))))
         return false;
     }
-    if (boxes.some((a) => getItemBounds(other).some((b) => overlap(a, b))))
+    if (boxes.some((a) => getItemBounds(other, otherProduct).some((b) => overlap(a, b))))
       return false;
     for (const a of faces)
       for (const b of facesFor(otherProduct, other)) {
@@ -293,22 +294,23 @@ function compatiblePlacement(
   }
   return true;
 }
-/** Enumerates source-backed transforms with at least two distinct magnetic contacts. */
+/** Enumerates transforms meeting each product’s source-backed contact minimum. */
 export function getPlacements(
   state: AssemblyState,
   productId: string,
   rotation: Rotation = 0,
   ignoreId?: string,
+  lookup: ProductLookup = getProduct,
 ): Placement[] {
   if (![0, 90, 180, 270].includes(rotation)) return [];
-  const product = getProduct(productId);
+  const product = lookup(productId);
   const excluded = descendants(state, ignoreId);
   const local = product.bottomMagnets.map((p) =>
     rotateVector(p.map((v, i) => v - product.origin[i]) as Vec3, rotation),
   );
   if (!local.length) return [];
   const candidates: Placement[] = [];
-  for (const surface of getSurfaces(state, excluded)) {
+  for (const surface of getSurfaces(state, excluded, lookup)) {
     if (
       product.allowedParents &&
       !product.allowedParents.includes(surface.parentProduct)
@@ -334,7 +336,7 @@ export function getPlacements(
       const magnetCount = local.filter((m, index) =>
         local.findIndex(n => samePoint(m, n)) === index && surface.points.some((n) => samePoint(m.map((v, i) => v + shift[i]) as Vec3, n)),
       ).length;
-      if (magnetCount < 2) continue;
+      if (magnetCount < (product.minimumMagnetMatches ?? 2)) continue;
       const placement: Placement = {
         x: shift[0],
         y: shift[1],
@@ -345,7 +347,7 @@ export function getPlacements(
         magnetCount,
       };
       if (
-        compatiblePlacement(state, product, placement, surface, excluded) &&
+        compatiblePlacement(state, product, placement, surface, excluded, lookup) &&
         !candidates.some((p) => p.key === placement.key)
       )
         candidates.push(placement);
@@ -571,6 +573,9 @@ function normalizeRemovedCovers(value: unknown): string[] {
 }
 /** Strict schema, coordinates, bundle contents, collision, and attachment validation on every import. */
 export function validateAssembly(value: unknown): AssemblyState {
+  return validateAssemblyWithCatalog(value, getProduct);
+}
+function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup): AssemblyState {
   if (!value || typeof value !== "object" || Array.isArray(value))
     throw new Error("搭配数据格式不正确");
   const input = value as AssemblyState;
@@ -616,7 +621,7 @@ export function validateAssembly(value: unknown): AssemblyState {
     )
       throw new Error("组件编号无效或重复");
     ids.add(raw.id);
-    const product = getProduct(raw.productId);
+    const product = lookup(raw.productId);
     if (product.id === "pool") throw new Error("泳池必须安装在平台预留孔中");
     if (product.id === "villa" && (!raw.colors || product.parts.some(part => !Object.hasOwn(raw.colors, part.id))))
       throw new Error("V4 花园复式套餐颜色不完整，请先迁移旧搭配");
@@ -651,7 +656,7 @@ export function validateAssembly(value: unknown): AssemblyState {
     );
     if (index === -1) throw new Error("组件依赖缺失或循环");
     const item = pending.splice(index, 1)[0];
-    const match = getPlacements(state, item.productId, item.rotation).some(
+    const match = getPlacements(state, item.productId, item.rotation, undefined, lookup).some(
       (p) =>
         close(p.x, item.x) &&
         close(p.y, item.y) &&
@@ -676,49 +681,88 @@ function hasLegacyVillaColors(value: unknown): boolean {
   const keys = Object.keys(value);
   return keys.length === LEGACY_VILLA_PARTS.length && LEGACY_VILLA_PARTS.every(key => keys.includes(key));
 }
-/**
- * Explicit migration boundary for catalog 2 and old unversioned local storage.
- * Catalog 3 adds the new platform fields without repairing component directions.
- * Never repair current states or unversioned states with eight-part colors.
- * Only the known legacy reversed loft is corrected; all other geometry remains strictly validated.
- */
-export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4): AssemblyMigrationResult {
+/** Original catalog geometry is used only to validate historical imports before upgrading. */
+function legacyProductLookup(source: 2 | 3 | 4): ProductLookup {
+  return id => {
+    const product = getProduct(id);
+    if (id === "villa") return { ...product, surfaces: product.surfaces!.map(surface => surface.id === "planter" ? { ...surface, points: [[278.5, 264, 200], [292.5, 264, 200]] } : surface) };
+    if (id === "planter") return { ...product, bottomMagnets: [[278.5, 264, 200], [292.5, 264, 200]], minimumMagnetMatches: 2 };
+    if (id === "food-bowl") return { ...product, origin: [134, 124, 180], bottomMagnets: [[127, 124, 180], [141, 124, 180]], minimumMagnetMatches: 2, collisionBoxes: [[94.5, 96, 180, 149.5, 156, 201]] };
+    if (id === "roof-cottage" && source === 4) return { ...product, bottomMagnets: [[5, 192, 200], [5, 286, 200], [125, 192, 200], [125, 286, 200]], collisionBoxes: [[-3, 179.60000610351562, 200, 133, 298, 373.3333435058594]] };
+    return product;
+  };
+}
+function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
+  const messages = ["搭配已升级为 Steel V9，原有组件与自定义配色已保留。"];
+  try { return { state: validateAssembly(previous), messages }; }
+  catch {
+    // Reserve unchanged hats first; a relocated hat must not displace another valid placement.
+    const hats = previous.items.filter(item => item.productId === "roof-cottage");
+    let state = validateAssembly({ ...previous, items: previous.items.filter(item => item.productId !== "roof-cottage") });
+    const moved: AssemblyItem[] = [];
+    for (const item of hats) {
+      const unchanged = getPlacements(state, item.productId, item.rotation).some(candidate => candidate.parentId === item.parentId && samePoint([candidate.x, candidate.y, candidate.z], [item.x, item.y, item.z]));
+      if (unchanged) state = { ...state, items: [...state.items, item] };
+      else moved.push(item);
+    }
+    for (const item of moved) {
+      const wasOnPlatform = item.parentId === "base" || item.parentId === "base2";
+      const candidates = ([0, 90, 180, 270] as Rotation[]).flatMap(rotation => getPlacements(state, item.productId, rotation))
+        .filter(candidate => wasOnPlatform || candidate.parentId === item.parentId)
+        .sort((a, b) => {
+          const parentA = state.items.find(parent => parent.id === a.parentId), parentB = state.items.find(parent => parent.id === b.parentId);
+          const samePlatformA = parentA?.parentId === item.parentId, samePlatformB = parentB?.parentId === item.parentId;
+          return Number(samePlatformB) - Number(samePlatformA)
+            || Math.hypot(a.x - item.x, a.y - item.y, a.z - item.z) - Math.hypot(b.x - item.x, b.y - item.y, b.z - item.z)
+            || a.key.localeCompare(b.key);
+        });
+      const position = candidates[0];
+      if (!position) throw new Error("旧搭配无法兼容 Steel V9：圣诞帽小屋已恢复 162 mm 宽，当前没有可用的二层磁吸位置。原搭配未覆盖、组件未删除，请调整后再导入。");
+      state = { ...state, items: [...state.items, { ...item, x: position.x, y: position.y, z: position.z, rotation: position.rotation, parentId: position.parentId }] };
+      messages.push(wasOnPlatform
+        ? "圣诞帽小屋已恢复 162 mm 宽，旧一层位置不再匹配；已移到现有礼物盒的可用二层磁位，配色已保留。"
+        : "圣诞帽小屋已恢复 162 mm 宽，已调整到原礼物盒二层最近的合法磁位，配色已保留。");
+    }
+    return { state: validateAssembly(state), messages };
+  }
+}
+/** Validate historical geometry before migrating; current configurations never receive placement repairs. */
+export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5): AssemblyMigrationResult {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("搭配数据格式不正确");
   const raw = value as Record<string, unknown>;
   if (!Array.isArray(raw.items)) throw new Error("组件数量无效");
-  if (sourceCatalogVersion !== undefined && sourceCatalogVersion !== 2 && sourceCatalogVersion !== 3 && sourceCatalogVersion !== CATALOG_VERSION)
-    throw new Error("搭配目录版本不兼容");
-  if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion)
-    throw new Error("搭配目录版本标记冲突");
+  if (sourceCatalogVersion !== undefined && ![2, 3, 4, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
+  if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion) throw new Error("搭配目录版本标记冲突");
   const rawItems = raw.items;
   const villas = rawItems.filter(item => item && typeof item === "object" && item.productId === "villa");
   const inferredLegacy = raw.catalogVersion === undefined && villas.length > 0 && villas.every(item => hasLegacyVillaColors(item.colors));
   const source = sourceCatalogVersion ?? raw.catalogVersion ?? (inferredLegacy ? 2 : CATALOG_VERSION);
   if (source === CATALOG_VERSION) return { state: validateAssembly(value), messages: [] };
-  if (source === 3) return { state: validateAssembly({ ...raw, catalogVersion: CATALOG_VERSION, extension: null, removedCovers: [] }), messages: ["搭配已升级，原有组件、配色与位置已保留。"] };
-  if (source !== 2) throw new Error("搭配目录版本不兼容");
-  if (!villas.every(item => hasLegacyVillaColors(item.colors))) throw new Error("旧版复式套餐的四色数据不完整");
-  let adjustedLofts = 0;
-  const items = rawItems.map(item => {
-    if (!item || typeof item !== "object" || Array.isArray(item)) throw new Error("组件数据格式不正确");
-    const next = { ...item, colors: item.colors && typeof item.colors === "object" ? { ...item.colors } : item.colors };
-    if (item.productId === "villa") {
-      next.colors = { ...item.colors, G16: item.colors.G15, G17: item.colors.G15, W01: item.colors.A02, W02: item.colors.A02 };
-    }
-    if (item.productId === "roof-cottage") {
-      const parent = rawItems.find(candidate => candidate && candidate.id === item.parentId);
-      if (parent?.productId === "villa" && [0, 90, 180, 270].includes(parent.rotation) && [0, 90, 180, 270].includes(item.rotation) && (item.rotation - parent.rotation + 360) % 360 === 180) {
-        // Retain the legacy pivot/position and restore its safe orientation. The resized G03 keeps the left two source contacts.
-        next.rotation = parent.rotation;
-        adjustedLofts++;
+  if (source !== 2 && source !== 3 && source !== 4) throw new Error("搭配目录版本不兼容");
+  const messages: string[] = [];
+  let items = rawItems;
+  if (source === 2) {
+    if (!villas.every(item => hasLegacyVillaColors(item.colors))) throw new Error("旧版复式套餐的四色数据不完整");
+    let adjustedLofts = 0;
+    items = rawItems.map(item => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) throw new Error("组件数据格式不正确");
+      const next = { ...item, colors: item.colors && typeof item.colors === "object" ? { ...item.colors } : item.colors };
+      if (item.productId === "villa") next.colors = { ...item.colors, G16: item.colors.G15, G17: item.colors.G15, W01: item.colors.A02, W02: item.colors.A02 };
+      if (item.productId === "roof-cottage") {
+        const parent = rawItems.find(candidate => candidate && candidate.id === item.parentId);
+        if (parent?.productId === "villa" && [0, 90, 180, 270].includes(parent.rotation) && [0, 90, 180, 270].includes(item.rotation) && (item.rotation - parent.rotation + 360) % 360 === 180) {
+          next.rotation = parent.rotation;
+          adjustedLofts++;
+        }
       }
-    }
-    return next;
-  });
-  const state = validateAssembly({ ...raw, catalogVersion: CATALOG_VERSION, extension: null, removedCovers: [], items });
-  const messages = [villas.length ? "旧搭配已升级为 V4 八件复式套餐：新增白柱继承二层平台颜色，左右草栏继承原草栏颜色。" : "旧搭配目录已升级为 V4，原有配色与位置已保留。"];
-  if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个圣诞帽小屋按 V4 围栏安全方向调整，装配位置和自定义配色已保留。`);
-  return { state, messages };
+      return next;
+    });
+    messages.push(villas.length ? "旧搭配已升级为 V4 八件复式套餐：新增白柱继承二层平台颜色，左右草栏继承原草栏颜色。" : "旧搭配目录已升级，原有配色与位置已保留。");
+    if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个圣诞帽小屋按 V4 围栏安全方向调整，装配位置和自定义配色已保留。`);
+  }
+  const previous = validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION, ...(source < 4 ? { extension: null, removedCovers: [] } : {}), items }, legacyProductLookup(source));
+  const upgraded = upgradeSteelV9(previous);
+  return { state: upgraded.state, messages: [...messages, ...upgraded.messages] };
 }
 
 export function getOrderLines(state: AssemblyState): OrderLine[] {
