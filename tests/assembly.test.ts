@@ -59,16 +59,16 @@ function place(
   return result;
 }
 
-test("catalog covers 43 Steel V9 groups and four 30 cm legs across bundles and alternatives", () => {
+test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and alternatives", () => {
   const ids = new Set([
     ...PRODUCTS.flatMap((p) => p.parts.map((part) => part.id)),
     ...getBaseParts(100).map((p) => p.id),
     ...getBaseParts(200, true).map((p) => p.id),
     ...getBaseParts(300).map((p) => p.id),
   ]);
-  assert.equal(ids.size, 47);
-  assert.equal(Object.keys(modelIndex).length, 47);
-  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 54);
+  assert.equal(ids.size, 48);
+  assert.equal(Object.keys(modelIndex).length, 48);
+  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 55);
   assert.equal(CATALOG_VERSION, 6);
   assert.equal(COLORS.length, 11);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
@@ -882,7 +882,8 @@ test("rotation keeps a valid original pivot and never jumps from a restricted se
 test("Steel V9 exposes exactly five upper contacts and single-center accessories use only their reserved region", () => {
   const villaProduct = getProduct("villa");
   assert.deepEqual(villaProduct.surfaces!.flatMap(surface => surface.points), [[5, 192, 200], [5, 286, 200], [151, 192, 200], [151, 286, 200], [285.5, 264, 200]]);
-  assert.deepEqual(PRODUCTS.filter(product => product.minimumMagnetMatches === 1).map(product => product.id), ["planter", "food-bowl"]);
+  const upperAccessories = PRODUCTS.filter(product => product.minimumMagnetMatches === 1 && product.allowedParents?.includes("villa"));
+  assert.deepEqual(upperAccessories.map(product => product.id), ["planter", "food-bowl"]);
   for (const rotation of [0, 90, 180, 270] as const) {
     const initial = createInitialState();
     const position = getPlacements(initial, "villa", rotation)[0];
@@ -890,7 +891,7 @@ test("Steel V9 exposes exactly five upper contacts and single-center accessories
     assert.equal(villa.ok, true);
     if (!villa.ok) continue;
     const target = transformPoint([285.5, 264, 200], villaProduct, villa.item);
-    for (const id of ["planter", "food-bowl"]) {
+    for (const { id } of upperAccessories) {
       assert.deepEqual(getProduct(id).bottomMagnets, [[285.5, 264, 200]]);
       assert.equal(getProduct(id).minimumMagnetMatches, 1);
       assert.ok(getPlacements(initial, id, rotation).length > 0);
@@ -1051,17 +1052,44 @@ test("thirty-centimeter legs use complete Y parts and prices on all three platfo
   assert.equal(getTotalPrice(triple), 3 * getTotalPrice(tall));
 });
 
-test("bedding drives leg height and display elevation while legless platforms rest on the bedding", () => {
+test("bedding and leg height remain independent for every supported depth and leg length", () => {
+  for (const legHeight of [0, 100, 200, 300] as const) {
+    const initial = success(setLegHeight(createInitialState(), legHeight));
+    for (const depth of [100, 200, 300] as const) {
+      const thick = success(setBedding(initial, { mode: "thick", depth }));
+      assert.equal(thick.legHeight, legHeight);
+      assert.equal(getDisplayElevation(thick), (legHeight || depth) - 100);
+      for (const nextHeight of [0, 100, 200, 300] as const) {
+        const changedLegs = success(setLegHeight(thick, nextHeight));
+        assert.deepEqual(changedLegs.bedding, { mode: "thick", depth });
+        assert.equal(getDisplayElevation(changedLegs), (nextHeight || depth) - 100);
+      }
+      const thin = success(setBedding(thick, { mode: "thin", depth: 50 }));
+      assert.equal(thin.legHeight, legHeight);
+      assert.equal(getDisplayElevation(thin), (legHeight || 50) - 100);
+    }
+  }
+});
+
+test("thirty-centimeter legs with twenty-centimeter bedding preserve clearance and merchandise", () => {
+  let state = success(setLegHeight(createInitialState(), 300));
+  const parts = getOrderLines(state), price = getTotalPrice(state);
+  state = success(setBedding(state, { mode: "thick", depth: 200 }));
+  assert.equal(state.legHeight, 300);
+  assert.deepEqual(state.bedding, { mode: "thick", depth: 200 });
+  assert.equal(getDisplayElevation(state), 200);
+  assert.deepEqual(getOrderLines(state), parts);
+  assert.equal(getTotalPrice(state), price);
+  state = success(setLegHeight(state, 100));
+  assert.deepEqual(state.bedding, { mode: "thick", depth: 200 });
+  assert.equal(getDisplayElevation(state), 0);
+  assert.equal(validateAssembly(state).legHeight, 100);
+});
+
+test("legless platforms rest on the selected bedding and invalid bedding is still rejected", () => {
   let state = createInitialState();
   assert.deepEqual(state.bedding, { mode: "thin", depth: 50 });
   assert.equal(getDisplayElevation(state), 0);
-  for (const depth of [100, 200, 300] as const) {
-    state = success(setBedding(state, { mode: "thick", depth }));
-    assert.equal(state.legHeight, depth);
-    assert.equal(getDisplayElevation(state), depth - 100);
-  }
-  state = success(setLegHeight(state, 200));
-  assert.deepEqual(state.bedding, { mode: "thick", depth: 200 });
   state = success(setLegHeight(state, 0));
   state = success(setBedding(state, { mode: "thick", depth: 300 }));
   assert.equal(state.legHeight, 0);
@@ -1071,10 +1099,25 @@ test("bedding drives leg height and display elevation while legless platforms re
   assert.equal(getDisplayElevation(state), -50);
   state = success(setLegHeight(state, 300));
   state = success(setBedding(state, { mode: "thin", depth: 50 }));
-  assert.equal(state.legHeight, 100);
+  assert.equal(state.legHeight, 300);
   assert.throws(() => validateAssembly({ ...state, bedding: { mode: "thick", depth: 50 } }), /垫料/);
-  assert.throws(() => validateAssembly({ ...state, bedding: { mode: "thick", depth: 200 } }), /一致/);
   assert.throws(() => validateAssembly({ ...state, bedding: { mode: "thin", depth: 100 } }), /垫料/);
+});
+
+test("equal-height HM3 and local saves remain compatible after height controls become independent", () => {
+  // Frozen from the previous coupled-height implementation, before the controls were separated.
+  const oldCode = "HM3.WzMsNiwzMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sbnVsbCxbXSxudWxsLFsxLDMwMF0sbnVsbF0.323C1BFF";
+  const previous = decodeConfig(oldCode);
+  assert.equal(previous.legHeight, 300);
+  assert.deepEqual(previous.bedding, { mode: "thick", depth: 300 });
+  assert.equal(encodeConfig(previous), oldCode);
+  const localSave = JSON.parse(JSON.stringify(previous));
+  const restored = migrateAssembly(localSave);
+  assert.deepEqual(restored.state, previous);
+  assert.deepEqual(restored.messages, []);
+  const changed = success(setBedding(restored.state, { mode: "thick", depth: 200 }));
+  assert.equal(changed.legHeight, 300);
+  assert.deepEqual(localSave.bedding, { mode: "thick", depth: 300 });
 });
 
 test("hamster variants are saved in the code and never add merchandise or change assembly geometry", () => {
@@ -1093,7 +1136,8 @@ test("hamster variants are saved in the code and never add merchandise or change
 
 test("HM3 round-trips third-platform state, long legs, bedding, hamster and independent new colors", () => {
   let state = success(addPlatform(success(addPlatform(createInitialState()))));
-  state = success(setBedding(state, { mode: "thick", depth: 300 }));
+  state = success(setLegHeight(state, 300));
+  state = success(setBedding(state, { mode: "thick", depth: 200 }));
   state = success(setHamster(state, HAMSTER_VARIANTS[0].id));
   state = success(setPlatformColors(state, "base2", { ...state.extension!.baseColors, P01: "marble" }));
   state = success(setPlatformColors(state, "base3", { ...state.thirdPlatform!.baseColors, P01: "white", legs: "jade", B01: "rose" }));
@@ -1105,7 +1149,7 @@ test("HM3 round-trips third-platform state, long legs, bedding, hamster and inde
   assert.match(code, /^HM3\./);
   assert.equal(encodeConfig(restored), code);
   assert.equal(restored.legHeight, 300);
-  assert.deepEqual(restored.bedding, { mode: "thick", depth: 300 });
+  assert.deepEqual(restored.bedding, { mode: "thick", depth: 200 });
   assert.equal(restored.hamster, HAMSTER_VARIANTS[0].id);
   assert.equal(restored.thirdPlatform?.baseColors.legs, "jade");
   assert.equal(restored.thirdPlatform?.baseInsert, "pool");

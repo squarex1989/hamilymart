@@ -570,8 +570,10 @@ h1, h2, h3, p { margin: 0; }
 .control-dock .selection-card { position: static; width: auto; margin: 0; padding: 14px 20px 20px; border: 0; border-radius: 0; background: transparent; box-shadow: none; animation: none; }
 .control-dock .selection-head { flex-wrap: wrap; gap: 8px; }
 .control-dock .selection-head strong { font-size: 13px; }
-.control-dock .selection-actions { margin-right: 0; }
+.control-dock .selection-actions { margin-right: 0; gap: 6px; }
 .control-dock .selection-actions .round-button { flex-basis: 44px; width: 44px; }
+.control-dock .selection-actions .restore-colors { flex-basis: 58px; width: 58px; color: #92703E; background: #F5EFDF; border: 1px solid #E7DCC2; border-radius: 10px; }
+.control-dock .selection-actions .rotate-component { color: #355F4B; background: #EAF1EA; border: 1px solid #CFDECE; border-radius: 10px; }
 .control-dock .base-options { gap: 9px; margin-top: 12px; max-height: none; overflow: visible; }
 .control-dock .base-options > div > span { display: block; color: #738167; font-size: 10px; }
 .control-dock .platform-hint { color: #7A846E; font-size: 10px; line-height: 1.65; }
@@ -701,7 +703,7 @@ h1, h2, h3, p { margin: 0; }
   .control-dock .selection-actions { width: 100%; }
 }
 .control-dock .selection-actions .round-button { flex-basis: 56px; width: 56px; flex-direction: column; gap: 3px; }
-.control-dock .selection-actions .round-button small { font-size: 8px; line-height: 1; }
+.control-dock .selection-actions .round-button small { font-size: 10px; line-height: 1.1; white-space: nowrap; }
 .control-dock .selection-actions::before { content: none; }
 @media (max-width: 760px) {
   .control-dock .swatches { grid-template-columns: repeat(5, minmax(44px, 1fr)); }

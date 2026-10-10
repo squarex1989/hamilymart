@@ -14,6 +14,7 @@ import {
   Magnet,
   Minus,
   Move,
+  Palette,
   Plus,
   RotateCcw,
   RotateCw,
@@ -203,7 +204,7 @@ export default function App() {
   function chooseBedding(bedding: Bedding) {
     applyAction(setBedding(state, bedding), state.legHeight === 0
       ? "垫料已更新，无腿平台已放在垫料上"
-      : bedding.mode === "thin" ? "已薄铺 5 cm 垫料，支撑脚为 10 cm" : `垫料和所有支撑脚已同步为 ${bedding.depth / 10} cm`);
+      : `已${bedding.mode === "thin" ? "薄铺" : "厚铺"} ${bedding.depth / 10} cm，支撑脚保持 ${state.legHeight / 10} cm`);
   }
   useEffect(() => {
     controlScroll.current?.scrollTo({ top: 0 });
@@ -533,17 +534,17 @@ export default function App() {
                   </div>
                   <div className="selection-actions">
                     <button
-                      className="round-button"
+                      className="round-button restore-colors"
                       aria-label="恢复原模型配色"
                       title="恢复原模型配色"
                       onClick={restoreOriginalColors}
                     >
-                      <RotateCcw size={17} /><small>原色</small>
+                      <Palette size={19} /><small>还原配色</small>
                     </button>
                     {(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3") && (
                       <>
                         {selectedItem && <button
-                          className="round-button"
+                          className="round-button rotate-component"
                           aria-label="旋转已选配件"
                           title="切换到下一个可安装方向"
                           onClick={rotateSelected}
@@ -590,7 +591,7 @@ export default function App() {
                           onClick={() => applyAction(setLegHeight(state, 300))}>30 cm</button>
                       </div>
                     </div>
-                    <p className="platform-hint">{hasPool ? "泳池需要支撑脚。" : ""}{state.bedding.mode === "thick" ? "厚铺时，支撑脚与垫料高度同步；无腿平台放在垫料上。" : "薄铺 5 cm 垫料，无腿平台放在垫料上。"}</p>
+                    <p className="platform-hint">{hasPool ? "泳池需要支撑脚。" : ""}腿长与垫料高度可分别选择；无腿平台放在垫料上。</p>
                     <p className="platform-hint">先选平台，再点小圆盖可移除留洞。平台有 32 个磁吸位，大圆盖另有 4 个。</p>
                     {selectedPlatform.removedCovers.length > 0 && <div className="restore-covers">
                       <span>放回圆盖</span>
@@ -723,6 +724,7 @@ export default function App() {
                   ["house", "小屋"],
                   ["pipe", "管道"],
                   ["garden", "花园"],
+                  ["toy", "玩具"],
                 ].map(([id, name]) => (
                   <button
                     key={id}
@@ -888,7 +890,7 @@ export default function App() {
                   <span className="bedding-preview"><i style={{ height: `${depth / 4}%` }} /></span><strong>厚铺</strong><span>{depth / 10} cm</span>
                 </button>)}
               </div>
-              <p className="setting-note"><Info size={15} /><span>厚铺时，所有有腿平台的脚长自动与垫料同高；薄铺 5 cm 使用 10 cm 腿。无腿平台始终放在垫料上。</span></p>
+              <p className="setting-note"><Info size={15} /><span>垫料高度和腿长独立选择，例如 30 cm 腿搭配 20 cm 厚铺。无腿平台放在垫料上。</span></p>
             </section>}
             {FEATURES.hamsterPreview && toolTab === "hamster" && <section className="environment-panel hamster-panel" aria-label="仓鼠品种与花色">
               <div className="environment-heading"><h2>请小家人入住</h2>{state.hamster && <button className="remove-hamster" onClick={() => applyAction(setHamster(state, null), "仓鼠预览已移除")}><Trash2 size={14} />移除</button>}</div>
@@ -1082,7 +1084,7 @@ export default function App() {
                     <div>
                       <h3>从一张平台开始</h3>
                       <p>
-                        默认配四根 10 cm 支撑脚，可切换 20 / 30 cm 或无腿。增加平台会依次向右贴边，最多三块，支撑脚高度同步。厚铺垫料时，腿与垫料同步升高；无腿平台放在垫料上。
+                        默认配四根 10 cm 支撑脚，可切换 20 / 30 cm 或无腿。增加平台会依次向右贴边，最多三块，平台间支撑脚高度同步。腿长与垫料高度分别选择，无腿平台放在垫料上。
                       </p>
                     </div>
                   </article>
@@ -1091,7 +1093,7 @@ export default function App() {
                     <div>
                       <h3>挑一件，自动搭好</h3>
                       <p>
-                        点选配件即可自动安排位置，也可拖到绿色圆环附近。小屋和管道需要至少两个磁吸位对齐；花圃、食盆使用各自的单磁吸位。安装时会检查碰撞，没有位置会提示“放不下去了”。
+                        点选配件即可自动安排位置，也可拖到绿色圆环附近。小屋和管道需要至少两个磁吸位对齐；花圃、食盆、跷跷板使用各自的单磁吸位。安装时会检查碰撞，没有位置会提示“放不下去了”。
                       </p>
                     </div>
                   </article>
@@ -1100,7 +1102,7 @@ export default function App() {
                     <div>
                       <h3>转一转，涂上喜欢的颜色</h3>
                       <p>
-                        选中配件后，在下方或右侧设置区旋转、换色或移除，点击完成继续挑选。拖动画布空白处查看全貌。{FEATURES.hamsterPreview && "还能添加仓鼠预览比例。"}满意后复制搭配编号，或下载完整配件清单。
+                        选中配件后，在下方或右侧设置区旋转、换色或移除，点击完成继续挑选。拖动画布空白处可查看各个方向，包括底部；从下方查看时垫料会暂时隐藏。{FEATURES.hamsterPreview && "还能添加仓鼠预览比例。"}满意后复制搭配编号，或下载完整配件清单。
                       </p>
                     </div>
                   </article>

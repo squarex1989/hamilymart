@@ -1,5 +1,5 @@
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
- * Magnet coordinates follow unified_complete_steel_v9/hardware_complete.json.
+ * Magnet coordinates follow unified_complete_steel_v12/hardware_complete.json.
  * Contact planes, rather than embedded magnet centers, are used for assembly transforms.
  */
 export type Vec3 = [number, number, number];
@@ -86,7 +86,7 @@ export interface Product {
   id: string;
   sku: string;
   name: string;
-  category: "house" | "pipe" | "garden";
+  category: "house" | "pipe" | "garden" | "toy";
   price: number;
   description: string;
   badge?: string;
@@ -114,7 +114,7 @@ const part = (
 ): ProductPart => ({ id, role, defaultColor });
 const down = (xy: number[][], z: number): Vec3[] =>
   xy.map(([x, y]) => [x, y, z]);
-/** Steel V9 P01/H06 receiver locations, transcribed and audited separately from source hardware. */
+/** Steel V12 P01/H06 receiver locations, transcribed and audited separately from source hardware. */
 export const P01_TOP_XY: [number, number][] = [[10, 10], [10, 90], [10, 110], [10, 190], [10, 210], [10, 290], [90, 10], [90, 190], [90, 210], [90, 290], [110, 10], [110, 190], [110, 210], [110, 290], [190, 10], [190, 90], [190, 110], [190, 190], [190, 210], [190, 290], [210, 10], [210, 90], [210, 110], [210, 190], [210, 210], [210, 290], [290, 10], [290, 90], [290, 110], [290, 190], [290, 210], [290, 290]];
 export const H06_TOP_XY: [number, number][] = [[90, 90], [90, 110], [110, 90], [110, 110]];
 export const BASE_PRODUCT = {
@@ -441,6 +441,22 @@ export const PRODUCTS: Product[] = [
     parts: [part("B01", "泳池", "cream")],
     bottomMagnets: [],
     collisionBoxes: [[22, 22, 30.65, 178, 178, 113.65]],
+    allowedParents: ["base"],
+  },
+  // Append products: HM3 codes store the existing product-array indices.
+  {
+    id: "seesaw",
+    sku: "HM-TY-001",
+    name: "磁吸跷跷板",
+    category: "toy",
+    price: 3900,
+    description: "18 × 8 cm · 中心单点磁吸 · 一体活动玩具",
+    origin: [90, 90, 110],
+    parts: [part("SS01", "跷跷板", "butter")],
+    bottomMagnets: [[90, 90, 110]],
+    minimumMagnetMatches: 1,
+    // Source neutral height is 31.6 mm; reserve the full ±11.9° swing envelope.
+    collisionBoxes: [[0, 50, 110, 180, 130, 159.8]],
     allowedParents: ["base"],
   },
 ];

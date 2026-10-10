@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
-  "sourceVersion": "Steel receivers V9 inset grass slots",
+  "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+  "sourceVersion": "Steel receivers V12 print-in-place seesaw",
   "supplementalSources": [],
   "units": "millimeter",
   "upAxis": "Z",
@@ -18,9 +18,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "H02": {
@@ -36,9 +37,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "H03": {
@@ -54,9 +56,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "H04": {
@@ -72,9 +75,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "H05": {
@@ -90,9 +94,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "H06": {
@@ -108,9 +113,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "P01": {
@@ -126,9 +132,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "L01": {
@@ -144,9 +151,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "L02": {
@@ -162,9 +170,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "L03": {
@@ -180,9 +189,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "L04": {
@@ -198,9 +208,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "X01": {
@@ -216,9 +227,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "X02": {
@@ -234,9 +246,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "X03": {
@@ -252,9 +265,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "X04": {
@@ -270,9 +284,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "G03": {
@@ -296,35 +311,36 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "G05": {
-      "bytes": 121556,
+      "bytes": 192460,
       "components": [
         {
           "id": "G05_Snow",
-          "sourceTriangles": 4582,
-          "triangles": 3196,
-          "sampledMaxErrorMm": 0.016167,
+          "sourceTriangles": 5702,
+          "triangles": 4374,
+          "sampledMaxErrorMm": 0.015273,
           "boundsMaxErrorMm": 0.002895,
-          "volumeRelativeError": 1e-05
+          "volumeRelativeError": 8.86e-06
         },
         {
           "id": "G05_ChristmasRed",
-          "sourceTriangles": 724,
-          "triangles": 724,
+          "sourceTriangles": 1926,
+          "triangles": 1926,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f"
       }
     },
     "G06": {
@@ -348,9 +364,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "B01": {
@@ -374,9 +391,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LHB": {
@@ -392,9 +410,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LHR": {
@@ -410,9 +429,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "SHB": {
@@ -428,9 +448,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "SHR": {
@@ -446,9 +467,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "ST1T": {
@@ -464,9 +486,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "ST1B": {
@@ -482,9 +505,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "ST2T": {
@@ -500,9 +524,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "ST2B": {
@@ -518,9 +543,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "ST3T": {
@@ -536,9 +562,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "ST3B": {
@@ -554,9 +581,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LT1T": {
@@ -572,9 +600,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LT1B": {
@@ -590,9 +619,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LT2T": {
@@ -608,9 +638,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LT2B": {
@@ -626,9 +657,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LT3T": {
@@ -644,9 +676,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "LT3B": {
@@ -662,9 +695,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "A01": {
@@ -696,9 +730,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "W01": {
@@ -714,9 +749,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "W02": {
@@ -732,9 +768,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "A02": {
@@ -750,9 +787,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "G15": {
@@ -768,9 +806,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "G16": {
@@ -786,9 +825,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "G17": {
@@ -804,9 +844,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "O01": {
@@ -830,9 +871,10 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a"
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
+        "geometryUnchangedFrom": "unified_complete_steel_v9"
       }
     },
     "Y01": {
@@ -848,9 +890,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
         "derivedFrom": "X01",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -869,9 +911,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
         "derivedFrom": "X02",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -890,9 +932,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
         "derivedFrom": "X03",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -911,12 +953,30 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v9",
-        "sourceVersion": "Steel receivers V9 inset grass slots",
-        "sourceSha256": "a2823d00f534a7d77d4afc1a4d10a1ce549ca795480c691f9a2c6c6b7cfa855a",
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f",
         "derivedFrom": "X04",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
+      }
+    },
+    "SS01": {
+      "bytes": 152176,
+      "components": [
+        {
+          "id": "SS01_Gold",
+          "sourceTriangles": 6768,
+          "triangles": 5302,
+          "sampledMaxErrorMm": 0.015794,
+          "boundsMaxErrorMm": 0.000521,
+          "volumeRelativeError": 2.825e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v12",
+        "sourceVersion": "Steel receivers V12 print-in-place seesaw",
+        "sourceSha256": "107cdc7652fdf5c19611fb65c3a5874deab3c3477329f0e318d170258cb8c19f"
       }
     }
   }

@@ -550,13 +550,12 @@ function normalizeBedding(value: unknown): Bedding {
 export function setBedding(state: AssemblyState, value: Bedding): ActionResult {
   try {
     const bedding = normalizeBedding(value);
-    return action(state, { ...state, bedding, legHeight: state.legHeight === 0 ? 0 : bedding.mode === "thin" ? 100 : bedding.depth });
+    return action(state, { ...state, bedding });
   } catch (error) { return { ok: false, state, reason: error instanceof Error ? error.message : "垫料设置无效" }; }
 }
 export function setLegHeight(state: AssemblyState, legHeight: 0 | 100 | 200 | 300): ActionResult {
   if (legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) return { ok: false, state, reason: "无腿平台不兼容泳池，请先移除泳池" };
-  const bedding = state.bedding.mode === "thick" && legHeight !== 0 ? { mode: "thick" as const, depth: legHeight } : state.bedding;
-  return action(state, { ...state, legHeight, bedding });
+  return action(state, { ...state, legHeight });
 }
 export function setHamster(state: AssemblyState, hamster: string | null): ActionResult {
   return action(state, { ...state, hamster });
@@ -660,7 +659,6 @@ function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup, lega
     state[key] = { direction: extension.direction, baseInsert: extension.baseInsert, baseColors: normalizeColors(extension.baseColors, Object.keys(defaults.baseColors), defaults.baseColors), removedCovers: normalizeRemovedCovers(extension.removedCovers) };
   }
   if (state.thirdPlatform && !state.extension) throw new Error("第三个平台依赖第二个平台");
-  if (state.bedding.mode === "thick" && state.legHeight !== 0 && state.legHeight !== state.bedding.depth) throw new Error("厚垫料与支撑脚高度必须一致");
   if (state.hamster !== null && (typeof state.hamster !== "string" || !HAMSTER_VARIANTS.some(variant => variant.id === state.hamster))) throw new Error("仓鼠品种无效");
   if (state.legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) throw new Error("无腿平台不兼容泳池");
   const ids = new Set<string>();

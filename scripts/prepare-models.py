@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v9/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v12/assembly_meshes.json')
 DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
 
 
@@ -247,13 +247,19 @@ for product, product_parts in groups.items():
 '''
 
 
-def thumbnails(models_dir: Path, output: Path, blender: str):
+def thumbnails(models_dir: Path, output: Path, blender: str, products: list[str] | None = None):
     output.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='hamilymart-thumbnails-') as temporary:
         render_script = Path(temporary) / 'render.py'
         groups_path = Path(temporary) / 'groups.json'
         render_script.write_text(BLENDER_RENDER)
-        groups_path.write_text(json.dumps(thumbnail_catalog()))
+        catalog = thumbnail_catalog()
+        if products:
+            unknown = set(products) - set(catalog['groups'])
+            if unknown:
+                raise ValueError(f'Unknown thumbnail products: {sorted(unknown)}')
+            catalog['groups'] = {key: value for key, value in catalog['groups'].items() if key in products}
+        groups_path.write_text(json.dumps(catalog))
         # Blender logging includes scene internals; keep only useful output on success.
         result = subprocess.run([blender, '--background', '--python', str(render_script), '--', str(models_dir), str(output), str(groups_path)], capture_output=True, text=True)
         if result.returncode:
@@ -271,6 +277,7 @@ def main():
     parser.add_argument('--only', nargs='+', help='Regenerate selected group IDs while preserving other existing assets')
     parser.add_argument('--thumbnails', action='store_true')
     parser.add_argument('--thumbnails-only', action='store_true')
+    parser.add_argument('--thumbnail-products', nargs='+', help='Render only these catalogue product IDs')
     parser.add_argument('--blender', default=shutil.which('blender') or '/Applications/Blender.app/Contents/MacOS/Blender')
     args = parser.parse_args()
     models_dir = ROOT / 'public/models'
@@ -316,7 +323,7 @@ def main():
             'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
         print(f"Total: {sum(v['bytes'] for v in metrics.values()) / 1e6:.2f} MB", flush=True)
     if args.thumbnails or args.thumbnails_only:
-        thumbnails(models_dir, ROOT / 'public/thumbnails', args.blender)
+        thumbnails(models_dir, ROOT / 'public/thumbnails', args.blender, args.thumbnail_products)
 
 
 if __name__ == '__main__':

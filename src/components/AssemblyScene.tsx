@@ -183,16 +183,17 @@ function createRuntime(
   controls.dampingFactor = 0.08;
   controls.minDistance = 300;
   controls.maxDistance = 4000;
-  controls.maxPolarAngle = Math.PI * 0.485;
+  controls.minPolarAngle = 0;
+  controls.maxPolarAngle = Math.PI;
   controls.enablePan = true;
   controls.target.set(150, 150, 80);
   const contentTop = () =>
-    Math.max(
+    Math.max(props().state.bedding.depth, Math.max(
       110,
       ...props().state.items.flatMap((item) =>
         getItemBounds(item).map((b) => b[5]),
       ),
-    ) + getDisplayElevation(props().state);
+    ) + getDisplayElevation(props().state));
   let framedTop = contentTop();
   let framedLayout = JSON.stringify(getPlatforms(props().state).map(p => [p.x, p.y]));
   const sceneCenter = () => {
@@ -232,6 +233,10 @@ function createRuntime(
   const fill = new THREE.DirectionalLight("#d9f3ee", 1.2);
   fill.position.set(500, 300, 350);
   scene.add(fill);
+  const undersideLight = new THREE.DirectionalLight("#FFF8EC", 1.5);
+  undersideLight.position.set(-250, -300, -500);
+  undersideLight.visible = false;
+  scene.add(undersideLight);
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(2000, 2000),
     new THREE.ShadowMaterial({ opacity: 0.13 }),
@@ -722,6 +727,10 @@ function createRuntime(
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     controls.update();
+    const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
+    bedding.setVisible(!viewingUnderside);
+    floor.visible = grid.visible = !viewingUnderside;
+    undersideLight.visible = viewingUnderside;
     hamster?.tick(Math.min(clock.getDelta(), .05));
     renderer.render(scene, camera);
   };
