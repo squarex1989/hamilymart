@@ -51,6 +51,9 @@ export default function MobileWorkbench(props: WorkbenchProps) {
       <span aria-hidden="true" />
     </header>
     {editing ? <div className="mobile-edit-body">
+      {props.editingPlatform && <div className="mobile-leg-options">
+        <span>腿高</span><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} disabled={height === 0 && hasPool} title={height === 0 && hasPool ? "泳池需要支撑脚" : undefined} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div>
+      </div>}
       <div className="mobile-part-rail" aria-label="选择换色部位">
         {props.parts.map(part => <button key={part.id} aria-pressed={props.colorPart === part.id} onClick={() => props.onColorPart(part.id)}>{/^[LXY]01$/.test(part.id) ? "支撑脚" : part.role}</button>)}
       </div>
@@ -59,9 +62,6 @@ export default function MobileWorkbench(props: WorkbenchProps) {
           <span className="mobile-color-chip" style={{ background: getColorSwatch(color.id) }}>{currentColor === color.id && <Check size={16} />}</span><small>{color.name}</small>
         </button>)}
       </div>
-      {props.editingPlatform && <div className="mobile-leg-options">
-        <span>腿高</span><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} disabled={height === 0 && hasPool} title={height === 0 && hasPool ? "泳池需要支撑脚" : undefined} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div>
-      </div>}
       {props.editingPlatform && !!platform?.removedCovers.length && <div className="mobile-cover-options"><div>{platform.removedCovers.map(id => <button key={id} onClick={() => props.onRestoreCover(platform.id, id)}><Plus size={15} />放回小圆盖 {Number(id.slice(-1))}</button>)}</div></div>}
     </div> : <>
       <div className="mobile-product-rail" ref={rail} aria-label="横滑挑选配件">

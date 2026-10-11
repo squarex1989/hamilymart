@@ -770,7 +770,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 .desktop-color-options button > span svg { filter: drop-shadow(0 1px 2px #777); }
 .desktop-color-options button small { font-size: 10px; }
 .desktop-color-name { color: #89977a; font-size: 10px; margin: 16px 0; }
-.desktop-leg-options { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.desktop-leg-options { margin-bottom: 20px; }
 .desktop-leg-options h3 { margin: 0 0 12px; font-size: 12px; font-weight: 500; color: #6b7e5c; }
 .desktop-leg-options > div { display: flex; gap: 7px; }
 .desktop-leg-options button { flex: 1; border: 1px solid #dce4d1; border-radius: 8px; background: #f4f6ee; color: #718568; font-size: 11px; }
