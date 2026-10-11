@@ -1,0 +1,4 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>组件预览导出</title>
+<style>body{font:16px system-ui;padding:24px;background:#dde0e2;color:#174a3a}button{padding:12px 24px}#previews{display:flex;flex-wrap:wrap;gap:16px}figure{margin:0;width:240px}img{width:240px;height:200px;background:#f0f2e9;object-fit:contain}figcaption{font-size:13px}#renderer canvas{max-width:480px;width:100%;height:auto}</style></head>
+<body><h1>组件预览导出</h1><p>使用正式场景的 Three.js 灯光、材质和色调处理生成 5 套商品图。</p><button id="export">生成全部缩略图</button><p id="status" role="status">待开始</p><div id="renderer"></div><div id="previews"></div><script type="module" src="/dev/thumbnail-export.ts"></script></body></html>

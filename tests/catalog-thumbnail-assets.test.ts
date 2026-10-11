@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { VISIBLE_PRODUCTS, getBaseParts } from '../src/data/catalog';
+import { COLORS, VISIBLE_PRODUCTS, getBaseParts } from '../src/data/catalog';
 import { COLOR_STYLES, getBaseStyleColors, getProductStyleColors } from '../src/lib/color-styles';
 import { getModelMaterialColor } from '../src/lib/model-colors';
 import modelIndex from '../src/data/model-index.json';
+import { MODEL_RENDER_VERSION } from '../src/lib/model-presentation';
 
 const hash = (data: Buffer) => createHash('sha256').update(data).digest('hex');
 test('all five catalog image sets use current geometry and the same material colors as the live scene', () => {
@@ -19,11 +20,15 @@ test('all five catalog image sets use current geometry and the same material col
       const expected = Object.fromEntries(parts.flatMap(part => modelIndex[part.id as keyof typeof modelIndex].components.map(component =>
         [component.id, getModelMaterialColor(part, component.id, component.colorKey, colors)])));
       assert.deepEqual(record.materialColors, expected, `${style.id}/${product.id}: outdated palette`);
+      assert.equal(record.renderer, MODEL_RENDER_VERSION, 'catalog PNGs must come from the live Three presentation, not Blender');
+      assert.deepEqual(record.materialHexColors, Object.fromEntries(Object.entries(expected).map(([part, color]) =>
+        [part, COLORS.find(entry => entry.id === color)!.hex])), `${style.id}/${product.id}: changed color hex needs a new render`);
       for (const part of parts) assert.equal(record.modelSha256[part.id], hash(readFileSync(new URL(`../public/models/${part.id}.glb`, import.meta.url))), `${style.id}/${product.id}: outdated geometry`);
       const png = readFileSync(new URL(`../public/thumbnails/${style.id}/${product.id}.png`, import.meta.url));
       assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
       assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [480, 400]);
       assert.equal(hash(png), record.pngSha256);
+      if (style.id === 'original') assert.equal(hash(readFileSync(new URL(`../public/thumbnails/${product.id}.png`, import.meta.url))), record.pngSha256, 'fallback image must use the same rendering pipeline');
     }
   }
   assert.equal(new Set(COLOR_STYLES.map(style => JSON.stringify(VISIBLE_PRODUCTS.map(product => manifest[style.id][product.id].pngSha256)))).size, 5, 'the five catalog palettes must render distinct image sets');

@@ -2,7 +2,7 @@
 """Generate HamilyMart web assets from the approved assembly (never print STL poses).
 
 Requires Python 3.11+, numpy, trimesh, fast-simplification and rtree.
-`--thumbnails` additionally uses a local Blender executable, without add-ons.
+Catalog PNGs are exported by /dev/thumbnail-studio.html using the live Three.js presentation.
 """
 from __future__ import annotations
 import argparse
@@ -10,10 +10,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
-import shutil
 import struct
-import subprocess
-import tempfile
 
 import numpy as np
 import trimesh
@@ -147,240 +144,65 @@ def write_glb(path: Path, group: dict, meshes: list[trimesh.Trimesh]) -> None:
     path.write_bytes(struct.pack('<III', 0x46546C67, 2, length) + struct.pack('<II', len(encoded), 0x4E4F534A) + encoded + struct.pack('<II', len(binary), 0x004E4942) + binary)
 
 
-# Read the runtime catalogue directly so thumbnails follow the same product bundles,
-# default stock colours, and primary/trim colour rules as the interactive scene.
-def thumbnail_catalog() -> dict:
-    exporter = """
-import { COLORS, PRODUCTS, VISIBLE_PRODUCTS, getBaseParts } from './src/data/catalog.ts';
-import { COLOR_STYLES, getBaseStyleColors, getProductStyleColors } from './src/lib/color-styles.ts';
-import { getModelMaterialColor } from './src/lib/model-colors.ts';
-import modelIndex from './src/data/model-index.json';
-const base = getBaseParts(100, false);
-const pool = getBaseParts(100, true).find(part => part.id === 'B01');
-const groups = Object.fromEntries([
-  ['base', base], ...PRODUCTS.map(product => [product.id, product.parts]),
-  ['pool', [pool]], ['small-cover', [base.find(part => part.id === 'H01')]],
-  ['large-cover', [base.find(part => part.id === 'H06')]],
-]);
-console.log(JSON.stringify({
-  colors: Object.fromEntries(COLORS.map(color => [color.id, color.hex])),
-  groups,
-  visibleProducts: VISIBLE_PRODUCTS.map(product => product.id),
-  styles: Object.fromEntries(COLOR_STYLES.map((style, index) => [style.id,
-    Object.fromEntries(Object.entries(groups).map(([id, parts]) => {
-      const colors = ['base', 'pool', 'small-cover', 'large-cover'].includes(id)
-        ? getBaseStyleColors(index) : getProductStyleColors(id, index);
-      return [id, Object.fromEntries(parts.flatMap(part => modelIndex[part.id].components.map(component =>
-        [component.id, getModelMaterialColor(part, component.id, component.colorKey, colors)])))];
-    }))])),
-}));
-"""
-    runner = ROOT / 'node_modules/.bin/tsx'
-    if not runner.exists():
-        raise RuntimeError('Run npm install in the app before rendering catalogue thumbnails.')
-    result = subprocess.run([str(runner), '--eval', exporter], cwd=ROOT,
-                            capture_output=True, text=True, check=True)
-    payload = json.loads(result.stdout)
-    payload['modelIndex'] = json.loads((ROOT / 'src/data/model-index.json').read_text())
-    return payload
-
-
-BLENDER_RENDER = r'''
-import bpy, json, math, sys
-from pathlib import Path
-from mathutils import Vector
-args = sys.argv[sys.argv.index('--') + 1:]
-source, output, groups_path = map(Path, args)
-catalog = json.loads(groups_path.read_text())
-groups = catalog['groups']
-def linear_rgba(hex_color):
-    values = [int(hex_color[i:i+2], 16) / 255 for i in (1,3,5)]
-    return tuple(c / 12.92 if c <= .04045 else ((c + .055) / 1.055) ** 2.4 for c in values) + (1,)
-bpy.ops.wm.read_factory_settings(use_empty=True)
-scene = bpy.context.scene
-scene.render.engine = 'CYCLES'
-scene.cycles.samples = 32
-scene.cycles.use_denoising = True
-scene.render.resolution_x = 480
-scene.render.resolution_y = 400
-scene.render.resolution_percentage = 100
-scene.render.image_settings.file_format = 'PNG'
-scene.render.image_settings.color_mode = 'RGBA'
-scene.render.film_transparent = True
-scene.world = bpy.data.worlds.new('Soft studio')
-scene.world.use_nodes = True
-scene.world.node_tree.nodes['Background'].inputs[0].default_value = (0.85,0.9,0.85,1)
-scene.world.node_tree.nodes['Background'].inputs[1].default_value = .55
-scene.view_settings.view_transform = 'AgX'
-for product, product_parts in groups.items():
-    for obj in list(bpy.data.objects):
-        bpy.data.objects.remove(obj, do_unlink=True)
-    parts = []
-    for part in product_parts:
-        group_id = part['id']
-        before = set(bpy.data.objects)
-        bpy.ops.import_scene.gltf(filepath=str(source / (group_id + '.glb')))
-        added = [o for o in bpy.data.objects if o not in before and o.type == 'MESH']
-        # glTF importer assumes Y-up. Our deliberately Z-up web assets need undoing.
-        for obj in added:
-            obj.rotation_mode = 'XYZ'
-            obj.rotation_euler = (-math.pi / 2,0,0)
-            obj.location = part.get('offset', [0,0,0])
-            color_id = catalog['materialColors'][product][obj.get('sourcePart')]
-            rgba = linear_rgba(catalog['colors'][color_id])
-            for slot in obj.material_slots:
-                material = slot.material.copy()
-                slot.material = material
-                material.diffuse_color = rgba
-                if material.use_nodes:
-                    for node in material.node_tree.nodes:
-                        if node.type == 'BSDF_PRINCIPLED':
-                            node.inputs['Base Color'].default_value = rgba
-                            node.inputs['Metallic'].default_value = 0
-                            node.inputs['Roughness'].default_value = .72
-            parts.append(obj)
-    bpy.context.view_layer.update()
-    corners = [obj.matrix_world @ Vector(v) for obj in parts for v in obj.bound_box]
-    low = Vector([min(v[i] for v in corners) for i in range(3)])
-    high = Vector([max(v[i] for v in corners) for i in range(3)])
-    center = (low + high) / 2
-    span = max(high.x-low.x, high.y-low.y, high.z-low.z)
-    camera_data = bpy.data.cameras.new('Camera')
-    camera = bpy.data.objects.new('Camera', camera_data)
-    scene.collection.objects.link(camera)
-    camera.location = center + Vector((1.3,-1.8,1.25)) * span
-    direction = center - camera.location
-    camera.rotation_euler = direction.to_track_quat('-Z','Y').to_euler()
-    camera_data.type = 'ORTHO'
-    # Fit the actual projected bounds, including portrait-like small houses.
-    # A fixed scale based only on the longest world axis clips tall thumbnails.
-    orientation = camera.rotation_euler.to_quaternion()
-    right = orientation @ Vector((1,0,0))
-    up = orientation @ Vector((0,1,0))
-    horizontal = [(v-center).dot(right) for v in corners]
-    vertical = [(v-center).dot(up) for v in corners]
-    camera.location += right * ((min(horizontal)+max(horizontal))/2) + up * ((min(vertical)+max(vertical))/2)
-    aspect = scene.render.resolution_x / scene.render.resolution_y
-    camera_data.ortho_scale = max(max(horizontal)-min(horizontal), (max(vertical)-min(vertical))*aspect) * 1.14
-    camera_data.clip_end = 10000
-    scene.camera = camera
-    for name, delta, power, size in [('Key', (0.2,-1.5,2.2),1200000,2),('Fill',(-1.6,-0.2,1.0),600000,2.0),('Rim',(0.8,1.5,1.8),800000,1.4)]:
-        data = bpy.data.lights.new(name, 'AREA')
-        data.energy = power * (span/300)**2
-        data.shape = 'DISK'
-        data.size = span * size
-        light = bpy.data.objects.new(name,data)
-        scene.collection.objects.link(light)
-        light.location = center + Vector(delta) * span
-        light.rotation_euler = (center-light.location).to_track_quat('-Z','Y').to_euler()
-    scene.render.filepath = str(output/(product+'.png'))
-    bpy.ops.render.render(write_still=True)
-    print('HAMILY_THUMBNAIL '+product, flush=True)
-'''
-
-
-def thumbnails(models_dir: Path, output: Path, blender: str, products: list[str] | None = None,
-               styles: list[str] | None = None):
-    output.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(prefix='hamilymart-thumbnails-') as temporary:
-        render_script = Path(temporary) / 'render.py'
-        groups_path = Path(temporary) / 'groups.json'
-        render_script.write_text(BLENDER_RENDER)
-        catalog = thumbnail_catalog()
-        if products:
-            unknown = set(products) - set(catalog['groups'])
-            if unknown:
-                raise ValueError(f'Unknown thumbnail products: {sorted(unknown)}')
-            catalog['groups'] = {key: value for key, value in catalog['groups'].items() if key in products}
-        style_ids = list(catalog['styles']) if styles == ['all'] else styles or ['original']
-        if set(style_ids) - set(catalog['styles']):
-            raise ValueError('Unknown thumbnail style')
-        # Named style variants are only needed for the visible shopping catalog.
-        if styles and not products:
-            catalog['groups'] = {key: value for key, value in catalog['groups'].items() if key in catalog['visibleProducts']}
-        manifest_path = output / 'style-manifest.json'
-        manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
-        for style_id in style_ids:
-            destination = output / style_id if styles else output
-            destination.mkdir(parents=True, exist_ok=True)
-            catalog['materialColors'] = catalog['styles'][style_id]
-            groups_path.write_text(json.dumps(catalog))
-            result = subprocess.run([blender, '--background', '--python', str(render_script), '--', str(models_dir), str(destination), str(groups_path)], capture_output=True, text=True)
-            if result.returncode:
-                raise RuntimeError(result.stdout[-4000:] + result.stderr[-4000:])
-            for line in result.stdout.splitlines():
-                if line.startswith('HAMILY_THUMBNAIL '):
-                    print(f'{style_id}: {line}', flush=True)
-            if styles:
-                entries = manifest.setdefault(style_id, {})
-                for product, parts in catalog['groups'].items():
-                    entries[product] = {
-                        'materialColors': catalog['materialColors'][product],
-                        'modelSha256': {part['id']: hashlib.sha256((models_dir / (part['id'] + '.glb')).read_bytes()).hexdigest() for part in parts},
-                        'pngSha256': hashlib.sha256((destination / (product + '.png')).read_bytes()).hexdigest(),
-                    }
-                manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', type=Path, default=DEFAULT_SOURCE)
     parser.add_argument('--food-bowl-source', type=Path, default=DEFAULT_FOOD_BOWL_SOURCE,
                         help='Historical O01 fallback, used only when the primary assembly lacks O01')
     parser.add_argument('--only', nargs='+', help='Regenerate selected group IDs while preserving other existing assets')
-    parser.add_argument('--thumbnails', action='store_true')
-    parser.add_argument('--thumbnails-only', action='store_true')
-    parser.add_argument('--thumbnail-products', nargs='+', help='Render only these catalogue product IDs')
-    parser.add_argument('--thumbnail-styles', nargs='+', help='Render named style directories, or all; defaults to original root images')
-    parser.add_argument('--blender', default=shutil.which('blender') or '/Applications/Blender.app/Contents/MacOS/Blender')
+    parser.add_argument('--thumbnails', action='store_true', help=argparse.SUPPRESS)
+    parser.add_argument('--thumbnails-only', action='store_true', help=argparse.SUPPRESS)
+    parser.add_argument('--thumbnail-products', nargs='+', help=argparse.SUPPRESS)
+    parser.add_argument('--thumbnail-styles', nargs='+', help=argparse.SUPPRESS)
+    parser.add_argument('--blender', help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if args.thumbnails or args.thumbnails_only or args.thumbnail_products or args.thumbnail_styles or args.blender:
+        parser.error('Blender thumbnails are retired: run npm run dev, open /dev/thumbnail-studio.html, and generate the catalog with the shared Three.js renderer.')
     models_dir = ROOT / 'public/models'
     models_dir.mkdir(parents=True, exist_ok=True)
-    if not args.thumbnails_only:
-        source_bytes = args.source.read_bytes()
-        source = json.loads(source_bytes)
-        groups = list(source['groups'])
-        bowl_source = None
-        if not any(group['id'] == 'O01' for group in groups):
-            bowl, bowl_source = food_bowl_group(args.food_bowl_source)
-            groups.append(bowl)
-        index_path = ROOT / 'src/data/model-index.json'
-        validation_path = models_dir / 'validation.json'
-        index = json.loads(index_path.read_text()) if args.only else {}
-        metrics = json.loads(validation_path.read_text())['groups'] if args.only else {}
-        if args.only and set(args.only) - {group['id'] for group in groups}:
-            raise ValueError('Unknown group in --only')
-        for group in groups:
-            if args.only and group['id'] not in args.only:
-                continue
-            meshes, checks = [], []
-            for component in group['components']:
-                mesh, stats = simplified_mesh(component)
-                meshes.append(mesh)
-                checks.append({'id': component['id'], **stats})
-            file = models_dir / (group['id'] + '.glb')
-            web_group, web_meshes, color_split = web_color_components(group, meshes)
-            write_glb(file, web_group, web_meshes)
-            index[group['id']] = {'url': '/models/' + file.name, 'bounds': group['assembly_bounds_mm'],
-                                  'components': [{'id': c['id'], 'colorKey': c['color_key'], 'color': c['color']} for c in web_group['components']],
-                                  'nameZh': group['name_zh']}
-            provenance = bowl_source if group['id'] == 'O01' and bowl_source else {
-                'sourceDirectory': args.source.parent.name,
-                'sourceVersion': source.get('version'),
-                'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
-            }
-            metrics[group['id']] = {'bytes': file.stat().st_size, 'components': checks,
-                                    'source': provenance}
-            if color_split:
-                metrics[group['id']]['webColorSplit'] = color_split
-            print(f"{group['id']}: {sum(c['sourceTriangles'] for c in checks):,} → {sum(c['triangles'] for c in checks):,} triangles, {file.stat().st_size / 1000:.1f} KB", flush=True)
-        index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
-        validation_path.write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
-            'sourceVersion': source.get('version'), 'supplementalSources': [bowl_source] if bowl_source else [],
-            'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
-        print(f"Total: {sum(v['bytes'] for v in metrics.values()) / 1e6:.2f} MB", flush=True)
-    if args.thumbnails or args.thumbnails_only:
-        thumbnails(models_dir, ROOT / 'public/thumbnails', args.blender, args.thumbnail_products, args.thumbnail_styles)
+    source_bytes = args.source.read_bytes()
+    source = json.loads(source_bytes)
+    groups = list(source['groups'])
+    bowl_source = None
+    if not any(group['id'] == 'O01' for group in groups):
+        bowl, bowl_source = food_bowl_group(args.food_bowl_source)
+        groups.append(bowl)
+    index_path = ROOT / 'src/data/model-index.json'
+    validation_path = models_dir / 'validation.json'
+    index = json.loads(index_path.read_text()) if args.only else {}
+    metrics = json.loads(validation_path.read_text())['groups'] if args.only else {}
+    if args.only and set(args.only) - {group['id'] for group in groups}:
+        raise ValueError('Unknown group in --only')
+    for group in groups:
+        if args.only and group['id'] not in args.only:
+            continue
+        meshes, checks = [], []
+        for component in group['components']:
+            mesh, stats = simplified_mesh(component)
+            meshes.append(mesh)
+            checks.append({'id': component['id'], **stats})
+        file = models_dir / (group['id'] + '.glb')
+        web_group, web_meshes, color_split = web_color_components(group, meshes)
+        write_glb(file, web_group, web_meshes)
+        index[group['id']] = {'url': '/models/' + file.name, 'bounds': group['assembly_bounds_mm'],
+                              'components': [{'id': c['id'], 'colorKey': c['color_key'], 'color': c['color']} for c in web_group['components']],
+                              'nameZh': group['name_zh']}
+        provenance = bowl_source if group['id'] == 'O01' and bowl_source else {
+            'sourceDirectory': args.source.parent.name,
+            'sourceVersion': source.get('version'),
+            'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
+        }
+        metrics[group['id']] = {'bytes': file.stat().st_size, 'components': checks,
+                                'source': provenance}
+        if color_split:
+            metrics[group['id']]['webColorSplit'] = color_split
+        print(f"{group['id']}: {sum(c['sourceTriangles'] for c in checks):,} → {sum(c['triangles'] for c in checks):,} triangles, {file.stat().st_size / 1000:.1f} KB", flush=True)
+    index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
+    validation_path.write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),
+        'sourceVersion': source.get('version'), 'supplementalSources': [bowl_source] if bowl_source else [],
+        'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
+    print(f"Total: {sum(v['bytes'] for v in metrics.values()) / 1e6:.2f} MB", flush=True)
+
 
 
 if __name__ == '__main__':

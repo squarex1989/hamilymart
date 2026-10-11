@@ -12,15 +12,15 @@ export interface ColorStyle {
 }
 /** Map original material roles, never the user's current color, so cycling is predictable. */
 export const COLOR_STYLES: readonly ColorStyle[] = [
-  { id: "original", name: "原色圣诞", description: "杏色、森林绿与圣诞红", colors: { cream: "cream", pine: "pine", red: "red", butter: "butter" } },
+  { id: "original", name: "圣诞礼物", description: "杏色、森林绿与圣诞红", colors: { cream: "cream", pine: "pine", red: "red", butter: "butter" } },
   { id: "woodland", name: "暖木小筑", description: "桃木、浅木与深棕", colors: { cream: "wood", pine: "darkwood", red: "peachwood", butter: "peachwood" },
     parts: { "A01-ribbon": "wood", "A01-bow": "peachwood", G15: "peachwood", G16: "peachwood", G17: "peachwood", "G03-window": "wood", "G03-trim": "darkwood", B01: "peachwood" } },
   { id: "strawberry", name: "草莓奶油", description: "奶油杏、柔粉与暖黄点缀", colors: { cream: "cream", pine: "rose", red: "red", butter: "yellow" },
-    parts: { "A01-ribbon": "white", "A01-bow": "yellow", G15: "rose", "G03-window": "yellow", "G03-trim": "cream", B01: "rose" } },
+    parts: { "A01-ribbon": "white", "A01-bow": "yellow", G15: "rose", "G03-window": "yellow", "G03-trim": "cream", B01: "rose", LHR: "cream" } },
   { id: "sky", name: "晴空棉云", description: "云朵白、浅蓝与明亮暖黄", colors: { cream: "white", pine: "sky", red: "yellow", butter: "yellow" },
-    parts: { "A01-ribbon": "cream", "A01-bow": "yellow", G15: "gray", G03: "sky", "G03-window": "yellow", "G03-trim": "white", B01: "sky" } },
+    parts: { "A01-ribbon": "cream", "A01-bow": "yellow", G15: "gray", G03: "sky", "G03-window": "yellow", "G03-trim": "white", B01: "sky", LHR: "white" } },
   { id: "jade-garden", name: "琉璃花园", description: "琉璃绿、柔粉与暖黄花色", colors: { cream: "white", pine: "jade", red: "rose", butter: "yellow" },
-    parts: { "A01-ribbon": "white", "A01-bow": "yellow", G15: "jade", G03: "jade", "G03-window": "yellow", "G03-trim": "white", B01: "jade" } },
+    parts: { "A01-ribbon": "white", "A01-bow": "yellow", G15: "jade", G03: "jade", "G03-window": "yellow", "G03-trim": "white", B01: "jade", LHR: "rose" } },
 ];
 
 function getStyle(index: number): ColorStyle {

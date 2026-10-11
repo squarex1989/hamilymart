@@ -18,8 +18,7 @@ import type { ColorMap } from "../data/catalog";
 import { getPlacements, getItemBounds, getPlatforms, getDisplayElevation, tryPlace } from "../lib/assembly";
 import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
-import { applyFinish } from "../lib/scene-finishes";
-import { getModelMaterialColor } from "../lib/model-colors";
+import { configureModelRenderer, createModelLighting, createModelMaterial, MODEL_CAMERA_DIRECTION } from "../lib/model-presentation";
 import { createBedding } from "../lib/bedding-scene";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
@@ -187,12 +186,7 @@ function createRuntime(
     powerPreference: "high-performance",
   });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
-  renderer.setClearColor(0, 0);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  configureModelRenderer(renderer);
   renderer.domElement.style.touchAction = "none";
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
@@ -229,7 +223,7 @@ function createRuntime(
     const height = contentTop();
     controls.target.copy(sceneCenter());
     camera.position.copy(
-      new THREE.Vector3(480, -710, 445)
+      new THREE.Vector3(...MODEL_CAMERA_DIRECTION)
         .normalize()
         .multiplyScalar(Math.max(1000 + (getPlatforms(props().state).length - 1) * 540, height * 2.85) * Math.max(1, .95 / camera.aspect))
         .add(controls.target),
@@ -237,27 +231,7 @@ function createRuntime(
     controls.update();
   };
   home();
-  scene.add(new THREE.HemisphereLight("#ffffff", "#b4b99c", 2.7));
-  const sun = new THREE.DirectionalLight("#fff6e9", 3.4);
-  sun.position.set(-220, -300, 650);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
-  sun.shadow.camera.left = -850;
-  sun.shadow.camera.right = 850;
-  sun.shadow.camera.top = 850;
-  sun.shadow.camera.bottom = -850;
-  sun.shadow.camera.far = 1600;
-  sun.shadow.normalBias = 0.5;
-  sun.shadow.bias = -0.0003;
-  sun.target.position.set(150, 150, 0);
-  scene.add(sun, sun.target);
-  const fill = new THREE.DirectionalLight("#d9f3ee", 1.2);
-  fill.position.set(500, 300, 350);
-  scene.add(fill);
-  const undersideLight = new THREE.DirectionalLight("#FFF8EC", 1.5);
-  undersideLight.position.set(-250, -300, -500);
-  undersideLight.visible = false;
-  scene.add(undersideLight);
+  const lighting = createModelLighting(scene);
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(2000, 2000),
     new THREE.ShadowMaterial({ opacity: 0.13 }),
@@ -376,19 +350,7 @@ function createRuntime(
               ? o.material
               : [o.material];
             const mats = originals.map((m) => {
-              const next = new THREE.MeshPhysicalMaterial();
-              THREE.MeshStandardMaterial.prototype.copy.call(next, m);
-              next.roughness = 0.72;
-              next.metalness = 0;
-              const ck = o.userData.colorKey;
-              const finish = getModelMaterialColor(part, o.userData.sourcePart, ck, colors);
-              applyFinish(next, finish);
-              // The source stair has coincident red/white faces; keep its top finish stable.
-              if (part.id === "G05" && ck === "ChristmasRed") {
-                next.polygonOffset = true;
-                next.polygonOffsetFactor = -1;
-                next.polygonOffsetUnits = -1;
-              }
+              const next = createModelMaterial(m, part, o.userData.sourcePart, o.userData.colorKey, colors);
               if (preview) {
                 next.transparent = true;
                 next.opacity = 0.55;
@@ -474,8 +436,7 @@ function createRuntime(
         objects.updateMatrixWorld(true);
         hamster?.update(s);
         const center = sceneCenter();
-        sun.position.set(center.x - 370, center.y - 450, contentTop() + 420);
-        sun.target.position.set(center.x, center.y, 0);
+        lighting.centerAt(center.x, center.y);
         ready();
         updateTargets();
         updateAnnotations();
@@ -876,7 +837,7 @@ function createRuntime(
     const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
     bedding.setVisible(!viewingUnderside);
     floor.visible = grid.visible = !viewingUnderside;
-    undersideLight.visible = viewingUnderside;
+    lighting.underside.visible = viewingUnderside;
     hamster?.tick(Math.min(clock.getDelta(), .05));
     renderer.render(scene, camera);
   };

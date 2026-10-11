@@ -86,7 +86,7 @@ G15 后草栏跨度为 X=1.4–298.6 mm，G16/G17 的横向轴分别为 X=2.6/29
 - 所有 GLB 保持毫米、Z 向上的源世界坐标。套餐的组保留相对位置；前端统一减去套餐 `origin` 再旋转和平移，不逐零件居中。
 - P01 平台 Z 为 100–110 mm；L01–L04 腿为 0–100 mm，X01–X04 为 -100–100 mm。选择长腿后整套向上补偿 100 mm。
 - `model-index.json` 保存 group ID、URL、bounds、组件 ID 与源色。节点和 mesh extras 含 `sourcePart/sourceGroup/colorKey/defaultColor`，有源色槽时另含 `colorSlot`。
-- Three.js 读取 extras 进行独立配色。Blender 渲染商品图时撤销 glTF 导入器的 Y-up 轴转换。
+- Three.js 读取 extras 进行独立配色。商品图由与实时场景共用的 Three.js 渲染代码导出，直接使用相同的 Z-up GLB。
 - GLB 无需外部解码器。材质颜色从 sRGB 转为 glTF 线性值，40° 锐边分裂用于保留硬表面。
 - 小于 3,200 面的颜色体保留原网格；密集网格使用保守 QEM 简化。包围盒或最多 1,600 个确定性顶点样本到面距离误差超过 0.06 mm，或相对体积误差超过 0.1%，则使用原网格。
 
@@ -105,29 +105,23 @@ python3 - <<'PYTHON'
 import json, subprocess
 from pathlib import Path
 ids = [id for id in json.loads(Path('src/data/model-index.json').read_text()) if not id.startswith('Y0')]
-subprocess.run(['python3', 'scripts/prepare-models.py', '--only', *ids, '--thumbnails'], check=True)
+subprocess.run(['python3', 'scripts/prepare-models.py', '--only', *ids], check=True)
 subprocess.run(['python3', 'scripts/prepare-tall-legs.py'], check=True)
 PYTHON
 ```
 
 `--source` 可显式指定正式 `assembly_meshes.json`；仅当主源缺少 O01 时，`--food-bowl-source` 才用于补充历史食盆；主源自带 O01 时优先使用正式件。`--only A01 ST1B` 可局部更新，保留其他 GLB 和来源记录。省略 `--only` 会导出完整源中所有组（包括已上架的 LT2NT），更新商品目录时应一起检查测试与索引覆盖。
 
-仅重新渲染已有 GLB（可用 `--thumbnail-products villa seesaw` 限制到受影响的商品）：
+商品图用本地开发工具从实际 GLB 导出，不再使用 Blender。运行 `npm run dev` 后，打开服务地址下的 `/dev/thumbnail-studio.html`，点击“生成全部缩略图”。页面串行生成 5×12 张 480×400 透明 PNG，完成后会显示 60 张已保存；原色商品同时覆盖根目录回退图。停止导出或出现错误时，修复后完整重跑并验证清单。
 
-```sh
-python3 scripts/prepare-models.py --thumbnails-only
-```
+导出器和主场景共用 `model-presentation.ts` 中的 ACES 曝光 1.05、sRGB 输出、灯光、物理材质和楼梯深度处理。灯光位置随平台中心移动，方向和强度保持恒定，避免增加高组件后全场颜色变化。`applyFinish` 同时用于图卡和实景，包含琉璃材质；桃木、仿木、深棕均为纯色。PNG 不叠加 multiply 混合。观察角度和实际遮挡仍会形成自然明暗变化。
 
-商品图由真实套餐 GLB、`catalog.ts` 的库存色和默认色槽经 Blender 渲染，透明背景 480×400，镜头按实际投影范围留白。修改模型后应同时更新商品图。新增产品在 `catalog.ts` 配置组合和真实接口，无需在缩略图脚本重复维护列表。
+导出页及文件写入接口仅存在于 Vite 开发环境。接口只接受同源 localhost、合法商品/风格和 480×400 PNG，正式构建仍使用静态 `<img>`，不为每张图创建 WebGL 或加载额外模型。`prepare-models.py` 现在只处理几何，旧 Blender 缩略图参数会明确报错并提示新入口，避免生成旧色调的图片。
 
-网页模型与缩略图的缓存版本由 `catalog.ts` 的 `MODEL_ASSET_VERSION` 独立控制，当前为 `steel-v16-style2`；资源缓存版本与搭配目录分别维护；当前目录为 7，编号格式仍为 HM3。本次接口变化已通过严格的旧目录验证和迁移处理。
+网页模型与缩略图的缓存版本由 `catalog.ts` 的 `MODEL_ASSET_VERSION` 独立控制，当前为 `steel-v16-render1`；资源缓存版本与搭配目录分别维护；当前目录为 7，编号格式仍为 HM3。本次接口变化已通过严格的旧目录验证和迁移处理。
 
 ## 五种风格缩略图
 
-组件列表使用每个可见商品的五套真实 GLB 离线渲染图，路径为 `public/thumbnails/<style-id>/<product-id>.png`。`getModelMaterialColor` 由实时场景与导出器共用，包含独立槽、联动色及原色装饰；不使用 CSS 滤镜代替换色。`style-manifest.json` 记录实际材料色、输入 GLB 和输出 PNG 的 SHA-256，测试防止旧图与新模型混用。
+组件列表使用每个可见商品的五套真实 GLB 导出图，路径为 `public/thumbnails/<style-id>/<product-id>.png`。`getModelMaterialColor` 由实时场景与导出器共用，包含独立槽、联动色及原色装饰；渲染材质、色调与灯光也共用。`style-manifest.json` 记录 `three-shared-v1` 渲染版本、实际色号与 Hex 值、输入 GLB 和输出 PNG 的 SHA-256，测试防止旧图、旧颜色和新模型混用。
 
-```sh
-python3 scripts/prepare-models.py --thumbnails-only --thumbnail-styles all
-```
-
-`--thumbnail-products seesaw` 可仅重绘一个商品的五种风格；不加 `--thumbnail-styles` 则更新原根目录的原色商品图，作为加载失败回退。新增平台、商品与拖入预览继承当前目录风格，现有手工色不重写。风格上下文随撤销/重做保存，并以绑定搭配编号的本地 UI 提示恢复；不改变 HM3 数据格式。
+修改模型、配色或共享渲染参数后，应通过开发导出页重绘全部图卡、更新缓存版本并运行 `npm test`。新增平台、商品与拖入预览继承当前目录风格，现有手工色不重写。风格上下文随撤销/重做保存，并以绑定搭配编号的本地 UI 提示恢复；不改变 HM3 数据格式。

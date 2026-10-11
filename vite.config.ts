@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { thumbnailExportPlugin } from "./dev/thumbnail-export-plugin";
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), thumbnailExportPlugin()],
   server: { port: 5173, strictPort: false },
   build: {
     rollupOptions: {

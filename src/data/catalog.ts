@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v16-style2";
+export const MODEL_ASSET_VERSION = "steel-v16-render1";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -35,12 +35,9 @@ export function canonicalColorId(color: ColorId): ColorId {
   return color === "yellow" ? "butter" : color;
 }
 export const WOOD_COLOR_IDS = ["peachwood", "wood", "darkwood"] as const satisfies readonly ColorId[];
-/** Peachwood and imitation wood are solid finishes; only dark brown keeps a quiet grain. */
+/** All available wood tones use the same solid-color swatch as their rendered finish. */
 export function getColorSwatch(colorId: string): string {
-  const hex = COLORS.find(color => color.id === colorId)?.hex ?? COLORS[0].hex;
-  return colorId === "darkwood"
-    ? `repeating-linear-gradient(96deg, transparent 0 3px, #3b24141c 4px, transparent 5px 9px), linear-gradient(100deg, #ffffff12, transparent 45%, #38201316), ${hex}`
-    : hex;
+  return COLORS.find(color => color.id === colorId)?.hex ?? COLORS[0].hex;
 }
 /** Secondary decorative bodies use the same stock palette. */
 export const SOURCE_TRIM_COLORS: Record<string, ColorId> = {

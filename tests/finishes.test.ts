@@ -19,8 +19,7 @@ test("wood finishes append to the HM3 palette and round-trip without changing or
     state.baseColors.legs = color;
     const decoded = decodeConfig(encodeConfig(state));
     assert.deepEqual(decoded.baseColors, state.baseColors);
-    if (color === "darkwood") assert.match(getColorSwatch(color), /gradient/);
-    else assert.equal(getColorSwatch(color), COLORS.find(candidate => candidate.id === color)!.hex);
+    assert.equal(getColorSwatch(color), COLORS.find(candidate => candidate.id === color)!.hex);
   }
   assert.equal(getColorSwatch("cream"), "#F1EADB");
 });
@@ -109,27 +108,41 @@ test("changing wood, marble or jade back to a solid color removes the previous f
     assert.ok(material.version > previousVersion, "a reused material must invalidate its old program");
   }
   applyFinish(material, "jade");
+  assert.equal(material.clearcoat, .8);
+  assert.equal(material.roughness, .22);
+  assert.equal(material.metalness, .04);
   applyFinish(material, "darkwood");
   assert.equal(material.clearcoat, 0);
   assert.equal(material.metalness, 0);
-  assert.notEqual(material.customProgramCacheKey(), plain.customProgramCacheKey());
+  assert.equal(material.customProgramCacheKey(), plain.customProgramCacheKey());
+  assert.equal(material.onBeforeCompile, THREE.Material.prototype.onBeforeCompile);
   material.dispose();
   plain.dispose();
 });
 
-test("peachwood and imitation wood stay uniform after previously textured finishes", () => {
-  const material = new THREE.MeshPhysicalMaterial();
-  for (const color of ["peachwood", "wood"] as const) {
-    applyFinish(material, "darkwood");
+test("all wood tones clear inherited texture maps and shader patterns on reused materials", () => {
+  const material = new THREE.MeshPhysicalMaterial(), texture = new THREE.Texture();
+  for (const previous of ["marble", "jade"]) for (const color of WOOD_COLOR_IDS) {
+    applyFinish(material, previous);
+    material.map = texture;
+    material.bumpMap = texture;
+    material.normalMap = texture;
+    const version = material.version;
     applyFinish(material, color);
-    assert.equal(material.onBeforeCompile, THREE.Material.prototype.onBeforeCompile);
+    assert.equal(material.onBeforeCompile, THREE.Material.prototype.onBeforeCompile, `${previous} → ${color} retains a procedural texture`);
     assert.equal(material.map, null);
     assert.equal(material.bumpMap, null);
     assert.equal(material.normalMap, null);
     assert.equal(material.clearcoat, 0);
+    assert.equal(material.metalness, 0);
+    assert.equal(material.roughness, .72);
+    assert.ok(material.version > version);
+    assert.equal(material.customProgramCacheKey(), "hamily-solid-1");
     assert.equal(material.color.getHexString().toUpperCase(), COLORS.find(c => c.id === color)!.hex.slice(1));
+    assert.equal(getColorSwatch(color), COLORS.find(c => c.id === color)!.hex);
   }
   material.dispose();
+  texture.dispose();
 });
 
 test("stair base and window append independent slots while linked kit parts have a single control", () => {
@@ -267,4 +280,21 @@ test("catalog previews and placement share complete palettes, with a light sky t
   assert.equal(JSON.stringify(state), before);
   assert.throws(() => getProductStyleColors("villa", -1), /未知配色/);
   assert.throws(() => getBaseStyleColors(1.5), /未知配色/);
+});
+
+test("Christmas Gift keeps its stable ID and each non-wood seasonal theme gives the L-house its own roof color", () => {
+  assert.equal(COLOR_STYLES[0].id, "original");
+  assert.equal(COLOR_STYLES[0].name, "圣诞礼物");
+  const placed = autoPlace(createInitialState(), "l-house");
+  assert.ok(placed.ok);
+  const roofs = ["butter", "peachwood", "cream", "white", "rose"];
+  const cubeRoofs = ["butter", "peachwood", "yellow", "yellow", "yellow"];
+  for (const [index] of COLOR_STYLES.entries()) {
+    const preview = getProductStyleColors("l-house", index);
+    const styled = applyColorStyle(placed.state, index);
+    assert.equal(preview.LHR, roofs[index]);
+    assert.equal(styled.items[0].colors.LHR, roofs[index]);
+    assert.notEqual(preview.LHB, preview.LHR);
+    assert.equal(getProductStyleColors("cube-house", index).SHR, cubeRoofs[index], "the L-house override must not recolor other roof products");
+  }
 });
