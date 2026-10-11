@@ -1,0 +1,79 @@
+/* Mobile has its own mounted workbench, not a resized desktop sidebar. */
+.app-shell.is-mobile { height: 100vh; height: var(--app-height, 100vh); min-height: 0; grid-template-rows: 50px minmax(0, 1fr); overflow: hidden; }
+.app-shell.is-mobile .workspace { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 300px; grid-template-rows: minmax(0, 1fr) var(--mobile-dock-height, 300px); }
+.app-shell.is-mobile .site-header { height: 50px; min-height: 0; padding: 0 12px; grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; }
+.app-shell.is-mobile .brand { grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; }
+.app-shell.is-mobile .brand > svg { width: 27px; height: 27px; }
+.app-shell.is-mobile .brand > span { font-size: 16px; letter-spacing: -.5px; }
+.app-shell.is-mobile .brand small { display: none; }
+.app-shell.is-mobile .header-actions { grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; margin-left: auto; }
+.app-shell.is-mobile .save-status, .app-shell.is-mobile .main-nav { display: none; }
+.app-shell.is-mobile .header-price { min-height: 36px; padding: 0 9px; font-size: 13px; }
+.app-shell.is-mobile .header-global { width: 38px; min-width: 38px; min-height: 38px; padding: 0; }
+.app-shell.is-mobile .header-global > span { display: none; }
+.app-shell.is-mobile .canvas-caption { left: 12px; bottom: 10px; font-size: 9px; }
+.mobile-workbench { display: grid; grid-template-rows: 49px minmax(0, 1fr) calc(55px + 0px); grid-template-rows: 49px minmax(0, 1fr) calc(55px + var(--compat-safe-area-bottom, 0px)); min-width: 0; min-height: 0; border-top: 1px solid #ccd4ce; background: #fcfbf7; overflow: hidden; }
+.mobile-dock-header { display: grid; grid-template-columns: 72px minmax(0, 1fr) 72px; align-items: center; grid-gap: 4px; --compat-row-gap: 4px; --compat-column-gap: 4px; gap: 4px; padding: 0 12px; border-bottom: 1px solid #e7e9df; }
+.mobile-dock-header > strong { font-size: 13px; font-weight: 550; color: #365b49; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.mobile-dock-header > button { display: flex; align-items: center; grid-gap: 5px; --compat-row-gap: 5px; --compat-column-gap: 5px; gap: 5px; min-height: 44px; background: transparent; color: #526d5b; font-size: 12px; padding: 0; }
+.mobile-dock-header > button:last-child { justify-content: flex-end; }
+.mobile-dock-header .mobile-save { color: #315d48; font-weight: 650; }
+.mobile-product-rail { display: flex; align-items: center; grid-gap: 12px; --compat-row-gap: 12px; --compat-column-gap: 12px; gap: 12px; min-height: 0; padding: 8px 16px 10px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; touch-action: pan-x; scroll-snap-type: x proximity; scroll-padding-left: 16px; scroll-padding-right: 16px; scroll-padding-inline: 16px; scrollbar-width: none; }
+.mobile-product-rail::-webkit-scrollbar, .mobile-color-rail::-webkit-scrollbar, .mobile-part-rail::-webkit-scrollbar { display: none; }
+.mobile-product { display: flex; flex: 0 0 112px; height: 100%; max-height: 192px; flex-direction: column; align-items: stretch; justify-content: center; grid-gap: 7px; --compat-row-gap: 7px; --compat-column-gap: 7px; gap: 7px; padding: 0; color: #365b49; background: transparent; scroll-snap-align: start; touch-action: pan-x; text-align: center; }
+.mobile-product-picture { display: flex; align-items: center; justify-content: center; flex: 1 1 110px; min-height: 50px; max-height: 130px; width: 112px; overflow: hidden; border: 1px solid #e1e5d9; border-radius: 15px; background: #f0f2ea; }
+.mobile-product-picture img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.mobile-product strong { font-size: 12px; line-height: 1.3; font-weight: 550; white-space: nowrap; }
+.mobile-product small { color: #919987; font-size: 10px; white-space: nowrap; }
+.mobile-product .mobile-product-price { color: #657e52; font-size: 12px; font-variant-numeric: tabular-nums; }
+.mobile-add-platform .mobile-product-picture { grid-gap: 5px; --compat-row-gap: 5px; --compat-column-gap: 5px; gap: 5px; border-style: dashed; border-color: #b7c6ac; background: #ebf0e3; color: #748b62; }
+.mobile-category-bar { display: flex; align-items: stretch; grid-gap: 4px; --compat-row-gap: 4px; --compat-column-gap: 4px; gap: 4px; padding: 0 12px 0px; padding: 0 12px var(--compat-safe-area-bottom, 0px); border-top: 1px solid #e7e9df; background: #f9faf5; }
+.mobile-category-bar button { position: relative; flex: 1; min-width: 44px; min-height: 50px; background: transparent; color: #82907b; font-size: 13px; }
+.mobile-category-bar button[aria-pressed=true] { color: #315d48; font-weight: 650; }
+.mobile-category-bar button[aria-pressed=true]::after { content: ''; position: absolute; left: calc(50% - 11px); right: calc(50% - 11px); bottom: 6px; height: 3px; border-radius: 2px; background: #315d48; }
+.mobile-edit-body { display: flex; flex-direction: column; justify-content: center; min-width: 0; min-height: 0; padding: 6px 0; overflow: auto; }
+.mobile-part-rail { display: flex; flex: 0 0 auto; grid-gap: 7px; --compat-row-gap: 7px; --compat-column-gap: 7px; gap: 7px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; touch-action: pan-x; }
+.mobile-part-rail button { flex-shrink: 0; min-height: 44px; padding: 0 12px; border-radius: 8px; background: transparent; color: #8a9581; font-size: 11px; }
+.mobile-part-rail button[aria-pressed=true] { color: #365b49; background: #edf1e4; }
+.mobile-color-rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(42px, 1fr)); align-items: start; flex: 0 0 auto; grid-gap: 10px 12px; --compat-row-gap: 10px; --compat-column-gap: 12px; gap: 10px 12px; padding: 10px 15px 8px; overflow: visible; touch-action: pan-y; }
+.mobile-color-rail button { display: flex; flex: 0 0 48px; align-items: center; flex-direction: column; grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; min-height: 66px; padding: 0; background: transparent; color: #8a9581; }
+.mobile-color-chip { display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border: 1px solid rgba(0, 0, 0, 0.0706); border-radius: 50%; color: white; text-shadow: 0 1px 3px #000; }
+.mobile-color-chip svg { filter: drop-shadow(0 1px 2px #555); }
+.mobile-color-rail .selected .mobile-color-chip { outline: 2px solid #487557; outline-offset: 3px; }
+.mobile-color-rail .selected { color: #365b49; }
+.mobile-color-rail small { font-size: 10px; }
+.mobile-color-caption { padding: 1px 18px; color: #98a18f; font-size: 9px; }
+.mobile-edit-tools { display: flex; align-items: stretch; grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; padding: 0 8px 0px; padding: 0 8px var(--compat-safe-area-bottom, 0px); border-top: 1px solid #e7e9df; background: #f9faf5; }
+.mobile-edit-tools button { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; min-width: 44px; min-height: 52px; padding: 2px; border-radius: 9px; background: transparent; color: #87967b; font-size: 10px; }
+.mobile-edit-tools button[aria-pressed=true] { background: #eaf0df; color: #365b49; }
+.mobile-edit-tools .mobile-original { color: #96753f; }
+.mobile-edit-tools .mobile-rotate { color: #38644d; }
+.mobile-edit-tools .mobile-remove { color: #b47a6b; }
+.cover-tool-icon { display: block; width: 19px; height: 19px; border: 1.6px solid currentColor; border-radius: 50%; }
+.mobile-leg-options, .mobile-cover-options { padding: 0 16px; }
+.mobile-leg-options p, .mobile-cover-options p { margin: 0 0 14px; font-size: 12px; color: #627759; }
+.mobile-leg-options > div { display: flex; grid-gap: 8px; --compat-row-gap: 8px; --compat-column-gap: 8px; gap: 8px; }
+.mobile-leg-options button { flex: 1; min-height: 44px; border-radius: 9px; border: 1px solid #e1e5d9; background: #f4f5ee; color: #708263; font-size: 12px; }
+.mobile-leg-options button[aria-pressed=true] { border-color: #859c73; background: #e7efdd; color: #365b49; }
+.mobile-leg-options small, .mobile-cover-options small { display: block; margin-top: 12px; color: #8b977f; font-size: 10px; }
+.mobile-cover-options > div { display: flex; grid-gap: 8px; --compat-row-gap: 8px; --compat-column-gap: 8px; gap: 8px; overflow-x: auto; }
+.mobile-cover-options button { display: flex; align-items: center; flex-shrink: 0; grid-gap: 4px; --compat-row-gap: 4px; --compat-column-gap: 4px; gap: 4px; min-height: 44px; padding: 0 9px; border-radius: 8px; background: #edf1e4; color: #506e40; font-size: 11px; }
+@media (max-height: 600px) {
+  .app-shell.is-mobile .workspace { grid-template-rows: minmax(0, 1fr) 248px; }
+  .mobile-workbench { grid-template-rows: 45px minmax(0, 1fr) calc(50px + 0px); grid-template-rows: 45px minmax(0, 1fr) calc(50px + var(--compat-safe-area-bottom, 0px)); }
+  .mobile-product { grid-gap: 5px; --compat-row-gap: 5px; --compat-column-gap: 5px; gap: 5px; }
+  .mobile-color-caption { display: none; }
+  .mobile-color-rail { padding-top: 8px; }
+}
+
+/* Editing has no bottom action bar; scene toolbar owns rotate/remove. */
+.mobile-workbench.is-editing { grid-template-rows: 49px minmax(0, 1fr); padding-bottom: 0px; padding-bottom: var(--compat-safe-area-bottom, 0px); }
+.mobile-dock-header { grid-template-columns: 88px minmax(0, 1fr) 88px; }
+.mobile-workbench .history-actions { display: flex; grid-gap: 0; --compat-row-gap: 0; --compat-column-gap: 0; gap: 0; }
+.mobile-workbench .history-actions button { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; color: #667e5d; }
+.mobile-edit-body { justify-content: flex-start; grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; padding-top: 16px; }
+.mobile-leg-options { display: flex; align-items: center; grid-gap: 9px; --compat-row-gap: 9px; --compat-column-gap: 9px; gap: 9px; margin-top: 2px; }
+.mobile-leg-options > span { flex: 0 0 auto; font-size: 11px; color: #7e8e70; }
+.mobile-leg-options > div { flex: 1; }
+.mobile-cover-options { margin-top: 4px; }
+@media(max-height:600px) { .mobile-workbench.is-editing { grid-template-rows: 45px minmax(0, 1fr); } .mobile-edit-body { padding-top: 8px; grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; } }
