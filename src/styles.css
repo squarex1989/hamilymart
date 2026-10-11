@@ -733,3 +733,42 @@ h1, h2, h3, p { margin: 0; }
 .global-links strong { color: #355e48; font-size: 14px; }
 .modal .environment-panel { padding: 0 0 20px; }
 .modal .environment-heading h2 { font-size: 15px; }
+
+/* Keep gestures out of native text selection and image drag states. */
+html, body, button, a, img, svg, canvas, div, section, aside, header, footer, nav, span, p, h1, h2, h3, strong, small, label { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+img, a { -webkit-user-drag: none; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+.canvas-global-actions { position: absolute; top: 12px; right: 12px; z-index: 8; display: flex; flex-direction: column; align-items: stretch; gap: 6px; width: 146px; }
+.canvas-global-actions > button { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 7px 11px; border: 1px solid #d4ddd1; border-radius: 10px; background: #fcfcf4e8; box-shadow: 0 2px 6px #2f45330a; color: #57704d; font-size: 11px; text-align: left; }
+.canvas-global-actions > button:disabled { opacity: .46; }
+.canvas-global-actions .canvas-style-button small { display: block; margin-top: 2px; color: #8b977e; font-size: 9px; }
+.canvas-dimensions-toggle { position: absolute; right: 12px; bottom: 12px; z-index: 8; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; padding: 5px 10px; border: 1px solid #cbd7c3; border-radius: 9px; background: #fbfcf5e3; color: #76856a; font-size: 10px; }
+.canvas-dimensions-toggle[aria-pressed=true] { background: #e6efdc; border-color: #8d9f7b; color: #47623b; }
+.canvas-notice { z-index: 12; bottom: 57px; max-width: 420px; }
+.desktop-workbench-v2 { display: grid; grid-template-rows: 58px minmax(0, 1fr); min-width: 0; min-height: 0; background: var(--paper); border-left: 1px solid var(--line); }
+.desktop-workbench-v2 .desktop-dock-heading { justify-content: flex-start; gap: 18px; padding: 0 18px; }
+.history-actions { display: flex; }
+.history-actions button { display: flex; align-items: center; justify-content: center; width: 40px; height: 44px; padding: 0; background: transparent; color: #718369; }
+.desktop-workbench-v2 .back-to-catalog { display: flex; align-items: center; gap: 6px; background: transparent; font-size: 12px; }
+.desktop-catalog-scroll, .desktop-component-editor { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.desktop-catalog-scroll .category-tabs { position: sticky; top: 0; z-index: 1; margin: 0; padding: 12px 18px; background: var(--paper); }
+.desktop-catalog-scroll .product-grid { padding: 4px 18px 24px; }
+.desktop-component-editor { padding: 20px; }
+.desktop-part-options { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.desktop-part-options button { min-height: 36px; padding: 4px 10px; border-radius: 8px; background: #f1f3eb; color: #89957d; font-size: 11px; }
+.desktop-part-options button[aria-pressed=true] { color: #456737; background: #e5ecd9; }
+.desktop-color-options { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px 4px; }
+.desktop-color-options button { display: flex; align-items: center; flex-direction: column; gap: 7px; padding: 4px; background: transparent; font-size: 10px; color: #859278; }
+.desktop-color-options button > span { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid #0000000c; border-radius: 50%; color: white; }
+.desktop-color-options button[aria-pressed=true] > span { outline: 2px solid #62844f; outline-offset: 3px; }
+.desktop-color-options button > span svg { filter: drop-shadow(0 1px 2px #777); }
+.desktop-color-options button small { font-size: 10px; }
+.desktop-color-name { color: #89977a; font-size: 10px; margin: 16px 0; }
+.desktop-leg-options { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.desktop-leg-options h3 { margin: 0 0 12px; font-size: 12px; font-weight: 500; color: #6b7e5c; }
+.desktop-leg-options > div { display: flex; gap: 7px; }
+.desktop-leg-options button { flex: 1; border: 1px solid #dce4d1; border-radius: 8px; background: #f4f6ee; color: #718568; font-size: 11px; }
+.desktop-leg-options button[aria-pressed=true] { background: #e7efdc; border-color: #9eb68b; color: #486c3a; }
+.desktop-workbench-v2 .restore-covers { margin-top: 16px; }
+.bedding-modal { width: min(410px, 100%); }
+.bedding-modal .bedding-options { margin-top: 24px; }

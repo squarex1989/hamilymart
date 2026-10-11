@@ -110,7 +110,12 @@ export function decodeConfigWithMigration(input: string): AssemblyMigrationResul
     const [productIndex, x, y, z, turn, colors, parent] = tuple;
     const product = legacy ? PRODUCTS.find(product => product.id === LEGACY_PRODUCT_IDS[productIndex]) : PRODUCTS[productIndex];
     if (!Number.isInteger(productIndex) || !product || !Number.isInteger(turn) || turn < 0 || turn > 3 || !Number.isInteger(parent) || parent < -format || parent >= i || (parent === -2 && !state.extension) || (parent === -3 && !state.thirdPlatform)) throw new Error("组件编号、方向或依赖无效");
-    const colorKeys = sourceCatalogVersion === 2 && product.id === "villa" ? ["A01", "A02", "G05", "G15"] : legacy || (Array.isArray(colors) && colors.length === product.parts.length) ? product.parts.map(part => part.id) : getProductColorParts(product.id).map(part => part.id);
+    const allColorKeys = getProductColorParts(product.id).map(part => part.id);
+    const colorKeys = sourceCatalogVersion === 2 && product.id === "villa" ? ["A01", "A02", "G05", "G15"]
+      : legacy || (Array.isArray(colors) && colors.length === product.parts.length) ? product.parts.map(part => part.id)
+      // The original decorative slots occupied 8 and 9 before the stair base was added.
+      : product.id === "villa" && Array.isArray(colors) && colors.length === 10 ? allColorKeys.slice(0, 10)
+      : allColorKeys;
     state.items.push({ id: `c${i + 1}`, productId: product.id, x, y, z, rotation: (turn * 90) as AssemblyItem["rotation"], colors: arrayToColors(colors, colorKeys), parentId: parent === -1 ? "base" : parent === -2 ? "base2" : parent === -3 ? "base3" : `c${parent + 1}` });
   }
   return migrateAssembly(state, sourceCatalogVersion);

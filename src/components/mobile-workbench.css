@@ -64,3 +64,15 @@
   .mobile-color-caption { display: none; }
   .mobile-color-rail { padding-top: 8px; }
 }
+
+/* Editing has no bottom action bar; scene toolbar owns rotate/remove. */
+.mobile-workbench.is-editing { grid-template-rows: 49px minmax(0, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.mobile-dock-header { grid-template-columns: 88px minmax(0, 1fr) 88px; }
+.mobile-workbench .history-actions { display: flex; gap: 0; }
+.mobile-workbench .history-actions button { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: transparent; color: #667e5d; }
+.mobile-edit-body { justify-content: flex-start; gap: 6px; padding-top: 16px; }
+.mobile-leg-options { display: flex; align-items: center; gap: 9px; margin-top: 2px; }
+.mobile-leg-options > span { flex: 0 0 auto; font-size: 11px; color: #7e8e70; }
+.mobile-leg-options > div { flex: 1; }
+.mobile-cover-options { margin-top: 4px; }
+@media(max-height:600px) { .mobile-workbench.is-editing { grid-template-rows: 45px minmax(0, 1fr); } .mobile-edit-body { padding-top: 8px; gap: 3px; } }

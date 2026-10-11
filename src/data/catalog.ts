@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v13";
+export const MODEL_ASSET_VERSION = "steel-v13-colors2";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v12/hardware_complete.json.
@@ -28,10 +28,10 @@ export const COLORS = [
 export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac" && color.id !== "marble");
 export type ColorId = (typeof COLORS)[number]["id"];
 export const WOOD_COLOR_IDS = ["peachwood", "wood", "darkwood"] as const satisfies readonly ColorId[];
-/** Use the same tint and a quiet grain in every color picker. */
+/** Peachwood and imitation wood are solid finishes; only dark brown keeps a quiet grain. */
 export function getColorSwatch(colorId: string): string {
   const hex = COLORS.find(color => color.id === colorId)?.hex ?? COLORS[0].hex;
-  return WOOD_COLOR_IDS.some(id => id === colorId)
+  return colorId === "darkwood"
     ? `repeating-linear-gradient(96deg, transparent 0 3px, #3b24141c 4px, transparent 5px 9px), linear-gradient(100deg, #ffffff12, transparent 45%, #38201316), ${hex}`
     : hex;
 }
@@ -59,6 +59,7 @@ export interface ProductPart {
 /** Independent decorative color slots; these are color controls, not separately sold parts. */
 export const SOURCE_PART_COLOR_SLOTS: Record<string, Record<string, string>> = {
   A01: { Gold: "A01-ribbon", ChristmasRed: "A01-bow" },
+  G05: { Snow: "G05-base" },
 };
 /** Source IDs distinguish decorative bodies even when both have the Gold material. */
 export const SOURCE_COMPONENT_COLOR_SLOTS: Record<string, Record<string, string>> = {
@@ -68,6 +69,9 @@ export const SOURCE_COMPONENT_COLOR_SLOTS: Record<string, Record<string, string>
     A01_BowGold: "A01-bow",
     A01_ChristmasRed: "A01-bow",
   },
+  G05: { G05_Snow: "G05-base" },
+  // The brim and pompom share Snow, so only the separately identified window uses this slot.
+  G03: { G03_WindowSnow: "G03-window" },
 };
 export function getSourceColorSlot(
   groupId: string,
@@ -81,11 +85,30 @@ export const COLOR_SLOTS: Record<string, ProductPart> = {
   "A01-ribbon": { id: "A01-ribbon", role: "礼物盒丝带", defaultColor: "butter" },
   // Keep the persisted key and position so previous bow colors become the star colors.
   "A01-bow": { id: "A01-bow", role: "五角星", defaultColor: "butter" },
+  "G05-base": { id: "G05-base", role: "楼梯底座", defaultColor: "cream" },
+  "G03-window": { id: "G03-window", role: "窗框", defaultColor: "cream" },
 };
 /** Stable order: real part controls first, then decorative slots in source mapping order. */
 export function getColorParts(parts: ProductPart[]): ProductPart[] {
-  const slots = [...new Set(parts.flatMap(part => Object.values(SOURCE_PART_COLOR_SLOTS[part.id] ?? {})))];
+  const slots = [...new Set(parts.flatMap(part => [
+    ...Object.values(SOURCE_PART_COLOR_SLOTS[part.id] ?? {}),
+    ...Object.values(SOURCE_COMPONENT_COLOR_SLOTS[part.id] ?? {}),
+  ]))];
   return [...parts, ...slots.map(id => COLOR_SLOTS[id])];
+}
+const LINKED_COLOR_PARTS: Record<string, string> = { G16: "G15", G17: "G15", W01: "A02", W02: "A02" };
+/** Rendering and editing use one leader; persisted part positions remain unchanged. */
+export function getLinkedColorPartId(partId: string): string {
+  return LINKED_COLOR_PARTS[partId] ?? partId;
+}
+export function setProductColor(colors: ColorMap, partId: string, color: ColorId): ColorMap {
+  const leader = getLinkedColorPartId(partId);
+  const linked = Object.entries(LINKED_COLOR_PARTS).filter(([, id]) => id === leader).map(([id]) => id);
+  return { ...colors, ...Object.fromEntries([leader, ...linked].map(id => [id, color])) };
+}
+/** Effective rendered/order colors; old saved follower choices are left intact in storage. */
+export function resolveLinkedProductColors(colors: ColorMap): ColorMap {
+  return Object.fromEntries(Object.entries(colors).map(([part, color]) => [part, colors[getLinkedColorPartId(part)] ?? color]));
 }
 export interface MagnetSurface {
   id: string;
@@ -481,6 +504,14 @@ export function getProduct(id: string): Product {
 }
 export function getProductColorParts(productId: string): ProductPart[] {
   return getColorParts(getProduct(productId).parts);
+}
+export function getEditableProductColorParts(productId: string): ProductPart[] {
+  const roles: Record<string, string> = {
+    A01: "小屋墙面", A02: "二层平台与支柱", G05: "楼梯踏面", G15: "草丛围栏", G03: "帽子主体",
+  };
+  return getProductColorParts(productId)
+    .filter(part => getLinkedColorPartId(part.id) === part.id)
+    .map(part => ({ ...part, role: roles[part.id] ?? part.role }));
 }
 export function getDefaultColors(productId: string): ColorMap {
   return Object.fromEntries(

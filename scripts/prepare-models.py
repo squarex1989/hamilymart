@@ -66,6 +66,38 @@ def simplified_mesh(component: dict) -> tuple[trimesh.Trimesh, dict]:
     return result, stats
 
 
+def web_color_components(group: dict, meshes: list[trimesh.Trimesh]) -> tuple[dict, list[trimesh.Trimesh], dict]:
+    """Separate the actual hat window for coloring, without changing any triangle.
+
+    Source G03_Snow contains three disconnected bodies: brim, window and pompom.
+    This is a web-only material split; approved source files and print meshes stay intact.
+    Split after simplification so web geometry also remains identical to the old export.
+    """
+    if group['id'] != 'G03':
+        return group, meshes, {}
+    index = next(i for i, component in enumerate(group['components']) if component['id'] == 'G03_Snow')
+    snow = meshes[index]
+    bodies = snow.split(only_watertight=False)
+    windows = [body for body in bodies if np.allclose(body.bounds, [[44, 179.6, 210], [112, 185.5, 246]], atol=.06)]
+    if len(bodies) != 3 or len(windows) != 1:
+        raise ValueError('G03 Snow geometry changed; audit window, brim and pompom before exporting')
+    window = windows[0]
+    trim = trimesh.util.concatenate([body for body in bodies if body is not window])
+    if len(trim.faces) + len(window.faces) != len(snow.faces) or not np.isclose(trim.area + window.area, snow.area, atol=1e-8):
+        raise ValueError('G03 material split must preserve all triangles and surface area')
+    components = [dict(component) for component in group['components']]
+    components.append({**components[index], 'id': 'G03_WindowSnow', 'color_slot': 'G03-window'})
+    exported = list(meshes)
+    exported[index] = trim
+    exported.append(window)
+    return {**group, 'components': components}, exported, {
+        'sourceComponent': 'G03_Snow', 'method': 'disconnected-window-body',
+        'windowComponent': 'G03_WindowSnow', 'windowBoundsMm': window.bounds.tolist(),
+        'beforeTriangles': len(snow.faces), 'afterTriangles': len(trim.faces) + len(window.faces),
+        'windowTriangles': len(window.faces), 'unchangedSurfaceAreaMm2': float(snow.area),
+    }
+
+
 def write_glb(path: Path, group: dict, meshes: list[trimesh.Trimesh]) -> None:
     """Small standard GLB writer. Extras are exposed as mesh.userData by Three.js."""
     gltf = {'asset': {'version': '2.0', 'generator': 'HamilyMart approved-assembly converter'},
@@ -305,9 +337,10 @@ def main():
                 meshes.append(mesh)
                 checks.append({'id': component['id'], **stats})
             file = models_dir / (group['id'] + '.glb')
-            write_glb(file, group, meshes)
+            web_group, web_meshes, color_split = web_color_components(group, meshes)
+            write_glb(file, web_group, web_meshes)
             index[group['id']] = {'url': '/models/' + file.name, 'bounds': group['assembly_bounds_mm'],
-                                  'components': [{'id': c['id'], 'colorKey': c['color_key'], 'color': c['color']} for c in group['components']],
+                                  'components': [{'id': c['id'], 'colorKey': c['color_key'], 'color': c['color']} for c in web_group['components']],
                                   'nameZh': group['name_zh']}
             provenance = bowl_source if group['id'] == 'O01' and bowl_source else {
                 'sourceDirectory': args.source.parent.name,
@@ -316,6 +349,8 @@ def main():
             }
             metrics[group['id']] = {'bytes': file.stat().st_size, 'components': checks,
                                     'source': provenance}
+            if color_split:
+                metrics[group['id']]['webColorSplit'] = color_split
             print(f"{group['id']}: {sum(c['sourceTriangles'] for c in checks):,} → {sum(c['triangles'] for c in checks):,} triangles, {file.stat().st_size / 1000:.1f} KB", flush=True)
         index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + '\n')
         validation_path.write_text(json.dumps({'sourceSha256': hashlib.sha256(source_bytes).hexdigest(),

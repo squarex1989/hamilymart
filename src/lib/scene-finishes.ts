@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { COLORS, WOOD_COLOR_IDS } from "../data/catalog";
+import { COLORS } from "../data/catalog";
 
 /** Object-space patterns keep their scale and direction on CAD meshes without UVs. */
 export function applyFinish(material: THREE.MeshStandardMaterial, colorId: string) {
@@ -22,7 +22,7 @@ export function applyFinish(material: THREE.MeshStandardMaterial, colorId: strin
       material.clearcoatRoughness = .12;
     }
   }
-  if (WOOD_COLOR_IDS.some(id => id === colorId)) {
+  if (colorId === "darkwood") {
     material.roughness = .62;
     material.customProgramCacheKey = () => "hamily-wood-1";
     material.onBeforeCompile = shader => {

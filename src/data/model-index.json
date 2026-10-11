@@ -304,6 +304,11 @@
         "id": "G03_Snow",
         "colorKey": "Snow",
         "color": "#F1EADB"
+      },
+      {
+        "id": "G03_WindowSnow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
       }
     ],
     "nameZh": "红帽房与白窗框_一体多色打印"

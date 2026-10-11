@@ -8,6 +8,7 @@ import {
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RotateCw, Trash2 } from "lucide-react";
 import {
   MODEL_ASSET_VERSION,
   SOURCE_TRIM_COLORS,
@@ -16,14 +17,17 @@ import {
   PRIMARY_COLOR_KEYS,
   getProduct,
   getBaseParts,
+  getLinkedColorPartId,
 } from "../data/catalog";
-import { getPlacements, getMagnetPoints, getItemBounds, getPlatforms, getDisplayElevation } from "../lib/assembly";
+import { getPlacements, getItemBounds, getPlatforms, getDisplayElevation, tryPlace } from "../lib/assembly";
 import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
 import { applyFinish } from "../lib/scene-finishes";
 import { createBedding } from "../lib/bedding-scene";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
+import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds } from "../lib/scene-annotations";
+import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
 export type SceneHandle = {
@@ -42,7 +46,11 @@ type Props = {
   state: AssemblyState;
   selectedId: string | null;
   activeProduct: string | null;
-  showMagnets: boolean;
+  showDimensions: boolean;
+  onRotate: () => void;
+  onRemove: () => void;
+  canRotate: boolean;
+  canRemove: boolean;
   rotation: number;
   onSelect: (id: string | null) => void;
   onDrop: (
@@ -82,6 +90,7 @@ function release(root: THREE.Object3D) {
 export default forwardRef<SceneHandle, Props>(
   function AssemblyScene(props, ref) {
     const host = useRef<HTMLDivElement>(null);
+    const toolbar = useRef<HTMLDivElement>(null);
     const current = useRef(props);
     current.current = props;
     const runtime = useRef<ReturnType<typeof createRuntime> | null>(null);
@@ -112,6 +121,7 @@ export default forwardRef<SceneHandle, Props>(
             setFailed(true);
             current.current.onError(e);
           },
+          toolbar.current!,
         );
         runtime.current.update();
       } catch {
@@ -131,9 +141,17 @@ export default forwardRef<SceneHandle, Props>(
     }, [props.state, props.selectedId]);
     useEffect(() => {
       runtime.current?.updateTargets();
-    }, [props.activeProduct, props.showMagnets, props.rotation]);
+    }, [props.activeProduct, props.rotation]);
+    useEffect(() => {
+      runtime.current?.updateAnnotations();
+    }, [props.showDimensions]);
     return (
       <div ref={host} className="scene-canvas" aria-label="仓鼠屋 3D 装配画布">
+        <div ref={toolbar} className="scene-item-toolbar" role="toolbar" aria-label="已选配件操作" hidden
+          onPointerDown={(event) => event.stopPropagation()}>
+          {props.canRotate && <button type="button" aria-label="旋转已选配件" onClick={props.onRotate}><RotateCw size={16} /><span>旋转</span></button>}
+          {props.canRemove && <button type="button" aria-label="移除已选配件" onClick={props.onRemove}><Trash2 size={16} /><span>移除</span></button>}
+        </div>
         {loading && !failed && (
           <div className="scene-loading">
             <span className="loading-orbit" />
@@ -158,6 +176,7 @@ function createRuntime(
   props: () => Props,
   ready: () => void,
   fail: (e: string) => void,
+  toolbar: HTMLDivElement,
 ) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -258,6 +277,25 @@ function createRuntime(
   const hamster = FEATURES.hamsterPreview ? createHamsterSimulation(scene) : null;
   const targets = new THREE.Group();
   scene.add(targets);
+  const annotations = new THREE.Group();
+  scene.add(annotations);
+  const dimensionLines = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({
+    color: "#53696B", transparent: true, opacity: .7, depthTest: false, depthWrite: false,
+  }));
+  dimensionLines.renderOrder = 7;
+  dimensionLines.visible = false;
+  scene.add(dimensionLines);
+  const dimensionLabels = ["长", "宽", "高"].map((name) => {
+    const element = document.createElement("span");
+    element.className = "scene-dimension-label";
+    element.dataset.axis = name;
+    element.hidden = true;
+    host.appendChild(element);
+    return element;
+  });
+  let selectedBounds = new THREE.Box3();
+  let modelBounds = new THREE.Box3();
+  let lastDimensionKey = "";
   let ghost: THREE.Group | null = null;
   const ray = new THREE.Raycaster(),
     pointer = new THREE.Vector2();
@@ -265,7 +303,7 @@ function createRuntime(
     revision = 0,
     ghostRevision = 0;
   let frame = 0;
-  let pressed: { x: number; y: number; id: string | null } | null = null;
+  let pressed: { x: number; y: number; id: string | null; placement?: Placement } | null = null;
   const touchPointers = new Set<number>();
   let drag: {
     pointerId?: number;
@@ -308,7 +346,6 @@ function createRuntime(
     parts: ReturnType<typeof getBaseParts>,
     origin: number[],
     colors: Record<string, string>,
-    selected = false,
     preview = false,
     ownerId?: string,
   ) {
@@ -322,6 +359,7 @@ function createRuntime(
           ? (/^H0[1-5]$/.test(part.id) && editingOwner ? `cover:${ownerId}:${part.id}` : part.id === "B01" ? `pool:${ownerId}` : ownerId)
           : ownerId;
         child.userData.selectionId = selectionId;
+        child.userData.partId = part.id;
         child.position.set(
           -origin[0] + (part.offset?.[0] ?? 0),
           -origin[1] + (part.offset?.[1] ?? 0),
@@ -329,6 +367,7 @@ function createRuntime(
         );
         child.traverse((o) => {
           if (o instanceof THREE.Mesh) {
+            o.userData.modelMesh = true;
             o.castShadow = !preview;
             o.receiveShadow = true;
             const originals = Array.isArray(o.material)
@@ -336,7 +375,7 @@ function createRuntime(
               : [o.material];
             const primary = part.defaultColor;
             const tint =
-              colors[part.id] ??
+              colors[getLinkedColorPartId(part.id)] ??
               (part.id.startsWith("L0") || (part.id.startsWith("X0") || part.id.startsWith("Y0"))
                 ? colors.legs
                 : undefined) ??
@@ -361,10 +400,6 @@ function createRuntime(
                 next.polygonOffset = true;
                 next.polygonOffsetFactor = -1;
                 next.polygonOffsetUnits = -1;
-              }
-              if (selected || (!!selectionId && props().selectedId === selectionId)) {
-                next.emissive = new THREE.Color("#77aa81");
-                next.emissiveIntensity = 0.12;
               }
               if (preview) {
                 next.transparent = true;
@@ -434,7 +469,6 @@ function createRuntime(
             def.parts,
             def.origin,
             def.colors,
-            props().selectedId === def.id,
             false,
             def.id,
           );
@@ -456,6 +490,7 @@ function createRuntime(
         sun.target.position.set(center.x, center.y, 0);
         ready();
         updateTargets();
+        updateAnnotations();
       }
     } catch (e) {
       if (!disposed) {
@@ -472,7 +507,8 @@ function createRuntime(
         transparent: true,
         opacity: 0.8,
         side: THREE.DoubleSide,
-        depthTest: false,
+        depthTest: true,
+        depthWrite: false,
       }),
     );
     m.position.set(x, y, z + elevation() + 0.8);
@@ -491,18 +527,122 @@ function createRuntime(
   function updateTargets() {
     clearTargets();
     const p = props();
-    const product = drag?.productId ?? p.activeProduct;
+    const selected = p.state.items.find((item) => item.id === p.selectedId);
+    const product = drag?.productId ?? p.activeProduct ?? selected?.productId;
     if (product) {
+      const itemId = drag?.itemId ?? (!p.activeProduct ? selected?.id : undefined);
       const placements = getPlacements(
         p.state,
         product,
-        p.rotation as 0,
-        drag?.itemId,
+        (!p.activeProduct && selected ? selected.rotation : p.rotation) as 0,
+        itemId,
       );
-      placements.forEach((pos) => targets.add(ring(pos.x, pos.y, pos.z, 10)));
-    } else if (p.showMagnets) {
-      for (const { point, sourcePart } of getMagnetPoints(p.state))
-        targets.add(ring(...point, 6, sourcePart === "H06" ? "#B18441" : "#4E876B"));
+      const surfaceRay = new THREE.Raycaster();
+      placements.forEach((pos) => {
+        if (selected && itemId && p.state.items.some((item) => item.parentId === itemId)
+          && !tryPlace(p.state, product, pos, pos.rotation, selected.colors, itemId).ok) return;
+        const parent = objects.children.find((object) => object.userData.itemId === pos.parentId);
+        if (!parent) return;
+        // Keep indicators on a real supporting surface, including recessed magnet pockets.
+        // Open access holes have no surface near the mounting height and get no floating marker.
+        surfaceRay.set(new THREE.Vector3(pos.x, pos.y, pos.z + elevation() + 4), new THREE.Vector3(0, 0, -1));
+        surfaceRay.far = 9;
+        const surface = surfaceRay.intersectObject(parent, true).find((hit) => hit.object.userData.modelMesh);
+        if (!surface || pos.z + elevation() < p.state.bedding.depth) return;
+        const marker = ring(pos.x, pos.y, pos.z, 8, "#467956");
+        marker.userData.placement = pos;
+        marker.userData.productId = product;
+        marker.userData.itemId = itemId;
+        targets.add(marker);
+      });
+    }
+  }
+  function updateAnnotations() {
+    for (const object of [...annotations.children]) {
+      annotations.remove(object);
+      disposeAnnotation(object);
+    }
+    modelBounds = getRenderedModelBounds(objects);
+    selectedBounds = props().selectedId
+      ? getRenderedModelBounds(objects, props().selectedId!)
+      : new THREE.Box3();
+    if (!selectedBounds.isEmpty()) annotations.add(createSelectionBox(selectedBounds));
+    dimensionLines.visible = props().showDimensions && !modelBounds.isEmpty();
+    dimensionLabels.forEach((element) => { element.hidden = !dimensionLines.visible; });
+    lastDimensionKey = "";
+  }
+  function project(point: THREE.Vector3) {
+    const projected = point.clone().project(camera);
+    return { x: (projected.x + 1) * host.clientWidth / 2, y: (1 - projected.y) * host.clientHeight / 2, z: projected.z };
+  }
+  function layoutAnnotations() {
+    const p = props();
+    toolbar.hidden = selectedBounds.isEmpty() || (!p.canRotate && !p.canRemove) || !!drag?.moved;
+    if (!toolbar.hidden) {
+      let corners = getBoxCorners(selectedBounds).map(project);
+      let top = Math.min(...corners.map((corner) => corner.y));
+      const halfWidth = toolbar.offsetWidth / 2;
+      // Keep the toolbar in the air above the entire selection, even after a tight zoom.
+      // Moving camera and target together preserves the viewing angle and selected object scale.
+      if (top < 56 && !drag) {
+        const distance = camera.position.distanceTo(selectedBounds.getCenter(new THREE.Vector3()));
+        const mmPerPixel = 2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.max(1, host.clientHeight);
+        const offset = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).multiplyScalar((56 - top) * mmPerPixel);
+        camera.position.add(offset);
+        controls.target.add(offset);
+        camera.updateMatrixWorld();
+        corners = getBoxCorners(selectedBounds).map(project);
+        top = Math.min(...corners.map((corner) => corner.y));
+      }
+      const left = Math.min(...corners.map((corner) => corner.x));
+      const right = Math.max(...corners.map((corner) => corner.x));
+      let x = Math.max(halfWidth + 8, Math.min(host.clientWidth - halfWidth - 8, (left + right) / 2));
+      const y = Math.max(8, top - toolbar.offsetHeight - 10);
+      // The three permanent scene controls occupy the top-right corner.
+      if (y < 150 && x + halfWidth > host.clientWidth - 164)
+        x = Math.max(halfWidth + 8, host.clientWidth - 172 - halfWidth);
+      toolbar.style.left = `${Math.round(x)}px`;
+      toolbar.style.top = `${Math.round(y)}px`;
+    }
+    if (!dimensionLines.visible) return;
+    const segments = dimensionSegments(modelBounds, camera.position);
+    const geometryKey = segments.flatMap((segment) => segment.flatMap((point) => point.toArray())).join(",");
+    if (geometryKey !== lastDimensionKey) {
+      lastDimensionKey = geometryKey;
+      const points: THREE.Vector3[] = [];
+      segments.forEach(([start, end], index) => {
+        points.push(start, end);
+        const tick = index === 0 ? new THREE.Vector3(0, 3, 0) : new THREE.Vector3(3, 0, 0);
+        points.push(start.clone().sub(tick), start.clone().add(tick), end.clone().sub(tick), end.clone().add(tick));
+      });
+      dimensionLines.geometry.dispose();
+      dimensionLines.geometry = new THREE.BufferGeometry().setFromPoints(points);
+    }
+    const values = dimensionsInCentimeters(modelBounds);
+    segments.forEach(([start, end], i) => {
+      const point = project(start.clone().lerp(end, .5));
+      const element = dimensionLabels[i];
+      element.hidden = point.z < -1 || point.z > 1 || point.x < 0 || point.y < 0 || point.x > host.clientWidth || point.y > host.clientHeight;
+      element.textContent = `${element.dataset.axis} ${values[i]} cm`;
+      element.style.left = `${point.x}px`;
+      element.style.top = `${point.y}px`;
+    });
+  }
+  function pickPlacement(x: number, y: number): Placement | undefined {
+    const b = renderer.domElement.getBoundingClientRect();
+    const candidates = targets.children.map((target) => {
+      const projected = project(target.position);
+      return { target, distance: Math.hypot(projected.x - (x - b.left), projected.y - (y - b.top)) };
+    }).filter((candidate) => candidate.distance < 14).sort((a, b) => a.distance - b.distance);
+    for (const { target } of candidates) {
+      const direction = target.position.clone().sub(camera.position);
+      const distance = direction.length();
+      ray.set(camera.position, direction.normalize());
+      ray.far = distance;
+      const solid = ray.intersectObjects(objects.children, true)[0];
+      ray.far = Infinity;
+      if (solid && solid.distance < distance - 1) continue;
+      return target.userData.placement as Placement | undefined;
     }
   }
   async function makeGhost(productId: string, itemId?: string) {
@@ -518,7 +658,6 @@ function createRuntime(
       product.parts,
       product.origin,
       existing?.colors ?? {},
-      false,
       true,
     );
     if (disposed || !drag || ghostRevision !== rev) {
@@ -649,6 +788,11 @@ function createRuntime(
   }
   function down(e: PointerEvent) {
     if (e.button !== 0 || touchPointers.size > 1) return;
+    const placement = pickPlacement(e.clientX, e.clientY);
+    if (placement) {
+      pressed = { x: e.clientX, y: e.clientY, id: props().selectedId, placement };
+      return;
+    }
     const id = pick(e.clientX, e.clientY) ?? null;
     pressed = { x: e.clientX, y: e.clientY, id };
     if (
@@ -667,6 +811,13 @@ function createRuntime(
     const p = pressed;
     pressed = null;
     if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 6) return;
+    if (p.placement) {
+      const selected = props().state.items.find((item) => item.id === props().selectedId);
+      const productId = props().activeProduct ?? selected?.productId;
+      if (productId)
+        props().onDrop(productId, p.placement, p.placement.rotation, props().activeProduct ? undefined : selected?.id);
+      return;
+    }
     const active = props().activeProduct;
     if (active) {
       const placements = getPlacements(
@@ -727,6 +878,7 @@ function createRuntime(
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     controls.update();
+    layoutAnnotations();
     const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
     bedding.setVisible(!viewingUnderside);
     floor.visible = grid.visible = !viewingUnderside;
@@ -738,6 +890,7 @@ function createRuntime(
   return {
     update,
     updateTargets,
+    updateAnnotations,
     startDrag: (productId: string, x: number, y: number, pointerId?: number) =>
       startDrag(productId, x, y, undefined, pointerId),
     home,
@@ -767,6 +920,15 @@ function createRuntime(
       controls.dispose();
       hamster?.dispose();
       bedding.dispose();
+      annotations.children.forEach(disposeAnnotation);
+      annotations.clear();
+      dimensionLines.geometry.dispose();
+      dimensionLines.material.dispose();
+      scene.remove(dimensionLines);
+      dimensionLabels.forEach((element) => element.remove());
+      grid.geometry.dispose();
+      (Array.isArray(grid.material) ? grid.material : [grid.material]).forEach((material) => material.dispose());
+      scene.remove(grid);
       window.removeEventListener("pointerdown", touchStart, true);
       element.removeEventListener("pointerdown", down);
       element.removeEventListener("pointerup", up);

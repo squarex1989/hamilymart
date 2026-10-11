@@ -1,4 +1,5 @@
 import { HAMSTER_VARIANTS } from "../data/hamsters";
+import modelIndex from "../data/model-index.json";
 import {
   BASE_PRODUCT,
   CATALOG_VERSION,
@@ -9,6 +10,7 @@ import {
   getDefaultColors,
   getProduct,
   getProductColorParts,
+  resolveLinkedProductColors,
 } from "../data/catalog";
 import type {
   Bounds,
@@ -171,6 +173,32 @@ function transformBox(
 export function getItemBounds(item: AssemblyItem, product = getProduct(item.productId)): Bounds[] {
   return product.collisionBoxes.map((box) => transformBox(box, product, item));
 }
+// V13 source G05 triangles clipped at each Y interval, rounded outwards to
+// 0.001 mm. These enclose the full staircase without treating the empty space
+// above its lower steps as solid. Keep the broad catalog boxes for footprints.
+const VILLA_STAIR_COLLISION_SLICES: Bounds[] = [
+  [219, 82, 110, 300, 90, 120.244],
+  [219, 90, 110, 300, 100, 129.468],
+  [219, 100, 120.32, 300, 110, 140.178],
+  [219, 110, 131.185, 300, 120, 150.419],
+  [219, 120, 142.049, 300, 130, 160.917],
+  [219, 130, 152.913, 300, 140, 172.034],
+  [219, 140, 163.777, 300, 150, 183.523],
+  [219, 150, 174.641, 300, 160, 194.695],
+  [219, 160, 185.506, 300, 170, 201.302],
+  [219, 170, 192.804, 300, 180, 201.424],
+  [219, 180, 194, 300, 190, 200],
+  [219, 190, 194.6, 300, 194, 200],
+];
+const VILLA_COLLISION_BOXES: Bounds[] = [
+  ...(["A01", "A02", "G15", "G16", "G17", "W01", "W02"] as const)
+    .map(id => modelIndex[id].bounds as Bounds),
+  ...VILLA_STAIR_COLLISION_SLICES,
+];
+function solidCollisionBounds(product: Product, item: Pick<AssemblyItem, "x" | "y" | "z" | "rotation">): Bounds[] {
+  const local = product.id === "villa" ? VILLA_COLLISION_BOXES : product.collisionBoxes;
+  return local.map(box => transformBox(box, product, item));
+}
 function overlap(a: Bounds, b: Bounds): boolean {
   return [0, 1, 2].every(
     (i) => Math.min(a[i + 3], b[i + 3]) - Math.max(a[i], b[i]) > EPS,
@@ -291,8 +319,11 @@ function compatiblePlacement(
       if (magnets.some((m) => otherMagnets.some((n) => samePoint(m, n))))
         return false;
     }
-    if (boxes.some((a) => getItemBounds(other, otherProduct).some((b) => overlap(a, b))))
-      return false;
+    if (boxes.some((a) => getItemBounds(other, otherProduct).some((b) => overlap(a, b)))) {
+      const preciseBoxes = solidCollisionBounds(product, placement);
+      const otherBoxes = solidCollisionBounds(otherProduct, other);
+      if (preciseBoxes.some(a => otherBoxes.some(b => overlap(a, b)))) return false;
+    }
     for (const a of faces)
       for (const b of facesFor(otherProduct, other)) {
         if (samePoint(a.center, b.center)) {
@@ -848,7 +879,7 @@ export function getOrderLines(state: AssemblyState): OrderLine[] {
   }
   for (const item of state.items) {
     const product = getProduct(item.productId);
-    const colors = normalizeColors(item.colors, getProductColorParts(product.id).map(part => part.id), getDefaultColors(product.id));
+    const colors = resolveLinkedProductColors(normalizeColors(item.colors, getProductColorParts(product.id).map(part => part.id), getDefaultColors(product.id)));
     const colorKey = JSON.stringify(
       Object.entries(colors).sort(([a], [b]) => a.localeCompare(b)),
     );

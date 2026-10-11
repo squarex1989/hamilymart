@@ -291,7 +291,7 @@
       }
     },
     "G03": {
-      "bytes": 340656,
+      "bytes": 341696,
       "components": [
         {
           "id": "G03_ChristmasRed",
@@ -313,8 +313,28 @@
       "source": {
         "sourceDirectory": "unified_complete_steel_v13",
         "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
+      },
+      "webColorSplit": {
+        "sourceComponent": "G03_Snow",
+        "method": "disconnected-window-body",
+        "windowComponent": "G03_WindowSnow",
+        "windowBoundsMm": [
+          [
+            44.0,
+            179.6000061035148,
+            210.0
+          ],
+          [
+            112.0,
+            185.5,
+            246.0
+          ]
+        ],
+        "beforeTriangles": 6924,
+        "afterTriangles": 6924,
+        "windowTriangles": 764,
+        "unchangedSurfaceAreaMm2": 20612.466780700182
       }
     },
     "G05": {

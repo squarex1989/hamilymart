@@ -6,6 +6,61 @@ import modelIndex from "../data/model-index.json";
 type Bounds = { minX: number; maxX: number; minY: number; maxY: number };
 type Pool = { x: number; y: number };
 const CAVITY_RADIUS = 82;
+export const BEDDING_OVERHANG_MM = 50;
+
+/** One continuous bed around the whole joined platform footprint. */
+export function getBeddingBounds(state: AssemblyState): Bounds {
+  const platforms = getPlatforms(state);
+  return {
+    minX: Math.min(...platforms.map(p => p.x)) - BEDDING_OVERHANG_MM,
+    maxX: Math.max(...platforms.map(p => p.x + 300)) + BEDDING_OVERHANG_MM,
+    minY: Math.min(...platforms.map(p => p.y)) - BEDDING_OVERHANG_MM,
+    maxY: Math.max(...platforms.map(p => p.y + 300)) + BEDDING_OVERHANG_MM,
+  };
+}
+
+function fitOuterEnvelope(group: THREE.Group, target: Bounds) {
+  // The pile's sloping foot and curled tips extend past its nominal outline.
+  // Fit only this outer fringe to the requested 50 mm envelope, leaving the
+  // platform footprint and every pool cavity in their exact world positions.
+  const source = new THREE.Box3().setFromObject(group);
+  const inner = {
+    minX: target.minX + BEDDING_OVERHANG_MM, maxX: target.maxX - BEDDING_OVERHANG_MM,
+    minY: target.minY + BEDDING_OVERHANG_MM, maxY: target.maxY - BEDDING_OVERHANG_MM,
+  };
+  const axes = [
+    { min: inner.minX, max: inner.maxX, lowScale: BEDDING_OVERHANG_MM / (inner.minX - source.min.x), highScale: BEDDING_OVERHANG_MM / (source.max.x - inner.maxX) },
+    { min: inner.minY, max: inner.maxY, lowScale: BEDDING_OVERHANG_MM / (inner.minY - source.min.y), highScale: BEDDING_OVERHANG_MM / (source.max.y - inner.maxY) },
+  ];
+  const scaleAt = (value: number, axis: typeof axes[number]) => value < axis.min ? axis.lowScale : value > axis.max ? axis.highScale : 1;
+  const warp = (value: number, axis: typeof axes[number]) => value < axis.min
+    ? axis.min + (value - axis.min) * axis.lowScale
+    : value > axis.max ? axis.max + (value - axis.max) * axis.highScale : value;
+  const matrix = new THREE.Matrix4();
+  group.traverse(object => {
+    if (object instanceof THREE.InstancedMesh) {
+      for (let i = 0; i < object.count; i++) {
+        object.getMatrixAt(i, matrix);
+        for (let axis = 0; axis < 2; axis++) {
+          const value = matrix.elements[12 + axis], scale = scaleAt(value, axes[axis]);
+          for (const column of [0, 4, 8]) matrix.elements[column + axis] *= scale;
+          matrix.elements[12 + axis] = warp(value, axes[axis]);
+        }
+        object.setMatrixAt(i, matrix);
+      }
+      object.instanceMatrix.needsUpdate = true;
+      object.computeBoundingBox(); object.computeBoundingSphere();
+    } else if (object instanceof THREE.Mesh) {
+      const positions = object.geometry.getAttribute("position");
+      for (let i = 0; i < positions.count; i++) {
+        positions.setXY(i, warp(positions.getX(i), axes[0]), warp(positions.getY(i), axes[1]));
+      }
+      positions.needsUpdate = true;
+      object.geometry.computeVertexNormals();
+      object.geometry.computeBoundingBox(); object.geometry.computeBoundingSphere();
+    }
+  });
+}
 
 function createShavingsTexture() {
   const canvas = document.createElement("canvas");
@@ -159,12 +214,7 @@ export function createBedding(scene: THREE.Scene) {
       if (key === signature) return;
       signature = key;
       clear();
-      const bounds: Bounds = {
-        minX: Math.min(...platforms.map(p => p.x)) - 12,
-        maxX: Math.max(...platforms.map(p => p.x + 300)) + 12,
-        minY: Math.min(...platforms.map(p => p.y)) - 12,
-        maxY: Math.max(...platforms.map(p => p.y + 300)) + 12,
-      };
+      const bounds = getBeddingBounds(state);
       const height = state.bedding.depth;
       const poolBottom = modelIndex.B01.bounds[2] + elevation;
       // A raised basin must not punch a hole through bedding it never touches.
@@ -333,6 +383,7 @@ export function createBedding(scene: THREE.Scene) {
       chips.receiveShadow = true;
       chips.instanceMatrix.needsUpdate = true;
       group.add(chips);
+      fitOuterEnvelope(group, bounds);
     },
     dispose() { clear(); shavingsTexture.dispose(); scene.remove(group); },
   };

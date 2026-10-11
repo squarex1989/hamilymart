@@ -68,7 +68,7 @@ test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and 
   ]);
   assert.equal(ids.size, 48);
   assert.equal(Object.keys(modelIndex).length, 48);
-  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 55);
+  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 56);
   assert.equal(CATALOG_VERSION, 6);
   assert.equal(COLORS.length, 14);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
@@ -327,7 +327,7 @@ test("each bundled part color survives encode/decode and parent movement carries
   );
   assert.deepEqual(
     roundTrip.items.find((i) => i.productId === "roof-cottage")?.colors,
-    { G03: "pine" },
+    { G03: "pine", "G03-window": "cream" },
   );
   const rotated = rotateItem(changed, villa.item.id, 180);
   assert.equal(rotated.ok, true, rotated.ok ? "" : rotated.reason);
@@ -337,7 +337,7 @@ test("each bundled part color survives encode/decode and parent movement carries
       [child.x, child.y, child.z, child.rotation],
       [222, 141, 200, 180],
     );
-    assert.deepEqual(child.colors, { G03: "pine" });
+    assert.deepEqual(child.colors, { G03: "pine", "G03-window": "cream" });
   }
 });
 
@@ -407,9 +407,9 @@ function assertLegacyUpgrade(state: AssemblyState) {
   assert.equal(state.items.length, 2);
   const villa = state.items.find(item => item.productId === "villa")!;
   const cottage = state.items.find(item => item.productId === "roof-cottage")!;
-  assert.deepEqual(villa.colors, { A01: "sage", A02: "sky", G05: "rose", G15: "butter", G16: "butter", G17: "butter", W01: "sky", W02: "sky", "A01-ribbon": "butter", "A01-bow": "butter" });
+  assert.deepEqual(villa.colors, { A01: "sage", A02: "sky", G05: "rose", G15: "butter", G16: "butter", G17: "butter", W01: "sky", W02: "sky", "A01-ribbon": "butter", "A01-bow": "butter", "G05-base": "cream" });
   assert.deepEqual([cottage.x, cottage.y, cottage.z, cottage.rotation], [78, 239, 200, 0]);
-  assert.deepEqual(cottage.colors, { G03: "red" });
+  assert.deepEqual(cottage.colors, { G03: "red", "G03-window": "cream" });
   assert.equal(cottage.parentId, villa.id);
 }
 test("frozen catalog-2 code migrates four custom colors and reports the V4 loft safety change", () => {
@@ -667,7 +667,7 @@ test("valid HM1 catalog 3 migrates without moving, recoloring or dropping the ex
   assert.deepEqual(result.state.removedCovers, []);
   assert.equal(result.state.baseInsert, "pool");
   assert.equal(result.state.baseColors.B01, "sky");
-  assert.deepEqual(result.state.items[0].colors, { A01: "pine", A02: "cream", G05: "red", G15: "pine", G16: "sage", G17: "rose", W01: "sky", W02: "lilac", "A01-ribbon": "butter", "A01-bow": "butter" });
+  assert.deepEqual(result.state.items[0].colors, { A01: "pine", A02: "cream", G05: "red", G15: "pine", G16: "sage", G17: "rose", W01: "sky", W02: "lilac", "A01-ribbon": "butter", "A01-bow": "butter", "G05-base": "cream" });
   assert.deepEqual(result.state.items.map(item => [item.x, item.y, item.z, item.rotation]), [[150, 190, 110, 0], [78, 239, 200, 0]]);
   assert.equal(result.messages.length, 1);
   assert.deepEqual(decodeConfigWithMigration(encodeConfig(result.state)).messages, []);
@@ -701,12 +701,12 @@ test("changing platform direction is rejected without moving any descendant", ()
 test("gift ribbon and star retain the two stable color slots after eight physical kit parts", () => {
   const physical = getProduct("villa").parts.map(part => part.id);
   assert.equal(physical.length, 8);
-  assert.deepEqual(getProductColorParts("villa").map(part => part.id), [...physical, "A01-ribbon", "A01-bow"]);
+  assert.deepEqual(getProductColorParts("villa").map(part => part.id), [...physical, "A01-ribbon", "A01-bow", "G05-base"]);
   assert.deepEqual(SOURCE_PART_COLOR_SLOTS.A01, { Gold: "A01-ribbon", ChristmasRed: "A01-bow" });
   const defaults = getDefaultColors("villa");
   assert.equal(defaults["A01-ribbon"], "butter");
   assert.equal(defaults["A01-bow"], "butter");
-  assert.equal(getProductColorParts("villa").at(-1)?.role, "五角星");
+  assert.equal(getProductColorParts("villa").find(part => part.id === "A01-bow")?.role, "五角星");
   assert.deepEqual(getProductColorParts("cube-house"), getProduct("cube-house").parts);
 });
 
@@ -849,7 +849,7 @@ test("rotation resnapping carries the whole villa family as a rigid transform wi
   const bowl = tryPlace(cottage.state, "food-bowl", { x: 285.5, y: 264, z: 200 });
   assert.equal(bowl.ok, true);
   if (!bowl.ok || !bowl.item) return;
-  const state = { ...bowl.state, items: bowl.state.items.map(item => item.id === villa.item.id ? { ...item, colors: { ...item.colors, "A01-ribbon": "rose" as const, "A01-bow": "sky" as const } } : item.id === cottage.item.id ? { ...item, colors: { G03: "lilac" as const } } : item) };
+  const state = { ...bowl.state, items: bowl.state.items.map(item => item.id === villa.item.id ? { ...item, colors: { ...item.colors, "A01-ribbon": "rose" as const, "A01-bow": "sky" as const } } : item.id === cottage.item.id ? { ...item, colors: { ...item.colors, G03: "lilac" as const } } : item) };
   const before = JSON.stringify(state);
   const rotated = rotateItem(state, villa.item.id);
   assert.equal(rotated.ok, true, rotated.ok ? "" : rotated.reason);
@@ -941,7 +941,7 @@ test("old first-floor hats move to an existing free second floor, with an explic
   const villa = result.state.items.find(item => item.productId === "villa")!;
   const hat = result.state.items.find(item => item.productId === "roof-cottage")!;
   assert.deepEqual([hat.x, hat.y, hat.z, hat.rotation, hat.parentId], [78, 239, 200, 0, villa.id]);
-  assert.deepEqual(hat.colors, { G03: "red" });
+  assert.deepEqual(hat.colors, { G03: "red", "G03-window": "cream" });
   assert.match(result.messages.join(" "), /旧一层.*二层/);
   assert.deepEqual(migrateAssembly(result.state).messages, []);
 });
@@ -963,7 +963,7 @@ test("old right-offset upper hats resnap on the same parent while preserving loc
     const migratedHat = restored.state.items.find(item => item.id === "oldhat")!;
     assert.deepEqual([migratedHat.x, migratedHat.y, migratedHat.z], transformPoint([78, 239, 200], getProduct("villa"), parent.item));
     assert.equal(migratedHat.rotation, rotation);
-    assert.deepEqual(migratedHat.colors, { G03: "rose" });
+    assert.deepEqual(migratedHat.colors, { G03: "rose", "G03-window": "cream" });
     assert.equal(JSON.stringify(oldLocal), before);
   }
 });
@@ -999,8 +999,8 @@ test("hat migration reserves a restricted upper host before moving a first-floor
     const upper = state.items.find(item => item.id === upperHat.id)!;
     assert.deepEqual([upper.x, upper.y, upper.z, upper.parentId], [78, 239, 200, first.item.id]);
     assert.deepEqual([ground.x, ground.y, ground.z, ground.parentId], [441, 78, 200, second.item.id]);
-    assert.deepEqual(upper.colors, upperHat.colors);
-    assert.deepEqual(ground.colors, groundHat.colors);
+    assert.deepEqual(upper.colors, { ...getDefaultColors("roof-cottage"), ...upperHat.colors });
+    assert.deepEqual(ground.colors, { ...getDefaultColors("roof-cottage"), ...groundHat.colors });
     assert.match(messages.join(" "), /旧一层.*二层/);
     assert.equal(JSON.stringify(old), before);
     codes.push(encodeConfig(state));
@@ -1236,4 +1236,65 @@ test("single-magnet accessories can use every real platform point while permitti
     const pool = success(setPlatformPool(initial, "base", true));
     assert.ok(getPlacements(pool, id).every(position => !(position.x === 90 && position.y === 90)));
   }
+});
+
+test("all three empty platforms expose the same villa placements and four family rotations", () => {
+  const empty = success(addPlatform(success(addPlatform(createInitialState()))));
+  const villaProduct = getProduct("villa");
+  for (const platform of getPlatforms(empty)) {
+    for (const rotation of [0, 90, 180, 270] as const) {
+      const local = getPlacements(empty, "villa", rotation).filter(position => position.parentId === platform.id)
+        .map(position => [position.x - platform.x, position.y, position.z, position.magnetCount]);
+      const first = getPlacements(empty, "villa", rotation).filter(position => position.parentId === "base")
+        .map(position => [position.x, position.y, position.z, position.magnetCount]);
+      assert.deepEqual(local, first, `${platform.id} must only translate the same source receivers`);
+      assert.equal(local.length, 2);
+    }
+    const villa = place(empty, "villa", platform.x + 150, 190);
+    const hat = place(villa.state, "roof-cottage", platform.x + 78, 239, 200);
+    const bowl = place(hat.state, "food-bowl", platform.x + 285.5, 264, 200);
+    let state = bowl.state;
+    const initialColors = Object.fromEntries(state.items.map(item => [item.id, item.colors]));
+    for (const rotation of [90, 180, 270, 0] as const) {
+      const turned = rotateItem(state, villa.item.id);
+      assert.equal(turned.ok, true, `${platform.id} → ${rotation}°: ${turned.ok ? "" : turned.reason}`);
+      if (!turned.ok) continue;
+      state = turned.state;
+      assert.equal(turned.item.rotation, rotation);
+      assert.equal(turned.item.parentId, platform.id);
+      for (const [id, sourcePoint] of [[hat.item.id, [78, 239, 200]], [bowl.item.id, [285.5, 264, 200]]] as const) {
+        const child = state.items.find(item => item.id === id)!;
+        assert.deepEqual([child.x, child.y, child.z], transformPoint([...sourcePoint], villaProduct, turned.item));
+        assert.equal(child.rotation, rotation);
+        assert.equal(child.parentId, villa.item.id);
+      }
+      for (const item of state.items) assert.deepEqual(item.colors, initialColors[item.id]);
+      assert.deepEqual(validateAssembly(state), state);
+    }
+  }
+});
+
+test("neighboring villas can rotate over empty stair space but cannot overlap actual platforms", () => {
+  const two = success(addPlatform(createInitialState()));
+  const first = place(two, "villa", 150, 190);
+  const second = tryPlace(first.state, "villa", { x: 490, y: 150, z: 110 }, 90);
+  assert.equal(second.ok, true);
+  if (!second.ok) return;
+  // A V13 source-mesh boolean audit found zero solid intersection at this
+  // 180° front placement. The old two-box villa falsely filled stair airspace.
+  const rotated = rotateItem(second.state, second.item.id);
+  assert.equal(rotated.ok, true, rotated.ok ? "" : rotated.reason);
+  if (!rotated.ok) return;
+  assert.deepEqual([rotated.item.x, rotated.item.y, rotated.item.rotation], [450, 110, 180]);
+  assert.deepEqual(rotated.state.items.find(item => item.id === first.item.id), first.item);
+  assert.deepEqual(getPlacements(second.state, "villa", 180, second.item.id).filter(position => position.parentId === "base2")
+    .map(position => [position.x, position.y]), [[450, 110]]);
+  // The other front/back positions physically intersect the A02 decks and
+  // fences; their source intersection volumes are nonzero, so keep refusing.
+  const before = JSON.stringify(rotated.state);
+  const blocked = rotateItem(rotated.state, rotated.item.id, 180);
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.state, rotated.state);
+  assert.equal(JSON.stringify(rotated.state), before);
+  assert.deepEqual(getPlacements(rotated.state, "villa", 0, rotated.item.id).filter(position => position.parentId === "base2"), []);
 });
