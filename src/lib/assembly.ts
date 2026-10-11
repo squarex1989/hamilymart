@@ -45,7 +45,7 @@ export interface AssemblyState {
   baseColors: ColorMap;
   items: AssemblyItem[];
 }
-export type Bedding = { mode: "thin"; depth: 50 } | { mode: "thick"; depth: 100 | 200 | 300 };
+export type Bedding = { mode: "none"; depth: 0 } | { mode: "thin"; depth: 50 } | { mode: "thick"; depth: 100 | 200 | 300 };
 export type PlatformDirection = "left" | "right" | "front" | "back";
 export type PlatformId = "base" | "base2" | "base3";
 export interface PlatformExtension {
@@ -627,9 +627,10 @@ export function removePlatform(state: AssemblyState, id: PlatformId = "base2"): 
 function normalizeBedding(value: unknown): Bedding {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("垫料设置无效");
   const bedding = value as Bedding;
+  if (bedding.mode === "none" && bedding.depth === 0) return { mode: "none", depth: 0 };
   if (bedding.mode === "thin" && bedding.depth === 50) return { mode: "thin", depth: 50 };
   if (bedding.mode === "thick" && [100, 200, 300].includes(bedding.depth)) return { mode: "thick", depth: bedding.depth };
-  throw new Error("薄垫料为5厘米，厚垫料可选10、20或30厘米");
+  throw new Error("不铺垫料为0厘米，薄垫料为5厘米，厚垫料可选10、20或30厘米");
 }
 export function setBedding(state: AssemblyState, value: Bedding): ActionResult {
   try {

@@ -365,7 +365,7 @@ test("source colors stay available with the approved warm-yellow replacement", (
           : SOURCE_PART_TRIM_COLORS[part.id]?.[component.colorKey] ?? SOURCE_TRIM_COLORS[component.colorKey];
       assert.equal(
         COLORS.find((c) => c.id === colorId)?.hex.toUpperCase(),
-        part.id === "LHR" || part.id === "SHR" || component.colorKey === "Snow" ? "#FAF0E6"
+        part.id === "LHR" || part.id === "SHR" || component.colorKey === "Snow" ? "#FEF1DB"
           : component.colorKey === "Gold" || (part.id === "A01" && component.colorKey === "ChristmasRed") ? "#F3B34E" : component.color.toUpperCase(),
         part.id + ":" + component.colorKey,
       );
@@ -377,7 +377,7 @@ test("source colors stay available with the approved warm-yellow replacement", (
 
 
 test("the source palette uses the approved yellow and keeps all eight villa default slots", () => {
-  assert.deepEqual(COLORS.slice(0, 4).map(color => color.hex), ["#FAF0E6", "#174A3A", "#B8273C", "#F3B34E"]);
+  assert.deepEqual(COLORS.slice(0, 4).map(color => color.hex), ["#FEF1DB", "#174A3A", "#B8273C", "#F3B34E"]);
   assert.deepEqual(getProduct("villa").parts.map(part => [part.id, part.defaultColor]), [
     ["A01", "pine"], ["A02", "cream"], ["G05", "red"], ["G15", "pine"],
     ["G16", "pine"], ["G17", "pine"], ["W01", "cream"], ["W02", "cream"],

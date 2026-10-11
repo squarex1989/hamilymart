@@ -21,12 +21,12 @@ test("wood finishes append to the HM3 palette and round-trip without changing or
     assert.deepEqual(decoded.baseColors, state.baseColors);
     assert.equal(getColorSwatch(color), COLORS.find(candidate => candidate.id === color)!.hex);
   }
-  assert.equal(getColorSwatch("cream"), "#FAF0E6");
+  assert.equal(getColorSwatch("cream"), "#FEF1DB");
 });
 
 test("one warm yellow occupies the original picker position while all serialized color indices remain valid", () => {
   assert.deepEqual(COLORS.slice(0, 14).map(({ id, hex }) => [id, hex]), [
-    ["cream", "#FAF0E6"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#F3B34E"],
+    ["cream", "#FEF1DB"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#F3B34E"],
     ["sage", "#A7BEA4"], ["rose", "#E9AEBC"], ["sky", "#A6C8DF"], ["lilac", "#C7B4D8"],
     ["white", "#FAFAF7"], ["marble", "#E2E2DE"], ["jade", "#299C82"],
     ["peachwood", "#BE896F"], ["wood", "#CCAB7A"], ["darkwood", "#654333"],

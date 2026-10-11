@@ -214,8 +214,9 @@ export function createBedding(scene: THREE.Scene) {
       if (key === signature) return;
       signature = key;
       clear();
-      const bounds = getBeddingBounds(state);
       const height = state.bedding.depth;
+      if (height === 0) return;
+      const bounds = getBeddingBounds(state);
       const poolBottom = modelIndex.B01.bounds[2] + elevation;
       // A raised basin must not punch a hole through bedding it never touches.
       const pools = platforms.filter(p => p.baseInsert === "pool" && poolBottom < height - 1)

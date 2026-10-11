@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, ArrowRight, Check, ChevronDown, Copy, Info, Layers2, Link, Plus, Ruler, ShoppingBag, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowDownToLine, Check, ChevronDown, Copy, Info, Layers2, Plus, Ruler, Sparkles, Trash2, X } from "lucide-react";
 import AssemblyScene from "./components/AssemblyScene";
 import MobileWorkbench from "./components/MobileWorkbench";
 import type { WorkbenchProps } from "./components/MobileWorkbench";
@@ -17,7 +17,6 @@ import {
   resolveLinkedProductColors,
   setProductColor,
 } from "./data/catalog";
-import { FEATURES } from "./data/features";
 import type { ColorId, Rotation } from "./data/catalog";
 import {
   addPlatform,
@@ -38,7 +37,9 @@ import {
   tryPlace,
 } from "./lib/assembly";
 import type { ActionResult, AssemblyState, Bedding, PlatformId } from "./lib/assembly";
-import { decodeConfigWithMigration, encodeConfig } from "./lib/config-code";
+import { encodeConfig } from "./lib/config-code";
+import { decodePastedDesign } from "./lib/import-design";
+import { createNewUserState } from "./lib/starter-assembly";
 import { copyText } from "./lib/clipboard";
 
 const STORAGE = "hamilymart.assembly.v2";
@@ -57,13 +58,13 @@ function initial() {
     original = localStorage.getItem(STORAGE);
     const result = original
       ? migrateAssembly(JSON.parse(original))
-      : { state: createInitialState(), messages: [] };
+      : { state: createNewUserState(), messages: [] };
     let styleHint: string | null = null;
     try { styleHint = localStorage.getItem(STYLE_STORAGE); } catch { /* Optional UI preference. */ }
     return { ...result, recovery: null, styleIndex: restoreCatalogStyle(result.state, encodeConfig(result.state), styleHint) };
   } catch (error) {
     return {
-      state: createInitialState(),
+      state: original ? createInitialState() : createNewUserState(),
       messages: [
         `本地搭配暂时无法载入：${error instanceof Error ? error.message : "存档读取失败"}。原存档已保留，你也可以粘贴搭配编号恢复。`,
       ],
@@ -112,7 +113,7 @@ export default function App() {
     [rotation, setRotation] = useState<Rotation>(0);
   const [category, setCategory] = useState("all");
   const [showDimensions, setShowDimensions] = useState(false);
-  const [modal, setModal] = useState<"code" | "order" | "bedding" | "clear" | null>(null);
+  const [modal, setModal] = useState<"import" | "order" | "bedding" | "clear" | null>(null);
   const [orderCopied, setOrderCopied] = useState(false);
   const [orderCopyFailed, setOrderCopyFailed] = useState(false);
   const [importCode, setImportCode] = useState(""),
@@ -126,8 +127,7 @@ export default function App() {
   const [styleIndex, setStyleIndex] = useState(startup.styleIndex);
   const dragFinishedAt = useRef(0);
   const scene = useRef<SceneHandle>(null),
-    toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined),
-    codeField = useRef<HTMLTextAreaElement>(null);
+    toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const configurationCode = useMemo(() => encodeConfig(state), [state]);
   const orderLines = useMemo(() => getOrderLines(state), [state]);
   useEffect(() => { setOrderCopied(false); setOrderCopyFailed(false); }, [modal, configurationCode]);
@@ -338,24 +338,15 @@ export default function App() {
     commit(next);
     select(null);
   }
-  async function copy(text: string) {
-    if (await copyText(text)) {
-      notify("已复制，发给朋友就能复现同一搭配");
-    } else {
-      codeField.current?.focus();
-      codeField.current?.select();
-      notify("请长按或使用系统复制，完整编号已选中");
-    }
-  }
   function restore() {
     try {
-      const result = decodeConfigWithMigration(importCode.trim());
+      const result = decodePastedDesign(importCode);
       commit(result.state, restoreCatalogStyle(result.state, encodeConfig(result.state)));
       setMigrationNotice(result.messages.join(" "));
-      select("base");
+      select(null);
       setImportError("");
       setModal(null);
-      notify("搭配已还原，欢迎来到这个小小家");
+      notify("搭配已导入");
     } catch (e) {
       setImportError(
         e instanceof Error ? e.message : "编号无效，请检查是否完整复制。",
@@ -387,9 +378,9 @@ export default function App() {
     setOrderCopyFailed(!copied);
   }
   function orderCopyButton() {
-    return <button className="primary-button full-width" onClick={() => void copyOrder()} aria-label="复制编号与价格清单">
+    return <button className="primary-button full-width" onClick={() => void copyOrder()} aria-label="复制搭配编号">
       {orderCopied ? <Check size={16} /> : <Copy size={16} />}
-      {orderCopied ? "已复制编号与价格清单" : "复制编号与价格清单"}
+      {orderCopied ? "已复制" : "复制搭配编号"}
     </button>;
   }
   function undo() {
@@ -432,7 +423,7 @@ export default function App() {
   return <div className={`app-shell ${mobile ? "is-mobile" : "is-desktop"}`} onContextMenu={event => { if (!(event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)) event.preventDefault(); }} onDragStart={event => event.preventDefault()}>
     <header className="site-header">
       <a className="brand" href="#" onClick={event => { event.preventDefault(); }} aria-label="HamilyMart 仓鼠造屋所"><HamsterMark /><span>Hamily<span className="brand-light">Mart</span><small>仓鼠造屋所</small></span></a>
-      <div className="header-actions"><button className="header-price" onClick={() => setModal("order")} aria-label={`搭配清单，总价 ${money(total)}`}><span>{money(total)}</span><ChevronDown size={14} /></button></div>
+      <div className="header-actions"><button className="header-import" onClick={() => { setImportCode(""); setImportError(""); setModal("import"); }}>导入搭配</button><button className="header-price" onClick={() => setModal("order")} aria-label={`搭配清单，总价 ${money(total)}`}><span>{money(total)}</span><ChevronDown size={14} /></button></div>
     </header>
     <main className="workspace">
       <section className="studio" aria-label="3D 搭建工作台">
@@ -444,7 +435,7 @@ export default function App() {
           onDragEnd={() => { dragFinishedAt.current = Date.now(); }} onReady={() => setReady(true)} onError={notify} />
         <div className="canvas-bottom-actions" aria-label="搭建选项">
           <button disabled={platforms.length >= 3} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
-          <button onClick={nextStyle}><Sparkles size={16} /><span>切换风格</span></button>
+          <button onClick={nextStyle}><Sparkles size={16} /><span>换个配色</span></button>
           <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料高度</span></button>
           <button aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={16} /><span>显示尺寸</span></button>
           <button className="clear-design-button" aria-label="清空当前设计" title="清空当前设计" onClick={() => setModal("clear")}><Trash2 size={18} /></button>
@@ -462,85 +453,29 @@ export default function App() {
         <button className="round-button modal-close" aria-label="关闭弹窗" onClick={() => setModal(null)}><X size={20} /></button>
         {modal === "clear" && <><h2 id="modal-title">是否清空当前所有设计</h2><p className="modal-lead">清空后只保留一个基础平台。可以通过后退恢复。</p><div className="clear-design-actions"><button className="outline-button" onClick={() => setModal(null)}>取消</button><button className="primary-button" onClick={clearDesign}>确认清空</button></div></>}
         {modal === "bedding" && <><h2 id="modal-title">设置垫料高度</h2><div className="bedding-options">
+          <button className={`bedding-option ${state.bedding.mode === "none" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "none"} onClick={() => chooseBedding({ mode: "none", depth: 0 })}><span className="bedding-preview" /><strong>不铺垫料</strong><span>0 cm</span></button>
           <button className={`bedding-option ${state.bedding.mode === "thin" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thin"} onClick={() => chooseBedding({ mode: "thin", depth: 50 })}><span className="bedding-preview"><i style={{height:"18%"}} /></span><strong>薄铺</strong><span>5 cm</span></button>
           {([100, 200, 300] as const).map(depth => <button key={depth} className={`bedding-option ${state.bedding.mode === "thick" && state.bedding.depth === depth ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thick" && state.bedding.depth === depth} onClick={() => chooseBedding({mode:"thick",depth})}><span className="bedding-preview"><i style={{height:`${depth / 4}%`}} /></span><strong>厚铺</strong><span>{depth / 10} cm</span></button>)}
         </div></>}
-            {modal === "code" && (
-              <>
-                <div className="modal-symbol">
-                  <Link size={26} />
-                </div>
-                <span className="eyebrow">SAME LITTLE HOME.</span>
-                <h2 id="modal-title">把这份喜欢，分享出去</h2>
-                <p className="modal-lead">
-                  完整搭配编号包含平台、组件、颜色、留洞、脚长、垫料{FEATURES.hamsterPreview ? "与仓鼠" : ""}。
-                  <br />
-                  复制给朋友，粘贴即可还原同一个小家。
-                </p>
-                <label className="field-label" htmlFor="config-code">
-                  我的搭配编号
-                </label>
-                <textarea
-                  ref={codeField}
-                  id="config-code"
-                  className="code-field"
-                  value={configurationCode}
-                  readOnly
-                  rows={3}
-                />
-                <button
-                  className="primary-button full-width"
-                  onClick={() => copy(configurationCode)}
-                >
-                  <Copy size={16} />
-                  复制完整编号
-                </button>
-                <div className="dialog-divider">
-                  <span>或者，还原另一个小家</span>
-                </div>
-                <label className="field-label" htmlFor="restore-code">
-                  粘贴搭配编号
-                </label>
-                <textarea
-                  id="restore-code"
-                  rows={3}
-                  className="code-field"
-                  placeholder="粘贴完整的 HM1 / HM2 / HM3 搭配编号…"
-                  value={importCode}
-                  onChange={(e) => {
-                    setImportCode(e.target.value);
-                    setImportError("");
-                  }}
-                />
-                {importError && (
-                  <p className="field-error" role="alert">
-                    {importError}
-                  </p>
-                )}
-                <button
-                  className="outline-button full-width"
-                  disabled={!importCode.trim()}
-                  onClick={restore}
-                >
-                  <ArrowDownToLine size={16} />
-                  还原这个搭配
-                </button>
-                <small className="dialog-footnote">
-                  还原会替换当前搭配，可用工作台的撤销按钮返回。
-                </small>
-              </>
-            )}
+        {modal === "import" && <>
+          <h2 id="modal-title">导入搭配</h2>
+          <p className="modal-lead">粘贴搭配清单或搭配编号，应用后会替换当前设计，可通过后退恢复。</p>
+          <label className="field-label" htmlFor="restore-code">搭配清单或编号</label>
+          <textarea id="restore-code" rows={7} className="code-field" placeholder="在这里粘贴搭配清单或 HM 搭配编号…" value={importCode} onChange={event => { setImportCode(event.target.value); setImportError(""); }} />
+          {importError && <p className="field-error" role="alert">{importError}</p>}
+          <button className="primary-button full-width" disabled={!importCode.trim()} onClick={restore}><ArrowDownToLine size={16} />应用搭配</button>
+        </>}
             {modal === "order" && (
               <>
-                <div className="modal-symbol">
-                  <ShoppingBag size={26} />
-                </div>
-                <span className="eyebrow">YOUR TINY HOME LIST.</span>
-                <h2 id="modal-title">小家的搭配清单</h2>
-                <p className="modal-lead">
-                  套餐内的配件已全部包含。
-                </p>
-                <div className="order-copy-top">{orderCopyButton()}</div>
+                <header className="order-modal-header">
+                  <h2 id="modal-title">小家的搭配清单</h2>
+                  {orderCopyButton()}
+                </header>
+                <div className="order-modal-scroll">
+                {orderCopyFailed && <div className="order-copy-fallback">
+                  <p className="field-error" role="alert">复制未成功，请长按下方清单复制。</p>
+                  <textarea className="code-field" aria-label="清单内容" readOnly autoFocus rows={6} value={getOrderText()} onFocus={event => event.currentTarget.select()} />
+                </div>}
                 <div className="order-lines">
                   {orderLines.map((line, i) => (
                     <article className="order-line" key={`${line.id}-${i}`}>
@@ -571,18 +506,7 @@ export default function App() {
                   </span>
                   <strong>{money(total)}</strong>
                 </div>
-                {orderCopyButton()}
-                {orderCopyFailed && <div className="order-copy-fallback">
-                  <p className="field-error" role="alert">复制未成功，请长按下方清单复制。</p>
-                  <textarea className="code-field" aria-label="清单内容" readOnly autoFocus rows={6} value={getOrderText()} onFocus={event => event.currentTarget.select()} />
-                </div>}
-                <button
-                  className="outline-button full-width"
-                  onClick={() => setModal("code")}
-                >
-                  <Link size={16} />
-                  复制搭配编号
-                </button>
+                </div>
               </>
             )}
 

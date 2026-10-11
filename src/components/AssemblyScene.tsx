@@ -25,6 +25,7 @@ import { FEATURES } from "../data/features";
 import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
 import { createExplodedLayout, fitExplodedCamera } from "../lib/exploded-view";
 import { createBlankDoubleTap } from "../lib/scene-gestures";
+import { applySceneViewport, cameraForUsableHeight } from "../lib/scene-framing";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
@@ -201,6 +202,17 @@ function createRuntime(
   scene.background = new THREE.Color("#DDE0E2");
   const camera = new THREE.PerspectiveCamera(34, host.clientWidth / Math.max(1, host.clientHeight), 10, 4500);
   camera.up.set(0, 0, 1);
+  const bottomActions = host.parentElement?.querySelector<HTMLElement>(".canvas-bottom-actions");
+  let usableHeight = 1;
+  const updateViewportFraming = () => {
+    const canvasBounds = host.getBoundingClientRect();
+    const actionsBounds = bottomActions?.getBoundingClientRect();
+    const overlaps = actionsBounds && actionsBounds.width > 0 && actionsBounds.height > 0
+      && actionsBounds.left < canvasBounds.right && actionsBounds.right > canvasBounds.left
+      && actionsBounds.top < canvasBounds.bottom && actionsBounds.bottom > canvasBounds.top;
+    const bottomInset = overlaps ? canvasBounds.bottom - actionsBounds.top + 10 : 0;
+    usableHeight = applySceneViewport(camera, host.clientWidth, host.clientHeight, bottomInset);
+  };
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
@@ -228,6 +240,7 @@ function createRuntime(
     );
   };
   const home = () => {
+    updateViewportFraming();
     const height = contentTop();
     controls.target.copy(sceneCenter());
     camera.position.copy(
@@ -353,7 +366,7 @@ function createRuntime(
       originalView = { position: camera.position.clone(), target: controls.target.clone(), maxDistance: controls.maxDistance, far: camera.far };
     }
     exploded = !exploded;
-    const view = exploded ? fitExplodedCamera(explosion.expandedBounds, camera, controls.target) : originalView!;
+    const view = exploded ? fitExplodedCamera(explosion.expandedBounds, cameraForUsableHeight(camera, usableHeight), controls.target) : originalView!;
     controls.maxDistance = Math.max(controls.maxDistance, originalView!.maxDistance, view.position.distanceTo(view.target) * 1.15);
     camera.far = Math.max(camera.far, originalView!.far, controls.maxDistance + explosion.expandedBounds.getSize(new THREE.Vector3()).length() * 2);
     camera.updateProjectionMatrix();
@@ -960,12 +973,13 @@ function createRuntime(
     if (!w || !h) return;
     renderer.setSize(w, h);
     const aspectChanged = Math.abs(camera.aspect - w / h) > .05;
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    if (aspectChanged) {
+    const previousUsableHeight = usableHeight;
+    updateViewportFraming();
+    const usableHeightChanged = Math.abs(usableHeight - previousUsableHeight) > .01;
+    if (aspectChanged || (usableHeightChanged && isExploded())) {
       if (explosion && isExploded()) {
         cameraAnimation = null;
-        const view = fitExplodedCamera(explosion.expandedBounds, camera, controls.target);
+        const view = fitExplodedCamera(explosion.expandedBounds, cameraForUsableHeight(camera, usableHeight), controls.target);
         camera.position.copy(view.position);
         controls.target.copy(view.target);
         controls.maxDistance = Math.max(controls.maxDistance, view.distance * 1.15);
@@ -976,6 +990,7 @@ function createRuntime(
     }
   });
   resize.observe(host);
+  if (bottomActions) resize.observe(bottomActions);
   const clock = new THREE.Clock();
   const draw = () => {
     if (disposed) return;

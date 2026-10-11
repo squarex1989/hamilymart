@@ -52,7 +52,7 @@ export function encodeConfig(value: AssemblyState): string {
       return [productIndex, item.x, item.y, item.z, item.rotation / 90, colorsToArray(item.colors, getProductColorParts(item.productId).map(part => part.id)), parent];
     }),
     encodeExtension(state.thirdPlatform),
-    [state.bedding.mode === "thin" ? 0 : 1, state.bedding.depth],
+    [state.bedding.mode === "none" ? 2 : state.bedding.mode === "thin" ? 0 : 1, state.bedding.depth],
     state.hamster,
   ];
   const body = btoa(JSON.stringify(payload)).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
@@ -96,8 +96,8 @@ export function decodeConfigWithMigration(input: string): AssemblyMigrationResul
     if (format === 3) {
       state.thirdPlatform = decodeExtension(payload[6]);
       const bedding = payload[7];
-      if (!Array.isArray(bedding) || bedding.length !== 2 || (bedding[0] !== 0 && bedding[0] !== 1)) throw new Error("垫料数据无效");
-      state.bedding = { mode: bedding[0] === 0 ? "thin" : "thick", depth: bedding[1] } as AssemblyState["bedding"];
+      if (!Array.isArray(bedding) || bedding.length !== 2 || (bedding[0] !== 0 && bedding[0] !== 1 && bedding[0] !== 2)) throw new Error("垫料数据无效");
+      state.bedding = { mode: bedding[0] === 2 ? "none" : bedding[0] === 0 ? "thin" : "thick", depth: bedding[1] } as AssemblyState["bedding"];
       if (payload[8] !== null && typeof payload[8] !== "string") throw new Error("仓鼠品种无效");
       state.hamster = payload[8];
     }

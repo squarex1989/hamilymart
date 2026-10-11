@@ -17,6 +17,37 @@ Object.defineProperty(globalThis, "document", { configurable: true, value: {
   createElement: () => ({ width: 0, height: 0, getContext: () => context }),
 } });
 
+test("zero bedding builds no meshes and removes an existing pile without breaking visibility controls", () => {
+  const empty = success(setBedding(createInitialState(), { mode: "none", depth: 0 }));
+  const filled = success(setBedding(empty, { mode: "thin", depth: 50 }));
+  const scene = new THREE.Scene(), bedding = createBedding(scene);
+  const group = scene.children[0];
+  bedding.update(empty);
+  assert.equal(group.children.length, 0);
+  assert(new THREE.Box3().setFromObject(group).isEmpty());
+
+  bedding.update(filled);
+  assert(group.children.length > 0);
+  const firstMesh = group.children[0] as THREE.Mesh;
+  let disposed = false;
+  firstMesh.geometry.addEventListener("dispose", () => { disposed = true; });
+  bedding.update(empty);
+  assert(disposed, "the old pile releases its geometry when zero bedding is selected");
+  assert.equal(group.children.length, 0);
+  bedding.setVisible(true);
+  bedding.update(empty);
+  assert.equal(group.children.length, 0, "showing the environment cannot bring back a zero-height pile");
+
+  bedding.setVisible(false);
+  bedding.update(filled);
+  assert(group.children.length > 0, "a positive height reconstructs the pile");
+  assert.equal(group.visible, false);
+  bedding.setVisible(true);
+  assert.equal(group.visible, true);
+  bedding.dispose();
+  assert.equal(scene.children.length, 0);
+});
+
 test("the complete fluffy bedding envelope extends exactly 50 mm beyond every outside platform edge", () => {
   let state = createInitialState();
   const scene = new THREE.Scene(), bedding = createBedding(scene);

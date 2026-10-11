@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v16-apricot-reference1";
+export const MODEL_ASSET_VERSION = "steel-v16-apricot-starter1";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -9,7 +9,7 @@ export type Vec3 = [number, number, number];
 export type Rotation = 0 | 90 | 180 | 270;
 export type Bounds = [number, number, number, number, number, number];
 export const COLORS = [
-  { id: "cream", name: "杏色", hex: "#FAF0E6" },
+  { id: "cream", name: "杏色", hex: "#FEF1DB" },
   { id: "pine", name: "绿色", hex: "#174A3A" },
   { id: "red", name: "红色", hex: "#B8273C" },
   { id: "butter", name: "黄色", hex: "#F3B34E" },
