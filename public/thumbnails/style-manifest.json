@@ -19,14 +19,14 @@
         "A01_PineGreen": "#174A3A",
         "A01_Gold": "#F3B34E",
         "A01_ChristmasRed": "#F3B34E",
-        "A02_Snow": "#D8C1A0",
-        "G05_Snow": "#D8C1A0",
+        "A02_Snow": "#FAF0E6",
+        "G05_Snow": "#FAF0E6",
         "G05_ChristmasRed": "#B8273C",
         "G15_PineGreen": "#174A3A",
         "G16_PineGreen": "#174A3A",
         "G17_PineGreen": "#174A3A",
-        "W01_Snow": "#D8C1A0",
-        "W02_Snow": "#D8C1A0"
+        "W01_Snow": "#FAF0E6",
+        "W02_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
@@ -38,7 +38,7 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "95e1fecb53e1992094efbf238b2d115c9c1fc6687da875ebe6846e82254102dc"
+      "pngSha256": "b95eddb72d5dd0c052011df210a2e77906d95996f2dd8798798e76e09581e1c6"
     },
     "l-house": {
       "renderer": "three-shared-v1",
@@ -48,13 +48,13 @@
       },
       "materialHexColors": {
         "LHB_PineGreen": "#174A3A",
-        "LHR_Gold": "#D8C1A0"
+        "LHR_Gold": "#FAF0E6"
       },
       "modelSha256": {
         "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
         "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
       },
-      "pngSha256": "780f3fce8a6d4f48da8f3504d293f937b9ee1187a3c29ee422713b000a8e6965"
+      "pngSha256": "4adceb1e496cf5a4674b10c416090ddd3ddd12482d406065eac34d40a1f8c367"
     },
     "cube-house": {
       "renderer": "three-shared-v1",
@@ -64,13 +64,13 @@
       },
       "materialHexColors": {
         "SHB_PineGreen": "#174A3A",
-        "SHR_Gold": "#D8C1A0"
+        "SHR_Gold": "#FAF0E6"
       },
       "modelSha256": {
         "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
         "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
       },
-      "pngSha256": "f0f743c294b33f04d2d6c71e84db411c1481db2387e887b6170b556465c5a35d"
+      "pngSha256": "fffd97050671b6041224de4dee851a5877686e8e790133fe13e4ddee4f1e1111"
     },
     "roof-cottage": {
       "renderer": "three-shared-v1",
@@ -81,13 +81,13 @@
       },
       "materialHexColors": {
         "G03_ChristmasRed": "#B8273C",
-        "G03_Snow": "#D8C1A0",
-        "G03_WindowSnow": "#D8C1A0"
+        "G03_Snow": "#FAF0E6",
+        "G03_WindowSnow": "#FAF0E6"
       },
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "811e3a5d86833f543908c61b516fe49e90b58086242df1a14eca1d59a12dbdc5"
+      "pngSha256": "f8bfac0e010ca3e095449813181819342e4fd489acc277f747e66c0e56b49fde"
     },
     "pipe-st1": {
       "renderer": "three-shared-v1",
@@ -96,14 +96,14 @@
         "ST1B_Snow": "cream"
       },
       "materialHexColors": {
-        "ST1T_Snow": "#D8C1A0",
-        "ST1B_Snow": "#D8C1A0"
+        "ST1T_Snow": "#FAF0E6",
+        "ST1B_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "fa52153018da57d893c3f5530844ff16283ff57e1b49cb9ec79a2045026b00dd"
+      "pngSha256": "8e947633daa429b509b212947f9a3de96d433600c0d18761bfa060508b6fe02d"
     },
     "pipe-st2": {
       "renderer": "three-shared-v1",
@@ -112,14 +112,14 @@
         "ST2B_Snow": "cream"
       },
       "materialHexColors": {
-        "ST2T_Snow": "#D8C1A0",
-        "ST2B_Snow": "#D8C1A0"
+        "ST2T_Snow": "#FAF0E6",
+        "ST2B_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "93875d405575c83400e978cbee54bfd52653de2969024e876d69111ac9a7b36a"
+      "pngSha256": "872d5270788c4a569d7a141135500d0132298682d8fe0227217327d71ef0c2ff"
     },
     "pipe-lt2": {
       "renderer": "three-shared-v1",
@@ -128,14 +128,14 @@
         "LT2B_Snow": "cream"
       },
       "materialHexColors": {
-        "LT2T_Snow": "#D8C1A0",
-        "LT2B_Snow": "#D8C1A0"
+        "LT2T_Snow": "#FAF0E6",
+        "LT2B_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "3d904f55bbeb5b19e38697c2c92beecb45af1ea23f9f267de89d6d2a484a70df"
+      "pngSha256": "8b464dc5f87188453efe9251dec062f44d2cf6d2b8cd2c410cfab7771f3c131d"
     },
     "planter": {
       "renderer": "three-shared-v1",
@@ -145,12 +145,12 @@
       },
       "materialHexColors": {
         "G06_ChristmasRed": "#B8273C",
-        "G06_Snow": "#D8C1A0"
+        "G06_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "950d3a22dfcae49d435dfb1e6af00e1d526b8a1219057044f6be1a35e4a83a64"
+      "pngSha256": "13cecb6efa44157c64a64cae465d704634119a246959eef3148c036c4af82a3a"
     },
     "food-bowl": {
       "renderer": "three-shared-v1",
@@ -160,12 +160,12 @@
       },
       "materialHexColors": {
         "O01_ChristmasRed": "#B8273C",
-        "O01_Snow": "#D8C1A0"
+        "O01_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
       },
-      "pngSha256": "34e3ec786ad096e19a63af36b3cc84f4d4e89d64ad5e88a92f0537d99163151d"
+      "pngSha256": "a0f66b9d8606bd11cc8227e93c055c3e7ff9d64695fd00a1b1c985d0726e09c2"
     },
     "pool": {
       "renderer": "three-shared-v1",
@@ -174,13 +174,13 @@
         "B01_ChristmasRed": "red"
       },
       "materialHexColors": {
-        "B01_Snow": "#D8C1A0",
+        "B01_Snow": "#FAF0E6",
         "B01_ChristmasRed": "#B8273C"
       },
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "ca4c1a7466b5d7807a55a89115f918f6f1f55feff562759de46460f21846e36a"
+      "pngSha256": "ca957dee84f1a92427a97eb6a9eb374a6400bb50ca6cd9a63c7e328fa0b2058d"
     },
     "pipe-lt2n": {
       "renderer": "three-shared-v1",
@@ -189,14 +189,14 @@
         "LT2B_Snow": "cream"
       },
       "materialHexColors": {
-        "LT2NT_Snow": "#D8C1A0",
-        "LT2B_Snow": "#D8C1A0"
+        "LT2NT_Snow": "#FAF0E6",
+        "LT2B_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "a627fcc6ce8c06674f0e4c2beea94fe892a8790a559abe0a285f0b3737b5a8db"
+      "pngSha256": "5f561aa97f87718ff0a45d4cab50165bf3fe9f87017bb1692f6311d1ec10dfca"
     },
     "seesaw": {
       "renderer": "three-shared-v1",
@@ -218,14 +218,14 @@
         "TTB_Snow": "cream"
       },
       "materialHexColors": {
-        "TT2T_Snow": "#D8C1A0",
-        "TTB_Snow": "#D8C1A0"
+        "TT2T_Snow": "#FAF0E6",
+        "TTB_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "bc0d32e7dff3b5be63f08b65857b3a9fe1d4743407350251a7d35bf087be5c61"
+      "pngSha256": "b5407583904f7d0f3e306745ba43de69857faf89f9eaf7755cd3f3cc24a2f656"
     },
     "pipe-tt1": {
       "renderer": "three-shared-v1",
@@ -234,14 +234,14 @@
         "TTB_Snow": "cream"
       },
       "materialHexColors": {
-        "TT1T_Snow": "#D8C1A0",
-        "TTB_Snow": "#D8C1A0"
+        "TT1T_Snow": "#FAF0E6",
+        "TTB_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "833d97281b5458969c8899b2634e4ee3d3444c617e238ebe95bbfc32e7b3efd7"
+      "pngSha256": "cc3c6199e8db0658177aaed41d27dc72eb8f373f83175faa995bc5d025920962"
     }
   },
   "woodland": {
@@ -390,12 +390,12 @@
       },
       "materialHexColors": {
         "G06_ChristmasRed": "#BE896F",
-        "G06_Snow": "#D8C1A0"
+        "G06_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "fe4a515908810a850dc0a48ca113b473897581b36c273e507c27c1f86e402c2f"
+      "pngSha256": "b19b4ee9ad831df44ae0cc5fb248f1e0a44098a43374020cdfe4247f37527539"
     },
     "food-bowl": {
       "renderer": "three-shared-v1",
@@ -405,12 +405,12 @@
       },
       "materialHexColors": {
         "O01_ChristmasRed": "#BE896F",
-        "O01_Snow": "#D8C1A0"
+        "O01_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
       },
-      "pngSha256": "50f755ec13fd397729fcf14042e620dcff904e3091cfb0d3ef26d1d540b50ef0"
+      "pngSha256": "cf0cb4a1fea2e796a1c6e90670be413e3654bd98381987f332f6720ab08b5f71"
     },
     "pool": {
       "renderer": "three-shared-v1",
@@ -509,14 +509,14 @@
         "A01_PineGreen": "#E9AEBC",
         "A01_Gold": "#FAFAF7",
         "A01_ChristmasRed": "#F3B34E",
-        "A02_Snow": "#D8C1A0",
-        "G05_Snow": "#D8C1A0",
+        "A02_Snow": "#FAF0E6",
+        "G05_Snow": "#FAF0E6",
         "G05_ChristmasRed": "#B8273C",
         "G15_PineGreen": "#E9AEBC",
         "G16_PineGreen": "#E9AEBC",
         "G17_PineGreen": "#E9AEBC",
-        "W01_Snow": "#D8C1A0",
-        "W02_Snow": "#D8C1A0"
+        "W01_Snow": "#FAF0E6",
+        "W02_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
@@ -528,7 +528,7 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "2a085e1dd2c2aa9f5b6b8b41c26cf0aa70f00c2a623cbb7ffeef8353d1e7697f"
+      "pngSha256": "12b1a659fb9b24744caeddf3494e1bdfc3bbadf3cbd7244d06642c651edd3ba4"
     },
     "l-house": {
       "renderer": "three-shared-v1",
@@ -538,13 +538,13 @@
       },
       "materialHexColors": {
         "LHB_PineGreen": "#E9AEBC",
-        "LHR_Gold": "#D8C1A0"
+        "LHR_Gold": "#FAF0E6"
       },
       "modelSha256": {
         "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
         "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
       },
-      "pngSha256": "0911489ed495d7522856afbb7e2971cc1dfa4ff97e0f8ab560feefc9f5238b1b"
+      "pngSha256": "8ad9218851d6c8a4e827761d1783ddb5a93c1e47441e62a33c290e7a2140ba4a"
     },
     "cube-house": {
       "renderer": "three-shared-v1",
@@ -554,13 +554,13 @@
       },
       "materialHexColors": {
         "SHB_PineGreen": "#E9AEBC",
-        "SHR_Gold": "#D8C1A0"
+        "SHR_Gold": "#FAF0E6"
       },
       "modelSha256": {
         "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
         "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
       },
-      "pngSha256": "0e6e1177d63cc8ade3800a6b3473348bd114d794b164fc8b3488e97f5894eaf1"
+      "pngSha256": "3230414c8581f0518b865221e3546b1fc3d19d0535da75094835cdac052ba1f1"
     },
     "roof-cottage": {
       "renderer": "three-shared-v1",
@@ -571,13 +571,13 @@
       },
       "materialHexColors": {
         "G03_ChristmasRed": "#B8273C",
-        "G03_Snow": "#D8C1A0",
+        "G03_Snow": "#FAF0E6",
         "G03_WindowSnow": "#F3B34E"
       },
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "fb2cf89351828720a32d0c973c4ec384f3dcbbc0dd3806dec0f5989c5db5a392"
+      "pngSha256": "15938c6d6e545d514ae89e0588877257ae78fb50c2a59ac7449f9229eaec051d"
     },
     "pipe-st1": {
       "renderer": "three-shared-v1",
@@ -586,14 +586,14 @@
         "ST1B_Snow": "rose"
       },
       "materialHexColors": {
-        "ST1T_Snow": "#D8C1A0",
+        "ST1T_Snow": "#FAF0E6",
         "ST1B_Snow": "#E9AEBC"
       },
       "modelSha256": {
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "6613a6b6f12420175ce78f30a41dc9cf8399b13c2e1c5ccab1bb34b618799502"
+      "pngSha256": "ac3da3faac897d23afaef8403cd490aa28f597d7af89d72cf93544e1ccc35829"
     },
     "pipe-st2": {
       "renderer": "three-shared-v1",
@@ -602,14 +602,14 @@
         "ST2B_Snow": "rose"
       },
       "materialHexColors": {
-        "ST2T_Snow": "#D8C1A0",
+        "ST2T_Snow": "#FAF0E6",
         "ST2B_Snow": "#E9AEBC"
       },
       "modelSha256": {
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "4af3bd92b7faa2316a3c587b4f4f4a9bde756e2127b5c1fb81918a269771484c"
+      "pngSha256": "f10aa21104e2c7133de55f879907ed4453ae3312b1f31ddd40ec7a226bb2e762"
     },
     "pipe-lt2": {
       "renderer": "three-shared-v1",
@@ -618,14 +618,14 @@
         "LT2B_Snow": "rose"
       },
       "materialHexColors": {
-        "LT2T_Snow": "#D8C1A0",
+        "LT2T_Snow": "#FAF0E6",
         "LT2B_Snow": "#E9AEBC"
       },
       "modelSha256": {
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "8422f2dd57aa83d8d6e88129a3160077c04e4e593c5ec88ff33789c5bb7d09ec"
+      "pngSha256": "9d9e9ea6c176ffb0c6f620ee561e1badf740bcca7c74f356c90d5d676227aea5"
     },
     "planter": {
       "renderer": "three-shared-v1",
@@ -635,12 +635,12 @@
       },
       "materialHexColors": {
         "G06_ChristmasRed": "#B8273C",
-        "G06_Snow": "#D8C1A0"
+        "G06_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "950d3a22dfcae49d435dfb1e6af00e1d526b8a1219057044f6be1a35e4a83a64"
+      "pngSha256": "13cecb6efa44157c64a64cae465d704634119a246959eef3148c036c4af82a3a"
     },
     "food-bowl": {
       "renderer": "three-shared-v1",
@@ -650,12 +650,12 @@
       },
       "materialHexColors": {
         "O01_ChristmasRed": "#B8273C",
-        "O01_Snow": "#D8C1A0"
+        "O01_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
       },
-      "pngSha256": "34e3ec786ad096e19a63af36b3cc84f4d4e89d64ad5e88a92f0537d99163151d"
+      "pngSha256": "a0f66b9d8606bd11cc8227e93c055c3e7ff9d64695fd00a1b1c985d0726e09c2"
     },
     "pool": {
       "renderer": "three-shared-v1",
@@ -679,14 +679,14 @@
         "LT2B_Snow": "rose"
       },
       "materialHexColors": {
-        "LT2NT_Snow": "#D8C1A0",
+        "LT2NT_Snow": "#FAF0E6",
         "LT2B_Snow": "#E9AEBC"
       },
       "modelSha256": {
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "83cd564f586947f3c719f10e5afc0052bdd7e4e0579068d525ba8bf9217cd652"
+      "pngSha256": "4d534927344784f8ebe0b888f2b50e20f2a84f29a807b2cfe3d2bcbadbb0c66f"
     },
     "seesaw": {
       "renderer": "three-shared-v1",
@@ -708,14 +708,14 @@
         "TTB_Snow": "rose"
       },
       "materialHexColors": {
-        "TT2T_Snow": "#D8C1A0",
+        "TT2T_Snow": "#FAF0E6",
         "TTB_Snow": "#E9AEBC"
       },
       "modelSha256": {
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "98f109227f5f4e7d1b1a5705f64bd65d71f063b458ed8d9b20fdcdcebec1b3e8"
+      "pngSha256": "17fb603f848cf8664b94308f8011a1ef60d0e481ae53ad99b4c12b92b1597e72"
     },
     "pipe-tt1": {
       "renderer": "three-shared-v1",
@@ -724,14 +724,14 @@
         "TTB_Snow": "rose"
       },
       "materialHexColors": {
-        "TT1T_Snow": "#D8C1A0",
+        "TT1T_Snow": "#FAF0E6",
         "TTB_Snow": "#E9AEBC"
       },
       "modelSha256": {
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "b61f883caa2aa35552b899e0ec572baddb62cc3bbc22ffbd798b6951bc1d0794"
+      "pngSha256": "32ba863c691c07e2646fbc50640ac6c76af045e4826ef1cb3d086a9b28d3d8a5"
     }
   },
   "sky": {
@@ -752,7 +752,7 @@
       },
       "materialHexColors": {
         "A01_PineGreen": "#A6C8DF",
-        "A01_Gold": "#D8C1A0",
+        "A01_Gold": "#FAF0E6",
         "A01_ChristmasRed": "#F3B34E",
         "A02_Snow": "#FAFAF7",
         "G05_Snow": "#FAFAF7",
@@ -773,7 +773,7 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "d63406791a6a11821afd5d5d50b334826ce05c353d2b4d95429b3c92d58688e5"
+      "pngSha256": "0aa23936cc29f137a9b530eb998a76d493d8aefa071c622b410da78275d33242"
     },
     "l-house": {
       "renderer": "three-shared-v1",
@@ -880,12 +880,12 @@
       },
       "materialHexColors": {
         "G06_ChristmasRed": "#F3B34E",
-        "G06_Snow": "#D8C1A0"
+        "G06_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "18f79da37f368f82eea4aa57560aaea5376f175d25c0e7a7d348841320695373"
+      "pngSha256": "2ad43c737364d3663dae4687a3378b41258622430ec05301f5f473d9e2a866b1"
     },
     "food-bowl": {
       "renderer": "three-shared-v1",
@@ -895,12 +895,12 @@
       },
       "materialHexColors": {
         "O01_ChristmasRed": "#F3B34E",
-        "O01_Snow": "#D8C1A0"
+        "O01_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
       },
-      "pngSha256": "05b4e7bf16aafd32d60c022ba29ae364a6c7da123f3277debb93f117c2dae607"
+      "pngSha256": "4122ccad69e491cf4bbcb9f5768f06037d417dd9973a73fc8d4fd5d15304fbba"
     },
     "pool": {
       "renderer": "three-shared-v1",
@@ -1125,12 +1125,12 @@
       },
       "materialHexColors": {
         "G06_ChristmasRed": "#E9AEBC",
-        "G06_Snow": "#D8C1A0"
+        "G06_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "e32e40dc51baefaeee0fba6f5eac4c658a988861924d23b67cd7c6a194c671df"
+      "pngSha256": "05deafddb4a632fc0cc5b40b98fa667f58437b67d8a126a56a7ed79dfdd63038"
     },
     "food-bowl": {
       "renderer": "three-shared-v1",
@@ -1140,12 +1140,12 @@
       },
       "materialHexColors": {
         "O01_ChristmasRed": "#E9AEBC",
-        "O01_Snow": "#D8C1A0"
+        "O01_Snow": "#FAF0E6"
       },
       "modelSha256": {
         "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
       },
-      "pngSha256": "df87b8ee4fe6724780812a9a71da9122df8432d6facb1a9e995d0a1aecdc0ae6"
+      "pngSha256": "fb10b8bb2b8417f4cdb08ee892deeaf3365cddd31a9b7b59c8c62d866589dca2"
     },
     "pool": {
       "renderer": "three-shared-v1",
