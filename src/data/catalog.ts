@@ -1,8 +1,8 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v13-pipes3";
+export const MODEL_ASSET_VERSION = "steel-v15-300";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
- * Magnet coordinates follow unified_complete_steel_v12/hardware_complete.json.
+ * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
  * Contact planes, rather than embedded magnet centers, are used for assembly transforms.
  */
 export type Vec3 = [number, number, number];
@@ -260,7 +260,7 @@ export const PRODUCTS: Product[] = [
       110,
     ),
     collisionBoxes: [
-      [-5, 178.2, 110, 305, 300, 238],
+      [0, 178.2, 110, 300, 300, 238],
       [219, 82, 110, 300, 194, 201.423],
     ],
     surfaces: [
@@ -268,24 +268,24 @@ export const PRODUCTS: Product[] = [
         id: "cottage",
         points: down(
           [
-            [5, 192],
-            [5, 286],
-            [151, 192],
-            [151, 286],
+            [10, 192],
+            [10, 286],
+            [156, 192],
+            [156, 286],
           ],
           200,
         ),
-        bounds: [-5, 180, 200, 162, 300, 200],
+        bounds: [0, 180, 200, 167, 300, 200],
       },
       {
         id: "planter",
         points: down(
           [
-            [285.5, 264],
+            [280.5, 264],
           ],
           200,
         ),
-        bounds: [240, 215, 200, 305, 300, 200],
+        bounds: [235, 215, 200, 300, 300, 200],
       },
     ],
     allowedParents: ["base"],
@@ -354,19 +354,20 @@ export const PRODUCTS: Product[] = [
     category: "house",
     price: 4000,
     description: "四点磁吸 · 安装于礼物盒二层平台",
-    // The original source pivot also preserves saved upper-floor placements.
+    // Stable virtual pivot: source body and all four contacts moved +5 mm in
+    // V15, matching the parent receivers, so old saved hat transforms survive.
     origin: [78, 239, 200],
     parts: [part("G03", "阁楼", "red")],
     bottomMagnets: down(
       [
-        [5, 192],
-        [5, 286],
-        [151, 192],
-        [151, 286],
+        [10, 192],
+        [10, 286],
+        [156, 192],
+        [156, 286],
       ],
       200,
     ),
-    collisionBoxes: [[-3, 179.60000610351562, 200, 159, 298, 373.3333435058594]],
+    collisionBoxes: [[2, 179.60000610351562, 200, 164, 298, 373.3333435058594]],
     allowedParents: ["base", "villa"],
     allowedRelativeRotations: [0],
   },
@@ -451,16 +452,16 @@ export const PRODUCTS: Product[] = [
     category: "garden",
     price: 500,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
-    origin: [285.5, 264, 200],
+    origin: [280.5, 264, 200],
     parts: [part("G06", "花圃", "red")],
     bottomMagnets: down(
       [
-        [285.5, 264],
+        [280.5, 264],
       ],
       200,
     ),
     minimumMagnetMatches: 1,
-    collisionBoxes: [[269, 220, 200, 301, 294, 261.5]],
+    collisionBoxes: [[264, 220, 200, 296, 294, 261.5]],
     allowedParents: ["base", "villa", "l-house"],
     allowedRelativeRotations: [0],
   },
@@ -471,11 +472,11 @@ export const PRODUCTS: Product[] = [
     category: "garden",
     price: 500,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
-    origin: [285.5, 264, 200],
+    origin: [280.5, 264, 200],
     parts: [part("O01", "食盆", "red")],
-    bottomMagnets: down([[285.5, 264]], 200),
+    bottomMagnets: down([[280.5, 264]], 200),
     minimumMagnetMatches: 1,
-    collisionBoxes: [[246, 236, 200, 301, 296, 221]],
+    collisionBoxes: [[241, 236, 200, 296, 296, 221]],
     allowedParents: ["base", "villa", "l-house"],
     allowedRelativeRotations: [0],
   },
@@ -545,4 +546,4 @@ export function getDefaultColors(productId: string): ColorMap {
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 6;
+export const CATALOG_VERSION = 7;

@@ -1,5 +1,6 @@
 import { HAMSTER_VARIANTS } from "../data/hamsters";
 import modelIndex from "../data/model-index.json";
+import legacyCatalog6 from "../data/legacy-catalog-6.json";
 import {
   BASE_PRODUCT,
   CATALOG_VERSION,
@@ -173,7 +174,7 @@ function transformBox(
 export function getItemBounds(item: AssemblyItem, product = getProduct(item.productId)): Bounds[] {
   return product.collisionBoxes.map((box) => transformBox(box, product, item));
 }
-// V13 source G05 triangles clipped at each Y interval, rounded outwards to
+// V15 source G05 triangles clipped at each Y interval, rounded outwards to
 // 0.001 mm. These enclose the full staircase without treating the empty space
 // above its lower steps as solid. Keep the broad catalog boxes for footprints.
 const VILLA_STAIR_COLLISION_SLICES: Bounds[] = [
@@ -188,15 +189,23 @@ const VILLA_STAIR_COLLISION_SLICES: Bounds[] = [
   [219, 160, 185.506, 300, 170, 201.302],
   [219, 170, 192.804, 300, 180, 201.424],
   [219, 180, 194, 300, 190, 200],
+  [219, 190, 192, 300, 194, 200],
+];
+// Frozen V13 geometry validates catalog 2–6 saves before the V15 upgrade.
+// In particular, do not validate historical collision with today's narrower deck.
+const LEGACY_VILLA_COLLISION_BOXES: Bounds[] = [
+  ...(legacyCatalog6.villaSolidBounds as Bounds[]),
+  ...VILLA_STAIR_COLLISION_SLICES.slice(0, -1),
   [219, 190, 194.6, 300, 194, 200],
 ];
+type CollisionProduct = Product & { preciseCollisionBoxes?: Bounds[] };
 const VILLA_COLLISION_BOXES: Bounds[] = [
   ...(["A01", "A02", "G15", "G16", "G17", "W01", "W02"] as const)
     .map(id => modelIndex[id].bounds as Bounds),
   ...VILLA_STAIR_COLLISION_SLICES,
 ];
 function solidCollisionBounds(product: Product, item: Pick<AssemblyItem, "x" | "y" | "z" | "rotation">): Bounds[] {
-  const local = product.id === "villa" ? VILLA_COLLISION_BOXES : product.collisionBoxes;
+  const local = (product as CollisionProduct).preciseCollisionBoxes ?? (product.id === "villa" ? VILLA_COLLISION_BOXES : product.collisionBoxes);
   return local.map(box => transformBox(box, product, item));
 }
 function overlap(a: Bounds, b: Bounds): boolean {
@@ -225,7 +234,7 @@ interface Surface {
   id: string;
   sourceParts?: ("P01" | "H06")[];
 }
-type ProductLookup = typeof getProduct;
+type ProductLookup = (id: string) => CollisionProduct;
 function getSurfaces(state: AssemblyState, excluded: Set<string>, lookup: ProductLookup = getProduct): Surface[] {
   const surfaces: Surface[] = getPlatforms(state).map(platform => {
     const receivers = [...P01_TOP_XY.map(point => ({ point, sourcePart: "P01" as const })), ...(platform.baseInsert === "lid" ? H06_TOP_XY.map(point => ({ point, sourcePart: "H06" as const })) : [])];
@@ -779,9 +788,14 @@ function hasLegacyVillaColors(value: unknown): boolean {
   return keys.length === LEGACY_VILLA_PARTS.length && LEGACY_VILLA_PARTS.every(key => keys.includes(key));
 }
 /** Original catalog geometry is used only to validate historical imports before upgrading. */
-function legacyProductLookup(source: 2 | 3 | 4 | 5): ProductLookup {
+function legacyProductLookup(source: 2 | 3 | 4 | 5 | 6): ProductLookup {
   return id => {
-    const product = getProduct(id);
+    const current = getProduct(id);
+    const frozen = legacyCatalog6.products[id as keyof typeof legacyCatalog6.products];
+    const product: CollisionProduct = frozen ? { ...current, ...frozen,
+      ...(id === "villa" ? { preciseCollisionBoxes: LEGACY_VILLA_COLLISION_BOXES } : {}),
+    } as CollisionProduct : current;
+    if (source === 6) return product;
     if (source === 5) return id === "planter" || id === "food-bowl" ? { ...product, allowedParents: ["villa"] } : product;
     if (id === "villa") return { ...product, surfaces: product.surfaces!.map(surface => surface.id === "planter" ? { ...surface, points: [[278.5, 264, 200], [292.5, 264, 200]] } : surface) };
     if (id === "planter") return { ...product, bottomMagnets: [[278.5, 264, 200], [292.5, 264, 200]], minimumMagnetMatches: 2, allowedParents: ["villa"] };
@@ -791,15 +805,17 @@ function legacyProductLookup(source: 2 | 3 | 4 | 5): ProductLookup {
   };
 }
 function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
+  const lookup = legacyProductLookup(6);
+  const validate = (value: unknown) => validateAssemblyWithCatalog(value, lookup);
   const messages = ["搭配已升级为 Steel V9，原有组件与自定义配色已保留。"];
-  try { return { state: validateAssembly(previous), messages }; }
+  try { return { state: validate(previous), messages }; }
   catch {
     // Reserve unchanged hats first; a relocated hat must not displace another valid placement.
     const hats = previous.items.filter(item => item.productId === "roof-cottage");
-    let state = validateAssembly({ ...previous, items: previous.items.filter(item => item.productId !== "roof-cottage") });
+    let state = validate({ ...previous, items: previous.items.filter(item => item.productId !== "roof-cottage") });
     const moved: AssemblyItem[] = [];
     for (const item of hats) {
-      const unchanged = getPlacements(state, item.productId, item.rotation).some(candidate => candidate.parentId === item.parentId && samePoint([candidate.x, candidate.y, candidate.z], [item.x, item.y, item.z]));
+      const unchanged = getPlacements(state, item.productId, item.rotation, undefined, lookup).some(candidate => candidate.parentId === item.parentId && samePoint([candidate.x, candidate.y, candidate.z], [item.x, item.y, item.z]));
       if (unchanged) state = { ...state, items: [...state.items, item] };
       else moved.push(item);
     }
@@ -808,7 +824,7 @@ function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
     moved.sort((a, b) => Number(a.parentId === "base" || a.parentId === "base2") - Number(b.parentId === "base" || b.parentId === "base2"));
     for (const item of moved) {
       const wasOnPlatform = item.parentId === "base" || item.parentId === "base2";
-      const candidates = ([0, 90, 180, 270] as Rotation[]).flatMap(rotation => getPlacements(state, item.productId, rotation))
+      const candidates = ([0, 90, 180, 270] as Rotation[]).flatMap(rotation => getPlacements(state, item.productId, rotation, undefined, lookup))
         .filter(candidate => wasOnPlatform || candidate.parentId === item.parentId)
         .sort((a, b) => {
           const parentA = state.items.find(parent => parent.id === a.parentId), parentB = state.items.find(parent => parent.id === b.parentId);
@@ -824,21 +840,46 @@ function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
         ? "帽子小屋已恢复 162 mm 宽，旧一层位置不再匹配；已移到现有礼物盒的可用二层磁位，配色已保留。"
         : "帽子小屋已恢复 162 mm 宽，已调整到原礼物盒二层最近的合法磁位，配色已保留。");
     }
-    return { state: validateAssembly(state), messages };
+    return { state: validate(state), messages };
+  }
+}
+/** Source V15 moves the shared upper accessory receiver 5 mm toward the deck.
+ * Their pivots move with their source contact, preserving every base/roof attachment.
+ * Hats keep their virtual pivot: both the source body and parent contacts move +5.
+ */
+function upgradeSteelV15(previous: AssemblyState): AssemblyMigrationResult {
+  let moved = 0;
+  const items = previous.items.map(item => {
+    if (item.productId !== "planter" && item.productId !== "food-bowl") return item;
+    const parent = previous.items.find(candidate => candidate.id === item.parentId);
+    if (parent?.productId !== "villa") return item;
+    const [dx, dy] = rotateVector([-5, 0, 0], parent.rotation);
+    moved++;
+    return { ...item, x: round(item.x + dx), y: round(item.y + dy) };
+  });
+  try {
+    const state = validateAssembly({ ...previous, items });
+    const messages = previous.items.some(item => item.productId === "villa")
+      ? [`二层平台已更新为 30 厘米宽，原有组件与配色已保留。${moved ? "二层花圃和食盆已随磁吸位向内移动 5 毫米。" : ""}`]
+      : [];
+    return { state, messages };
+  } catch (error) {
+    throw new Error(`旧搭配无法兼容 30 厘米二层平台，原存档已保留、组件未删除：${error instanceof Error ? error.message : "磁吸位不匹配"}`);
   }
 }
 /** Validate historical geometry before migrating; current configurations never receive placement repairs. */
-export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5 | 6): AssemblyMigrationResult {
+export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5 | 6 | 7): AssemblyMigrationResult {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("搭配数据格式不正确");
   const raw = value as Record<string, unknown>;
   if (!Array.isArray(raw.items)) throw new Error("组件数量无效");
-  if (sourceCatalogVersion !== undefined && ![2, 3, 4, 5, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
+  if (sourceCatalogVersion !== undefined && ![2, 3, 4, 5, 6, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
   if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion) throw new Error("搭配目录版本标记冲突");
   const rawItems = raw.items;
   const villas = rawItems.filter(item => item && typeof item === "object" && item.productId === "villa");
   const inferredLegacy = raw.catalogVersion === undefined && villas.length > 0 && villas.every(item => hasLegacyVillaColors(item.colors));
   const source = sourceCatalogVersion ?? raw.catalogVersion ?? (inferredLegacy ? 2 : CATALOG_VERSION);
   if (source === CATALOG_VERSION) return { state: validateAssembly(value), messages: [] };
+  if (source === 6) return upgradeSteelV15(validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION }, legacyProductLookup(6)));
   if (source !== 2 && source !== 3 && source !== 4 && source !== 5) throw new Error("搭配目录版本不兼容");
   if (![0, 100, 200].includes(raw.legHeight as number) || (raw.thirdPlatform !== undefined && raw.thirdPlatform !== null)) throw new Error("旧搭配包含该版本不支持的平台或脚长");
   const messages: string[] = [];
@@ -871,8 +912,9 @@ export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4
     messages.push("第二个平台已调整为向右贴合，平台上的组件与子配件整体随动，原有配色已保留。");
   }
   try {
-    const upgraded = source < 5 ? upgradeSteelV9(relocated) : { state: validateAssembly(relocated), messages: ["搭配目录已升级，原有组件与配色已保留。"] };
-    return { state: upgraded.state, messages: [...messages, ...upgraded.messages] };
+    const upgraded = source < 5 ? upgradeSteelV9(relocated) : { state: validateAssemblyWithCatalog(relocated, legacyProductLookup(6)), messages: ["搭配目录已升级，原有组件与配色已保留。"] };
+    const current = upgradeSteelV15(upgraded.state);
+    return { state: current.state, messages: [...messages, ...upgraded.messages, ...current.messages] };
   } catch (error) {
     if (relocated !== previous) throw new Error(`旧平台布局无法兼容右侧连续布局，原存档已保留：${error instanceof Error ? error.message : "组件相撞"}`);
     throw error;

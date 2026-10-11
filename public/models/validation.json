@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-  "sourceVersion": "Steel receivers V13 flush stair landing",
+  "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
+  "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
   "supplementalSources": [],
   "units": "millimeter",
   "upAxis": "Z",
@@ -18,10 +18,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "H02": {
@@ -37,10 +36,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "H03": {
@@ -56,10 +54,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "H04": {
@@ -75,10 +72,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "H05": {
@@ -94,48 +90,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "H06": {
-      "bytes": 146284,
-      "components": [
-        {
-          "id": "H06_Snow",
-          "sourceTriangles": 23604,
-          "triangles": 5664,
-          "sampledMaxErrorMm": 0.008701,
-          "boundsMaxErrorMm": 9e-06,
-          "volumeRelativeError": 2.25e-06
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "P01": {
-      "bytes": 1686992,
-      "components": [
-        {
-          "id": "P01_Snow",
-          "sourceTriangles": 318646,
-          "triangles": 76474,
-          "sampledMaxErrorMm": 0.007865,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 3.4e-06
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "L01": {
@@ -151,10 +108,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "L02": {
@@ -170,10 +126,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "L03": {
@@ -189,10 +144,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "L04": {
@@ -208,10 +162,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "X01": {
@@ -227,10 +180,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "X02": {
@@ -246,10 +198,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "X03": {
@@ -265,10 +216,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "X04": {
@@ -284,110 +234,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "G03": {
-      "bytes": 341696,
-      "components": [
-        {
-          "id": "G03_ChristmasRed",
-          "sourceTriangles": 8180,
-          "triangles": 6770,
-          "sampledMaxErrorMm": 0.010007,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 6.39e-06
-        },
-        {
-          "id": "G03_Snow",
-          "sourceTriangles": 20834,
-          "triangles": 6924,
-          "sampledMaxErrorMm": 0.016817,
-          "boundsMaxErrorMm": 1.4e-05,
-          "volumeRelativeError": 0.00022495
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
-      },
-      "webColorSplit": {
-        "sourceComponent": "G03_Snow",
-        "method": "disconnected-window-body",
-        "windowComponent": "G03_WindowSnow",
-        "windowBoundsMm": [
-          [
-            44.0,
-            179.6000061035148,
-            210.0
-          ],
-          [
-            112.0,
-            185.5,
-            246.0
-          ]
-        ],
-        "beforeTriangles": 6924,
-        "afterTriangles": 6924,
-        "windowTriangles": 764,
-        "unchangedSurfaceAreaMm2": 20612.466780700182
-      }
-    },
-    "G05": {
-      "bytes": 152140,
-      "components": [
-        {
-          "id": "G05_Snow",
-          "sourceTriangles": 4522,
-          "triangles": 3030,
-          "sampledMaxErrorMm": 0.016167,
-          "boundsMaxErrorMm": 0.002895,
-          "volumeRelativeError": 1.07e-05
-        },
-        {
-          "id": "G05_ChristmasRed",
-          "sourceTriangles": 1926,
-          "triangles": 1926,
-          "sampledMaxErrorMm": 0.0,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
-      }
-    },
-    "G06": {
-      "bytes": 82396,
-      "components": [
-        {
-          "id": "G06_ChristmasRed",
-          "sourceTriangles": 3446,
-          "triangles": 1600,
-          "sampledMaxErrorMm": 0.008139,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 2.71e-05
-        },
-        {
-          "id": "G06_Snow",
-          "sourceTriangles": 5760,
-          "triangles": 2136,
-          "sampledMaxErrorMm": 0.00806,
-          "boundsMaxErrorMm": 3e-05,
-          "volumeRelativeError": 0.00011444
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "B01": {
@@ -411,10 +260,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "LHB": {
@@ -430,29 +278,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "LHR": {
-      "bytes": 106988,
-      "components": [
-        {
-          "id": "LHR_Gold",
-          "sourceTriangles": 6028,
-          "triangles": 4388,
-          "sampledMaxErrorMm": 0.01552,
-          "boundsMaxErrorMm": 0.000856,
-          "volumeRelativeError": 1.831e-05
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "SHB": {
@@ -468,10 +296,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "SHR": {
@@ -487,10 +314,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "ST1T": {
@@ -506,29 +332,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "ST1B": {
-      "bytes": 47960,
-      "components": [
-        {
-          "id": "ST1B_Snow",
-          "sourceTriangles": 1544,
-          "triangles": 1544,
-          "sampledMaxErrorMm": 0.0,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "ST2T": {
@@ -544,29 +350,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "ST2B": {
-      "bytes": 47964,
-      "components": [
-        {
-          "id": "ST2B_Snow",
-          "sourceTriangles": 1544,
-          "triangles": 1544,
-          "sampledMaxErrorMm": 0.0,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "ST3T": {
@@ -582,29 +368,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "ST3B": {
-      "bytes": 47964,
-      "components": [
-        {
-          "id": "ST3B_Snow",
-          "sourceTriangles": 1544,
-          "triangles": 1544,
-          "sampledMaxErrorMm": 0.0,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "LT1T": {
@@ -620,29 +386,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "LT1B": {
-      "bytes": 47964,
-      "components": [
-        {
-          "id": "LT1B_Snow",
-          "sourceTriangles": 1544,
-          "triangles": 1544,
-          "sampledMaxErrorMm": 0.0,
-          "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 0.0
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "LT2T": {
@@ -658,29 +404,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "LT2B": {
-      "bytes": 413792,
-      "components": [
-        {
-          "id": "LT2B_Snow",
-          "sourceTriangles": 88650,
-          "triangles": 21276,
-          "sampledMaxErrorMm": 0.004759,
-          "boundsMaxErrorMm": 0.001715,
-          "volumeRelativeError": 1.805e-05
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "LT3T": {
@@ -696,29 +422,117 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "LT3B": {
-      "bytes": 47964,
+    "W01": {
+      "bytes": 44432,
       "components": [
         {
-          "id": "LT3B_Snow",
-          "sourceTriangles": 1544,
-          "triangles": 1544,
+          "id": "W01_Snow",
+          "sourceTriangles": 1436,
+          "triangles": 1436,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "W02": {
+      "bytes": 44432,
+      "components": [
+        {
+          "id": "W02_Snow",
+          "sourceTriangles": 1436,
+          "triangles": 1436,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "LT2NT": {
+      "bytes": 790068,
+      "components": [
+        {
+          "id": "LT2NT_Snow",
+          "sourceTriangles": 177502,
+          "triangles": 42600,
+          "sampledMaxErrorMm": 0.004769,
+          "boundsMaxErrorMm": 0.0013,
+          "volumeRelativeError": 5.88e-06
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "P01": {
+      "bytes": 1686992,
+      "components": [
+        {
+          "id": "P01_Snow",
+          "sourceTriangles": 318646,
+          "triangles": 76474,
+          "sampledMaxErrorMm": 0.007865,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 3.4e-06
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "H06": {
+      "bytes": 146284,
+      "components": [
+        {
+          "id": "H06_Snow",
+          "sourceTriangles": 23604,
+          "triangles": 5664,
+          "sampledMaxErrorMm": 0.008701,
+          "boundsMaxErrorMm": 9e-06,
+          "volumeRelativeError": 2.25e-06
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "LHR": {
+      "bytes": 106988,
+      "components": [
+        {
+          "id": "LHR_Gold",
+          "sourceTriangles": 6028,
+          "triangles": 4388,
+          "sampledMaxErrorMm": 0.01552,
+          "boundsMaxErrorMm": 0.000856,
+          "volumeRelativeError": 1.831e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "A01": {
@@ -750,123 +564,234 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "W01": {
-      "bytes": 44432,
+    "ST1B": {
+      "bytes": 47960,
       "components": [
         {
-          "id": "W01_Snow",
-          "sourceTriangles": 1436,
-          "triangles": 1436,
+          "id": "ST1B_Snow",
+          "sourceTriangles": 1544,
+          "triangles": 1544,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "W02": {
-      "bytes": 44432,
+    "ST2B": {
+      "bytes": 47964,
       "components": [
         {
-          "id": "W02_Snow",
-          "sourceTriangles": 1436,
-          "triangles": 1436,
+          "id": "ST2B_Snow",
+          "sourceTriangles": 1544,
+          "triangles": 1544,
           "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
           "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "A02": {
-      "bytes": 263116,
+    "ST3B": {
+      "bytes": 47964,
       "components": [
         {
-          "id": "A02_Snow",
-          "sourceTriangles": 9102,
-          "triangles": 8710,
-          "sampledMaxErrorMm": 0.008645,
+          "id": "ST3B_Snow",
+          "sourceTriangles": 1544,
+          "triangles": 1544,
+          "sampledMaxErrorMm": 0.0,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 2.1e-07
+          "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "G15": {
-      "bytes": 142400,
+    "LT1B": {
+      "bytes": 47964,
       "components": [
         {
-          "id": "G15_PineGreen",
-          "sourceTriangles": 17020,
-          "triangles": 7298,
-          "sampledMaxErrorMm": 0.011973,
-          "boundsMaxErrorMm": 0.001973,
-          "volumeRelativeError": 3.414e-05
+          "id": "LT1B_Snow",
+          "sourceTriangles": 1544,
+          "triangles": 1544,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "G16": {
-      "bytes": 55136,
+    "LT2B": {
+      "bytes": 413792,
       "components": [
         {
-          "id": "G16_PineGreen",
-          "sourceTriangles": 10640,
-          "triangles": 2642,
-          "sampledMaxErrorMm": 0.011086,
-          "boundsMaxErrorMm": 0.002703,
-          "volumeRelativeError": 6.56e-05
+          "id": "LT2B_Snow",
+          "sourceTriangles": 88650,
+          "triangles": 21276,
+          "sampledMaxErrorMm": 0.004759,
+          "boundsMaxErrorMm": 0.001715,
+          "volumeRelativeError": 1.805e-05
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
-    "G17": {
-      "bytes": 54892,
+    "LT3B": {
+      "bytes": 47964,
       "components": [
         {
-          "id": "G17_PineGreen",
-          "sourceTriangles": 10640,
-          "triangles": 2634,
-          "sampledMaxErrorMm": 0.011085,
-          "boundsMaxErrorMm": 0.002703,
-          "volumeRelativeError": 6.355e-05
+          "id": "LT3B_Snow",
+          "sourceTriangles": 1544,
+          "triangles": 1544,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "SS01": {
+      "bytes": 152176,
+      "components": [
+        {
+          "id": "SS01_Gold",
+          "sourceTriangles": 6768,
+          "triangles": 5302,
+          "sampledMaxErrorMm": 0.015794,
+          "boundsMaxErrorMm": 0.000521,
+          "volumeRelativeError": 2.825e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "G05": {
+      "bytes": 147676,
+      "components": [
+        {
+          "id": "G05_Snow",
+          "sourceTriangles": 2882,
+          "triangles": 2882,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        },
+        {
+          "id": "G05_ChristmasRed",
+          "sourceTriangles": 1926,
+          "triangles": 1926,
+          "sampledMaxErrorMm": 0.0,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 0.0
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "G03": {
+      "bytes": 341692,
+      "components": [
+        {
+          "id": "G03_ChristmasRed",
+          "sourceTriangles": 8180,
+          "triangles": 6770,
+          "sampledMaxErrorMm": 0.010007,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 6.39e-06
+        },
+        {
+          "id": "G03_Snow",
+          "sourceTriangles": 20834,
+          "triangles": 6924,
+          "sampledMaxErrorMm": 0.016817,
+          "boundsMaxErrorMm": 1.4e-05,
+          "volumeRelativeError": 0.00022495
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      },
+      "webColorSplit": {
+        "sourceComponent": "G03_Snow",
+        "method": "disconnected-window-body",
+        "windowComponent": "G03_WindowSnow",
+        "windowBoundsMm": [
+          [
+            49.0,
+            179.6000061035148,
+            210.0
+          ],
+          [
+            117.0,
+            185.5,
+            246.0
+          ]
+        ],
+        "beforeTriangles": 6924,
+        "afterTriangles": 6924,
+        "windowTriangles": 764,
+        "unchangedSurfaceAreaMm2": 20612.46683224274
+      }
+    },
+    "G06": {
+      "bytes": 82396,
+      "components": [
+        {
+          "id": "G06_ChristmasRed",
+          "sourceTriangles": 3446,
+          "triangles": 1600,
+          "sampledMaxErrorMm": 0.008139,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 2.71e-05
+        },
+        {
+          "id": "G06_Snow",
+          "sourceTriangles": 5760,
+          "triangles": 2136,
+          "sampledMaxErrorMm": 0.00806,
+          "boundsMaxErrorMm": 3e-05,
+          "volumeRelativeError": 0.00011444
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "O01": {
@@ -890,10 +815,81 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "G16": {
+      "bytes": 55168,
+      "components": [
+        {
+          "id": "G16_PineGreen",
+          "sourceTriangles": 10592,
+          "triangles": 2644,
+          "sampledMaxErrorMm": 0.011748,
+          "boundsMaxErrorMm": 0.002703,
+          "volumeRelativeError": 6.532e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "G17": {
+      "bytes": 54856,
+      "components": [
+        {
+          "id": "G17_PineGreen",
+          "sourceTriangles": 10592,
+          "triangles": 2632,
+          "sampledMaxErrorMm": 0.011661,
+          "boundsMaxErrorMm": 0.002703,
+          "volumeRelativeError": 6.335e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "G15": {
+      "bytes": 141052,
+      "components": [
+        {
+          "id": "G15_PineGreen",
+          "sourceTriangles": 17182,
+          "triangles": 7222,
+          "sampledMaxErrorMm": 0.013186,
+          "boundsMaxErrorMm": 0.001869,
+          "volumeRelativeError": 5.608e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+      }
+    },
+    "A02": {
+      "bytes": 145032,
+      "components": [
+        {
+          "id": "A02_Snow",
+          "sourceTriangles": 4922,
+          "triangles": 4782,
+          "sampledMaxErrorMm": 0.015752,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 2.9e-06
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
       }
     },
     "Y01": {
@@ -909,9 +905,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
         "derivedFrom": "X01",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -930,9 +926,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
         "derivedFrom": "X02",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -951,9 +947,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
         "derivedFrom": "X03",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -972,49 +968,12 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
+        "sourceDirectory": "unified_complete_steel_v15",
+        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
         "derivedFrom": "X04",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
-      }
-    },
-    "SS01": {
-      "bytes": 152176,
-      "components": [
-        {
-          "id": "SS01_Gold",
-          "sourceTriangles": 6768,
-          "triangles": 5302,
-          "sampledMaxErrorMm": 0.015794,
-          "boundsMaxErrorMm": 0.000521,
-          "volumeRelativeError": 2.825e-05
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3",
-        "geometryUnchangedFrom": "unified_complete_steel_v12"
-      }
-    },
-    "LT2NT": {
-      "bytes": 790068,
-      "components": [
-        {
-          "id": "LT2NT_Snow",
-          "sourceTriangles": 177502,
-          "triangles": 42600,
-          "sampledMaxErrorMm": 0.004769,
-          "boundsMaxErrorMm": 0.0013,
-          "volumeRelativeError": 5.88e-06
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v13",
-        "sourceVersion": "Steel receivers V13 flush stair landing",
-        "sourceSha256": "9f5265fbc94522b943b9dc781fa7be9c05b50bfc2125dc06fb3df94efc0928c3"
       }
     }
   }

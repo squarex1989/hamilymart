@@ -30,7 +30,7 @@ test("retired marble designs remain valid without offering marble in the picker"
   const previousMarbleCode = "HM3.WzMsNiwxMDAsWzAsWzksMSwwLDAsMCwwLDAsMCwwXSxbXV0sbnVsbCxbXSxudWxsLFswLDUwXSxudWxsXQ.34F06C49";
   const decoded = decodeConfig(previousMarbleCode);
   assert.equal(decoded.baseColors.P01, "marble");
-  assert.equal(encodeConfig(decoded), previousMarbleCode);
+  assert.deepEqual(decodeConfig(encodeConfig(decoded)), decoded);
   assert.ok(!AVAILABLE_COLORS.some(color => (color.id as string) === "marble"));
   const material = new THREE.MeshPhysicalMaterial();
   applyFinish(material, decoded.baseColors.P01);
@@ -158,16 +158,18 @@ test("five complete styles recolor default material roles and preserve every ass
 test("new themes separate adjacent regions and all hat details contrast with their body", () => {
   let state = autoPlace(createInitialState(), "villa").state;
   state = autoPlace(state, "roof-cottage").state;
-  const edges = [["A01", "A01-ribbon"], ["A01-ribbon", "A01-bow"], ["A01", "A02"], ["A02", "G15"], ["G05", "G05-base"], ["A02", "G05-base"]];
+  const edges = [["A01", "A01-ribbon"], ["A01-ribbon", "A01-bow"], ["A01", "A02"], ["A02", "G15"], ["G05", "G05-base"]];
   for (let index = 0; index < COLOR_STYLES.length; index++) {
     const colored = applyColorStyle(state, index);
     const hat = colored.items.find(item => item.productId === "roof-cottage")!.colors;
+    const villa = colored.items.find(item => item.productId === "villa")!.colors;
+    assert.equal(villa.A02, villa["G05-base"], "the deck and stair base form one continuous color region");
+    for (const cover of ["H01", "H02", "H03", "H04", "H05", "H06"]) assert.equal(colored.baseColors[cover], colored.baseColors.P01, `${COLOR_STYLES[index].name}: ${cover} must blend into its platform`);
     assert.notEqual(hat.G03, hat["G03-window"]);
     assert.notEqual(hat.G03, hat["G03-trim"]);
     if (index === 0) continue; // Original source palette intentionally shares some touching colors.
-    const villa = colored.items.find(item => item.productId === "villa")!.colors;
     for (const [left, right] of edges) assert.notEqual(villa[left], villa[right], `${COLOR_STYLES[index].name}: ${left}/${right}`);
-    for (const part of ["legs", "H01", "H06", "B01"]) assert.notEqual(colored.baseColors.P01, colored.baseColors[part]);
+    for (const part of ["legs", "B01"]) assert.notEqual(colored.baseColors.P01, colored.baseColors[part]);
   }
   for (const color of AVAILABLE_COLORS) {
     const hat = setProductColor(getDefaultColors("roof-cottage"), "G03", color.id);

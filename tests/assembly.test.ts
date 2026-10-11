@@ -69,7 +69,7 @@ test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and 
   assert.equal(ids.size, 49);
   assert.equal(Object.keys(modelIndex).length, 49);
   assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 57);
-  assert.equal(CATALOG_VERSION, 6);
+  assert.equal(CATALOG_VERSION, 7);
   assert.equal(COLORS.length, 14);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
 });
@@ -141,7 +141,7 @@ test("Steel V9 hat requires a villa and its planter cannot rotate into the fence
   assert.ok(getPlacements(createInitialState(), "planter").length > 0);
   const villa = place(createInitialState(), "villa", 150, 190);
   const loft = place(villa.state, "roof-cottage", 78, 239, 200);
-  const planter = place(loft.state, "planter", 285.5, 264, 200);
+  const planter = place(loft.state, "planter", 280.5, 264, 200);
   assert.equal(planter.item.parentId, villa.item.id);
   assert.equal(getPlacements(loft.state, "planter", 180).filter(position => position.parentId === villa.item.id).length, 0);
   assert.equal(rotateItem(planter.state, planter.item.id).ok, false);
@@ -379,7 +379,7 @@ test("V4 original palette is unchanged and the eight-piece villa keeps exact def
     ["A01", "pine"], ["A02", "cream"], ["G05", "red"], ["G15", "pine"],
     ["G16", "pine"], ["G17", "pine"], ["W01", "cream"], ["W02", "cream"],
   ]);
-  assert.deepEqual(getProduct("villa").collisionBoxes[0], [-5, 178.2, 110, 305, 300, 238]);
+  assert.deepEqual(getProduct("villa").collisionBoxes[0], [0, 178.2, 110, 300, 300, 238]);
 });
 test("cottage follows the villa safe direction at all four parent orientations", () => {
   for (const rotation of [0, 90, 180, 270] as const) {
@@ -402,7 +402,7 @@ test("cottage follows the villa safe direction at all four parent orientations",
   }
 });
 function assertLegacyUpgrade(state: AssemblyState) {
-  assert.equal(state.catalogVersion, 6);
+  assert.equal(state.catalogVersion, 7);
   assert.equal(state.legHeight, 200);
   assert.equal(state.baseColors.P01, "lilac");
   assert.equal(state.items.length, 2);
@@ -454,7 +454,7 @@ test("current states and unversioned eight-color villas never receive legacy dir
   const { catalogVersion: _catalogVersion, ...unversioned } = bad;
   assert.throws(() => migrateAssembly(unversioned), /磁吸位/);
   assert.throws(() => migrateAssembly(bad, 2), /版本标记冲突/);
-  assert.throws(() => migrateAssembly({ ...valid, catalogVersion: 7 }), /版本/);
+  assert.throws(() => migrateAssembly({ ...valid, catalogVersion: 8 }), /版本/);
 });
 test("legacy migration only repairs the documented 180-degree loft, never malformed positions or 90-degree lofts", () => {
   assert.throws(() => migrateAssembly({ ...LEGACY_LOCAL_STATE, items: LEGACY_LOCAL_STATE.items.map(item => item.productId === "roof-cottage" ? { ...item, rotation: 90 } : item) }), /磁吸位/);
@@ -462,7 +462,7 @@ test("legacy migration only repairs the documented 180-degree loft, never malfor
   assert.throws(() => migrateAssembly({ ...LEGACY_LOCAL_STATE, catalogVersion: 3 }), /颜色不完整/);
   const { catalogVersion: _catalogVersion, ...oldEmpty } = createInitialState();
   assert.deepEqual(migrateAssembly(oldEmpty).messages, []);
-  assert.equal(migrateAssembly(oldEmpty).state.catalogVersion, 6);
+  assert.equal(migrateAssembly(oldEmpty).state.catalogVersion, 7);
 });
 
 test("catalog-3 code with a valid checksum still rejects an unsafe reversed loft", () => {
@@ -627,7 +627,7 @@ test("Steel V9 food bowl uses the real center-magnet interface and cannot overla
   assert.equal(bowl.ok, true);
   if (!bowl.ok || !bowl.item) return;
   assert.equal(bowl.item.parentId, villa.item.id);
-  assert.deepEqual([bowl.item.x, bowl.item.y, bowl.item.z], [285.5, 264, 200]);
+  assert.deepEqual([bowl.item.x, bowl.item.y, bowl.item.z], [280.5, 264, 200]);
   assert.equal(getPlacements(bowl.state, "planter").filter(position => position.parentId === villa.item.id).length, 0);
   assert.equal(autoPlace(bowl.state, "planter").ok, true, "the other single-contact accessory may use a free first-floor position");
   assert.deepEqual(getOrderLines(bowl.state).at(-1)?.parts, ["O01"]);
@@ -663,14 +663,14 @@ test("HM3 preserves platforms, pool, missing covers, colors, parent families and
 test("valid HM1 catalog 3 migrates without moving, recoloring or dropping the existing pool", () => {
   const code = "HM1.WzEsMywxMDAsMSxbMCwxLDAsMCwwLDAsMCwwLDZdLFtbMCwxNTAsMTkwLDExMCwwLFsxLDAsMiwxLDQsNSw2LDddLC0xXSxbMyw3OCwyMzksMjAwLDAsWzJdLDBdXV0.3B0F2D99";
   const result = decodeConfigWithMigration(code);
-  assert.equal(result.state.catalogVersion, 6);
+  assert.equal(result.state.catalogVersion, 7);
   assert.equal(result.state.extension, null);
   assert.deepEqual(result.state.removedCovers, []);
   assert.equal(result.state.baseInsert, "pool");
   assert.equal(result.state.baseColors.B01, "sky");
   assert.deepEqual(result.state.items[0].colors, { A01: "pine", A02: "cream", G05: "red", G15: "pine", G16: "sage", G17: "rose", W01: "sky", W02: "lilac", "A01-ribbon": "butter", "A01-bow": "butter", "G05-base": "cream" });
   assert.deepEqual(result.state.items.map(item => [item.x, item.y, item.z, item.rotation]), [[150, 190, 110, 0], [78, 239, 200, 0]]);
-  assert.equal(result.messages.length, 1);
+  assert.match(result.messages.join(" "), /Steel V9.*30 厘米/);
   assert.deepEqual(decodeConfigWithMigration(encodeConfig(result.state)).messages, []);
 });
 
@@ -739,7 +739,7 @@ test("existing HM2 and local bow choices carry over to the star across the catal
     assert.equal(state.items[0].colors["A01-ribbon"], "rose");
     assert.equal(state.items[0].colors["A01-bow"], "sky");
     assert.equal(encodeConfig(state), encodeConfig(decoded));
-    assert.equal(state.catalogVersion, 6);
+    assert.equal(state.catalogVersion, 7);
     assert.equal(state.items[0].colors[getSourceColorSlot("A01", "A01_StarGold", "Gold")!], "sky");
     assert.equal(getOrderLines(state).find(line => line.sku === "HM-HS-001")?.parts.length, 8);
   }
@@ -805,20 +805,20 @@ test("different decorative colors produce separate order lines without adding ph
   assert.throws(() => validateAssembly({ ...changed, items: changed.items.map(item => ({ ...item, colors: { ...item.colors, "A01-ribbon": "not-a-stock-color" } })) }), /未知颜色/);
 });
 
-test("Steel V9 hat restores 162 mm width and 146 by 94 mm holes without inventing base contacts", () => {
+test("Steel V15 keeps the 162 mm hat and 146 by 94 mm holes without inventing base contacts", () => {
   const state = createInitialState();
   const product = getProduct("roof-cottage");
   assert.deepEqual(product.origin, [78, 239, 200]);
-  assert.deepEqual(product.bottomMagnets, [[5, 192, 200], [5, 286, 200], [151, 192, 200], [151, 286, 200]]);
+  assert.deepEqual(product.bottomMagnets, [[10, 192, 200], [10, 286, 200], [156, 192, 200], [156, 286, 200]]);
   assert.equal(product.collisionBoxes[0][3] - product.collisionBoxes[0][0], 162);
-  assert.deepEqual(product.collisionBoxes[0], modelIndex.G03.bounds, "collision bounds must match the actual Steel V9 G03 asset");
+  assert.deepEqual(product.collisionBoxes[0], modelIndex.G03.bounds, "collision bounds must match the actual Steel V15 G03 asset");
   for (const rotation of [0, 90, 180, 270] as const) assert.deepEqual(getPlacements(state, product.id, rotation), []);
   assert.equal(autoPlace(state, product.id).ok, false);
   const extended = success(addPlatform(state, "right"));
   assert.equal(autoPlace(extended, product.id, "base2").ok, false);
 });
 
-test("Steel V9 hat keeps its original upper-floor position with all four source contacts", () => {
+test("Steel V15 hat keeps its stable upper-floor transform with all four source contacts", () => {
   const villa = place(createInitialState(), "villa", 150, 190);
   const product = getProduct("roof-cottage");
   const candidate = getPlacements(villa.state, product.id).find(p => p.parentId === villa.item.id && p.x === 78 && p.y === 239)!;
@@ -826,7 +826,7 @@ test("Steel V9 hat keeps its original upper-floor position with all four source 
   assert.equal(candidate.magnetCount, 4);
   const hostPoints = getMagnetPoints(villa.state).filter(point => point.parentId === villa.item.id).map(({ point }) => point.join(","));
   const matching = product.bottomMagnets.map(point => transformPoint(point, product, candidate)).filter(point => hostPoints.includes(point.join(",")));
-  assert.deepEqual(matching, [[5, 192, 200], [5, 286, 200], [151, 192, 200], [151, 286, 200]]);
+  assert.deepEqual(matching, [[10, 192, 200], [10, 286, 200], [156, 192, 200], [156, 286, 200]]);
   const automatic = autoPlace(villa.state, product.id);
   assert.equal(automatic.ok, true);
   if (automatic.ok) assert.deepEqual([automatic.item?.x, automatic.item?.y, automatic.item?.z, automatic.item?.parentId], [78, 239, 200, villa.item.id]);
@@ -847,7 +847,7 @@ test("frozen pre-resize HM2 keeps its hat position and upgrades the catalog with
 test("rotation resnapping carries the whole villa family as a rigid transform with independent colors", () => {
   const villa = place(createInitialState(), "villa", 150, 190);
   const cottage = place(villa.state, "roof-cottage", 78, 239, 200);
-  const bowl = tryPlace(cottage.state, "food-bowl", { x: 285.5, y: 264, z: 200 });
+  const bowl = tryPlace(cottage.state, "food-bowl", { x: 280.5, y: 264, z: 200 });
   assert.equal(bowl.ok, true);
   if (!bowl.ok || !bowl.item) return;
   const state = { ...bowl.state, items: bowl.state.items.map(item => item.id === villa.item.id ? { ...item, colors: { ...item.colors, "A01-ribbon": "rose" as const, "A01-bow": "sky" as const } } : item.id === cottage.item.id ? { ...item, colors: { ...item.colors, G03: "lilac" as const } } : item) };
@@ -859,7 +859,7 @@ test("rotation resnapping carries the whole villa family as a rigid transform wi
   const hat = rotated.state.items.find(item => item.id === cottage.item.id)!;
   assert.deepEqual([hat.x, hat.y, hat.z, hat.rotation, hat.parentId], [61, 78, 200, 90, villa.item.id]);
   const movedBowl = rotated.state.items.find(item => item.id === bowl.item!.id)!;
-  assert.deepEqual([movedBowl.x, movedBowl.y, movedBowl.z, movedBowl.rotation, movedBowl.parentId], [36, 285.5, 200, 90, villa.item.id]);
+  assert.deepEqual([movedBowl.x, movedBowl.y, movedBowl.z, movedBowl.rotation, movedBowl.parentId], [36, 280.5, 200, 90, villa.item.id]);
   for (const item of rotated.state.items) assert.deepEqual(item.colors, state.items.find(previous => previous.id === item.id)!.colors);
   assert.equal(JSON.stringify(state), before);
   assert.deepEqual(validateAssembly(rotated.state), rotated.state);
@@ -882,7 +882,7 @@ test("rotation keeps a valid original pivot and never jumps from a restricted se
 
 test("Steel V9 exposes exactly five upper contacts and single-center accessories use only their reserved region", () => {
   const villaProduct = getProduct("villa");
-  assert.deepEqual(villaProduct.surfaces!.flatMap(surface => surface.points), [[5, 192, 200], [5, 286, 200], [151, 192, 200], [151, 286, 200], [285.5, 264, 200]]);
+  assert.deepEqual(villaProduct.surfaces!.flatMap(surface => surface.points), [[10, 192, 200], [10, 286, 200], [156, 192, 200], [156, 286, 200], [280.5, 264, 200]]);
   const upperAccessories = PRODUCTS.filter(product => product.minimumMagnetMatches === 1 && product.allowedParents?.includes("villa"));
   assert.deepEqual(upperAccessories.map(product => product.id), ["planter", "food-bowl"]);
   for (const rotation of [0, 90, 180, 270] as const) {
@@ -891,9 +891,9 @@ test("Steel V9 exposes exactly five upper contacts and single-center accessories
     const villa = tryPlace(initial, "villa", position, rotation);
     assert.equal(villa.ok, true);
     if (!villa.ok) continue;
-    const target = transformPoint([285.5, 264, 200], villaProduct, villa.item);
+    const target = transformPoint([280.5, 264, 200], villaProduct, villa.item);
     for (const { id } of upperAccessories) {
-      assert.deepEqual(getProduct(id).bottomMagnets, [[285.5, 264, 200]]);
+      assert.deepEqual(getProduct(id).bottomMagnets, [[280.5, 264, 200]]);
       assert.equal(getProduct(id).minimumMagnetMatches, 1);
       assert.ok(getPlacements(initial, id, rotation).length > 0);
       const placements: Placement[] = getPlacements(villa.state, id, rotation).filter(position => position.parentId === villa.item.id);
@@ -910,7 +910,7 @@ test("Steel V9 exposes exactly five upper contacts and single-center accessories
   }
 });
 
-test("historical bowl and stocking HM2 retain their world position and color with the new center contact", () => {
+test("historical bowl and stocking HM2 move with the V15 receiver and retain their colors", () => {
   const samples = [
     ["food-bowl", "HM2.WzIsNCwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sbnVsbCxbWzAsMTUwLDE5MCwxMTAsMCxbMSwwLDIsMSwxLDEsMCwwLDMsM10sLTFdLFsxMSwyODUuNSwyNjQsMjAwLDAsWzJdLDBdXV0.3F00EDB4"],
     ["planter", "HM2.WzIsNCwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sbnVsbCxbWzAsMTUwLDE5MCwxMTAsMCxbMSwwLDIsMSwxLDEsMCwwLDMsM10sLTFdLFsxMCwyODUuNSwyNjQsMjAwLDAsWzJdLDBdXV0.1AB6F417"],
@@ -918,18 +918,18 @@ test("historical bowl and stocking HM2 retain their world position and color wit
   for (const [id, code] of samples) {
     const restored = decodeConfigWithMigration(code);
     const item = restored.state.items.find(item => item.productId === id)!;
-    assert.deepEqual([item.x, item.y, item.z, item.rotation], [285.5, 264, 200, 0]);
+    assert.deepEqual([item.x, item.y, item.z, item.rotation], [280.5, 264, 200, 0]);
     assert.equal(Object.values(item.colors)[0], "red");
     assert.match(restored.messages.join(" "), /Steel V9/);
     assert.deepEqual(decodeConfig(encodeConfig(restored.state)), restored.state);
-    const local = { ...restored.state, catalogVersion: 4, items: restored.state.items.map(entry => entry.id === item.id ? { ...entry, colors: { [id === "food-bowl" ? "O01" : "G06"]: "lilac" } } : entry) };
+    const local = { ...restored.state, catalogVersion: 4, items: restored.state.items.map(entry => entry.id === item.id ? { ...entry, x: 285.5, colors: { [id === "food-bowl" ? "O01" : "G06"]: "lilac" } } : entry) };
     const before = JSON.stringify(local);
     const migrated = migrateAssembly(local).state;
     assert.equal(Object.values(migrated.items.find(entry => entry.productId === id)!.colors)[0], "lilac");
     assert.equal(JSON.stringify(local), before);
   }
-  assert.deepEqual(getProduct("food-bowl").origin, [285.5, 264, 200]);
-  assert.deepEqual(getProduct("food-bowl").collisionBoxes, [[246, 236, 200, 301, 296, 221]]);
+  assert.deepEqual(getProduct("food-bowl").origin, [280.5, 264, 200]);
+  assert.deepEqual(getProduct("food-bowl").collisionBoxes, [[241, 236, 200, 296, 296, 221]]);
 });
 
 const OLD_BASE_HAT_WITH_VILLA = "HM2.WzIsNCwxMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sbnVsbCxbWzMsMTYzLDU3LDExMCwwLFsyXSwtMV0sWzAsMTUwLDE5MCwxMTAsMCxbMSwwLDIsMSwxLDEsMCwwLDMsM10sLTFdXV0.E88D11C8";
@@ -1112,7 +1112,8 @@ test("equal-height HM3 and local saves remain compatible after height controls b
   const previous = decodeConfig(oldCode);
   assert.equal(previous.legHeight, 300);
   assert.deepEqual(previous.bedding, { mode: "thick", depth: 300 });
-  assert.equal(encodeConfig(previous), oldCode);
+  assert.deepEqual(decodeConfig(encodeConfig(previous)), previous);
+  assert.notEqual(encodeConfig(previous), oldCode, "catalog version advances while the saved design stays intact");
   const localSave = JSON.parse(JSON.stringify(previous));
   const restored = migrateAssembly(localSave);
   assert.deepEqual(restored.state, previous);
@@ -1254,7 +1255,7 @@ test("all three empty platforms expose the same villa placements and four family
     }
     const villa = place(empty, "villa", platform.x + 150, 190);
     const hat = place(villa.state, "roof-cottage", platform.x + 78, 239, 200);
-    const bowl = place(hat.state, "food-bowl", platform.x + 285.5, 264, 200);
+    const bowl = place(hat.state, "food-bowl", platform.x + 280.5, 264, 200);
     let state = bowl.state;
     const initialColors = Object.fromEntries(state.items.map(item => [item.id, item.colors]));
     for (const rotation of [90, 180, 270, 0] as const) {
@@ -1264,7 +1265,7 @@ test("all three empty platforms expose the same villa placements and four family
       state = turned.state;
       assert.equal(turned.item.rotation, rotation);
       assert.equal(turned.item.parentId, platform.id);
-      for (const [id, sourcePoint] of [[hat.item.id, [78, 239, 200]], [bowl.item.id, [285.5, 264, 200]]] as const) {
+      for (const [id, sourcePoint] of [[hat.item.id, [78, 239, 200]], [bowl.item.id, [280.5, 264, 200]]] as const) {
         const child = state.items.find(item => item.id === id)!;
         assert.deepEqual([child.x, child.y, child.z], transformPoint([...sourcePoint], villaProduct, turned.item));
         assert.equal(child.rotation, rotation);
@@ -1276,29 +1277,26 @@ test("all three empty platforms expose the same villa placements and four family
   }
 });
 
-test("neighboring villas can rotate over empty stair space but cannot overlap actual platforms", () => {
+test("V15 neighboring villas retain stair clearance and permit the formerly overlapping deck direction", () => {
   const two = success(addPlatform(createInitialState()));
   const first = place(two, "villa", 150, 190);
   const second = tryPlace(first.state, "villa", { x: 490, y: 150, z: 110 }, 90);
   assert.equal(second.ok, true);
   if (!second.ok) return;
-  // A V13 source-mesh boolean audit found zero solid intersection at this
-  // 180° front placement. The old two-box villa falsely filled stair airspace.
   const rotated = rotateItem(second.state, second.item.id);
   assert.equal(rotated.ok, true, rotated.ok ? "" : rotated.reason);
   if (!rotated.ok) return;
   assert.deepEqual([rotated.item.x, rotated.item.y, rotated.item.rotation], [450, 110, 180]);
   assert.deepEqual(rotated.state.items.find(item => item.id === first.item.id), first.item);
   assert.deepEqual(getPlacements(second.state, "villa", 180, second.item.id).filter(position => position.parentId === "base2")
-    .map(position => [position.x, position.y]), [[450, 110]]);
-  // The other front/back positions physically intersect the A02 decks and
-  // fences; their source intersection volumes are nonzero, so keep refusing.
-  const before = JSON.stringify(rotated.state);
-  const blocked = rotateItem(rotated.state, rotated.item.id, 180);
-  assert.equal(blocked.ok, false);
-  assert.equal(blocked.state, rotated.state);
-  assert.equal(JSON.stringify(rotated.state), before);
-  assert.deepEqual(getPlacements(rotated.state, "villa", 0, rotated.item.id).filter(position => position.parentId === "base2"), []);
+    .map(position => [position.x, position.y]), [[450, 110], [450, 190]]);
+  const sameFacing = rotateItem(rotated.state, rotated.item.id, 180);
+  assert.equal(sameFacing.ok, true, sameFacing.ok ? "" : sameFacing.reason);
+  if (sameFacing.ok) assert.deepEqual(sameFacing.state.items.map(item => item.rotation), [0, 0]);
+  // Physical collision within one platform is still rejected.
+  const collided = tryPlace(first.state, "villa", { x: 150, y: 110, z: 110 }, 0);
+  assert.equal(collided.ok, false);
+  assert.equal(collided.state, first.state);
 });
 
 test("three populated platforms support every family turning through all four physically free directions", () => {
@@ -1335,7 +1333,7 @@ test("three populated platforms support every family turning through all four ph
   }
 });
 
-test("the screenshot layout's blocked middle direction remains blocked even without hats, while matching side directions are reachable", () => {
+test("the three-platform screenshot layout now auto-places all villas in the same direction and rotates every family", () => {
   let state = success(addPlatform(success(addPlatform(createInitialState()))));
   for (const platform of getPlatforms(state)) {
     const villa = autoPlace(state, "villa", platform.id);
@@ -1349,25 +1347,23 @@ test("the screenshot layout's blocked middle direction remains blocked even with
   }
   const villas = state.items.filter(item => item.productId === "villa");
   assert.deepEqual(villas.map(item => [item.parentId, item.x, item.y, item.rotation]), [
-    ["base", 150, 190, 0], ["base2", 490, 150, 90], ["base3", 750, 190, 0],
+    ["base", 150, 190, 0], ["base2", 450, 190, 0], ["base3", 750, 190, 0],
   ]);
-  const center = villas[1], withoutHats = { ...state, items: villas };
-  const blocked = rotateItem(state, center.id, 270);
-  assert.equal(blocked.ok, false);
-  if (!blocked.ok) assert.match(blocked.reason, /相邻的二层平台重叠.*31厘米.*30厘米/);
-  assert.equal(blocked.state, state);
-  assert.equal(rotateItem(withoutHats, center.id, 270).ok, false);
-  // Each side can legally turn to the center's direction without moving or
-  // recoloring the others. Three same-facing 90° families are attainable.
-  for (const side of [villas[0], villas[2]]) {
-    const result = rotateItem(state, side.id);
-    assert.equal(result.ok, true);
-    if (!result.ok) return;
-    state = result.state;
+  for (const villa of villas) {
+    const neighbors = state.items.filter(item => item.id !== villa.id && item.parentId !== villa.id);
+    for (const rotation of [90, 180, 270, 0] as const) {
+      const result = rotateItem(state, villa.id);
+      assert.equal(result.ok, true, `${villa.parentId} → ${rotation}°: ${result.ok ? "" : result.reason}`);
+      if (!result.ok) return;
+      state = result.state;
+      assert.equal(result.item.rotation, rotation);
+      const hat = state.items.find(item => item.parentId === villa.id)!;
+      assert.equal(hat.rotation, rotation);
+      assert.deepEqual([hat.x, hat.y, hat.z], transformPoint([78, 239, 200], getProduct("villa"), result.item));
+      assert.deepEqual(state.items.filter(item => item.id !== villa.id && item.parentId !== villa.id), neighbors);
+      assert.deepEqual(validateAssembly(state), state);
+    }
   }
-  assert.deepEqual(state.items.filter(item => item.productId === "villa").map(item => item.rotation), [90, 90, 90]);
-  assert.deepEqual(state.items.filter(item => item.productId === "roof-cottage").map(item => item.rotation), [90, 90, 90]);
-  assert.deepEqual(validateAssembly(state), state);
 });
 
 test("raising bedding upgrades each platform's legs in the order while preserving imported shorter-leg saves", () => {

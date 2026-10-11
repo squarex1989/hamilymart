@@ -1,0 +1,734 @@
+[
+  {
+    "rotation": 0,
+    "code": "HM3.WzMsNiwzMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFsxXV0sW1swLDE1MCwxMTAsMTEwLDAsWzUsMCwyLDEsMSwxLDAsMCwzLDMsMF0sLTFdLFsxMSwyODUuNSwxODQsMjAwLDAsWzVdLDBdLFszLDc4LDE1OSwyMDAsMCxbNSwwLDBdLDBdLFsxMSw0OTAsMTAsMTEwLDAsWzVdLC0yXSxbMTAsMzkwLDEwLDExMCwwLFs1XSwtMl0sWzAsNzUwLDExMCwxMTAsMCxbNSwwLDIsMSwxLDEsMCwwLDMsMywwXSwtM10sWzEwLDg4NS41LDE4NCwyMDAsMCxbNV0sNV0sWzMsNjc4LDE1OSwyMDAsMCxbNSwwLDBdLDVdXSxbMSwwLFswLDEsMCwwLDAsMCwwLDAsMF0sW11dLFsxLDIwMF0sbnVsbF0.A8BE516F",
+    "state": {
+      "version": 1,
+      "catalogVersion": 6,
+      "legHeight": 300,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": [
+          "H01"
+        ]
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thick",
+        "depth": 200
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "i1",
+          "productId": "villa",
+          "x": 150,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "parentId": "base",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i2",
+          "productId": "roof-cottage",
+          "x": 78,
+          "y": 159,
+          "z": 200,
+          "rotation": 0,
+          "parentId": "i1",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i3",
+          "productId": "food-bowl",
+          "x": 285.5,
+          "y": 184,
+          "z": 200,
+          "rotation": 0,
+          "parentId": "i1",
+          "colors": {
+            "O01": "rose"
+          }
+        },
+        {
+          "id": "i4",
+          "productId": "villa",
+          "x": 750,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "parentId": "base3",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i5",
+          "productId": "roof-cottage",
+          "x": 678,
+          "y": 159,
+          "z": 200,
+          "rotation": 0,
+          "parentId": "i4",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i6",
+          "productId": "planter",
+          "x": 885.5,
+          "y": 184,
+          "z": 200,
+          "rotation": 0,
+          "parentId": "i4",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i7",
+          "productId": "planter",
+          "x": 390,
+          "y": 10,
+          "z": 110,
+          "rotation": 0,
+          "parentId": "base2",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i8",
+          "productId": "food-bowl",
+          "x": 490,
+          "y": 10,
+          "z": 110,
+          "rotation": 0,
+          "parentId": "base2",
+          "colors": {
+            "O01": "rose"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "rotation": 90,
+    "code": "HM3.WzMsNiwzMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFsxXV0sW1swLDExMCwxNTAsMTEwLDEsWzUsMCwyLDEsMSwxLDAsMCwzLDMsMF0sLTFdLFsxMSwzNiwyODUuNSwyMDAsMSxbNV0sMF0sWzMsNjEsNzgsMjAwLDEsWzUsMCwwXSwwXSxbMTEsMzkwLDEwLDExMCwxLFs1XSwtMl0sWzEwLDMxMCwxMCwxMTAsMSxbNV0sLTJdLFswLDcxMCwxNTAsMTEwLDEsWzUsMCwyLDEsMSwxLDAsMCwzLDMsMF0sLTNdLFsxMCw2MzYsMjg1LjUsMjAwLDEsWzVdLDVdLFszLDY2MSw3OCwyMDAsMSxbNSwwLDBdLDVdXSxbMSwwLFswLDEsMCwwLDAsMCwwLDAsMF0sW11dLFsxLDIwMF0sbnVsbF0.90C3FE91",
+    "state": {
+      "version": 1,
+      "catalogVersion": 6,
+      "legHeight": 300,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": [
+          "H01"
+        ]
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thick",
+        "depth": 200
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "i1",
+          "productId": "villa",
+          "x": 110,
+          "y": 150,
+          "z": 110,
+          "rotation": 90,
+          "parentId": "base",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i2",
+          "productId": "roof-cottage",
+          "x": 61,
+          "y": 78,
+          "z": 200,
+          "rotation": 90,
+          "parentId": "i1",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i3",
+          "productId": "food-bowl",
+          "x": 36,
+          "y": 285.5,
+          "z": 200,
+          "rotation": 90,
+          "parentId": "i1",
+          "colors": {
+            "O01": "rose"
+          }
+        },
+        {
+          "id": "i4",
+          "productId": "villa",
+          "x": 710,
+          "y": 150,
+          "z": 110,
+          "rotation": 90,
+          "parentId": "base3",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i5",
+          "productId": "roof-cottage",
+          "x": 661,
+          "y": 78,
+          "z": 200,
+          "rotation": 90,
+          "parentId": "i4",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i6",
+          "productId": "planter",
+          "x": 636,
+          "y": 285.5,
+          "z": 200,
+          "rotation": 90,
+          "parentId": "i4",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i7",
+          "productId": "planter",
+          "x": 310,
+          "y": 10,
+          "z": 110,
+          "rotation": 90,
+          "parentId": "base2",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i8",
+          "productId": "food-bowl",
+          "x": 390,
+          "y": 10,
+          "z": 110,
+          "rotation": 90,
+          "parentId": "base2",
+          "colors": {
+            "O01": "rose"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "rotation": 180,
+    "code": "HM3.WzMsNiwzMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFsxXV0sW1swLDE1MCwxMTAsMTEwLDIsWzUsMCwyLDEsMSwxLDAsMCwzLDMsMF0sLTFdLFsxMSwxNC41LDM2LDIwMCwyLFs1XSwwXSxbMywyMjIsNjEsMjAwLDIsWzUsMCwwXSwwXSxbMTEsNDkwLDEwLDExMCwyLFs1XSwtMl0sWzEwLDM5MCwxMCwxMTAsMixbNV0sLTJdLFswLDc1MCwxMTAsMTEwLDIsWzUsMCwyLDEsMSwxLDAsMCwzLDMsMF0sLTNdLFsxMCw2MTQuNSwzNiwyMDAsMixbNV0sNV0sWzMsODIyLDYxLDIwMCwyLFs1LDAsMF0sNV1dLFsxLDAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMjAwXSxudWxsXQ.C88C710E",
+    "state": {
+      "version": 1,
+      "catalogVersion": 6,
+      "legHeight": 300,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": [
+          "H01"
+        ]
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thick",
+        "depth": 200
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "i1",
+          "productId": "villa",
+          "x": 150,
+          "y": 110,
+          "z": 110,
+          "rotation": 180,
+          "parentId": "base",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i2",
+          "productId": "roof-cottage",
+          "x": 222,
+          "y": 61,
+          "z": 200,
+          "rotation": 180,
+          "parentId": "i1",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i3",
+          "productId": "food-bowl",
+          "x": 14.5,
+          "y": 36,
+          "z": 200,
+          "rotation": 180,
+          "parentId": "i1",
+          "colors": {
+            "O01": "rose"
+          }
+        },
+        {
+          "id": "i4",
+          "productId": "villa",
+          "x": 750,
+          "y": 110,
+          "z": 110,
+          "rotation": 180,
+          "parentId": "base3",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i5",
+          "productId": "roof-cottage",
+          "x": 822,
+          "y": 61,
+          "z": 200,
+          "rotation": 180,
+          "parentId": "i4",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i6",
+          "productId": "planter",
+          "x": 614.5,
+          "y": 36,
+          "z": 200,
+          "rotation": 180,
+          "parentId": "i4",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i7",
+          "productId": "planter",
+          "x": 390,
+          "y": 10,
+          "z": 110,
+          "rotation": 180,
+          "parentId": "base2",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i8",
+          "productId": "food-bowl",
+          "x": 490,
+          "y": 10,
+          "z": 110,
+          "rotation": 180,
+          "parentId": "base2",
+          "colors": {
+            "O01": "rose"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "rotation": 270,
+    "code": "HM3.WzMsNiwzMDAsWzAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMCxbMCwxLDAsMCwwLDAsMCwwLDBdLFsxXV0sW1swLDExMCwxNTAsMTEwLDMsWzUsMCwyLDEsMSwxLDAsMCwzLDMsMF0sLTFdLFsxMSwxODQsMTQuNSwyMDAsMyxbNV0sMF0sWzMsMTU5LDIyMiwyMDAsMyxbNSwwLDBdLDBdLFsxMSwzOTAsMTAsMTEwLDMsWzVdLC0yXSxbMTAsMzEwLDEwLDExMCwzLFs1XSwtMl0sWzAsNzEwLDE1MCwxMTAsMyxbNSwwLDIsMSwxLDEsMCwwLDMsMywwXSwtM10sWzEwLDc4NCwxNC41LDIwMCwzLFs1XSw1XSxbMyw3NTksMjIyLDIwMCwzLFs1LDAsMF0sNV1dLFsxLDAsWzAsMSwwLDAsMCwwLDAsMCwwXSxbXV0sWzEsMjAwXSxudWxsXQ.24D8AD14",
+    "state": {
+      "version": 1,
+      "catalogVersion": 6,
+      "legHeight": 300,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": [
+          "H01"
+        ]
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thick",
+        "depth": 200
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "i1",
+          "productId": "villa",
+          "x": 110,
+          "y": 150,
+          "z": 110,
+          "rotation": 270,
+          "parentId": "base",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i2",
+          "productId": "roof-cottage",
+          "x": 159,
+          "y": 222,
+          "z": 200,
+          "rotation": 270,
+          "parentId": "i1",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i3",
+          "productId": "food-bowl",
+          "x": 184,
+          "y": 14.5,
+          "z": 200,
+          "rotation": 270,
+          "parentId": "i1",
+          "colors": {
+            "O01": "rose"
+          }
+        },
+        {
+          "id": "i4",
+          "productId": "villa",
+          "x": 710,
+          "y": 150,
+          "z": 110,
+          "rotation": 270,
+          "parentId": "base3",
+          "colors": {
+            "A01": "rose",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "i5",
+          "productId": "roof-cottage",
+          "x": 759,
+          "y": 222,
+          "z": 200,
+          "rotation": 270,
+          "parentId": "i4",
+          "colors": {
+            "G03": "rose",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "i6",
+          "productId": "planter",
+          "x": 784,
+          "y": 14.5,
+          "z": 200,
+          "rotation": 270,
+          "parentId": "i4",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i7",
+          "productId": "planter",
+          "x": 310,
+          "y": 10,
+          "z": 110,
+          "rotation": 270,
+          "parentId": "base2",
+          "colors": {
+            "G06": "rose"
+          }
+        },
+        {
+          "id": "i8",
+          "productId": "food-bowl",
+          "x": 390,
+          "y": 10,
+          "z": 110,
+          "rotation": 270,
+          "parentId": "base2",
+          "colors": {
+            "O01": "rose"
+          }
+        }
+      ]
+    }
+  }
+]

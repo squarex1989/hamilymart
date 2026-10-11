@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v13/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v15/assembly_meshes.json')
 DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
 
 
@@ -78,7 +78,9 @@ def web_color_components(group: dict, meshes: list[trimesh.Trimesh]) -> tuple[di
     index = next(i for i, component in enumerate(group['components']) if component['id'] == 'G03_Snow')
     snow = meshes[index]
     bodies = snow.split(only_watertight=False)
-    windows = [body for body in bodies if np.allclose(body.bounds, [[44, 179.6, 210], [112, 185.5, 246]], atol=.06)]
+    # Classify the window by its unchanged dimensions, allowing the complete
+    # cottage to move to a new mounting position in the approved assembly.
+    windows = [body for body in bodies if np.allclose(body.extents, [68, 5.9, 36], atol=.06)]
     if len(bodies) != 3 or len(windows) != 1:
         raise ValueError('G03 Snow geometry changed; audit window, brim and pompom before exporting')
     window = windows[0]
