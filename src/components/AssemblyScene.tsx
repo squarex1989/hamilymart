@@ -11,20 +11,15 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RotateCw, Trash2 } from "lucide-react";
 import {
   MODEL_ASSET_VERSION,
-  SOURCE_TRIM_COLORS,
-  SOURCE_PART_TRIM_COLORS,
-  getSourceColorSlot,
-  PRIMARY_COLOR_KEYS,
   getProduct,
   getBaseParts,
-  getLinkedColorPartId,
-  resolveLinkedProductColors,
 } from "../data/catalog";
 import type { ColorMap } from "../data/catalog";
 import { getPlacements, getItemBounds, getPlatforms, getDisplayElevation, tryPlace } from "../lib/assembly";
 import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
 import { applyFinish } from "../lib/scene-finishes";
+import { getModelMaterialColor } from "../lib/model-colors";
 import { createBedding } from "../lib/bedding-scene";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
@@ -49,6 +44,7 @@ type Props = {
   selectedId: string | null;
   selectedTitle: string;
   activeProduct: string | null;
+  getPreviewColors: (productId: string) => ColorMap;
   showDimensions: boolean;
   onRotate: () => void;
   onRemove: () => void;
@@ -356,7 +352,6 @@ function createRuntime(
     ownerId?: string,
   ) {
     const group = new THREE.Group();
-    const renderedColors = resolveLinkedProductColors(colors);
     await Promise.all(
       parts.map(async (part) => {
         const loaded = await loadPart(part.id);
@@ -380,27 +375,13 @@ function createRuntime(
             const originals = Array.isArray(o.material)
               ? o.material
               : [o.material];
-            const primary = part.defaultColor;
-            const tint =
-              renderedColors[getLinkedColorPartId(part.id)] ??
-              (part.id.startsWith("L0") || (part.id.startsWith("X0") || part.id.startsWith("Y0"))
-                ? renderedColors.legs
-                : undefined) ??
-              primary;
             const mats = originals.map((m) => {
               const next = new THREE.MeshPhysicalMaterial();
               THREE.MeshStandardMaterial.prototype.copy.call(next, m);
               next.roughness = 0.72;
               next.metalness = 0;
-              // A part's chosen primary color changes together; original trim remains its source color.
               const ck = o.userData.colorKey;
-              const primaryKey =
-                PRIMARY_COLOR_KEYS[part.id] ??
-                index[part.id].components[0]?.colorKey;
-              const slot = getSourceColorSlot(part.id, o.userData.sourcePart, ck);
-              const finish = slot && renderedColors[slot] ? renderedColors[slot]
-                : !ck || ck === primaryKey ? tint
-                : SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck] ?? tint;
+              const finish = getModelMaterialColor(part, o.userData.sourcePart, ck, colors);
               applyFinish(next, finish);
               // The source stair has coincident red/white faces; keep its top finish stable.
               if (part.id === "G05" && ck === "ChristmasRed") {
@@ -670,7 +651,7 @@ function createRuntime(
     const g = await build(
       product.parts,
       product.origin,
-      existing?.colors ?? {},
+      existing?.colors ?? props().getPreviewColors(productId),
       true,
     );
     if (disposed || !drag || ghostRevision !== rev) {

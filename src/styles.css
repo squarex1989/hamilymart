@@ -742,7 +742,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 .canvas-bottom-actions > button { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 6px 12px; border-radius: 8px; background: transparent; color: #57704d; font-size: 11px; white-space: nowrap; }
 .canvas-bottom-actions > button:disabled { opacity: .4; }
 .canvas-bottom-actions > button[aria-pressed=true] { background: #e6efdc; color: #47623b; }
-.canvas-bottom-actions .clear-design-button { width: 40px; min-width: 40px; padding: 6px; color: #9c7565; border-left: 1px solid #dce2d3; border-radius: 0 8px 8px 0; }
+.canvas-bottom-actions .clear-design-button { width: 40px; min-width: 40px; padding: 6px; color: #9c7565; border-radius: 8px; }
 .canvas-notice { z-index: 12; bottom: 70px; max-width: 420px; }
 .clear-design-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
 .app-shell.is-mobile .canvas-bottom-actions { left: 8px; right: 8px; bottom: 8px; width: auto; max-width: none; transform: none; gap: 0; padding: 3px; }

@@ -4,7 +4,8 @@ import AssemblyScene from "./components/AssemblyScene";
 import MobileWorkbench from "./components/MobileWorkbench";
 import type { WorkbenchProps } from "./components/MobileWorkbench";
 import DesktopWorkbench from "./components/DesktopWorkbench";
-import { COLOR_STYLES, applyColorStyle } from "./lib/color-styles";
+import { COLOR_STYLES, applyColorStyle, getProductStyleColors } from "./lib/color-styles";
+import { colorNewAdditions, createCatalogStyleHint, restoreCatalogStyle, type StyledAssemblySnapshot } from "./lib/catalog-style";
 import type { SceneHandle } from "./components/AssemblyScene";
 import {
   COLORS,
@@ -40,6 +41,7 @@ import type { ActionResult, AssemblyState, Bedding, PlatformId } from "./lib/ass
 import { decodeConfigWithMigration, encodeConfig } from "./lib/config-code";
 
 const STORAGE = "hamilymart.assembly.v2";
+const STYLE_STORAGE = "hamilymart.catalog-style.v1";
 const platformName = (id: string) => id === "base3" ? "第三平台" : id === "base2" ? "第二平台" : "基础平台";
 const HOUSE_ORDER = ["villa", "roof-cottage", "l-house", "cube-house"];
 const money = (cents: number) =>
@@ -55,7 +57,9 @@ function initial() {
     const result = original
       ? migrateAssembly(JSON.parse(original))
       : { state: createInitialState(), messages: [] };
-    return { ...result, recovery: null };
+    let styleHint: string | null = null;
+    try { styleHint = localStorage.getItem(STYLE_STORAGE); } catch { /* Optional UI preference. */ }
+    return { ...result, recovery: null, styleIndex: restoreCatalogStyle(result.state, encodeConfig(result.state), styleHint) };
   } catch (error) {
     return {
       state: createInitialState(),
@@ -63,6 +67,7 @@ function initial() {
         `本地搭配暂时无法载入：${error instanceof Error ? error.message : "存档读取失败"}。原存档已保留，你也可以粘贴搭配编号恢复。`,
       ],
       recovery: original,
+      styleIndex: 0,
     };
   }
 }
@@ -113,9 +118,9 @@ export default function App() {
   const [ready, setReady] = useState(false),
     [colorPart, setColorPart] = useState("P01"),
     [saved, setSaved] = useState(true);
-  const [history, setHistory] = useState<AssemblyState[]>([]);
-  const [future, setFuture] = useState<AssemblyState[]>([]);
-  const styleCursor = useRef(0);
+  const [history, setHistory] = useState<StyledAssemblySnapshot[]>([]);
+  const [future, setFuture] = useState<StyledAssemblySnapshot[]>([]);
+  const [styleIndex, setStyleIndex] = useState(startup.styleIndex);
   const dragFinishedAt = useRef(0);
   const scene = useRef<SceneHandle>(null),
     toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined),
@@ -155,11 +160,12 @@ export default function App() {
     clearTimeout(toastTimer.current);
     toastTimer.current = setTimeout(() => setToast(""), Math.min(8000, Math.max(2500, message.length * 85)));
   }
-  function commit(next: AssemblyState) {
-    if (next === state) return;
-    setHistory((h) => [...h.slice(-19), state]);
+  function commit(next: AssemblyState, nextStyleIndex = styleIndex) {
+    if (next === state && nextStyleIndex === styleIndex) return;
+    setHistory((h) => [...h.slice(-19), { state, styleIndex }]);
     setFuture([]);
     setState(next);
+    setStyleIndex(nextStyleIndex);
   }
   function applyAction(result: ActionResult, message?: string) {
     if (!result.ok) { notify(result.reason); return false; }
@@ -172,7 +178,7 @@ export default function App() {
     setActiveProduct(null);
     const result = autoPlace(state, productId, selectedPlatformId ?? undefined);
     if (!result.ok) { notify(result.reason); return; }
-    commit(result.state);
+    commit(colorNewAdditions(state, result.state, styleIndex));
     if (result.item) select(result.item.id);
     else {
       const addedPool = getPlatforms(result.state).find(p => p.baseInsert === "pool" && platforms.find(old => old.id === p.id)?.baseInsert !== "pool");
@@ -181,9 +187,9 @@ export default function App() {
   }
   function addNextPlatform() {
     const result = addPlatform(state);
-    if (applyAction(result)) {
-      select(getPlatforms(result.ok ? result.state : state).at(-1)!.id);
-    }
+    if (!result.ok) { notify(result.reason); return; }
+    commit(colorNewAdditions(state, result.state, styleIndex));
+    select(getPlatforms(result.state).at(-1)!.id);
   }
   function chooseBedding(bedding: Bedding) {
     if (applyAction(setBedding(state, bedding))) setModal(null);
@@ -204,6 +210,11 @@ export default function App() {
       setSaved(false);
     }
   }, [state, startup]);
+  useEffect(() => {
+    if (startup.recovery && state === startup.state) return;
+    try { localStorage.setItem(STYLE_STORAGE, JSON.stringify(createCatalogStyleHint(styleIndex, configurationCode))); }
+    catch { /* The design remains saved even if its optional catalog preference cannot be stored. */ }
+  }, [configurationCode, styleIndex, state, startup]);
   useEffect(() => {
     setColorPart(selectedParts[0]?.id ?? "P01");
   }, [selectedId, state.legHeight, selectedPlatform?.baseInsert, selectedProduct]);
@@ -261,7 +272,7 @@ export default function App() {
       productId,
       point,
       r as Rotation,
-      existing?.colors ?? {},
+      existing?.colors ?? getProductStyleColors(productId, styleIndex),
       itemId,
     );
     if (result.ok) {
@@ -336,7 +347,7 @@ export default function App() {
   function restore() {
     try {
       const result = decodeConfigWithMigration(importCode.trim());
-      commit(result.state);
+      commit(result.state, restoreCatalogStyle(result.state, encodeConfig(result.state)));
       setMigrationNotice(result.messages.join(" "));
       select("base");
       setImportError("");
@@ -380,38 +391,31 @@ export default function App() {
     const last = history.at(-1);
     if (!last) return;
     setHistory(previous => previous.slice(0, -1));
-    setFuture(next => [state, ...next].slice(0, 20));
-    setState(last); select(null);
+    setFuture(next => [{ state, styleIndex }, ...next].slice(0, 20));
+    setState(last.state); setStyleIndex(last.styleIndex); select(null);
   }
   function redo() {
     const next = future[0];
     if (!next) return;
-    setHistory(previous => [...previous.slice(-19), state]);
+    setHistory(previous => [...previous.slice(-19), { state, styleIndex }]);
     setFuture(previous => previous.slice(1));
-    setState(next); select(null);
+    setState(next.state); setStyleIndex(next.styleIndex); select(null);
   }
-  function colorsSignature(value: AssemblyState) {
-    const entries = (colors: Record<string, string>) => Object.entries(colors).sort(([a], [b]) => a.localeCompare(b));
-    return JSON.stringify([getPlatforms(value).map(p => entries(p.baseColors)), value.items.map(i => entries(i.colors))]);
-  }
-  const matchedStyle = useMemo(() => COLOR_STYLES.findIndex((_, index) => colorsSignature(applyColorStyle(state, index)) === colorsSignature(state)), [state]);
   function nextStyle() {
-    const next = ((matchedStyle < 0 ? styleCursor.current : matchedStyle) + 1) % COLOR_STYLES.length;
-    styleCursor.current = next;
-    commit(applyColorStyle(state, next));
+    const next = (styleIndex + 1) % COLOR_STYLES.length;
+    commit(applyColorStyle(state, next), next);
     notify(COLOR_STYLES[next].name);
   }
   function clearDesign() {
-    commit(createInitialState());
+    commit(createInitialState(), 0);
     select(null);
-    styleCursor.current = 0;
     setModal(null);
     setMigrationNotice("");
     setToast("");
   }
   const selectedTitle = selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圆形泳池" : editingPlatform ? platformName(selectedId!) : selectedProduct?.name ?? "组件设置";
   const workbench: WorkbenchProps = {
-    state, ready, selectedId, title: selectedTitle, products: visibleProducts, parts: selectedParts,
+    state, styleIndex, ready, selectedId, title: selectedTitle, products: visibleProducts, parts: selectedParts,
     colorPart, currentColor, category, canUndo: !!history.length, canRedo: !!future.length,
     editingPlatform, platformId: selectedPlatformId,
     onCategory: setCategory, onSelect: select, onAdd: addProduct,
@@ -428,6 +432,7 @@ export default function App() {
     <main className="workspace">
       <section className="studio" aria-label="3D 搭建工作台">
         <AssemblyScene ref={scene} state={state} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
+          getPreviewColors={productId => getProductStyleColors(productId, styleIndex)}
           showDimensions={showDimensions} canRotate={!!selectedItem}
           canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}
           onRotate={rotateSelected} onRemove={removeSelected} onSelect={select} onDrop={drop}

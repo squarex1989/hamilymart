@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
-  "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
+  "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba",
+  "sourceVersion": "Steel receivers V16 tilted seesaw",
   "supplementalSources": [],
   "units": "millimeter",
   "upAxis": "Z",
@@ -18,9 +18,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "H02": {
@@ -36,9 +36,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "H03": {
@@ -54,9 +54,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "H04": {
@@ -72,9 +72,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "H05": {
@@ -90,9 +90,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "L01": {
@@ -108,9 +108,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "L02": {
@@ -126,9 +126,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "L03": {
@@ -144,9 +144,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "L04": {
@@ -162,9 +162,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "X01": {
@@ -180,9 +180,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "X02": {
@@ -198,9 +198,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "X03": {
@@ -216,9 +216,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "X04": {
@@ -234,9 +234,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "B01": {
@@ -260,9 +260,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LHB": {
@@ -278,9 +278,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "SHB": {
@@ -296,9 +296,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "SHR": {
@@ -314,9 +314,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "ST1T": {
@@ -332,9 +332,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "ST2T": {
@@ -350,9 +350,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "ST3T": {
@@ -368,9 +368,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT1T": {
@@ -386,9 +386,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT2T": {
@@ -404,9 +404,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT3T": {
@@ -422,9 +422,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "W01": {
@@ -440,9 +440,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "W02": {
@@ -458,9 +458,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT2NT": {
@@ -476,9 +476,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "P01": {
@@ -494,9 +494,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "H06": {
@@ -512,9 +512,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LHR": {
@@ -530,9 +530,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "A01": {
@@ -564,9 +564,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "ST1B": {
@@ -582,9 +582,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "ST2B": {
@@ -600,9 +600,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "ST3B": {
@@ -618,9 +618,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT1B": {
@@ -636,9 +636,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT2B": {
@@ -654,9 +654,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "LT3B": {
@@ -672,27 +672,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
-      }
-    },
-    "SS01": {
-      "bytes": 152176,
-      "components": [
-        {
-          "id": "SS01_Gold",
-          "sourceTriangles": 6768,
-          "triangles": 5302,
-          "sampledMaxErrorMm": 0.015794,
-          "boundsMaxErrorMm": 0.000521,
-          "volumeRelativeError": 2.825e-05
-        }
-      ],
-      "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "G05": {
@@ -716,9 +698,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "G03": {
@@ -742,9 +724,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       },
       "webColorSplit": {
         "sourceComponent": "G03_Snow",
@@ -789,9 +771,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "O01": {
@@ -815,9 +797,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "G16": {
@@ -833,9 +815,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "G17": {
@@ -851,9 +833,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "G15": {
@@ -869,9 +851,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "A02": {
@@ -887,9 +869,27 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9"
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
+      }
+    },
+    "SS01": {
+      "bytes": 152180,
+      "components": [
+        {
+          "id": "SS01_Gold",
+          "sourceTriangles": 6768,
+          "triangles": 5302,
+          "sampledMaxErrorMm": 0.015794,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 2.825e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
       }
     },
     "Y01": {
@@ -905,9 +905,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba",
         "derivedFrom": "X01",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -926,9 +926,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba",
         "derivedFrom": "X02",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -947,9 +947,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba",
         "derivedFrom": "X03",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
@@ -968,9 +968,9 @@
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v15",
-        "sourceVersion": "Steel receivers V15 300mm flush-edge upper deck",
-        "sourceSha256": "201f9fb61eb6979c890287a2eb0c5a62599d569eb36f247cef527810c6cb25e9",
+        "sourceDirectory": "unified_complete_steel_v16",
+        "sourceVersion": "Steel receivers V16 tilted seesaw",
+        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba",
         "derivedFrom": "X04",
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false

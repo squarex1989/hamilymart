@@ -1,11 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import modelIndex from "../src/data/model-index.json";
 import { PRODUCTS, getProduct, getDefaultColors, type Rotation } from "../src/data/catalog";
 import { autoPlace, createInitialState, getMagnetPoints, getOrderLines, getPlacements, getTotalPrice, tryPlace, validateAssembly } from "../src/lib/assembly";
 import { decodeConfig, encodeConfig } from "../src/lib/config-code";
 
-test("V12 seesaw keeps its centered source magnet and full swing clearance", () => {
+test("V16 tilted seesaw keeps its centered source magnet and full swing clearance", () => {
   const product = getProduct("seesaw");
   assert.equal(PRODUCTS[13]?.id, "seesaw");
   assert.deepEqual(PRODUCTS.slice(0, 13).map(p => p.id), [
@@ -15,12 +18,28 @@ test("V12 seesaw keeps its centered source magnet and full swing clearance", () 
   assert.deepEqual(product.origin, [90, 90, 110]);
   assert.deepEqual(product.bottomMagnets, [[90, 90, 110]]);
   assert.deepEqual(getDefaultColors("seesaw"), { SS01: "butter" });
-  assert.deepEqual(product.collisionBoxes, [[0, 50, 110, 180, 130, 159.8]]);
+  assert.deepEqual(product.collisionBoxes, [[-.7, 50, 110, 180.7, 130, 159.8]]);
   const b = modelIndex.SS01.bounds;
-  assert.ok(Math.abs(b[3] - b[0] - 180) < .001);
+  assert.ok(Math.abs(b[3] - b[0] - 177.612692) < .001);
   assert.ok(Math.abs(b[4] - b[1] - 80) < .001);
-  assert.ok(Math.abs(b[5] - b[2] - 31.6) < .001);
+  assert.ok(Math.abs(b[5] - b[2] - 46.947923) < .001);
+  assert.equal(b[2], 110, "the stationary base still rests on the platform");
   assert.equal(modelIndex.SS01.components[0].color, "#C99B46");
+});
+
+test("the real V16 GLB slopes by 10 degrees while its magnet seat and base remain level", async () => {
+  const bytes = readFileSync(new URL('../public/models/SS01.glb', import.meta.url));
+  const model = (await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), '')).scene;
+  model.updateMatrixWorld(true);
+  const hits = (x: number, y: number, below = false) => new THREE.Raycaster(new THREE.Vector3(x, y, below ? 100 : 180), new THREE.Vector3(0, 0, below ? 1 : -1)).intersectObject(model, true).map(hit => hit.point.z);
+  const high = hits(20, 90)[0], low = hits(160, 90)[0];
+  assert.ok(high - low > 24, "the two ends must visibly differ in height");
+  assert.ok(Math.abs(Math.atan((high - low) / 140) * 180 / Math.PI - 10) < .02);
+  for (const x of [80, 100]) assert.ok(Math.abs(hits(x, 90, true)[0] - 110) < .01);
+  assert.ok(Math.abs(hits(90, 90, true)[0] - 114.2) < .02, "centered magnet cavity retains its original depth");
+  const box = new THREE.Box3().setFromObject(model);
+  const [xmin, ymin, zmin, xmax, ymax, zmax] = getProduct('seesaw').collisionBoxes[0];
+  assert.ok(box.min.x >= xmin && box.min.y >= ymin && box.min.z >= zmin && box.max.x <= xmax && box.max.y <= ymax && box.max.z <= zmax);
 });
 
 test("seesaw can attach at every real empty platform receiver in four directions", () => {

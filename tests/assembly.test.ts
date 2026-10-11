@@ -70,7 +70,7 @@ test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and 
   assert.equal(Object.keys(modelIndex).length, 49);
   assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 57);
   assert.equal(CATALOG_VERSION, 7);
-  assert.equal(COLORS.length, 14);
+  assert.equal(COLORS.length, 17);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
 });
 test("base starts with exactly four 10 cm legs; 20 cm substitutes the complete set", () => {
@@ -298,7 +298,7 @@ test("order colors contain only purchased parts and one shared leg color", () =>
   assert.ok(!("B01" in poolLines[0].colors));
   assert.ok(!("H06" in poolLines[0].colors));
   assert.deepEqual(poolLines[1].colors, { B01: "cream" });
-  assert.equal(poolLines[1].unitPrice, 2000);
+  assert.equal(poolLines[1].unitPrice, 2500);
 });
 test("each bundled part color survives encode/decode and parent movement carries child colors intact", () => {
   const villa = place(createInitialState(), "villa", 150, 190);
@@ -343,7 +343,7 @@ test("each bundled part color survives encode/decode and parent movement carries
 });
 
 test("all original colors remain available; the gift decoration defaults to gold", () => {
-  assert.equal(COLORS.length, 14);
+  assert.equal(COLORS.length, 17);
   const entries = modelIndex as Record<
     string,
     { components: { colorKey: string; color: string }[] }
@@ -604,7 +604,7 @@ test("no-leg mode removes all legs from the order and is incompatible with eithe
   assert.equal(getMagnetPoints(state).length, 68);
   const poolLine = getOrderLines(state).find(line => line.id === "pool-base2")!;
   assert.deepEqual(poolLine.parts, ["B01"]);
-  assert.equal(poolLine.total, 2000);
+  assert.equal(poolLine.total, 2500);
   const restored = success(setPlatformPool(state, "base2", false));
   assert.equal(setLegHeight(restored, 0).ok, true);
 });
@@ -1011,7 +1011,7 @@ test("hat migration reserves a restricted upper host before moving a first-floor
 
 test("palette adds three woods and retires marble while keeping every serialized color index", () => {
   assert.deepEqual(COLORS.slice(0, 11).map(color => color.id), ["cream", "pine", "red", "butter", "sage", "rose", "sky", "lilac", "white", "marble", "jade"]);
-  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "jade", "peachwood", "wood", "darkwood"]);
+  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "jade", "peachwood", "wood", "darkwood", "yellow", "black", "gray"]);
   assert.equal(AVAILABLE_COLORS.find(color => color.id === "cream")?.name, "杏色");
   assert.equal(AVAILABLE_COLORS.find(color => color.id === "jade")?.name, "琉璃绿");
   assert.deepEqual(COLORS.slice(8, 11).map(color => color.hex), ["#FAFAF7", "#E2E2DE", "#299C82"]);

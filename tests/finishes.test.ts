@@ -1,18 +1,18 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
-import { AVAILABLE_COLORS, COLORS, WOOD_COLOR_IDS, getColorSwatch, getDefaultColors, getEditableProductColorParts, getProductColorParts, getLinkedColorPartId, setProductColor, getSourceColorSlot, resolveLinkedProductColors } from "../src/data/catalog";
+import { AVAILABLE_COLORS, COLORS, PRODUCTS, WOOD_COLOR_IDS, getColorSwatch, getDefaultColors, getEditableProductColorParts, getProductColorParts, getLinkedColorPartId, setProductColor, getSourceColorSlot, resolveLinkedProductColors } from "../src/data/catalog";
 import { addPlatform, autoPlace, createInitialState, getOrderLines, migrateAssembly } from "../src/lib/assembly";
 import { decodeConfig, encodeConfig } from "../src/lib/config-code";
 import { applyFinish } from "../src/lib/scene-finishes";
-import { applyColorStyle, COLOR_STYLES } from "../src/lib/color-styles";
+import { applyColorStyle, COLOR_STYLES, getBaseStyleColors, getProductStyleColors } from "../src/lib/color-styles";
 
 test("wood finishes append to the HM3 palette and round-trip without changing original colors", () => {
   assert.deepEqual(COLORS.slice(0, 11).map(color => color.id), [
     "cream", "pine", "red", "butter", "sage", "rose", "sky", "lilac", "white", "marble", "jade",
   ]);
-  assert.deepEqual(COLORS.slice(11).map(color => color.id), [...WOOD_COLOR_IDS]);
-  assert.deepEqual(AVAILABLE_COLORS.slice(-3).map(color => color.name), ["桃木", "仿木", "深棕"]);
+  assert.deepEqual(COLORS.slice(11, 14).map(color => color.id), [...WOOD_COLOR_IDS]);
+  assert.deepEqual(AVAILABLE_COLORS.filter(color => WOOD_COLOR_IDS.some(id => id === color.id)).map(color => color.name), ["桃木", "仿木", "深棕"]);
   for (const color of WOOD_COLOR_IDS) {
     const state = createInitialState();
     state.baseColors.P01 = color;
@@ -23,6 +23,30 @@ test("wood finishes append to the HM3 palette and round-trip without changing or
     else assert.equal(getColorSwatch(color), COLORS.find(candidate => candidate.id === color)!.hex);
   }
   assert.equal(getColorSwatch("cream"), "#F1EADB");
+});
+
+test("warm yellow, black and gray append after every old color without replacing source gold", () => {
+  assert.deepEqual(COLORS.slice(0, 14).map(({ id, hex }) => [id, hex]), [
+    ["cream", "#F1EADB"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#C99B46"],
+    ["sage", "#A7BEA4"], ["rose", "#E9AEBC"], ["sky", "#A6C8DF"], ["lilac", "#C7B4D8"],
+    ["white", "#FAFAF7"], ["marble", "#E2E2DE"], ["jade", "#299C82"],
+    ["peachwood", "#BE896F"], ["wood", "#CCAB7A"], ["darkwood", "#654333"],
+  ]);
+  assert.deepEqual(COLORS.slice(14), [
+    { id: "yellow", name: "黄色", hex: "#F3B34E" },
+    { id: "black", name: "黑色", hex: "#303331" },
+    { id: "gray", name: "灰色", hex: "#A4ABA9" },
+  ]);
+  assert.equal(COLORS[3].name, "原金黄");
+  assert.equal(getDefaultColors("villa")["A01-bow"], "butter");
+  for (const color of COLORS.slice(14)) {
+    assert.ok(AVAILABLE_COLORS.some(available => available.id === color.id));
+    let state = autoPlace(createInitialState(), "villa").state;
+    state = { ...state, baseColors: { ...state.baseColors, P01: color.id }, items: state.items.map(item => ({ ...item, colors: { ...item.colors, "A01-ribbon": color.id } })) };
+    const restored = decodeConfig(encodeConfig(state));
+    assert.deepEqual(restored.baseColors, state.baseColors);
+    assert.deepEqual(restored.items[0].colors, state.items[0].colors);
+  }
 });
 
 test("retired marble designs remain valid without offering marble in the picker", () => {
@@ -186,4 +210,32 @@ test("the old two-slot hat HM3 keeps its custom window and appends the original 
   const restored = decodeConfig(previous);
   assert.deepEqual(restored.items.find(item => item.productId === "roof-cottage")!.colors, { G03: "red", "G03-window": "sky", "G03-trim": "cream" });
   assert.equal(encodeConfig(decodeConfig(encodeConfig(restored))), encodeConfig(restored));
+});
+
+test("catalog previews and placement share complete palettes, with a light sky theme and unchanged source defaults", () => {
+  let state = autoPlace(createInitialState(), "villa").state;
+  state = autoPlace(state, "roof-cottage").state;
+  const before = JSON.stringify(state);
+  const skyIndex = COLOR_STYLES.findIndex(style => style.id === "sky");
+  const skyColors = new Set(["white", "sky", "cream", "yellow", "gray"]);
+  for (let index = 0; index < COLOR_STYLES.length; index++) {
+    const full = applyColorStyle(state, index);
+    assert.deepEqual(getBaseStyleColors(index), full.baseColors);
+    for (const item of full.items) assert.deepEqual(getProductStyleColors(item.productId, index), item.colors);
+    assert.equal(getProductStyleColors("pool", index).B01, getBaseStyleColors(index).B01);
+    for (const product of PRODUCTS) {
+      const colors = getProductStyleColors(product.id, index);
+      assert.deepEqual(Object.keys(colors), Object.keys(getDefaultColors(product.id)));
+      assert.deepEqual(resolveLinkedProductColors(colors), colors, "preview colors must already match linked rendered parts");
+      if (index === 0) assert.deepEqual(colors, getDefaultColors(product.id));
+      if (index === skyIndex) assert.ok(Object.values(colors).every(color => skyColors.has(color)), `${product.id} introduces a dark or off-theme tone`);
+    }
+  }
+  assert.ok(Object.values(getBaseStyleColors(skyIndex)).every(color => skyColors.has(color)));
+  const preview = getProductStyleColors("villa", skyIndex);
+  preview.A01 = "black";
+  assert.equal(getProductStyleColors("villa", skyIndex).A01, "sky", "callers must receive independent color maps");
+  assert.equal(JSON.stringify(state), before);
+  assert.throws(() => getProductStyleColors("villa", -1), /未知配色/);
+  assert.throws(() => getBaseStyleColors(1.5), /未知配色/);
 });

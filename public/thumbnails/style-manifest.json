@@ -1,0 +1,722 @@
+{
+  "original": {
+    "villa": {
+      "materialColors": {
+        "A01_PineGreen": "pine",
+        "A01_Gold": "butter",
+        "A01_ChristmasRed": "butter",
+        "A02_Snow": "cream",
+        "G05_Snow": "cream",
+        "G05_ChristmasRed": "red",
+        "G15_PineGreen": "pine",
+        "G16_PineGreen": "pine",
+        "G17_PineGreen": "pine",
+        "W01_Snow": "cream",
+        "W02_Snow": "cream"
+      },
+      "modelSha256": {
+        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
+        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
+        "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
+        "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
+        "G17": "40de26337508b1660b47a4622b92760fcf08d14dc60edc2c7dd9930afec4df9c",
+        "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
+        "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
+      },
+      "pngSha256": "1c65602707ec97a8d4e60c8d936c0c626222a841c05b8b054e6caf077a8124e9"
+    },
+    "l-house": {
+      "materialColors": {
+        "LHB_PineGreen": "pine",
+        "LHR_Gold": "butter"
+      },
+      "modelSha256": {
+        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
+        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+      },
+      "pngSha256": "5e02bed8b5798eb2d4a9c7b4c5a34dfe58ef1f4f6b0613a7dea975cee5db9392"
+    },
+    "cube-house": {
+      "materialColors": {
+        "SHB_PineGreen": "pine",
+        "SHR_Gold": "butter"
+      },
+      "modelSha256": {
+        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
+        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+      },
+      "pngSha256": "e4a275508a12d0e5f6ab794969d0e45c103867f6bef1f1fd54a04eb5c22d9676"
+    },
+    "roof-cottage": {
+      "materialColors": {
+        "G03_ChristmasRed": "red",
+        "G03_Snow": "cream",
+        "G03_WindowSnow": "cream"
+      },
+      "modelSha256": {
+        "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
+      },
+      "pngSha256": "630bb9f40394c802169fc42928ad39efd0bd72caf2a37bba9f8bcc22204b4b77"
+    },
+    "pipe-st1": {
+      "materialColors": {
+        "ST1T_Snow": "cream",
+        "ST1B_Snow": "cream"
+      },
+      "modelSha256": {
+        "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+        "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+      },
+      "pngSha256": "076e31370d85c94a942bdae6b754bcf0b522bf531a7fdb89137acdd86feebbd3"
+    },
+    "pipe-st2": {
+      "materialColors": {
+        "ST2T_Snow": "cream",
+        "ST2B_Snow": "cream"
+      },
+      "modelSha256": {
+        "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
+        "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
+      },
+      "pngSha256": "3df6746ce3219d4c8fb461810dcbe4c8f926220342a66ed4bd82b84acc9fb56c"
+    },
+    "pipe-lt2": {
+      "materialColors": {
+        "LT2T_Snow": "cream",
+        "LT2B_Snow": "cream"
+      },
+      "modelSha256": {
+        "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "0c60bc8a37f87cd12a6720650ef111c7ba58df48aff06bec6febae64d8f6694e"
+    },
+    "planter": {
+      "materialColors": {
+        "G06_ChristmasRed": "red",
+        "G06_Snow": "cream"
+      },
+      "modelSha256": {
+        "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
+      },
+      "pngSha256": "44bcf6b3b00a29fda20f9c703a1a94ea2d7f49edf3abad9857adfbabbc3b039c"
+    },
+    "food-bowl": {
+      "materialColors": {
+        "O01_ChristmasRed": "red",
+        "O01_Snow": "cream"
+      },
+      "modelSha256": {
+        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+      },
+      "pngSha256": "4dbdad15971b3fa9dfcd17e8a1acf3f24bf6acc1a1907240647098e6814072ab"
+    },
+    "pool": {
+      "materialColors": {
+        "B01_Snow": "cream",
+        "B01_ChristmasRed": "red"
+      },
+      "modelSha256": {
+        "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
+      },
+      "pngSha256": "fed3fe015ce700191b445644b2ffa9334bc56263478fa5e7316c1ea13421c733"
+    },
+    "pipe-lt2n": {
+      "materialColors": {
+        "LT2NT_Snow": "cream",
+        "LT2B_Snow": "cream"
+      },
+      "modelSha256": {
+        "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "902ff2f57461b6fe3c03855a280250946fe2b23ff82ebea6ecb162abe6994077"
+    },
+    "seesaw": {
+      "materialColors": {
+        "SS01_Gold": "butter"
+      },
+      "modelSha256": {
+        "SS01": "a3b5930e1f7b359ec8749d3658e5bb232613f0fd4666e976203f82e99b2d6efd"
+      },
+      "pngSha256": "51956b9edafc2fa3d110445fadb54854addda5ff5638c8011ff0cd29aa012ae5"
+    }
+  },
+  "woodland": {
+    "villa": {
+      "materialColors": {
+        "A01_PineGreen": "darkwood",
+        "A01_Gold": "wood",
+        "A01_ChristmasRed": "peachwood",
+        "A02_Snow": "wood",
+        "G05_Snow": "wood",
+        "G05_ChristmasRed": "peachwood",
+        "G15_PineGreen": "peachwood",
+        "G16_PineGreen": "peachwood",
+        "G17_PineGreen": "peachwood",
+        "W01_Snow": "wood",
+        "W02_Snow": "wood"
+      },
+      "modelSha256": {
+        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
+        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
+        "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
+        "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
+        "G17": "40de26337508b1660b47a4622b92760fcf08d14dc60edc2c7dd9930afec4df9c",
+        "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
+        "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
+      },
+      "pngSha256": "a31e3130c0f3ae55c1cc102965e026d032bf9d26d61ab5f4eb48acb4a581628c"
+    },
+    "l-house": {
+      "materialColors": {
+        "LHB_PineGreen": "darkwood",
+        "LHR_Gold": "peachwood"
+      },
+      "modelSha256": {
+        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
+        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+      },
+      "pngSha256": "8d6213e976369a56a82434961dd20cb7c0f3af2944e110d720cc86abf755a3eb"
+    },
+    "cube-house": {
+      "materialColors": {
+        "SHB_PineGreen": "darkwood",
+        "SHR_Gold": "peachwood"
+      },
+      "modelSha256": {
+        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
+        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+      },
+      "pngSha256": "bdff83d5ca8e517209850e0c76626d3661f7f96e86380b133084f0001ec891d3"
+    },
+    "roof-cottage": {
+      "materialColors": {
+        "G03_ChristmasRed": "peachwood",
+        "G03_Snow": "darkwood",
+        "G03_WindowSnow": "wood"
+      },
+      "modelSha256": {
+        "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
+      },
+      "pngSha256": "8cb3b1302a0033456693ddef4bb73dc1348dfb71cf4107882f5b2d92509226d1"
+    },
+    "pipe-st1": {
+      "materialColors": {
+        "ST1T_Snow": "wood",
+        "ST1B_Snow": "darkwood"
+      },
+      "modelSha256": {
+        "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+        "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+      },
+      "pngSha256": "4d1d50316dc19374be53e7dc0908995526c65320641e1b1437311661d9bd99f0"
+    },
+    "pipe-st2": {
+      "materialColors": {
+        "ST2T_Snow": "wood",
+        "ST2B_Snow": "darkwood"
+      },
+      "modelSha256": {
+        "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
+        "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
+      },
+      "pngSha256": "6794163cf576a22abb15ba70ee2c4f93a6e595300ecf71fc718e869192003e30"
+    },
+    "pipe-lt2": {
+      "materialColors": {
+        "LT2T_Snow": "wood",
+        "LT2B_Snow": "darkwood"
+      },
+      "modelSha256": {
+        "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "ba208c4b002e2384d4da5d9e65e53e6483d72e34970b037231692f00a11a15ee"
+    },
+    "planter": {
+      "materialColors": {
+        "G06_ChristmasRed": "peachwood",
+        "G06_Snow": "cream"
+      },
+      "modelSha256": {
+        "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
+      },
+      "pngSha256": "68f8f9b32a7093dcb86890763456398c6fea64f51d45563aee4eec75321f5210"
+    },
+    "food-bowl": {
+      "materialColors": {
+        "O01_ChristmasRed": "peachwood",
+        "O01_Snow": "cream"
+      },
+      "modelSha256": {
+        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+      },
+      "pngSha256": "3be20a72cfb8c3d8a63815ed5a28efdef081a5dcd7e8a35eda5ad44234e9aad0"
+    },
+    "pool": {
+      "materialColors": {
+        "B01_Snow": "peachwood",
+        "B01_ChristmasRed": "red"
+      },
+      "modelSha256": {
+        "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
+      },
+      "pngSha256": "acfa966cfb9b58194b962708b4b00464d3365c4ce83c5aa1d3972be760b17b66"
+    },
+    "pipe-lt2n": {
+      "materialColors": {
+        "LT2NT_Snow": "wood",
+        "LT2B_Snow": "darkwood"
+      },
+      "modelSha256": {
+        "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "cf4538d1e927ed9abf5614121ad703e3dbfe997a1b5e15e675dd38ff332dbae8"
+    },
+    "seesaw": {
+      "materialColors": {
+        "SS01_Gold": "peachwood"
+      },
+      "modelSha256": {
+        "SS01": "a3b5930e1f7b359ec8749d3658e5bb232613f0fd4666e976203f82e99b2d6efd"
+      },
+      "pngSha256": "ddb6e360a68193289f5e00f88f8f5e701eaadcfee1cb3eaf1c8bb3c2a4d6a18f"
+    }
+  },
+  "strawberry": {
+    "villa": {
+      "materialColors": {
+        "A01_PineGreen": "rose",
+        "A01_Gold": "white",
+        "A01_ChristmasRed": "yellow",
+        "A02_Snow": "cream",
+        "G05_Snow": "cream",
+        "G05_ChristmasRed": "red",
+        "G15_PineGreen": "rose",
+        "G16_PineGreen": "rose",
+        "G17_PineGreen": "rose",
+        "W01_Snow": "cream",
+        "W02_Snow": "cream"
+      },
+      "modelSha256": {
+        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
+        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
+        "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
+        "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
+        "G17": "40de26337508b1660b47a4622b92760fcf08d14dc60edc2c7dd9930afec4df9c",
+        "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
+        "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
+      },
+      "pngSha256": "f0a1a57cb0c8db94f12e1d04ac2711ad48aaaa919ae522fe7fba9e100718a9fd"
+    },
+    "l-house": {
+      "materialColors": {
+        "LHB_PineGreen": "rose",
+        "LHR_Gold": "yellow"
+      },
+      "modelSha256": {
+        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
+        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+      },
+      "pngSha256": "cbd840f83c87140a744ba9a0e0fb7208949cc113c9076b3446ca6b6916a4ee5b"
+    },
+    "cube-house": {
+      "materialColors": {
+        "SHB_PineGreen": "rose",
+        "SHR_Gold": "yellow"
+      },
+      "modelSha256": {
+        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
+        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+      },
+      "pngSha256": "84076ca24e9be01b8eb30a048ed7937ed6e4f767e1fe4bea727123ed4011b366"
+    },
+    "roof-cottage": {
+      "materialColors": {
+        "G03_ChristmasRed": "red",
+        "G03_Snow": "cream",
+        "G03_WindowSnow": "yellow"
+      },
+      "modelSha256": {
+        "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
+      },
+      "pngSha256": "631243a39c831d6034a969e43f587a0ec099df5e311c05feb3edfdcd797eecc2"
+    },
+    "pipe-st1": {
+      "materialColors": {
+        "ST1T_Snow": "cream",
+        "ST1B_Snow": "rose"
+      },
+      "modelSha256": {
+        "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+        "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+      },
+      "pngSha256": "470151432262a1817f895f33050c853374a53c5d380381c2099788dd4ba169a1"
+    },
+    "pipe-st2": {
+      "materialColors": {
+        "ST2T_Snow": "cream",
+        "ST2B_Snow": "rose"
+      },
+      "modelSha256": {
+        "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
+        "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
+      },
+      "pngSha256": "68279d227ccbbbf1087d06caddb657b7335d5b1021c11c3d6f119e22a92c2b25"
+    },
+    "pipe-lt2": {
+      "materialColors": {
+        "LT2T_Snow": "cream",
+        "LT2B_Snow": "rose"
+      },
+      "modelSha256": {
+        "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "67b7a512030c9b746755f48fbb327251bf09ef47f8ef47a198ca2b5a6326d946"
+    },
+    "planter": {
+      "materialColors": {
+        "G06_ChristmasRed": "red",
+        "G06_Snow": "cream"
+      },
+      "modelSha256": {
+        "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
+      },
+      "pngSha256": "98b6bd9315490cccd7f6c8aff8a4081b2840bc2aa7dccbfd9698e21001d88927"
+    },
+    "food-bowl": {
+      "materialColors": {
+        "O01_ChristmasRed": "red",
+        "O01_Snow": "cream"
+      },
+      "modelSha256": {
+        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+      },
+      "pngSha256": "720ab600e691a76e3e3e66e6d5822e119364d04f002cf1bc6cf5bc4681d5662d"
+    },
+    "pool": {
+      "materialColors": {
+        "B01_Snow": "rose",
+        "B01_ChristmasRed": "red"
+      },
+      "modelSha256": {
+        "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
+      },
+      "pngSha256": "8d53c51a65b1ec095fc1c428f9b1152809e38d11c886b66bd2b1bdc3ad1e52d8"
+    },
+    "pipe-lt2n": {
+      "materialColors": {
+        "LT2NT_Snow": "cream",
+        "LT2B_Snow": "rose"
+      },
+      "modelSha256": {
+        "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "a3fd34898b2481a7cfe8a0e97697469d2c23961cbfbacfe0092f88b8441f6324"
+    },
+    "seesaw": {
+      "materialColors": {
+        "SS01_Gold": "yellow"
+      },
+      "modelSha256": {
+        "SS01": "a3b5930e1f7b359ec8749d3658e5bb232613f0fd4666e976203f82e99b2d6efd"
+      },
+      "pngSha256": "e49754d10cf918e3c453badce0095a6b0a55b4ab7c2887ade4507afe85ace6f6"
+    }
+  },
+  "sky": {
+    "villa": {
+      "materialColors": {
+        "A01_PineGreen": "sky",
+        "A01_Gold": "cream",
+        "A01_ChristmasRed": "yellow",
+        "A02_Snow": "white",
+        "G05_Snow": "white",
+        "G05_ChristmasRed": "yellow",
+        "G15_PineGreen": "gray",
+        "G16_PineGreen": "gray",
+        "G17_PineGreen": "gray",
+        "W01_Snow": "white",
+        "W02_Snow": "white"
+      },
+      "modelSha256": {
+        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
+        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
+        "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
+        "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
+        "G17": "40de26337508b1660b47a4622b92760fcf08d14dc60edc2c7dd9930afec4df9c",
+        "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
+        "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
+      },
+      "pngSha256": "2c153abf525475cbec23c4f7047c9fb938366febfe6a56647ecb8e19afca9259"
+    },
+    "l-house": {
+      "materialColors": {
+        "LHB_PineGreen": "sky",
+        "LHR_Gold": "yellow"
+      },
+      "modelSha256": {
+        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
+        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+      },
+      "pngSha256": "df7493dc3a495af155659fecdab51e979a746d0c73747cd868d07f52f224b6c5"
+    },
+    "cube-house": {
+      "materialColors": {
+        "SHB_PineGreen": "sky",
+        "SHR_Gold": "yellow"
+      },
+      "modelSha256": {
+        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
+        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+      },
+      "pngSha256": "ffac8c0fa58bd50eb7d096fd46cfc717c34203df0e74ebd690285e419a291331"
+    },
+    "roof-cottage": {
+      "materialColors": {
+        "G03_ChristmasRed": "sky",
+        "G03_Snow": "white",
+        "G03_WindowSnow": "yellow"
+      },
+      "modelSha256": {
+        "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
+      },
+      "pngSha256": "5399c860937ba42bd9379114960fbbbbed01b81ac2546fe2ec45e992a0b6edae"
+    },
+    "pipe-st1": {
+      "materialColors": {
+        "ST1T_Snow": "white",
+        "ST1B_Snow": "sky"
+      },
+      "modelSha256": {
+        "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+        "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+      },
+      "pngSha256": "bab637a449b05c6e203e70c760f6c14ea8a8f4879baf0d296e5d2b7551e5076f"
+    },
+    "pipe-st2": {
+      "materialColors": {
+        "ST2T_Snow": "white",
+        "ST2B_Snow": "sky"
+      },
+      "modelSha256": {
+        "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
+        "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
+      },
+      "pngSha256": "a9d678c42d677bd2685baf83df2d514c924d3db75a091fc3d638f4366bf05753"
+    },
+    "pipe-lt2": {
+      "materialColors": {
+        "LT2T_Snow": "white",
+        "LT2B_Snow": "sky"
+      },
+      "modelSha256": {
+        "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "b0a3a4e030e862fdccd964e5bd1a061c4f2a23960a0fff192aac4167d4373242"
+    },
+    "planter": {
+      "materialColors": {
+        "G06_ChristmasRed": "yellow",
+        "G06_Snow": "cream"
+      },
+      "modelSha256": {
+        "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
+      },
+      "pngSha256": "d4d37d644479d1ebed6747e47b8c174802800d151ea814e9cc77168402d9183a"
+    },
+    "food-bowl": {
+      "materialColors": {
+        "O01_ChristmasRed": "yellow",
+        "O01_Snow": "cream"
+      },
+      "modelSha256": {
+        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+      },
+      "pngSha256": "c885cba365d0438c2c2235d58b9a2b43ec3a311572fd66d7e25281a249b9f71d"
+    },
+    "pool": {
+      "materialColors": {
+        "B01_Snow": "sky",
+        "B01_ChristmasRed": "red"
+      },
+      "modelSha256": {
+        "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
+      },
+      "pngSha256": "3b3de7cb0c8801868c1dd7dead9f1ab120286054df5ba9f0d88546bb8eb2aa82"
+    },
+    "pipe-lt2n": {
+      "materialColors": {
+        "LT2NT_Snow": "white",
+        "LT2B_Snow": "sky"
+      },
+      "modelSha256": {
+        "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "474e40817d7cc9ab5ffb61ced3a2cb05f45663d157058034bda250624d15c23a"
+    },
+    "seesaw": {
+      "materialColors": {
+        "SS01_Gold": "yellow"
+      },
+      "modelSha256": {
+        "SS01": "a3b5930e1f7b359ec8749d3658e5bb232613f0fd4666e976203f82e99b2d6efd"
+      },
+      "pngSha256": "22e45b0a32d5cb685a77012f526fd4f2e9d5f5132da91203dbb0d79004a03fd8"
+    }
+  },
+  "jade-garden": {
+    "villa": {
+      "materialColors": {
+        "A01_PineGreen": "jade",
+        "A01_Gold": "white",
+        "A01_ChristmasRed": "yellow",
+        "A02_Snow": "white",
+        "G05_Snow": "white",
+        "G05_ChristmasRed": "rose",
+        "G15_PineGreen": "jade",
+        "G16_PineGreen": "jade",
+        "G17_PineGreen": "jade",
+        "W01_Snow": "white",
+        "W02_Snow": "white"
+      },
+      "modelSha256": {
+        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
+        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
+        "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
+        "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
+        "G17": "40de26337508b1660b47a4622b92760fcf08d14dc60edc2c7dd9930afec4df9c",
+        "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
+        "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
+      },
+      "pngSha256": "b8cb3820180f28cfc4bc3bbb12f1a86444b60cccfdf67d4f528ec47610c70a7c"
+    },
+    "l-house": {
+      "materialColors": {
+        "LHB_PineGreen": "jade",
+        "LHR_Gold": "yellow"
+      },
+      "modelSha256": {
+        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
+        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+      },
+      "pngSha256": "c91ec117637a9485257a8cca6be65e6dfee3500644abf7241bd4a0ccf34312f3"
+    },
+    "cube-house": {
+      "materialColors": {
+        "SHB_PineGreen": "jade",
+        "SHR_Gold": "yellow"
+      },
+      "modelSha256": {
+        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
+        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+      },
+      "pngSha256": "7c7e0f9283ea32f99109273e27731de5ab4e9485e24acf5e094b760706132551"
+    },
+    "roof-cottage": {
+      "materialColors": {
+        "G03_ChristmasRed": "jade",
+        "G03_Snow": "white",
+        "G03_WindowSnow": "yellow"
+      },
+      "modelSha256": {
+        "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
+      },
+      "pngSha256": "daf7d61b671428772ea52339c984ac66fa7b7d96fca67976f3393f46084853a7"
+    },
+    "pipe-st1": {
+      "materialColors": {
+        "ST1T_Snow": "white",
+        "ST1B_Snow": "jade"
+      },
+      "modelSha256": {
+        "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+        "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+      },
+      "pngSha256": "72e1ab94783ba90bb966985d5a380b23a5cbf6fd5af0928e27d299de7439da9b"
+    },
+    "pipe-st2": {
+      "materialColors": {
+        "ST2T_Snow": "white",
+        "ST2B_Snow": "jade"
+      },
+      "modelSha256": {
+        "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
+        "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
+      },
+      "pngSha256": "6fe87e5a2823d4d25d4372a2a37e4db5909f33f1e7e52af185c8faec3607d1d8"
+    },
+    "pipe-lt2": {
+      "materialColors": {
+        "LT2T_Snow": "white",
+        "LT2B_Snow": "jade"
+      },
+      "modelSha256": {
+        "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "439d0a884cffb5450bb2eed194d77c75d1b51aa8f2f3bcee6e0d5bfc17ac869b"
+    },
+    "planter": {
+      "materialColors": {
+        "G06_ChristmasRed": "rose",
+        "G06_Snow": "cream"
+      },
+      "modelSha256": {
+        "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
+      },
+      "pngSha256": "f77a6bb5efbe5554786ee527f22c98bf7234e94b93a5fb2ccf47856ea5b5045f"
+    },
+    "food-bowl": {
+      "materialColors": {
+        "O01_ChristmasRed": "rose",
+        "O01_Snow": "cream"
+      },
+      "modelSha256": {
+        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+      },
+      "pngSha256": "7e308072bdde5fc4168e799ab7c4df8c2e30bc179950d83d4128d19ee9d517f5"
+    },
+    "pool": {
+      "materialColors": {
+        "B01_Snow": "jade",
+        "B01_ChristmasRed": "red"
+      },
+      "modelSha256": {
+        "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
+      },
+      "pngSha256": "7c4e6d29ae672779987112369641b0cb3d227cd50d923fa69810aa69bcf81910"
+    },
+    "pipe-lt2n": {
+      "materialColors": {
+        "LT2NT_Snow": "white",
+        "LT2B_Snow": "jade"
+      },
+      "modelSha256": {
+        "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
+        "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
+      },
+      "pngSha256": "1f5b47b6bf1e955a754bc1955ed006a06a8541eb6606b7278d96b78a695aa181"
+    },
+    "seesaw": {
+      "materialColors": {
+        "SS01_Gold": "yellow"
+      },
+      "modelSha256": {
+        "SS01": "a3b5930e1f7b359ec8749d3658e5bb232613f0fd4666e976203f82e99b2d6efd"
+      },
+      "pngSha256": "6ec16ffea085a8a8fbec4176541deec708de08ce45b5268241f8c58c7eccb536"
+    }
+  }
+}

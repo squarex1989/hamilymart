@@ -20,7 +20,7 @@ import trimesh
 import fast_simplification
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v15/assembly_meshes.json')
+DEFAULT_SOURCE = Path('/Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v16/assembly_meshes.json')
 DEFAULT_FOOD_BOWL_SOURCE = DEFAULT_SOURCE.parent.parent / 'christmas_villa_v30_pool_cover/assembly_meshes.json'
 
 
@@ -151,25 +151,28 @@ def write_glb(path: Path, group: dict, meshes: list[trimesh.Trimesh]) -> None:
 # default stock colours, and primary/trim colour rules as the interactive scene.
 def thumbnail_catalog() -> dict:
     exporter = """
-import { COLORS, PRODUCTS, getBaseParts, getDefaultColors, getSourceColorSlot, SOURCE_TRIM_COLORS, SOURCE_PART_TRIM_COLORS, PRIMARY_COLOR_KEYS } from './src/data/catalog.ts';
+import { COLORS, PRODUCTS, VISIBLE_PRODUCTS, getBaseParts } from './src/data/catalog.ts';
+import { COLOR_STYLES, getBaseStyleColors, getProductStyleColors } from './src/lib/color-styles.ts';
+import { getModelMaterialColor } from './src/lib/model-colors.ts';
 import modelIndex from './src/data/model-index.json';
 const base = getBaseParts(100, false);
 const pool = getBaseParts(100, true).find(part => part.id === 'B01');
+const groups = Object.fromEntries([
+  ['base', base], ...PRODUCTS.map(product => [product.id, product.parts]),
+  ['pool', [pool]], ['small-cover', [base.find(part => part.id === 'H01')]],
+  ['large-cover', [base.find(part => part.id === 'H06')]],
+]);
 console.log(JSON.stringify({
   colors: Object.fromEntries(COLORS.map(color => [color.id, color.hex])),
-  trimColors: SOURCE_TRIM_COLORS,
-  partTrimColors: SOURCE_PART_TRIM_COLORS,
-  primaryColorKeys: PRIMARY_COLOR_KEYS,
-  sourcePartSlots: Object.fromEntries(Object.entries(modelIndex).map(([id, group]) => [id,
-    Object.fromEntries(group.components.map(component => [component.id,
-      getSourceColorSlot(id, component.id, component.colorKey)]))])),
-  slotDefaults: Object.fromEntries(PRODUCTS.map(product => [product.id, getDefaultColors(product.id)])),
-  groups: Object.fromEntries([
-    ['base', base], ...PRODUCTS.map(product => [product.id, product.parts]),
-    ['pool', [pool]],
-    ['small-cover', [base.find(part => part.id === 'H01')]],
-    ['large-cover', [base.find(part => part.id === 'H06')]],
-  ]),
+  groups,
+  visibleProducts: VISIBLE_PRODUCTS.map(product => product.id),
+  styles: Object.fromEntries(COLOR_STYLES.map((style, index) => [style.id,
+    Object.fromEntries(Object.entries(groups).map(([id, parts]) => {
+      const colors = ['base', 'pool', 'small-cover', 'large-cover'].includes(id)
+        ? getBaseStyleColors(index) : getProductStyleColors(id, index);
+      return [id, Object.fromEntries(parts.flatMap(part => modelIndex[part.id].components.map(component =>
+        [component.id, getModelMaterialColor(part, component.id, component.colorKey, colors)])))];
+    }))])),
 }));
 """
     runner = ROOT / 'node_modules/.bin/tsx'
@@ -215,7 +218,6 @@ for product, product_parts in groups.items():
     parts = []
     for part in product_parts:
         group_id = part['id']
-        primary_key = catalog['primaryColorKeys'].get(group_id, catalog['modelIndex'][group_id]['components'][0]['colorKey'])
         before = set(bpy.data.objects)
         bpy.ops.import_scene.gltf(filepath=str(source / (group_id + '.glb')))
         added = [o for o in bpy.data.objects if o not in before and o.type == 'MESH']
@@ -224,11 +226,7 @@ for product, product_parts in groups.items():
             obj.rotation_mode = 'XYZ'
             obj.rotation_euler = (-math.pi / 2,0,0)
             obj.location = part.get('offset', [0,0,0])
-            source_key = obj.get('colorKey')
-            trim_colors = {**catalog['trimColors'], **catalog['partTrimColors'].get(group_id, {})}
-            color_id = part['defaultColor'] if not source_key or source_key == primary_key else trim_colors.get(source_key, part['defaultColor'])
-            slot = catalog['sourcePartSlots'].get(group_id, {}).get(obj.get('sourcePart'))
-            color_id = catalog['slotDefaults'].get(product, {}).get(slot, color_id)
+            color_id = catalog['materialColors'][product][obj.get('sourcePart')]
             rgba = linear_rgba(catalog['colors'][color_id])
             for slot in obj.material_slots:
                 material = slot.material.copy()
@@ -281,7 +279,8 @@ for product, product_parts in groups.items():
 '''
 
 
-def thumbnails(models_dir: Path, output: Path, blender: str, products: list[str] | None = None):
+def thumbnails(models_dir: Path, output: Path, blender: str, products: list[str] | None = None,
+               styles: list[str] | None = None):
     output.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='hamilymart-thumbnails-') as temporary:
         render_script = Path(temporary) / 'render.py'
@@ -293,14 +292,34 @@ def thumbnails(models_dir: Path, output: Path, blender: str, products: list[str]
             if unknown:
                 raise ValueError(f'Unknown thumbnail products: {sorted(unknown)}')
             catalog['groups'] = {key: value for key, value in catalog['groups'].items() if key in products}
-        groups_path.write_text(json.dumps(catalog))
-        # Blender logging includes scene internals; keep only useful output on success.
-        result = subprocess.run([blender, '--background', '--python', str(render_script), '--', str(models_dir), str(output), str(groups_path)], capture_output=True, text=True)
-        if result.returncode:
-            raise RuntimeError(result.stdout[-4000:] + result.stderr[-4000:])
-        for line in result.stdout.splitlines():
-            if line.startswith('HAMILY_THUMBNAIL '):
-                print(line, flush=True)
+        style_ids = list(catalog['styles']) if styles == ['all'] else styles or ['original']
+        if set(style_ids) - set(catalog['styles']):
+            raise ValueError('Unknown thumbnail style')
+        # Named style variants are only needed for the visible shopping catalog.
+        if styles and not products:
+            catalog['groups'] = {key: value for key, value in catalog['groups'].items() if key in catalog['visibleProducts']}
+        manifest_path = output / 'style-manifest.json'
+        manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+        for style_id in style_ids:
+            destination = output / style_id if styles else output
+            destination.mkdir(parents=True, exist_ok=True)
+            catalog['materialColors'] = catalog['styles'][style_id]
+            groups_path.write_text(json.dumps(catalog))
+            result = subprocess.run([blender, '--background', '--python', str(render_script), '--', str(models_dir), str(destination), str(groups_path)], capture_output=True, text=True)
+            if result.returncode:
+                raise RuntimeError(result.stdout[-4000:] + result.stderr[-4000:])
+            for line in result.stdout.splitlines():
+                if line.startswith('HAMILY_THUMBNAIL '):
+                    print(f'{style_id}: {line}', flush=True)
+            if styles:
+                entries = manifest.setdefault(style_id, {})
+                for product, parts in catalog['groups'].items():
+                    entries[product] = {
+                        'materialColors': catalog['materialColors'][product],
+                        'modelSha256': {part['id']: hashlib.sha256((models_dir / (part['id'] + '.glb')).read_bytes()).hexdigest() for part in parts},
+                        'pngSha256': hashlib.sha256((destination / (product + '.png')).read_bytes()).hexdigest(),
+                    }
+                manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
 
 
 def main():
@@ -312,6 +331,7 @@ def main():
     parser.add_argument('--thumbnails', action='store_true')
     parser.add_argument('--thumbnails-only', action='store_true')
     parser.add_argument('--thumbnail-products', nargs='+', help='Render only these catalogue product IDs')
+    parser.add_argument('--thumbnail-styles', nargs='+', help='Render named style directories, or all; defaults to original root images')
     parser.add_argument('--blender', default=shutil.which('blender') or '/Applications/Blender.app/Contents/MacOS/Blender')
     args = parser.parse_args()
     models_dir = ROOT / 'public/models'
@@ -360,7 +380,7 @@ def main():
             'units': 'millimeter', 'upAxis': 'Z', 'groups': metrics}, ensure_ascii=False, indent=2) + '\n')
         print(f"Total: {sum(v['bytes'] for v in metrics.values()) / 1e6:.2f} MB", flush=True)
     if args.thumbnails or args.thumbnails_only:
-        thumbnails(models_dir, ROOT / 'public/thumbnails', args.blender, args.thumbnail_products)
+        thumbnails(models_dir, ROOT / 'public/thumbnails', args.blender, args.thumbnail_products, args.thumbnail_styles)
 
 
 if __name__ == '__main__':

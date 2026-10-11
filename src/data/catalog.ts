@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v15-300";
+export const MODEL_ASSET_VERSION = "steel-v16-style1";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -12,7 +12,7 @@ export const COLORS = [
   { id: "cream", name: "杏色", hex: "#F1EADB" },
   { id: "pine", name: "绿色", hex: "#174A3A" },
   { id: "red", name: "红色", hex: "#B8273C" },
-  { id: "butter", name: "黄色", hex: "#C99B46" },
+  { id: "butter", name: "原金黄", hex: "#C99B46" },
   { id: "sage", name: "鼠尾草", hex: "#A7BEA4" },
   { id: "rose", name: "粉色", hex: "#E9AEBC" },
   { id: "sky", name: "蓝色", hex: "#A6C8DF" },
@@ -23,6 +23,9 @@ export const COLORS = [
   { id: "peachwood", name: "桃木", hex: "#BE896F" },
   { id: "wood", name: "仿木", hex: "#CCAB7A" },
   { id: "darkwood", name: "深棕", hex: "#654333" },
+  { id: "yellow", name: "黄色", hex: "#F3B34E" },
+  { id: "black", name: "黑色", hex: "#303331" },
+  { id: "gray", name: "灰色", hex: "#A4ABA9" },
 ] as const;
 /** Serialized color indices are append-only; retired finishes still open in older designs. */
 export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac" && color.id !== "marble");
@@ -165,6 +168,7 @@ const down = (xy: number[][], z: number): Vec3[] =>
 export const P01_TOP_XY: [number, number][] = [[10, 10], [10, 90], [10, 110], [10, 190], [10, 210], [10, 290], [90, 10], [90, 190], [90, 210], [90, 290], [110, 10], [110, 190], [110, 210], [110, 290], [190, 10], [190, 90], [190, 110], [190, 190], [190, 210], [190, 290], [210, 10], [210, 90], [210, 110], [210, 190], [210, 210], [210, 290], [290, 10], [290, 90], [290, 110], [290, 190], [290, 210], [290, 290]];
 export const H06_TOP_XY: [number, number][] = [[90, 90], [90, 110], [110, 90], [110, 110]];
 export const PLATFORM_BODY_PRICE = 2000;
+export const PIPE_SET_PRICE = 800;
 /** Four legs per set. Keep this table separate from the assembled platform total. */
 export const LEG_SET_PRICES = { 0: 0, 100: 1000, 200: 1200, 300: 1400 } as const;
 export const BASE_PRODUCT = {
@@ -175,7 +179,7 @@ export const BASE_PRODUCT = {
   tallLegSurcharge: LEG_SET_PRICES[200] - LEG_SET_PRICES[100],
   extraTallLegSurcharge: LEG_SET_PRICES[300] - LEG_SET_PRICES[100],
   noLegDiscount: LEG_SET_PRICES[100],
-  poolSurcharge: 2000,
+  poolSurcharge: 2500,
   description: "30 × 30 cm 平台 · 含四支撑脚与六个孔盖",
 };
 export function getBaseParts(
@@ -203,14 +207,13 @@ function pipe(
   magnets: number[][],
   bounds: Bounds,
   faces: PipeFace[],
-  price = 500,
 ): Product {
   return {
     id: `pipe-${id.toLowerCase()}`,
     sku: `HM-TB-${id}`,
     name,
     category: "pipe",
-    price,
+    price: PIPE_SET_PRICE,
     description: "管道 + 专用磁吸底座 · 不可拆售",
     origin,
     parts: [
@@ -295,7 +298,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-HS-002",
     name: "L型转角屋",
     category: "house",
-    price: 3000,
+    price: 3500,
     description: "L 型房屋 + 顶盖板 · 屋顶可继续搭建",
     origin: [100, 100, 0],
     parts: [part("LHB", "房屋", "pine"), part("LHR", "顶盖板", "butter")],
@@ -392,7 +395,6 @@ export const PRODUCTS: Product[] = [
     ],
     [100, 6.8, 0, 200, 96, 89.6],
     straightFaces(100, 0),
-    500,
   ),
   pipe(
     "ST3",
@@ -429,7 +431,6 @@ export const PRODUCTS: Product[] = [
       { center: [100, 188, 11], normal: [-1, 0, 0] },
       { center: [188, 100, 11], normal: [0, -1, 0] },
     ],
-    1000,
   ),
   pipe(
     "LT3",
@@ -506,8 +507,8 @@ export const PRODUCTS: Product[] = [
     parts: [part("SS01", "跷跷板", "butter")],
     bottomMagnets: [[90, 90, 110]],
     minimumMagnetMatches: 1,
-    // Source neutral height is 31.6 mm; reserve the full ±11.9° swing envelope.
-    collisionBoxes: [[0, 50, 110, 180, 130, 159.8]],
+    // V16 source full swing envelope, rounded outwards to 0.1 mm.
+    collisionBoxes: [[-0.7, 50, 110, 180.7, 130, 159.8]],
     allowedParents: ["base"],
   },
   // The source LT2N uses the same real LT2B support, magnets and end faces as LT2.
@@ -516,7 +517,7 @@ export const PRODUCTS: Product[] = [
       [100, 100, 0, 196, 196, 89.6], [
         { center: [100, 188, 11], normal: [-1, 0, 0] },
         { center: [188, 100, 11], normal: [0, -1, 0] },
-      ], 1000),
+      ]),
     parts: [part("LT2NT", "管道", "cream"), part("LT2B", "磁吸底座", "cream")],
   },
 ];

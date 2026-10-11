@@ -1,14 +1,16 @@
 import { useEffect, useRef } from "react";
 import { ArrowLeft, Check, Plus, Undo2, Redo2 } from "lucide-react";
-import { AVAILABLE_COLORS, MODEL_ASSET_VERSION, getColorSwatch, getProduct } from "../data/catalog";
+import { AVAILABLE_COLORS, getColorSwatch, getProduct } from "../data/catalog";
 import type { ColorId, ProductPart } from "../data/catalog";
 import { getPlatforms } from "../lib/assembly";
 import type { AssemblyState, PlatformId } from "../lib/assembly";
+import ProductThumbnail from "./ProductThumbnail";
 import "./mobile-workbench.css";
 
 const categories = [["all", "全部"], ["house", "小屋"], ["pipe", "管道"], ["garden", "花园"], ["toy", "玩具"]];
 export type WorkbenchProps = {
   state: AssemblyState;
+  styleIndex: number;
   ready: boolean;
   selectedId: string | null;
   title: string;
@@ -63,7 +65,7 @@ export default function MobileWorkbench(props: WorkbenchProps) {
     </div> : <>
       <div className="mobile-product-rail" ref={rail} aria-label="横滑挑选配件">
         {props.products.map(product => <button className="mobile-product" key={product.id} disabled={!props.ready} onClick={() => props.onAdd(product.id)}>
-          <span className="mobile-product-picture"><img src={`/thumbnails/${product.id}.png?v=${MODEL_ASSET_VERSION}`} alt="" draggable={false} /></span><strong>{product.name}</strong><small className="mobile-product-price">¥{product.price / 100}</small>
+          <span className="mobile-product-picture"><ProductThumbnail productId={product.id} styleIndex={props.styleIndex} /></span><strong>{product.name}</strong><small className="mobile-product-price">¥{product.price / 100}</small>
         </button>)}
       </div>
       <nav className="mobile-category-bar" aria-label="配件分类">
