@@ -8,7 +8,7 @@ import {
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { RotateCw, Trash2 } from "lucide-react";
+import { FoldVertical, RotateCw, Smartphone, Trash2 } from "lucide-react";
 import {
   MODEL_ASSET_VERSION,
   getProduct,
@@ -23,6 +23,8 @@ import { createBedding } from "../lib/bedding-scene";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
 import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
+import { createExplodedLayout, fitExplodedCamera } from "../lib/exploded-view";
+import { createBlankDoubleTap, createShakeDetector } from "../lib/scene-gestures";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
@@ -94,6 +96,28 @@ export default forwardRef<SceneHandle, Props>(
     const runtime = useRef<ReturnType<typeof createRuntime> | null>(null);
     const [loading, setLoading] = useState(true);
     const [failed, setFailed] = useState(false);
+    const [exploded, setExploded] = useState(false);
+    const [shakeEnabled, setShakeEnabled] = useState(false);
+    const [canUseMotion] = useState(() => window.isSecureContext && typeof window.DeviceMotionEvent !== "undefined" && window.matchMedia("(pointer: coarse)").matches);
+    async function toggleShake() {
+      if (shakeEnabled) {
+        runtime.current?.setShakeEnabled(false);
+        setShakeEnabled(false);
+        return;
+      }
+      try {
+        const motion = window.DeviceMotionEvent as typeof DeviceMotionEvent & { requestPermission?: () => Promise<"granted" | "denied"> };
+        // Safari requires this call directly from the explicit button gesture.
+        if (motion.requestPermission && await motion.requestPermission() !== "granted") {
+          current.current.onError("摇动权限未开启，仍可双击 3D 空白处展开或恢复。");
+          return;
+        }
+        runtime.current?.setShakeEnabled(true);
+        setShakeEnabled(true);
+      } catch {
+        current.current.onError("此浏览器暂不支持摇动，请双击 3D 空白处展开或恢复。");
+      }
+    }
     useImperativeHandle(
       ref,
       () => ({
@@ -120,6 +144,7 @@ export default forwardRef<SceneHandle, Props>(
             current.current.onError(e);
           },
           toolbar.current!,
+          setExploded,
         );
         runtime.current.update();
       } catch {
@@ -145,6 +170,10 @@ export default forwardRef<SceneHandle, Props>(
     }, [props.showDimensions]);
     return (
       <div ref={host} className="scene-canvas" aria-label="仓鼠屋 3D 装配画布">
+        {(exploded || canUseMotion) && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
+          {exploded && <button type="button" onClick={() => runtime.current?.toggleExploded()}><FoldVertical size={15} /><span>恢复组装</span></button>}
+          {canUseMotion && <button type="button" aria-pressed={shakeEnabled} aria-label={shakeEnabled ? "关闭摇一摇" : "启用摇一摇"} onClick={() => void toggleShake()}><Smartphone size={15} /><span>{shakeEnabled ? "摇一摇已开启" : "启用摇一摇"}</span></button>}
+        </div>}
         <div ref={toolbar} className="scene-item-toolbar" role="toolbar" aria-label="已选配件操作" hidden
           onPointerDown={(event) => event.stopPropagation()}>
           <span className="scene-item-title">{props.selectedTitle}</span>
@@ -178,6 +207,7 @@ function createRuntime(
   ready: () => void,
   fail: (e: string) => void,
   toolbar: HTMLDivElement,
+  onExplodedChange: (exploded: boolean) => void,
 ) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -279,8 +309,22 @@ function createRuntime(
     revision = 0,
     ghostRevision = 0;
   let frame = 0;
-  let pressed: { x: number; y: number; id: string | null; placement?: Placement } | null = null;
+  let pressed: { x: number; y: number; id: string | null; at: number; moved?: boolean; placement?: Placement } | null = null;
   const touchPointers = new Set<number>();
+  const blankTaps = createBlankDoubleTap();
+  let lastBlankPointerUp: { x: number; y: number; at: number; pointerType: string } | null = null;
+  let lastInvalidTapAt = -Infinity;
+  let lastExplosionToggleAt = -Infinity;
+  const shakeDetector = createShakeDetector();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let shakeEnabled = false;
+  let modelReady = false;
+  let exploded = false;
+  let explosionProgress = 0;
+  let explosion: ReturnType<typeof createExplodedLayout> | null = null;
+  let originalView: { position: THREE.Vector3; target: THREE.Vector3; maxDistance: number; far: number } | null = null;
+  let explosionAnimation: { from: number; to: number; started: number; duration: number } | null = null;
+  let cameraAnimation: { fromPosition: THREE.Vector3; fromTarget: THREE.Vector3; toPosition: THREE.Vector3; toTarget: THREE.Vector3 } | null = null;
   let drag: {
     pointerId?: number;
     productId: string;
@@ -292,6 +336,98 @@ function createRuntime(
     placement: Placement | null;
   } | null = null;
   const elevation = () => getDisplayElevation(props().state);
+  const isExploded = () => exploded || explosionProgress > 0;
+  function showSeams(visible: boolean) {
+    objects.traverse(node => { if (node instanceof THREE.Mesh && node.userData.ownedGeometry && !node.userData.modelMesh) node.visible = visible; });
+  }
+  function restoreExploded(refresh = true) {
+    if (!explosion) return;
+    explosion.restore();
+    explosion = null;
+    explosionAnimation = cameraAnimation = null;
+    explosionProgress = 0;
+    exploded = false;
+    if (originalView) {
+      // Clear any residual orbit inertia before restoring the saved camera exactly.
+      controls.enableDamping = false;
+      controls.update();
+      controls.enableDamping = true;
+      camera.position.copy(originalView.position);
+      controls.target.copy(originalView.target);
+      controls.maxDistance = originalView.maxDistance;
+      camera.far = originalView.far;
+      camera.updateProjectionMatrix();
+      controls.update();
+      originalView = null;
+    }
+    showSeams(true);
+    targets.visible = annotations.visible = true;
+    onExplodedChange(false);
+    if (refresh) { updateTargets(); updateAnnotations(); }
+  }
+  function toggleExploded() {
+    if (!modelReady || disposed) return;
+    lastExplosionToggleAt = performance.now();
+    cancel();
+    pressed = null;
+    blankTaps.reset();
+    if (!explosion) {
+      explosion = createExplodedLayout(objects);
+      if (!explosion.pieces.length) { explosion = null; return; }
+      originalView = { position: camera.position.clone(), target: controls.target.clone(), maxDistance: controls.maxDistance, far: camera.far };
+    }
+    exploded = !exploded;
+    const view = exploded ? fitExplodedCamera(explosion.expandedBounds, camera, controls.target) : originalView!;
+    controls.maxDistance = Math.max(controls.maxDistance, originalView!.maxDistance, view.position.distanceTo(view.target) * 1.15);
+    camera.far = Math.max(camera.far, originalView!.far, controls.maxDistance + explosion.expandedBounds.getSize(new THREE.Vector3()).length() * 2);
+    camera.updateProjectionMatrix();
+    cameraAnimation = {
+      fromPosition: camera.position.clone(), fromTarget: controls.target.clone(),
+      toPosition: view.position.clone(), toTarget: view.target.clone(),
+    };
+    explosionAnimation = { from: explosionProgress, to: exploded ? 1 : 0, started: performance.now(), duration: reducedMotion.matches ? 0 : 550 };
+    targets.visible = annotations.visible = false;
+    dimensionLines.visible = false;
+    dimensionLabels.forEach(label => { label.hidden = true; });
+    toolbar.hidden = true;
+    showSeams(false);
+    onExplodedChange(true);
+    if (reducedMotion.matches) tickExplosion(performance.now());
+  }
+  function tickExplosion(now: number) {
+    if (!explosionAnimation || !explosion) return;
+    const t = explosionAnimation.duration ? Math.min(1, (now - explosionAnimation.started) / explosionAnimation.duration) : 1;
+    const eased = t * t * (3 - 2 * t);
+    explosionProgress = THREE.MathUtils.lerp(explosionAnimation.from, explosionAnimation.to, eased);
+    explosion.apply(explosionProgress);
+    if (cameraAnimation) {
+      camera.position.lerpVectors(cameraAnimation.fromPosition, cameraAnimation.toPosition, eased);
+      controls.target.lerpVectors(cameraAnimation.fromTarget, cameraAnimation.toTarget, eased);
+      camera.updateMatrixWorld();
+    }
+    if (t === 1) {
+      explosionAnimation = cameraAnimation = null;
+      if (!exploded) restoreExploded();
+    }
+  }
+  function interruptCameraAnimation() {
+    // Touch/orbit controls remain available while the pieces finish moving.
+    cameraAnimation = null;
+    shakeDetector.reset();
+  }
+  controls.addEventListener("start", interruptCameraAnimation);
+  function setShakeEnabled(enabled: boolean) {
+    shakeEnabled = enabled;
+    shakeDetector.reset();
+  }
+  function motion(event: DeviceMotionEvent) {
+    if (!shakeEnabled || document.hidden || !modelReady || touchPointers.size || pressed || drag) {
+      shakeDetector.reset();
+      return;
+    }
+    if (shakeDetector.sample(event, performance.now())) toggleExploded();
+  }
+  function visibilityChanged() { shakeDetector.reset(); blankTaps.reset(); pressed = null; }
   function pointAt(x: number, y: number, z = 110): Point | null {
     const b = renderer.domElement.getBoundingClientRect();
     if (x < b.left || x > b.right || y < b.top || y > b.bottom) return null;
@@ -381,6 +517,9 @@ function createRuntime(
     return group;
   }
   async function update() {
+    modelReady = false;
+    // Explicit edits return to assembly mode before replacing imported meshes.
+    restoreExploded(false);
     const rev = ++revision;
     const s = props().state;
     const layout = JSON.stringify(getPlatforms(s).map(p => [p.x, p.y]));
@@ -433,6 +572,7 @@ function createRuntime(
         }),
       );
       if (rev === revision && !disposed) {
+        modelReady = true;
         objects.updateMatrixWorld(true);
         hamster?.update(s);
         const center = sceneCenter();
@@ -475,6 +615,7 @@ function createRuntime(
   }
   function updateTargets() {
     clearTargets();
+    if (isExploded()) return;
     const p = props();
     const selected = p.state.items.find((item) => item.id === p.selectedId);
     const product = drag?.productId ?? p.activeProduct ?? selected?.productId;
@@ -512,11 +653,11 @@ function createRuntime(
       disposeAnnotation(object);
     }
     modelBounds = getRenderedModelBounds(objects);
-    selectedBounds = props().selectedId
+    selectedBounds = !isExploded() && props().selectedId
       ? getRenderedModelBounds(objects, props().selectedId!)
       : new THREE.Box3();
     if (!selectedBounds.isEmpty()) annotations.add(createSelectionBox(selectedBounds));
-    dimensionLines.visible = props().showDimensions && !modelBounds.isEmpty();
+    dimensionLines.visible = !isExploded() && props().showDimensions && !modelBounds.isEmpty();
     dimensionLabels.forEach((element) => { element.hidden = !dimensionLines.visible; });
     lastDimensionKey = "";
   }
@@ -526,7 +667,7 @@ function createRuntime(
   }
   function layoutAnnotations() {
     const p = props();
-    toolbar.hidden = selectedBounds.isEmpty() || !p.selectedTitle || !!drag?.moved;
+    toolbar.hidden = isExploded() || selectedBounds.isEmpty() || !p.selectedTitle || !!drag?.moved;
     if (!toolbar.hidden) {
       const worldCorners = getBoxCorners(selectedBounds);
       let corners = worldCorners.map(project);
@@ -630,6 +771,8 @@ function createRuntime(
     itemId?: string,
     pointerId?: number,
   ) {
+    restoreExploded();
+    blankTaps.reset();
     drag = {
       pointerId,
       productId,
@@ -648,6 +791,7 @@ function createRuntime(
     updateTargets();
   }
   function move(e: PointerEvent) {
+    if (pressed && Math.hypot(e.clientX - pressed.x, e.clientY - pressed.y) > 6) { pressed.moved = true; blankTaps.reset(); lastInvalidTapAt = performance.now(); }
     if (
       !drag ||
       touchPointers.size > 1 ||
@@ -729,6 +873,7 @@ function createRuntime(
   }
   function cancel(event?: Event) {
     if (event instanceof PointerEvent) touchPointers.delete(event.pointerId);
+    if (event) { blankTaps.reset(); pressed = null; lastInvalidTapAt = performance.now(); }
     if (!drag) return;
     drag = null;
     ghostRevision++;
@@ -743,13 +888,17 @@ function createRuntime(
   }
   function down(e: PointerEvent) {
     if (e.button !== 0 || touchPointers.size > 1) return;
-    const placement = pickPlacement(e.clientX, e.clientY);
+    const placement = isExploded() ? undefined : pickPlacement(e.clientX, e.clientY);
     if (placement) {
-      pressed = { x: e.clientX, y: e.clientY, id: props().selectedId, placement };
+      blankTaps.reset();
+      lastInvalidTapAt = performance.now();
+      pressed = { x: e.clientX, y: e.clientY, id: props().selectedId, at: performance.now(), placement };
       return;
     }
     const id = pick(e.clientX, e.clientY) ?? null;
-    pressed = { x: e.clientX, y: e.clientY, id };
+    if (id) { blankTaps.reset(); lastInvalidTapAt = performance.now(); }
+    pressed = { x: e.clientX, y: e.clientY, id, at: performance.now() };
+    if (isExploded()) return;
     if (
       id &&
       id !== "base" &&
@@ -765,7 +914,15 @@ function createRuntime(
     if (!pressed) return;
     const p = pressed;
     pressed = null;
-    if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 6) return;
+    if (p.moved || Math.hypot(e.clientX - p.x, e.clientY - p.y) > 6 || performance.now() - p.at > 400) { blankTaps.reset(); lastInvalidTapAt = performance.now(); return; }
+    if (!p.id && !p.placement && !props().activeProduct && !pick(e.clientX, e.clientY)) {
+      lastBlankPointerUp = { x: e.clientX, y: e.clientY, at: performance.now(), pointerType: e.pointerType };
+      if (blankTaps.tap(e.clientX, e.clientY, performance.now(), e.pointerType)) {
+        toggleExploded();
+        return;
+      }
+    } else { blankTaps.reset(); lastInvalidTapAt = performance.now(); }
+    if (isExploded()) return;
     if (p.placement) {
       const selected = props().state.items.find((item) => item.id === props().selectedId);
       const productId = props().activeProduct ?? selected?.productId;
@@ -801,12 +958,26 @@ function createRuntime(
         );
     } else props().onSelect(p.id);
   }
+  function nativeDoubleClick(event: MouseEvent) {
+    const now = performance.now();
+    // Some browsers/input bridges emit one pointer sequence plus a native dblclick.
+    // Touch uses the pointer recognizer only; reject a model hit or any drag/pinch.
+    if (event.button !== 0 || touchPointers.size || props().activeProduct || !lastBlankPointerUp
+      || lastBlankPointerUp.pointerType !== "mouse" || now - lastBlankPointerUp.at > 400
+      || now - lastInvalidTapAt < 400 || now - lastExplosionToggleAt < 400
+      || Math.hypot(event.clientX - lastBlankPointerUp.x, event.clientY - lastBlankPointerUp.y) > 26
+      || pick(event.clientX, event.clientY)) return;
+    event.preventDefault();
+    toggleExploded();
+  }
   function touchStart(e: PointerEvent) {
     if (e.pointerType === "touch") {
       touchPointers.add(e.pointerId);
       if (touchPointers.size > 1) {
         cancel();
         pressed = null;
+        blankTaps.reset();
+        lastInvalidTapAt = performance.now();
       }
     }
   }
@@ -814,9 +985,12 @@ function createRuntime(
   window.addEventListener("pointerdown", touchStart, true);
   element.addEventListener("pointerdown", down);
   element.addEventListener("pointerup", up);
+  element.addEventListener("dblclick", nativeDoubleClick);
   window.addEventListener("pointermove", move, { passive: false });
   window.addEventListener("pointerup", end);
   window.addEventListener("pointercancel", cancel);
+  window.addEventListener("devicemotion", motion);
+  document.addEventListener("visibilitychange", visibilityChanged);
   const resize = new ResizeObserver(() => {
     const w = host.clientWidth,
       h = host.clientHeight;
@@ -825,7 +999,18 @@ function createRuntime(
     const aspectChanged = Math.abs(camera.aspect - w / h) > .05;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    if (aspectChanged) home();
+    if (aspectChanged) {
+      if (explosion && isExploded()) {
+        cameraAnimation = null;
+        const view = fitExplodedCamera(explosion.expandedBounds, camera, controls.target);
+        camera.position.copy(view.position);
+        controls.target.copy(view.target);
+        controls.maxDistance = Math.max(controls.maxDistance, view.distance * 1.15);
+        camera.far = Math.max(camera.far, controls.maxDistance + explosion.expandedBounds.getSize(new THREE.Vector3()).length() * 2);
+        camera.updateProjectionMatrix();
+        controls.update();
+      } else home();
+    }
   });
   resize.observe(host);
   const clock = new THREE.Clock();
@@ -833,9 +1018,10 @@ function createRuntime(
     if (disposed) return;
     frame = requestAnimationFrame(draw);
     controls.update();
+    tickExplosion(performance.now());
     layoutAnnotations();
     const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
-    bedding.setVisible(!viewingUnderside);
+    bedding.setVisible(!viewingUnderside && !isExploded());
     floor.visible = grid.visible = !viewingUnderside;
     lighting.underside.visible = viewingUnderside;
     hamster?.tick(Math.min(clock.getDelta(), .05));
@@ -846,10 +1032,13 @@ function createRuntime(
     update,
     updateTargets,
     updateAnnotations,
+    toggleExploded,
+    setShakeEnabled,
     startDrag: (productId: string, x: number, y: number, pointerId?: number) =>
       startDrag(productId, x, y, undefined, pointerId),
-    home,
+    home: () => { restoreExploded(); home(); },
     top: () => {
+      restoreExploded();
       const center = sceneCenter();
       const distance = Math.max(900, getPlatforms(props().state).length * 350 / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
       camera.position.set(center.x, center.y - .1, contentTop() + distance);
@@ -872,6 +1061,7 @@ function createRuntime(
       revision++;
       cancelAnimationFrame(frame);
       resize.disconnect();
+      controls.removeEventListener("start", interruptCameraAnimation);
       controls.dispose();
       hamster?.dispose();
       bedding.dispose();
@@ -887,9 +1077,13 @@ function createRuntime(
       window.removeEventListener("pointerdown", touchStart, true);
       element.removeEventListener("pointerdown", down);
       element.removeEventListener("pointerup", up);
+      element.removeEventListener("dblclick", nativeDoubleClick);
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", cancel);
+      window.removeEventListener("devicemotion", motion);
+      document.removeEventListener("visibilitychange", visibilityChanged);
+      explosion = originalView = explosionAnimation = cameraAnimation = null;
       scene.traverse((o) => {
         if (o instanceof THREE.Mesh && !objects.getObjectById(o.id)) {
           o.geometry.dispose();

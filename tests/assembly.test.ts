@@ -59,16 +59,16 @@ function place(
   return result;
 }
 
-test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and alternatives", () => {
+test("catalog covers source groups, four 30 cm legs and three T-pipe groups across bundles and alternatives", () => {
   const ids = new Set([
     ...PRODUCTS.flatMap((p) => p.parts.map((part) => part.id)),
     ...getBaseParts(100).map((p) => p.id),
     ...getBaseParts(200, true).map((p) => p.id),
     ...getBaseParts(300).map((p) => p.id),
   ]);
-  assert.equal(ids.size, 49);
-  assert.equal(Object.keys(modelIndex).length, 49);
-  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 57);
+  assert.equal(ids.size, 52);
+  assert.equal(Object.keys(modelIndex).length, 52);
+  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 60);
   assert.equal(CATALOG_VERSION, 7);
   assert.equal(COLORS.length, 17);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
@@ -179,9 +179,11 @@ test("pipe supports retain all twelve bottom holes and allow reversed neighborin
     ["pipe-lt2", [[110, 190, 0], [190, 110, 0]]],
     ["pipe-lt3", [[190, 90, 0], [190, 10, 0]]],
     ["pipe-lt2n", [[110, 190, 0], [190, 110, 0]]],
+    ["pipe-tt1", [[10, 90, 0], [90, 90, 0]]],
+    ["pipe-tt2", [[10, 90, 0], [90, 90, 0]]],
   ]);
   for (const product of PRODUCTS.filter(product => product.category === "pipe")) {
-    assert.equal(product.pipeFaces?.length, 2);
+    assert.equal(product.pipeFaces?.length, product.id.startsWith("pipe-tt") ? 3 : 2);
     assert.ok(product.pipeFaces?.every(face => !("pole" in face)));
   }
   const left = place(createInitialState(), "pipe-st1", 50, 50);
@@ -363,7 +365,8 @@ test("source colors stay available with the approved warm-yellow replacement", (
           : SOURCE_PART_TRIM_COLORS[part.id]?.[component.colorKey] ?? SOURCE_TRIM_COLORS[component.colorKey];
       assert.equal(
         COLORS.find((c) => c.id === colorId)?.hex.toUpperCase(),
-        component.colorKey === "Gold" || (part.id === "A01" && component.colorKey === "ChristmasRed") ? "#F3B34E" : component.color.toUpperCase(),
+        part.id === "LHR" || part.id === "SHR" || component.colorKey === "Snow" ? "#D8C1A0"
+          : component.colorKey === "Gold" || (part.id === "A01" && component.colorKey === "ChristmasRed") ? "#F3B34E" : component.color.toUpperCase(),
         part.id + ":" + component.colorKey,
       );
     }
@@ -374,7 +377,7 @@ test("source colors stay available with the approved warm-yellow replacement", (
 
 
 test("the source palette uses the approved yellow and keeps all eight villa default slots", () => {
-  assert.deepEqual(COLORS.slice(0, 4).map(color => color.hex), ["#F1EADB", "#174A3A", "#B8273C", "#F3B34E"]);
+  assert.deepEqual(COLORS.slice(0, 4).map(color => color.hex), ["#D8C1A0", "#174A3A", "#B8273C", "#F3B34E"]);
   assert.deepEqual(getProduct("villa").parts.map(part => [part.id, part.defaultColor]), [
     ["A01", "pine"], ["A02", "cream"], ["G05", "red"], ["G15", "pine"],
     ["G16", "pine"], ["G17", "pine"], ["W01", "cream"], ["W02", "cream"],

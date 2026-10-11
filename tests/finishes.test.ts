@@ -21,12 +21,12 @@ test("wood finishes append to the HM3 palette and round-trip without changing or
     assert.deepEqual(decoded.baseColors, state.baseColors);
     assert.equal(getColorSwatch(color), COLORS.find(candidate => candidate.id === color)!.hex);
   }
-  assert.equal(getColorSwatch("cream"), "#F1EADB");
+  assert.equal(getColorSwatch("cream"), "#D8C1A0");
 });
 
 test("one warm yellow occupies the original picker position while all serialized color indices remain valid", () => {
   assert.deepEqual(COLORS.slice(0, 14).map(({ id, hex }) => [id, hex]), [
-    ["cream", "#F1EADB"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#F3B34E"],
+    ["cream", "#D8C1A0"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#F3B34E"],
     ["sage", "#A7BEA4"], ["rose", "#E9AEBC"], ["sky", "#A6C8DF"], ["lilac", "#C7B4D8"],
     ["white", "#FAFAF7"], ["marble", "#E2E2DE"], ["jade", "#299C82"],
     ["peachwood", "#BE896F"], ["wood", "#CCAB7A"], ["darkwood", "#654333"],
@@ -282,19 +282,18 @@ test("catalog previews and placement share complete palettes, with a light sky t
   assert.throws(() => getBaseStyleColors(1.5), /未知配色/);
 });
 
-test("Christmas Gift keeps its stable ID and each non-wood seasonal theme gives the L-house its own roof color", () => {
+test("official palettes use matching L-house and cube-house roofs, with apricot Christmas defaults", () => {
   assert.equal(COLOR_STYLES[0].id, "original");
   assert.equal(COLOR_STYLES[0].name, "圣诞礼物");
   const placed = autoPlace(createInitialState(), "l-house");
   assert.ok(placed.ok);
-  const roofs = ["butter", "peachwood", "cream", "white", "rose"];
-  const cubeRoofs = ["butter", "peachwood", "yellow", "yellow", "yellow"];
+  const roofs = ["cream", "peachwood", "cream", "white", "rose"];
   for (const [index] of COLOR_STYLES.entries()) {
     const preview = getProductStyleColors("l-house", index);
     const styled = applyColorStyle(placed.state, index);
     assert.equal(preview.LHR, roofs[index]);
     assert.equal(styled.items[0].colors.LHR, roofs[index]);
     assert.notEqual(preview.LHB, preview.LHR);
-    assert.equal(getProductStyleColors("cube-house", index).SHR, cubeRoofs[index], "the L-house override must not recolor other roof products");
+    assert.equal(getProductStyleColors("cube-house", index).SHR, roofs[index], "both house shapes must share the theme roof color");
   }
 });

@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "file": "model-sources/tee-pipes/TT2T.stl",
+  "output_file": "model-sources/tee-pipes/TT2T.stl",
+  "written_files": [],
+  "printer": "A1",
+  "material": "PLA",
+  "purpose": "functional",
+  "units": {
+    "unit": "mm",
+    "scale": 1.0,
+    "source": "assumed",
+    "note": "Units: assumed millimetres (the file does not say).",
+    "doubtful": false
+  },
+  "steps": {},
+  "geometry": {
+    "dimensions_mm": [
+      100.0,
+      93.2,
+      87.4
+    ],
+    "volume_cm3": 71.89,
+    "surface_area_cm2": 481.02,
+    "triangles": 4392,
+    "bodies": 1
+  },
+  "mesh": {
+    "faces": 4392,
+    "watertight": true,
+    "winding_consistent": true,
+    "inside_out": false,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "degenerate_faces": 0,
+    "bodies": 1,
+    "repair_tier": "none"
+  },
+  "checks": [
+    {
+      "id": "mesh",
+      "name": "Mesh",
+      "status": "pass",
+      "summary": "Watertight, with consistent outward-facing normals."
+    },
+    {
+      "id": "build_volume",
+      "name": "Build volume",
+      "status": "pass",
+      "summary": "Fits the A1 (246 x 246 x 256 mm usable, a safety margin inside the printer's spec).",
+      "usable_mm": [
+        246.0,
+        246.0,
+        256.0
+      ],
+      "fits": true,
+      "rotate_on_plate": false,
+      "max_scale_pct": 246.0
+    },
+    {
+      "id": "floating_parts",
+      "name": "Floating parts",
+      "status": "pass",
+      "summary": "One body, resting on the plate.",
+      "bodies": 1,
+      "floating": 0,
+      "lowest_floating_gap_mm": null
+    },
+    {
+      "id": "overhangs",
+      "name": "Overhangs",
+      "status": "fail",
+      "summary": "25.5 % of the surface (122.8 cm2) overhangs more than 45 deg from vertical. Needs supports or a different orientation.",
+      "limit_deg": 45.0,
+      "area_mm2": 12279.0,
+      "area_pct": 25.5
+    },
+    {
+      "id": "wall_thickness",
+      "name": "Wall thickness",
+      "status": "pass",
+      "summary": "0.4 % of the surface is thinner than 0.9 mm (thinnest 0.09 mm, 95 % at least 3.2 mm). A small share, typically sharp edges or tips.",
+      "min_wall_mm": 0.9,
+      "thin_area_pct": 0.4,
+      "min_mm": 0.09,
+      "p5_mm": 3.2,
+      "samples": 2000,
+      "max_measured_mm": 10.0
+    },
+    {
+      "id": "bed_contact",
+      "name": "Bed contact",
+      "status": "warn",
+      "summary": "271 mm2 lies flat on the plate (2.9 % of the footprint). Small base: consider a brim.",
+      "contact_mm2": 271.0,
+      "footprint_mm2": 9320.0,
+      "contact_pct": 2.9
+    },
+    {
+      "id": "material",
+      "name": "Material",
+      "status": "pass",
+      "summary": "PLA suits the A1.",
+      "problems": []
+    }
+  ],
+  "score": 4.9,
+  "score_rubric": {
+    "max": 10.0,
+    "deductions": [
+      {
+        "check": "overhangs",
+        "rule": "-1 per 5 % of the surface overhanging past the limit, at most -4",
+        "points": -4.0
+      },
+      {
+        "check": "wall_thickness",
+        "rule": "-1 per 5 % of the surface thinner than the material's minimum wall, at most -4 (0 when not measured)",
+        "points": -0.1
+      },
+      {
+        "check": "bed_contact",
+        "rule": "-2 if it touches the plate only at a point or edge (< 1 mm2), -1 if the flat contact is under 5 % of the footprint",
+        "points": -1.0
+      },
+      {
+        "check": "material",
+        "rule": "-3 if the printer cannot print the material (no enclosure, or hotend too cool)",
+        "points": 0.0
+      }
+    ],
+    "caps": [
+      {
+        "check": "mesh",
+        "rule": "not watertight (after any repair)",
+        "limit": 4.0,
+        "applied": false
+      },
+      {
+        "check": "floating_parts",
+        "rule": "a body starts in mid-air",
+        "limit": 4.0,
+        "applied": false
+      },
+      {
+        "check": "build_volume",
+        "rule": "does not fit the printer",
+        "limit": 4.0,
+        "applied": false
+      }
+    ]
+  },
+  "issues": [
+    "25.5 % of the surface (122.8 cm2) overhangs more than 45 deg from vertical. Needs supports or a different orientation."
+  ],
+  "warnings": [
+    "271 mm2 lies flat on the plate (2.9 % of the footprint). Small base: consider a brim."
+  ],
+  "suggestions": [
+    "Functional part: use 4 walls, and leave about 0.2 mm clearance where parts fit together."
+  ],
+  "print_settings": {
+    "layer_height": "0.20 mm",
+    "infill": "30 %",
+    "walls": ">= 4",
+    "top_layers": ">= 5",
+    "nozzle_temp": "190-240 C",
+    "bed_temp": "55 C",
+    "supports": "needed for the overhangs"
+  },
+  "notes": [
+    "No printer configured: checked against the A1 (pass --printer)."
+  ]
+}

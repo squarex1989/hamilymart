@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v16-render1";
+export const MODEL_ASSET_VERSION = "steel-v16-tee-explode1";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -9,7 +9,7 @@ export type Vec3 = [number, number, number];
 export type Rotation = 0 | 90 | 180 | 270;
 export type Bounds = [number, number, number, number, number, number];
 export const COLORS = [
-  { id: "cream", name: "杏色", hex: "#F1EADB" },
+  { id: "cream", name: "杏色", hex: "#D8C1A0" },
   { id: "pine", name: "绿色", hex: "#174A3A" },
   { id: "red", name: "红色", hex: "#B8273C" },
   { id: "butter", name: "黄色", hex: "#F3B34E" },
@@ -304,7 +304,7 @@ export const PRODUCTS: Product[] = [
     price: 3500,
     description: "L 型房屋 + 顶盖板 · 屋顶可继续搭建",
     origin: [100, 100, 0],
-    parts: [part("LHB", "房屋", "pine"), part("LHR", "顶盖板", "butter")],
+    parts: [part("LHB", "房屋", "pine"), part("LHR", "顶盖板", "cream")],
     bottomMagnets: down(
       [
         [10, 10],
@@ -342,7 +342,7 @@ export const PRODUCTS: Product[] = [
     price: 1500,
     description: "立方房屋 + 顶盖板 · 也能叠在 L 型屋顶",
     origin: [50, 50, 0],
-    parts: [part("SHB", "房屋", "pine"), part("SHR", "顶盖板", "butter")],
+    parts: [part("SHB", "房屋", "pine"), part("SHR", "顶盖板", "cream")],
     bottomMagnets: down(
       [
         [10, 90],
@@ -526,9 +526,20 @@ export const PRODUCTS: Product[] = [
       ]),
     parts: [part("LT2NT", "管道", "cream"), part("LT2B", "磁吸底座", "cream")],
   },
+  // Append only: both T modules occupy one grid square and share a real keyed
+  // support derived from ST1B. A common lumen joins all three horizontal mouths.
+  ...(["TT1", "TT2"] as const).map(id => ({
+    ...pipe(id, id === "TT1" ? "T型三通" : "顶开口T型三通", [50, 50, 0], [[10, 90], [90, 90]],
+      [0, 0, 0, 100, 100, 89.6], [
+        ...straightFaces(0, 0),
+        { center: [50, 0, 46.4] as Vec3, normal: [0, -1, 0] as Vec3 },
+      ]),
+    description: "10 × 10 cm · 三向连通管道 + 专用磁吸底座",
+    parts: [part(`${id}T`, "管道", "cream"), part("TTB", "磁吸底座", "cream")],
+  })),
 ];
 /** Keep legacy product indices decodable while showing one choice per distinct pipe geometry. */
-const VISIBLE_PRODUCT_IDS = ["villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-lt2n", "pipe-st2", "pipe-lt2", "planter", "food-bowl", "pool", "seesaw"];
+const VISIBLE_PRODUCT_IDS = ["villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-lt2n", "pipe-st2", "pipe-lt2", "pipe-tt2", "pipe-tt1", "planter", "food-bowl", "pool", "seesaw"];
 export const VISIBLE_PRODUCTS = VISIBLE_PRODUCT_IDS.map(id => getProduct(id));
 export function getProduct(id: string): Product {
   const product = PRODUCTS.find((p) => p.id === id);

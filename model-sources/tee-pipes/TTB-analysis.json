@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "file": "model-sources/tee-pipes/TTB.stl",
+  "output_file": "model-sources/tee-pipes/TTB.stl",
+  "written_files": [],
+  "printer": "A1",
+  "material": "PLA",
+  "purpose": "functional",
+  "units": {
+    "unit": "mm",
+    "scale": 1.0,
+    "source": "assumed",
+    "note": "Units: assumed millimetres (the file does not say).",
+    "doubtful": false
+  },
+  "steps": {},
+  "geometry": {
+    "dimensions_mm": [
+      100.0,
+      50.0,
+      25.0
+    ],
+    "volume_cm3": 51.43,
+    "surface_area_cm2": 145.82,
+    "triangles": 1564,
+    "bodies": 1
+  },
+  "mesh": {
+    "faces": 1564,
+    "watertight": true,
+    "winding_consistent": true,
+    "inside_out": false,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "degenerate_faces": 0,
+    "bodies": 1,
+    "repair_tier": "none"
+  },
+  "checks": [
+    {
+      "id": "mesh",
+      "name": "Mesh",
+      "status": "pass",
+      "summary": "Watertight, with consistent outward-facing normals."
+    },
+    {
+      "id": "build_volume",
+      "name": "Build volume",
+      "status": "pass",
+      "summary": "Fits the A1 (246 x 246 x 256 mm usable, a safety margin inside the printer's spec).",
+      "usable_mm": [
+        246.0,
+        246.0,
+        256.0
+      ],
+      "fits": true,
+      "rotate_on_plate": false,
+      "max_scale_pct": 246.0
+    },
+    {
+      "id": "floating_parts",
+      "name": "Floating parts",
+      "status": "pass",
+      "summary": "One body, resting on the plate.",
+      "bodies": 1,
+      "floating": 0,
+      "lowest_floating_gap_mm": null
+    },
+    {
+      "id": "overhangs",
+      "name": "Overhangs",
+      "status": "pass",
+      "summary": "0.9 % of the surface (1.4 cm2) overhangs more than 45 deg from vertical.",
+      "limit_deg": 45.0,
+      "area_mm2": 136.9,
+      "area_pct": 0.9
+    },
+    {
+      "id": "wall_thickness",
+      "name": "Wall thickness",
+      "status": "pass",
+      "summary": "0.2 % of the surface is thinner than 0.9 mm (thinnest 0.45 mm, 95 % at least 2.17 mm). A small share, typically sharp edges or tips.",
+      "min_wall_mm": 0.9,
+      "thin_area_pct": 0.2,
+      "min_mm": 0.45,
+      "p5_mm": 2.17,
+      "samples": 2000,
+      "max_measured_mm": 10.0
+    },
+    {
+      "id": "bed_contact",
+      "name": "Bed contact",
+      "status": "pass",
+      "summary": "4790 mm2 lies flat on the plate (95.8 % of the footprint).",
+      "contact_mm2": 4790.2,
+      "footprint_mm2": 5000.0,
+      "contact_pct": 95.8
+    },
+    {
+      "id": "material",
+      "name": "Material",
+      "status": "pass",
+      "summary": "PLA suits the A1.",
+      "problems": []
+    }
+  ],
+  "score": 9.8,
+  "score_rubric": {
+    "max": 10.0,
+    "deductions": [
+      {
+        "check": "overhangs",
+        "rule": "-1 per 5 % of the surface overhanging past the limit, at most -4",
+        "points": -0.2
+      },
+      {
+        "check": "wall_thickness",
+        "rule": "-1 per 5 % of the surface thinner than the material's minimum wall, at most -4 (0 when not measured)",
+        "points": 0.0
+      },
+      {
+        "check": "bed_contact",
+        "rule": "-2 if it touches the plate only at a point or edge (< 1 mm2), -1 if the flat contact is under 5 % of the footprint",
+        "points": 0.0
+      },
+      {
+        "check": "material",
+        "rule": "-3 if the printer cannot print the material (no enclosure, or hotend too cool)",
+        "points": 0.0
+      }
+    ],
+    "caps": [
+      {
+        "check": "mesh",
+        "rule": "not watertight (after any repair)",
+        "limit": 4.0,
+        "applied": false
+      },
+      {
+        "check": "floating_parts",
+        "rule": "a body starts in mid-air",
+        "limit": 4.0,
+        "applied": false
+      },
+      {
+        "check": "build_volume",
+        "rule": "does not fit the printer",
+        "limit": 4.0,
+        "applied": false
+      }
+    ]
+  },
+  "issues": [],
+  "warnings": [],
+  "suggestions": [
+    "Functional part: use 4 walls, and leave about 0.2 mm clearance where parts fit together."
+  ],
+  "print_settings": {
+    "layer_height": "0.20 mm",
+    "infill": "30 %",
+    "walls": ">= 4",
+    "top_layers": ">= 5",
+    "nozzle_temp": "190-240 C",
+    "bed_temp": "55 C",
+    "supports": "likely not needed"
+  },
+  "notes": [
+    "No printer configured: checked against the A1 (pass --printer)."
+  ]
+}

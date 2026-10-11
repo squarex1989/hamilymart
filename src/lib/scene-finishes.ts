@@ -3,7 +3,7 @@ import { COLORS } from "../data/catalog";
 
 /** Solid stock colors, jade clearcoat, and the retained legacy marble finish. */
 export function applyFinish(material: THREE.MeshStandardMaterial, colorId: string) {
-  material.color.set(COLORS.find(color => color.id === colorId)?.hex ?? "#F1EADB");
+  material.color.set(COLORS.find(color => color.id === colorId)?.hex ?? COLORS[0].hex);
   // A material may be reused by a color picker: remove the previous finish in full.
   material.roughness = .72;
   material.metalness = 0;

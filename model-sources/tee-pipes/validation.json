@@ -1,0 +1,138 @@
+{
+  "schema": 1,
+  "units": "millimeter",
+  "upAxis": "Z",
+  "moduleFootprintMm": [
+    100,
+    100
+  ],
+  "outerDiameterMm": 86.4,
+  "innerDiameterMm": 80.0,
+  "nominalWallMm": 3.200000000000003,
+  "axisHeightMm": 46.4,
+  "topOpeningDiameterMm": 60.0,
+  "bottomMagnetContactPoints": [
+    [
+      10,
+      90,
+      0
+    ],
+    [
+      90,
+      90,
+      0
+    ]
+  ],
+  "magnetPocketDiameterMm": 8.2,
+  "magnetPocketDepthMm": 4.2,
+  "horizontalMouths": [
+    {
+      "center": [
+        0,
+        50,
+        46.4
+      ],
+      "normal": [
+        -1,
+        0,
+        0
+      ]
+    },
+    {
+      "center": [
+        100,
+        50,
+        46.4
+      ],
+      "normal": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "center": [
+        50,
+        0,
+        46.4
+      ],
+      "normal": [
+        0,
+        -1,
+        0
+      ]
+    }
+  ],
+  "source": {
+    "sourceVersion": "100 mm T modules v1",
+    "derivedFrom": [
+      "ST1T",
+      "ST1B"
+    ],
+    "sourceGlbSha256": {
+      "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+      "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+    },
+    "generator": "scripts/prepare-tee-pipes.py",
+    "production3mfIncluded": false
+  },
+  "groups": {
+    "TT1T": {
+      "boundsMm": [
+        0.0,
+        0.0,
+        2.200044110417366,
+        100.0,
+        93.2,
+        89.6
+      ],
+      "triangles": 3448,
+      "watertight": true,
+      "connectedBodies": 1,
+      "volumeMm3": 81428.1632551968
+    },
+    "TT2T": {
+      "boundsMm": [
+        0.0,
+        0.0,
+        2.200044110417366,
+        100.0,
+        93.2,
+        89.6
+      ],
+      "triangles": 4392,
+      "watertight": true,
+      "connectedBodies": 1,
+      "volumeMm3": 71890.94179780122
+    },
+    "TTB": {
+      "boundsMm": [
+        0.0,
+        46.0,
+        0.0,
+        100.0,
+        96.0,
+        25.0
+      ],
+      "triangles": 1564,
+      "watertight": true,
+      "connectedBodies": 1,
+      "volumeMm3": 51431.210014865275
+    }
+  },
+  "supportIntersectionMm3": {
+    "TT1T": 0.0,
+    "TT2T": 0.0
+  },
+  "lumenObstructionMm3": {
+    "TT1T": {
+      "left-to-right": 0.0,
+      "front-to-junction": 0.0
+    },
+    "TT2T": {
+      "left-to-right": 0.0,
+      "front-to-junction": 0.0
+    }
+  },
+  "physicalFitTested": false
+}

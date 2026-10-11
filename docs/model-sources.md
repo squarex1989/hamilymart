@@ -8,7 +8,7 @@
 /Users/chachacha/Desktop/3D Printing/泳池别墅/unified_complete_steel_v16/
 ```
 
-源版本为 `Steel receivers V16 tilted seesaw`，输入为 schema 3 的 `groups[].components[].vertices/triangles`。导出使用毫米、Z 向上的装配坐标，不使用打印排盘坐标。完整打印套装有 45 个零件、52 个颜色体；网站重新导出全部 45 个源组，帽屋窗框拆色增加一个网页颜色体，再加 Y01–Y04 四支派生长腿，合计 **49 组、57 个网页颜色体**。LT2NT 无顶部开孔弯管作为 `pipe-lt2n` 上架，使用正式 LT2B 底座。
+源版本为 `Steel receivers V16 tilted seesaw`，输入为 schema 3 的 `groups[].components[].vertices/triangles`。导出使用毫米、Z 向上的装配坐标，不使用打印排盘坐标。完整打印套装有 45 个零件、52 个颜色体；网站重新导出全部 45 个源组，帽屋窗框拆色增加一个网页颜色体，再加 Y01–Y04 四支派生长腿及三通 TT1T、TT2T、TTB，合计 **52 组、60 个网页颜色体**。LT2NT 无顶部开孔弯管作为 `pipe-lt2n` 上架，使用正式 LT2B 底座。
 
 `public/models/validation.json` 记录主源 SHA-256、版本、每组来源及简化指标。当前主源 SHA-256 为 `cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba`。O01 使用同源单磁铁件；网页转换不改写生产工程 `磁吸泳池别墅_钢片12x2_磁铁8x4_V16_H2C.3mf`。正式 3MF 的 SHA-256 为 `730c16ac59062ad12baadb26b943b954442b1eb6abad13236fd7b8a137f2a65a`。原生重导入切片通过 11 盘、45 件、52 色体检查，没有模型警告或网格修复；49 个钢片腔的实际刀路检查通过，五次暂停均已安排。完整结果见源目录 `delivery_validation.json`、`3mf_validation.json` 和 `embedded_steel_validation.json`；尚未进行实物配合验证。
 
@@ -94,7 +94,7 @@ G15 后草栏跨度为 X=1.4–298.6 mm，G16/G17 的横向轴分别为 X=2.6/29
 
 ## 30 cm 腿的网页派生
 
-当前模型索引额外包含 Y01–Y04，共 49 组、57 个网页颜色体（包含新上架 LT2NT 和拆出的窗框）。运行 `python3 scripts/prepare-tall-legs.py` 从 V16 的 20 cm 腿延长中段生成；保留两端形状及磁座，总长 300 mm，网格水密。每件 provenance 标明 `derivedFrom` 和 `production3mfIncluded:false`，不把它认作原 V16 生产套装的一部分。
+当前模型索引额外包含 Y01–Y04，加上三通 TT1T、TT2T、TTB 后共 52 组、60 个网页颜色体（包含新上架 LT2NT 和拆出的窗框）。运行 `python3 scripts/prepare-tall-legs.py` 从 V16 的 20 cm 腿延长中段生成；保留两端形状及磁座，总长 300 mm，网格水密。每件 provenance 标明 `derivedFrom` 和 `production3mfIncluded:false`，不把它认作原 V16 生产套装的一部分。
 
 ## 重新生成网站资产
 
@@ -104,24 +104,29 @@ G15 后草栏跨度为 X=1.4–298.6 mm，G16/G17 的横向轴分别为 X=2.6/29
 python3 - <<'PYTHON'
 import json, subprocess
 from pathlib import Path
-ids = [id for id in json.loads(Path('src/data/model-index.json').read_text()) if not id.startswith('Y0')]
+ids = [id for id in json.loads(Path('src/data/model-index.json').read_text()) if not id.startswith(('Y0', 'TT'))]
 subprocess.run(['python3', 'scripts/prepare-models.py', '--only', *ids], check=True)
 subprocess.run(['python3', 'scripts/prepare-tall-legs.py'], check=True)
+subprocess.run(['python3', 'scripts/prepare-tee-pipes.py'], check=True)
 PYTHON
 ```
 
 `--source` 可显式指定正式 `assembly_meshes.json`；仅当主源缺少 O01 时，`--food-bowl-source` 才用于补充历史食盆；主源自带 O01 时优先使用正式件。`--only A01 ST1B` 可局部更新，保留其他 GLB 和来源记录。省略 `--only` 会导出完整源中所有组（包括已上架的 LT2NT），更新商品目录时应一起检查测试与索引覆盖。
 
-商品图用本地开发工具从实际 GLB 导出，不再使用 Blender。运行 `npm run dev` 后，打开服务地址下的 `/dev/thumbnail-studio.html`，点击“生成全部缩略图”。页面串行生成 5×12 张 480×400 透明 PNG，完成后会显示 60 张已保存；原色商品同时覆盖根目录回退图。停止导出或出现错误时，修复后完整重跑并验证清单。
+商品图用本地开发工具从实际 GLB 导出，不再使用 Blender。运行 `npm run dev` 后，打开服务地址下的 `/dev/thumbnail-studio.html`，点击“生成全部缩略图”。页面按可见商品数串行生成五套 480×400 透明 PNG，完成后显示实际保存数量；原色商品同时覆盖根目录回退图。停止导出或出现错误时，修复后完整重跑并验证清单。
 
 导出器和主场景共用 `model-presentation.ts` 中的 ACES 曝光 1.05、sRGB 输出、灯光、物理材质和楼梯深度处理。灯光位置随平台中心移动，方向和强度保持恒定，避免增加高组件后全场颜色变化。`applyFinish` 同时用于图卡和实景，包含琉璃材质；桃木、仿木、深棕均为纯色。PNG 不叠加 multiply 混合。观察角度和实际遮挡仍会形成自然明暗变化。
 
 导出页及文件写入接口仅存在于 Vite 开发环境。接口只接受同源 localhost、合法商品/风格和 480×400 PNG，正式构建仍使用静态 `<img>`，不为每张图创建 WebGL 或加载额外模型。`prepare-models.py` 现在只处理几何，旧 Blender 缩略图参数会明确报错并提示新入口，避免生成旧色调的图片。
 
-网页模型与缩略图的缓存版本由 `catalog.ts` 的 `MODEL_ASSET_VERSION` 独立控制，当前为 `steel-v16-render1`；资源缓存版本与搭配目录分别维护；当前目录为 7，编号格式仍为 HM3。本次接口变化已通过严格的旧目录验证和迁移处理。
+网页模型与缩略图的缓存版本由 `catalog.ts` 的 `MODEL_ASSET_VERSION` 独立控制，当前为 `steel-v16-tee-explode1`；资源缓存版本与搭配目录分别维护；当前目录为 7，编号格式仍为 HM3。本次接口变化已通过严格的旧目录验证和迁移处理。
 
 ## 五种风格缩略图
 
 组件列表使用每个可见商品的五套真实 GLB 导出图，路径为 `public/thumbnails/<style-id>/<product-id>.png`。`getModelMaterialColor` 由实时场景与导出器共用，包含独立槽、联动色及原色装饰；渲染材质、色调与灯光也共用。`style-manifest.json` 记录 `three-shared-v1` 渲染版本、实际色号与 Hex 值、输入 GLB 和输出 PNG 的 SHA-256，测试防止旧图、旧颜色和新模型混用。
 
 修改模型、配色或共享渲染参数后，应通过开发导出页重绘全部图卡、更新缓存版本并运行 `npm test`。新增平台、商品与拖入预览继承当前目录风格，现有手工色不重写。风格上下文随撤销/重做保存，并以绑定搭配编号的本地 UI 提示恢复；不改变 HM3 数据格式。
+
+## 单格 T 型三通
+
+新增 TT1T（无顶开口）、TT2T（Ø60 mm 顶开口）与 TTB 共用支撑。三件从既有 ST1 尺寸解析派生，单格 100×100 mm，圆管外径 86.4 mm、内径 80 mm，底部两枚 Ø8.2×4.2 mm 磁孔，无侧孔。脚本、实测几何、相邻管道接缝验证及打印姿态限制见 [三通模型说明](tee-pipes.md)。新网页派生件未并入旧 V16 生产 3MF。

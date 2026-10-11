@@ -969,5 +969,62 @@
       }
     ],
     "nameZh": "30cm支撑脚4"
+  },
+  "TT1T": {
+    "url": "/models/TT1T.glb",
+    "bounds": [
+      0.0,
+      0.0,
+      2.200044110417366,
+      100.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "TT1T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "T型三通管体"
+  },
+  "TT2T": {
+    "url": "/models/TT2T.glb",
+    "bounds": [
+      0.0,
+      0.0,
+      2.200044110417366,
+      100.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "TT2T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "顶开口T型三通管体"
+  },
+  "TTB": {
+    "url": "/models/TTB.glb",
+    "bounds": [
+      0.0,
+      46.0,
+      0.0,
+      100.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "TTB_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "T型三通磁吸底座"
   }
 }

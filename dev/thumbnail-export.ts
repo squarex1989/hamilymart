@@ -49,9 +49,10 @@ button.addEventListener('click', async () => {
   const camera = new THREE.PerspectiveCamera(34, 480 / 400, 1, 4500);
   camera.up.set(0, 0, 1);
   let count = 0;
+  const total = COLOR_STYLES.length * VISIBLE_PRODUCTS.length;
   try {
     for (const [styleIndex, style] of COLOR_STYLES.entries()) for (const product of VISIBLE_PRODUCTS) {
-      status.textContent = `正在生成 ${++count}/60：${style.name} · ${product.name}`;
+      status.textContent = `正在生成 ${++count}/${total}：${style.name} · ${product.name}`;
       const definition = getThumbnailDefinition(product.id, styleIndex);
       const group = new THREE.Group();
       try {
@@ -91,7 +92,7 @@ button.addEventListener('click', async () => {
       // Let status updates and browser input paint between exports.
       await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
     }
-    status.textContent = '完成：60 张组件图及原色回退图已保存';
+    status.textContent = `完成：${total} 张组件图及原色回退图已保存`;
   } catch (error) {
     status.textContent = `失败：${error instanceof Error ? error.message : String(error)}`;
     console.error(error);

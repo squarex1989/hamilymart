@@ -7,9 +7,10 @@ import { PRODUCTS, VISIBLE_PRODUCTS, getProduct, PLATFORM_BODY_PRICE, LEG_SET_PR
 import { autoPlace, createInitialState, getPlacements, getOrderLines, getTotalPrice, setLegHeight } from "../src/lib/assembly";
 import { encodeConfig, decodeConfig } from "../src/lib/config-code";
 
-test("pipe catalog shows four distinct forms while old product indices remain intact", () => {
+test("pipe catalog shows six distinct forms while old product indices remain intact", () => {
   assert.deepEqual(VISIBLE_PRODUCTS.filter(p => p.category === "pipe").map(p => [p.id, p.name]), [
     ["pipe-st1", "直管道"], ["pipe-lt2n", "弯管道"], ["pipe-st2", "侧开口直管道"], ["pipe-lt2", "顶开口弯管道"],
+    ["pipe-tt2", "顶开口T型三通"], ["pipe-tt1", "T型三通"],
   ]);
   assert.deepEqual(PRODUCTS.slice(0, 14).map(p => p.id), ["villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-st2", "pipe-st3", "pipe-lt1", "pipe-lt2", "pipe-lt3", "planter", "food-bowl", "pool", "seesaw"]);
   assert.equal(PRODUCTS[14].id, "pipe-lt2n");

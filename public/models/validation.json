@@ -975,6 +975,84 @@
         "derivation": "Extend shaft by 100 mm between z=-88 and z=80; preserve both end profiles",
         "production3mfIncluded": false
       }
+    },
+    "TT1T": {
+      "bytes": 93340,
+      "components": [
+        {
+          "id": "TT1T_Snow",
+          "sourceTriangles": 3448,
+          "triangles": 3448,
+          "sampledMaxErrorMm": 0,
+          "boundsMaxErrorMm": 0,
+          "volumeRelativeError": 0
+        }
+      ],
+      "source": {
+        "sourceVersion": "100 mm T modules v1",
+        "derivedFrom": [
+          "ST1T",
+          "ST1B"
+        ],
+        "sourceGlbSha256": {
+          "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+          "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+        },
+        "generator": "scripts/prepare-tee-pipes.py",
+        "production3mfIncluded": false
+      }
+    },
+    "TT2T": {
+      "bytes": 123148,
+      "components": [
+        {
+          "id": "TT2T_Snow",
+          "sourceTriangles": 4392,
+          "triangles": 4392,
+          "sampledMaxErrorMm": 0,
+          "boundsMaxErrorMm": 0,
+          "volumeRelativeError": 0
+        }
+      ],
+      "source": {
+        "sourceVersion": "100 mm T modules v1",
+        "derivedFrom": [
+          "ST1T",
+          "ST1B"
+        ],
+        "sourceGlbSha256": {
+          "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+          "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+        },
+        "generator": "scripts/prepare-tee-pipes.py",
+        "production3mfIncluded": false
+      }
+    },
+    "TTB": {
+      "bytes": 48556,
+      "components": [
+        {
+          "id": "TTB_Snow",
+          "sourceTriangles": 1564,
+          "triangles": 1564,
+          "sampledMaxErrorMm": 0,
+          "boundsMaxErrorMm": 0,
+          "volumeRelativeError": 0
+        }
+      ],
+      "source": {
+        "sourceVersion": "100 mm T modules v1",
+        "derivedFrom": [
+          "ST1T",
+          "ST1B"
+        ],
+        "sourceGlbSha256": {
+          "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
+          "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
+        },
+        "generator": "scripts/prepare-tee-pipes.py",
+        "production3mfIncluded": false
+      }
     }
   }
 }
