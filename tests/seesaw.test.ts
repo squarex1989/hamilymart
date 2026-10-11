@@ -7,8 +7,8 @@ import { decodeConfig, encodeConfig } from "../src/lib/config-code";
 
 test("V12 seesaw keeps its centered source magnet and full swing clearance", () => {
   const product = getProduct("seesaw");
-  assert.equal(PRODUCTS.at(-1)?.id, "seesaw");
-  assert.deepEqual(PRODUCTS.slice(0, -1).map(p => p.id), [
+  assert.equal(PRODUCTS[13]?.id, "seesaw");
+  assert.deepEqual(PRODUCTS.slice(0, 13).map(p => p.id), [
     "villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-st2", "pipe-st3",
     "pipe-lt1", "pipe-lt2", "pipe-lt3", "planter", "food-bowl", "pool",
   ]);
@@ -42,7 +42,7 @@ test("seesaw auto-placement, pricing, colors and HM3 code round-trip stay intact
   const item = result.state.items[0];
   assert.equal(item.productId, "seesaw");
   assert.deepEqual([item.x, item.y, item.z], [90, 90, 110]);
-  assert.equal(getTotalPrice(result.state) - getTotalPrice(initial), 3900);
+  assert.equal(getTotalPrice(result.state) - getTotalPrice(initial), 1500);
   const line = getOrderLines(result.state).find(l => l.sku.startsWith("HM-TY-001"));
   assert.ok(line);
   assert.deepEqual(line.parts, ["SS01"]);

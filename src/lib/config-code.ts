@@ -115,6 +115,7 @@ export function decodeConfigWithMigration(input: string): AssemblyMigrationResul
       : legacy || (Array.isArray(colors) && colors.length === product.parts.length) ? product.parts.map(part => part.id)
       // The original decorative slots occupied 8 and 9 before the stair base was added.
       : product.id === "villa" && Array.isArray(colors) && colors.length === 10 ? allColorKeys.slice(0, 10)
+      : product.id === "roof-cottage" && Array.isArray(colors) && colors.length === 2 ? allColorKeys.slice(0, 2)
       : allColorKeys;
     state.items.push({ id: `c${i + 1}`, productId: product.id, x, y, z, rotation: (turn * 90) as AssemblyItem["rotation"], colors: arrayToColors(colors, colorKeys), parentId: parent === -1 ? "base" : parent === -2 ? "base2" : parent === -3 ? "base3" : `c${parent + 1}` });
   }

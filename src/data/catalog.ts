@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v13-colors2";
+export const MODEL_ASSET_VERSION = "steel-v13-pipes3";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v12/hardware_complete.json.
@@ -70,8 +70,8 @@ export const SOURCE_COMPONENT_COLOR_SLOTS: Record<string, Record<string, string>
     A01_ChristmasRed: "A01-bow",
   },
   G05: { G05_Snow: "G05-base" },
-  // The brim and pompom share Snow, so only the separately identified window uses this slot.
-  G03: { G03_WindowSnow: "G03-window" },
+  // Preserve the existing window slot before appending the brim/pompom control.
+  G03: { G03_WindowSnow: "G03-window", G03_Snow: "G03-trim" },
 };
 export function getSourceColorSlot(
   groupId: string,
@@ -87,6 +87,7 @@ export const COLOR_SLOTS: Record<string, ProductPart> = {
   "A01-bow": { id: "A01-bow", role: "五角星", defaultColor: "butter" },
   "G05-base": { id: "G05-base", role: "楼梯底座", defaultColor: "cream" },
   "G03-window": { id: "G03-window", role: "窗框", defaultColor: "cream" },
+  "G03-trim": { id: "G03-trim", role: "帽檐与圆球", defaultColor: "cream" },
 };
 /** Stable order: real part controls first, then decorative slots in source mapping order. */
 export function getColorParts(parts: ProductPart[]): ProductPart[] {
@@ -104,11 +105,20 @@ export function getLinkedColorPartId(partId: string): string {
 export function setProductColor(colors: ColorMap, partId: string, color: ColorId): ColorMap {
   const leader = getLinkedColorPartId(partId);
   const linked = Object.entries(LINKED_COLOR_PARTS).filter(([, id]) => id === leader).map(([id]) => id);
-  return { ...colors, ...Object.fromEntries([leader, ...linked].map(id => [id, color])) };
+  return resolveHatContrast({ ...colors, ...Object.fromEntries([leader, ...linked].map(id => [id, color])) });
+}
+/** A hat's small details stay visible even after a manual single-part color change. */
+export function resolveHatContrast(colors: ColorMap): ColorMap {
+  if (!colors.G03) return colors;
+  const result = { ...colors };
+  const fallback = colors.G03 === "cream" || colors.G03 === "white" || colors.G03 === "wood" ? "pine" : "cream";
+  for (const key of ["G03-window", "G03-trim"])
+    if ((result[key] ?? "cream") === colors.G03 || (["cream", "white"].includes(colors.G03) && ["cream", "white"].includes(result[key] ?? "cream"))) result[key] = fallback;
+  return result;
 }
 /** Effective rendered/order colors; old saved follower choices are left intact in storage. */
 export function resolveLinkedProductColors(colors: ColorMap): ColorMap {
-  return Object.fromEntries(Object.entries(colors).map(([part, color]) => [part, colors[getLinkedColorPartId(part)] ?? color]));
+  return resolveHatContrast(Object.fromEntries(Object.entries(colors).map(([part, color]) => [part, colors[getLinkedColorPartId(part)] ?? color])));
 }
 export interface MagnetSurface {
   id: string;
@@ -154,15 +164,18 @@ const down = (xy: number[][], z: number): Vec3[] =>
 /** Steel V12 P01/H06 receiver locations, transcribed and audited separately from source hardware. */
 export const P01_TOP_XY: [number, number][] = [[10, 10], [10, 90], [10, 110], [10, 190], [10, 210], [10, 290], [90, 10], [90, 190], [90, 210], [90, 290], [110, 10], [110, 190], [110, 210], [110, 290], [190, 10], [190, 90], [190, 110], [190, 190], [190, 210], [190, 290], [210, 10], [210, 90], [210, 110], [210, 190], [210, 210], [210, 290], [290, 10], [290, 90], [290, 110], [290, 190], [290, 210], [290, 290]];
 export const H06_TOP_XY: [number, number][] = [[90, 90], [90, 110], [110, 90], [110, 110]];
+export const PLATFORM_BODY_PRICE = 2000;
+/** Four legs per set. Keep this table separate from the assembled platform total. */
+export const LEG_SET_PRICES = { 0: 0, 100: 1000, 200: 1200, 300: 1400 } as const;
 export const BASE_PRODUCT = {
   id: "platform",
   sku: "HM-PL-001",
   name: "云朵基础平台",
-  price: 12900,
-  tallLegSurcharge: 2400,
-  extraTallLegSurcharge: 4800,
-  noLegDiscount: 2000,
-  poolSurcharge: 2900,
+  price: PLATFORM_BODY_PRICE + LEG_SET_PRICES[100],
+  tallLegSurcharge: LEG_SET_PRICES[200] - LEG_SET_PRICES[100],
+  extraTallLegSurcharge: LEG_SET_PRICES[300] - LEG_SET_PRICES[100],
+  noLegDiscount: LEG_SET_PRICES[100],
+  poolSurcharge: 2000,
   description: "30 × 30 cm 平台 · 含四支撑脚与六个孔盖",
 };
 export function getBaseParts(
@@ -190,7 +203,7 @@ function pipe(
   magnets: number[][],
   bounds: Bounds,
   faces: PipeFace[],
-  price = 2900,
+  price = 500,
 ): Product {
   return {
     id: `pipe-${id.toLowerCase()}`,
@@ -220,7 +233,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-HS-001",
     name: "礼物盒小屋",
     category: "house",
-    price: 15900,
+    price: 8000,
     badge: "人气套餐",
     description: "礼物盒小屋 + 二层平台 + 楼梯 + 三边草栏 + 双支柱",
     origin: [150, 190, 110],
@@ -282,7 +295,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-HS-002",
     name: "L型转角屋",
     category: "house",
-    price: 8900,
+    price: 3000,
     description: "L 型房屋 + 顶盖板 · 屋顶可继续搭建",
     origin: [100, 100, 0],
     parts: [part("LHB", "房屋", "pine"), part("LHR", "顶盖板", "butter")],
@@ -320,7 +333,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-HS-003",
     name: "方糖小屋",
     category: "house",
-    price: 4900,
+    price: 1500,
     description: "立方房屋 + 顶盖板 · 也能叠在 L 型屋顶",
     origin: [50, 50, 0],
     parts: [part("SHB", "房屋", "pine"), part("SHR", "顶盖板", "butter")],
@@ -337,9 +350,9 @@ export const PRODUCTS: Product[] = [
   {
     id: "roof-cottage",
     sku: "HM-HS-004",
-    name: "圣诞帽小屋",
+    name: "帽子小屋",
     category: "house",
-    price: 7900,
+    price: 4000,
     description: "四点磁吸 · 安装于礼物盒二层平台",
     // The original source pivot also preserves saved upper-floor placements.
     origin: [78, 239, 200],
@@ -359,7 +372,7 @@ export const PRODUCTS: Product[] = [
   },
   pipe(
     "ST1",
-    "云朵直通管 01",
+    "直管道",
     [50, 50, 0],
     [
       [10, 90],
@@ -370,7 +383,7 @@ export const PRODUCTS: Product[] = [
   ),
   pipe(
     "ST2",
-    "侧开口探索管",
+    "侧开口直管道",
     [150, 50, 0],
     [
       [110, 90],
@@ -378,11 +391,11 @@ export const PRODUCTS: Product[] = [
     ],
     [100, 6.8, 0, 200, 96, 89.6],
     straightFaces(100, 0),
-    3500,
+    500,
   ),
   pipe(
     "ST3",
-    "云朵直通管 03",
+    "直管道",
     [250, 50, 0],
     [
       [210, 90],
@@ -393,7 +406,7 @@ export const PRODUCTS: Product[] = [
   ),
   pipe(
     "LT1",
-    "花园直通管 01",
+    "直管道",
     [50, 150, 0],
     [
       [10, 190],
@@ -404,7 +417,7 @@ export const PRODUCTS: Product[] = [
   ),
   pipe(
     "LT2",
-    "90° 转角探索管",
+    "顶开口弯管道",
     [150, 150, 0],
     [
       [110, 190],
@@ -415,11 +428,11 @@ export const PRODUCTS: Product[] = [
       { center: [100, 188, 11], normal: [-1, 0, 0] },
       { center: [188, 100, 11], normal: [0, -1, 0] },
     ],
-    3900,
+    1000,
   ),
   pipe(
     "LT3",
-    "花园直通管 03",
+    "直管道",
     [150, 50, 0],
     [
       [190, 90],
@@ -434,9 +447,9 @@ export const PRODUCTS: Product[] = [
   {
     id: "planter",
     sku: "HM-GD-001",
-    name: "圣诞袜花圃",
+    name: "袜子花圃",
     category: "garden",
-    price: 1900,
+    price: 500,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [285.5, 264, 200],
     parts: [part("G06", "花圃", "red")],
@@ -454,9 +467,9 @@ export const PRODUCTS: Product[] = [
   {
     id: "food-bowl",
     sku: "HM-GD-002",
-    name: "圣诞食盆",
+    name: "方块食盆",
     category: "garden",
-    price: 1900,
+    price: 500,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [285.5, 264, 200],
     parts: [part("O01", "食盆", "red")],
@@ -469,7 +482,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "pool",
     sku: "HM-GD-003",
-    name: "圣诞泳池",
+    name: "圆形泳池",
     category: "garden",
     price: BASE_PRODUCT.poolSurcharge,
     description: "嵌入平台大圆洞 · 自动移除大圆盖 · 需要支撑脚",
@@ -484,9 +497,9 @@ export const PRODUCTS: Product[] = [
   {
     id: "seesaw",
     sku: "HM-TY-001",
-    name: "磁吸跷跷板",
+    name: "跷跷板",
     category: "toy",
-    price: 3900,
+    price: 1500,
     description: "18 × 8 cm · 中心单点磁吸 · 一体活动玩具",
     origin: [90, 90, 110],
     parts: [part("SS01", "跷跷板", "butter")],
@@ -496,7 +509,19 @@ export const PRODUCTS: Product[] = [
     collisionBoxes: [[0, 50, 110, 180, 130, 159.8]],
     allowedParents: ["base"],
   },
+  // The source LT2N uses the same real LT2B support, magnets and end faces as LT2.
+  {
+    ...pipe("LT2N", "弯管道", [150, 150, 0], [[110, 190], [190, 110]],
+      [100, 100, 0, 196, 196, 89.6], [
+        { center: [100, 188, 11], normal: [-1, 0, 0] },
+        { center: [188, 100, 11], normal: [0, -1, 0] },
+      ], 1000),
+    parts: [part("LT2NT", "管道", "cream"), part("LT2B", "磁吸底座", "cream")],
+  },
 ];
+/** Keep legacy product indices decodable while showing one choice per distinct pipe geometry. */
+const VISIBLE_PRODUCT_IDS = ["villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-lt2n", "pipe-st2", "pipe-lt2", "planter", "food-bowl", "pool", "seesaw"];
+export const VISIBLE_PRODUCTS = VISIBLE_PRODUCT_IDS.map(id => getProduct(id));
 export function getProduct(id: string): Product {
   const product = PRODUCTS.find((p) => p.id === id);
   if (!product) throw new Error(`未知组件：${id}`);

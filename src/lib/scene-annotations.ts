@@ -1,4 +1,7 @@
 import * as THREE from "three";
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
+import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 
 /** Measures only imported model meshes: selection seams and other helpers never count. */
 export function getRenderedModelBounds(root: THREE.Object3D, selectionId?: string): THREE.Box3 {
@@ -44,17 +47,32 @@ export function createSelectionBox(bounds: THREE.Box3): THREE.Group {
   group.position.copy(bounds.getCenter(new THREE.Vector3()));
   const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
   const fill = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-    color: "#EEC741", transparent: true, opacity: .1, depthWrite: false, side: THREE.DoubleSide,
+    color: "#EEC741", transparent: true, opacity: .2, depthWrite: false, side: THREE.DoubleSide,
   }));
   fill.renderOrder = 3;
-  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geometry), new THREE.LineDashedMaterial({
-    color: "#E5B500", transparent: true, opacity: .2, dashSize: 5, gapSize: 3,
+  const edgePositions = new THREE.EdgesGeometry(geometry);
+  const lineGeometry = new LineSegmentsGeometry().setPositions(Array.from(edgePositions.getAttribute("position").array));
+  edgePositions.dispose();
+  // Mesh-backed lines have a dependable CSS-pixel width in WebGL on mobile too.
+  const edges = new LineSegments2(lineGeometry, new LineMaterial({
+    color: "#DEAD00", transparent: true, opacity: .5, linewidth: 2.5,
+    dashed: true, dashSize: 6, gapSize: 4, worldUnits: false,
     depthTest: false, depthWrite: false,
   }));
   edges.computeLineDistances();
   edges.renderOrder = 4;
   group.add(fill, edges);
   return group;
+}
+
+/** Keep dashes readable at every orbit distance; LineSegments2 handles viewport resolution. */
+export function updateSelectionStroke(root: THREE.Object3D, camera: THREE.PerspectiveCamera, viewportHeight: number) {
+  const center = root.getWorldPosition(new THREE.Vector3());
+  const distance = Math.max(1, camera.position.distanceTo(center));
+  const pixelsPerMillimeter = Math.max(1, viewportHeight) / (2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+  root.traverse((node) => {
+    if (node instanceof LineSegments2) node.material.dashScale = pixelsPerMillimeter;
+  });
 }
 
 export function disposeAnnotation(root: THREE.Object3D) {

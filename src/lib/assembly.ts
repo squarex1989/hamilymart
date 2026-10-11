@@ -536,6 +536,18 @@ export function rotateItem(
     // Parent-only placement can pass while a carried descendant hits another
     // component. Try the next nearest candidate before refusing the whole turn.
   }
+  if (previous.productId === "villa") {
+    const product = getProduct("villa"), deck = modelIndex.A02.bounds as Bounds;
+    const freeCandidates = getPlacements({ ...state, items: [] }, "villa", rotation)
+      .filter(candidate => candidate.parentId === previous.parentId && close(candidate.z, previous.z));
+    const neighboringDecks = state.items.filter(item => item.id !== id && item.productId === "villa")
+      .map(item => transformBox(deck, product, item));
+    if (freeCandidates.length && freeCandidates.every(candidate => neighboringDecks.some(neighbor => overlap(transformBox(deck, product, candidate), neighbor)))) {
+      const deckWidth = round((deck[3] - deck[0]) / 10);
+      const platformWidth = round((modelIndex.P01.bounds[3] - modelIndex.P01.bounds[0]) / 10);
+      return { ok: false, state, reason: `这个方向会让相邻的二层平台重叠：二层板宽${deckWidth}厘米，底层平台宽${platformWidth}厘米。请先调整旁边小屋的方向` };
+    }
+  }
   return { ok: false, state, reason: "这个方向没有可用的磁吸位置，或旋转后会与其他组件重叠" };
 }
 function action(state: AssemblyState, next: AssemblyState, reason?: string): ActionResult {
@@ -581,7 +593,9 @@ function normalizeBedding(value: unknown): Bedding {
 export function setBedding(state: AssemblyState, value: Bedding): ActionResult {
   try {
     const bedding = normalizeBedding(value);
-    return action(state, { ...state, bedding });
+    const legHeight = bedding.mode === "thick" && state.legHeight !== 0 && state.legHeight < bedding.depth
+      ? bedding.depth : state.legHeight;
+    return action(state, { ...state, bedding, legHeight });
   } catch (error) { return { ok: false, state, reason: error instanceof Error ? error.message : "垫料设置无效" }; }
 }
 export function setLegHeight(state: AssemblyState, legHeight: 0 | 100 | 200 | 300): ActionResult {
@@ -804,11 +818,11 @@ function upgradeSteelV9(previous: AssemblyState): AssemblyMigrationResult {
             || a.key.localeCompare(b.key);
         });
       const position = candidates[0];
-      if (!position) throw new Error("旧搭配无法兼容 Steel V9：圣诞帽小屋已恢复 162 mm 宽，当前没有可用的二层磁吸位置。原搭配未覆盖、组件未删除，请调整后再导入。");
+      if (!position) throw new Error("旧搭配无法兼容 Steel V9：帽子小屋已恢复 162 mm 宽，当前没有可用的二层磁吸位置。原搭配未覆盖、组件未删除，请调整后再导入。");
       state = { ...state, items: [...state.items, { ...item, x: position.x, y: position.y, z: position.z, rotation: position.rotation, parentId: position.parentId }] };
       messages.push(wasOnPlatform
-        ? "圣诞帽小屋已恢复 162 mm 宽，旧一层位置不再匹配；已移到现有礼物盒的可用二层磁位，配色已保留。"
-        : "圣诞帽小屋已恢复 162 mm 宽，已调整到原礼物盒二层最近的合法磁位，配色已保留。");
+        ? "帽子小屋已恢复 162 mm 宽，旧一层位置不再匹配；已移到现有礼物盒的可用二层磁位，配色已保留。"
+        : "帽子小屋已恢复 162 mm 宽，已调整到原礼物盒二层最近的合法磁位，配色已保留。");
     }
     return { state: validateAssembly(state), messages };
   }
@@ -846,7 +860,7 @@ export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4
       return next;
     });
     messages.push(villas.length ? "旧搭配已升级为 V4 八件复式套餐：新增白柱继承二层平台颜色，左右草栏继承原草栏颜色。" : "旧搭配目录已升级，原有配色与位置已保留。");
-    if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个圣诞帽小屋按 V4 围栏安全方向调整，装配位置和自定义配色已保留。`);
+    if (adjustedLofts) messages.push(`已将 ${adjustedLofts} 个帽子小屋按 V4 围栏安全方向调整，装配位置和自定义配色已保留。`);
   }
   const previous = validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION, thirdPlatform: null, bedding: { mode: "thin", depth: 50 }, hamster: null, ...(source < 4 ? { extension: null, removedCovers: [] } : {}), items }, legacyProductLookup(source), true);
   let relocated = previous;

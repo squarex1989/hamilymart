@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, ArrowRight, Check, ChevronDown, Copy, Info, Layers2, Link, Plus, Ruler, ShoppingBag, Sparkles, X } from "lucide-react";
+import { ArrowDownToLine, ArrowRight, Check, ChevronDown, Copy, Info, Layers2, Link, Plus, Ruler, ShoppingBag, Sparkles, Trash2, X } from "lucide-react";
 import AssemblyScene from "./components/AssemblyScene";
 import MobileWorkbench from "./components/MobileWorkbench";
 import type { WorkbenchProps } from "./components/MobileWorkbench";
@@ -9,10 +9,11 @@ import type { SceneHandle } from "./components/AssemblyScene";
 import {
   COLORS,
   COLOR_SLOTS,
-  PRODUCTS,
+  VISIBLE_PRODUCTS,
   getBaseParts,
   getProduct,
   getEditableProductColorParts,
+  resolveLinkedProductColors,
   setProductColor,
 } from "./data/catalog";
 import { FEATURES } from "./data/features";
@@ -105,7 +106,7 @@ export default function App() {
     [rotation, setRotation] = useState<Rotation>(0);
   const [category, setCategory] = useState("all");
   const [showDimensions, setShowDimensions] = useState(false);
-  const [modal, setModal] = useState<"code" | "order" | "bedding" | null>(null);
+  const [modal, setModal] = useState<"code" | "order" | "bedding" | "clear" | null>(null);
   const [importCode, setImportCode] = useState(""),
     [importError, setImportError] = useState(""),
     [toast, setToast] = useState("");
@@ -140,19 +141,19 @@ export default function App() {
         )
       : (selectedProduct ? getEditableProductColorParts(selectedProduct.id) : []);
   const selectedColors =
-    selectedPlatform ? selectedPlatform.baseColors : (selectedItem?.colors ?? {});
+    selectedPlatform ? selectedPlatform.baseColors : resolveLinkedProductColors(selectedItem?.colors ?? {});
   const colorKey = /^[LXY]01$/.test(colorPart) ? "legs" : colorPart;
   const currentColor =
     selectedColors[colorKey] ??
     selectedParts.find((p) => p.id === colorPart)?.defaultColor ??
     "cream";
-  const visibleProducts = PRODUCTS.filter(
+  const visibleProducts = VISIBLE_PRODUCTS.filter(
     (p) => category === "all" || p.category === category,
   ).sort((a, b) => (HOUSE_ORDER.includes(a.id) ? HOUSE_ORDER.indexOf(a.id) : 20) - (HOUSE_ORDER.includes(b.id) ? HOUSE_ORDER.indexOf(b.id) : 20));
   function notify(message: string) {
     setToast(message);
     clearTimeout(toastTimer.current);
-    toastTimer.current = setTimeout(() => setToast(""), 3800);
+    toastTimer.current = setTimeout(() => setToast(""), Math.min(8000, Math.max(2500, message.length * 85)));
   }
   function commit(next: AssemblyState) {
     if (next === state) return;
@@ -301,6 +302,7 @@ export default function App() {
     if (result.ok) {
       commit(result.state);
       setRotation(result.item.rotation);
+      if (!attempts[0].ok) notify(`${attempts[0].reason}，已转到下一可用方向`);
     } else notify(result.reason);
   }
   function removeSelected() {
@@ -349,7 +351,6 @@ export default function App() {
   function downloadOrder() {
     const text = [
       "HamilyMart 搭配清单",
-      "演示价格，最终金额待商家确认",
       ...orderLines.map(
         (l) =>
           `${l.sku} | ${l.name} × ${l.quantity} | ${money(l.total)} | 颜色：${Object.entries(
@@ -390,15 +391,25 @@ export default function App() {
     setState(next); select(null);
   }
   function colorsSignature(value: AssemblyState) {
-    return JSON.stringify([getPlatforms(value).map(p => p.baseColors), value.items.map(i => i.colors)]);
+    const entries = (colors: Record<string, string>) => Object.entries(colors).sort(([a], [b]) => a.localeCompare(b));
+    return JSON.stringify([getPlatforms(value).map(p => entries(p.baseColors)), value.items.map(i => entries(i.colors))]);
   }
   const matchedStyle = useMemo(() => COLOR_STYLES.findIndex((_, index) => colorsSignature(applyColorStyle(state, index)) === colorsSignature(state)), [state]);
   function nextStyle() {
     const next = ((matchedStyle < 0 ? styleCursor.current : matchedStyle) + 1) % COLOR_STYLES.length;
     styleCursor.current = next;
     commit(applyColorStyle(state, next));
+    notify(COLOR_STYLES[next].name);
   }
-  const selectedTitle = selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圣诞泳池" : editingPlatform ? platformName(selectedId!) : selectedProduct?.name ?? "组件设置";
+  function clearDesign() {
+    commit(createInitialState());
+    select(null);
+    styleCursor.current = 0;
+    setModal(null);
+    setMigrationNotice("");
+    setToast("");
+  }
+  const selectedTitle = selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圆形泳池" : editingPlatform ? platformName(selectedId!) : selectedProduct?.name ?? "组件设置";
   const workbench: WorkbenchProps = {
     state, ready, selectedId, title: selectedTitle, products: visibleProducts, parts: selectedParts,
     colorPart, currentColor, category, canUndo: !!history.length, canRedo: !!future.length,
@@ -416,17 +427,18 @@ export default function App() {
     </header>
     <main className="workspace">
       <section className="studio" aria-label="3D 搭建工作台">
-        <AssemblyScene ref={scene} state={state} selectedId={selectedId} activeProduct={activeProduct} rotation={rotation}
+        <AssemblyScene ref={scene} state={state} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
           showDimensions={showDimensions} canRotate={!!selectedItem}
           canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}
           onRotate={rotateSelected} onRemove={removeSelected} onSelect={select} onDrop={drop}
           onDragEnd={() => { dragFinishedAt.current = Date.now(); }} onReady={() => setReady(true)} onError={notify} />
-        <div className="canvas-global-actions">
-          <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>设置垫料高度</span></button>
+        <div className="canvas-bottom-actions" aria-label="搭建选项">
           <button disabled={platforms.length >= 3} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
-          <button className="canvas-style-button" onClick={nextStyle}><Sparkles size={16} /><span>换一个风格<small>{matchedStyle < 0 ? "自定义" : COLOR_STYLES[matchedStyle].name}</small></span></button>
+          <button onClick={nextStyle}><Sparkles size={16} /><span>切换风格</span></button>
+          <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料高度</span></button>
+          <button aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={16} /><span>显示尺寸</span></button>
+          <button className="clear-design-button" aria-label="清空当前设计" title="清空当前设计" onClick={() => setModal("clear")}><Trash2 size={18} /></button>
         </div>
-        <button className="canvas-dimensions-toggle" aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={15} />显示尺寸</button>
         {(migrationNotice || toast || !saved) && <div className="canvas-notice" role="status"><Info size={16} /><span>{migrationNotice || toast || "暂未保存，请复制搭配编号"}</span><button aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); }}><X size={16} /></button></div>}
       </section>
       {mobile ? <MobileWorkbench {...workbench} /> : <DesktopWorkbench {...workbench} onStartDrag={(id, event) => {
@@ -438,6 +450,7 @@ export default function App() {
     {modal && <div className="modal-backdrop" onClick={event => { if (event.target === event.currentTarget) setModal(null); }}>
       <section className={`modal ${modal === "order" ? "order-modal" : ""} ${modal === "bedding" ? "bedding-modal" : ""}`} role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <button className="round-button modal-close" aria-label="关闭弹窗" onClick={() => setModal(null)}><X size={20} /></button>
+        {modal === "clear" && <><h2 id="modal-title">是否清空当前所有设计</h2><p className="modal-lead">清空后只保留一个基础平台。可以通过后退恢复。</p><div className="clear-design-actions"><button className="secondary-button" onClick={() => setModal(null)}>取消</button><button className="primary-button" onClick={clearDesign}>确认清空</button></div></>}
         {modal === "bedding" && <><h2 id="modal-title">设置垫料高度</h2><div className="bedding-options">
           <button className={`bedding-option ${state.bedding.mode === "thin" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thin"} onClick={() => chooseBedding({ mode: "thin", depth: 50 })}><span className="bedding-preview"><i style={{height:"18%"}} /></span><strong>薄铺</strong><span>5 cm</span></button>
           {([100, 200, 300] as const).map(depth => <button key={depth} className={`bedding-option ${state.bedding.mode === "thick" && state.bedding.depth === depth ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thick" && state.bedding.depth === depth} onClick={() => chooseBedding({mode:"thick",depth})}><span className="bedding-preview"><i style={{height:`${depth / 4}%`}} /></span><strong>厚铺</strong><span>{depth / 10} cm</span></button>)}
@@ -515,7 +528,7 @@ export default function App() {
                 <span className="eyebrow">YOUR TINY HOME LIST.</span>
                 <h2 id="modal-title">小家的搭配清单</h2>
                 <p className="modal-lead">
-                  套餐内的配件已全部包含。当前为演示价格。
+                  套餐内的配件已全部包含。
                 </p>
                 <div className="order-lines">
                   {orderLines.map((line, i) => (

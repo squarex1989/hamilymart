@@ -18,7 +18,9 @@ import {
   getProduct,
   getBaseParts,
   getLinkedColorPartId,
+  resolveLinkedProductColors,
 } from "../data/catalog";
+import type { ColorMap } from "../data/catalog";
 import { getPlacements, getItemBounds, getPlatforms, getDisplayElevation, tryPlace } from "../lib/assembly";
 import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
@@ -26,7 +28,7 @@ import { applyFinish } from "../lib/scene-finishes";
 import { createBedding } from "../lib/bedding-scene";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
-import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds } from "../lib/scene-annotations";
+import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
@@ -45,6 +47,7 @@ export type SceneHandle = {
 type Props = {
   state: AssemblyState;
   selectedId: string | null;
+  selectedTitle: string;
   activeProduct: string | null;
   showDimensions: boolean;
   onRotate: () => void;
@@ -149,8 +152,11 @@ export default forwardRef<SceneHandle, Props>(
       <div ref={host} className="scene-canvas" aria-label="仓鼠屋 3D 装配画布">
         <div ref={toolbar} className="scene-item-toolbar" role="toolbar" aria-label="已选配件操作" hidden
           onPointerDown={(event) => event.stopPropagation()}>
-          {props.canRotate && <button type="button" aria-label="旋转已选配件" onClick={props.onRotate}><RotateCw size={16} /><span>旋转</span></button>}
-          {props.canRemove && <button type="button" aria-label="移除已选配件" onClick={props.onRemove}><Trash2 size={16} /><span>移除</span></button>}
+          <span className="scene-item-title">{props.selectedTitle}</span>
+          {(props.canRotate || props.canRemove) && <div className="scene-item-actions">
+            {props.canRotate && <button type="button" aria-label="旋转已选配件" onClick={props.onRotate}><RotateCw size={16} /><span>旋转</span></button>}
+            {props.canRemove && <button type="button" aria-label="移除已选配件" onClick={props.onRemove}><Trash2 size={16} /><span>移除</span></button>}
+          </div>}
         </div>
         {loading && !failed && (
           <div className="scene-loading">
@@ -345,11 +351,12 @@ function createRuntime(
   async function build(
     parts: ReturnType<typeof getBaseParts>,
     origin: number[],
-    colors: Record<string, string>,
+    colors: ColorMap,
     preview = false,
     ownerId?: string,
   ) {
     const group = new THREE.Group();
+    const renderedColors = resolveLinkedProductColors(colors);
     await Promise.all(
       parts.map(async (part) => {
         const loaded = await loadPart(part.id);
@@ -375,9 +382,9 @@ function createRuntime(
               : [o.material];
             const primary = part.defaultColor;
             const tint =
-              colors[getLinkedColorPartId(part.id)] ??
+              renderedColors[getLinkedColorPartId(part.id)] ??
               (part.id.startsWith("L0") || (part.id.startsWith("X0") || part.id.startsWith("Y0"))
-                ? colors.legs
+                ? renderedColors.legs
                 : undefined) ??
               primary;
             const mats = originals.map((m) => {
@@ -391,7 +398,7 @@ function createRuntime(
                 PRIMARY_COLOR_KEYS[part.id] ??
                 index[part.id].components[0]?.colorKey;
               const slot = getSourceColorSlot(part.id, o.userData.sourcePart, ck);
-              const finish = slot && colors[slot] ? colors[slot]
+              const finish = slot && renderedColors[slot] ? renderedColors[slot]
                 : !ck || ck === primaryKey ? tint
                 : SOURCE_PART_TRIM_COLORS[part.id]?.[ck] ?? SOURCE_TRIM_COLORS[ck] ?? tint;
               applyFinish(next, finish);
@@ -577,33 +584,39 @@ function createRuntime(
   }
   function layoutAnnotations() {
     const p = props();
-    toolbar.hidden = selectedBounds.isEmpty() || (!p.canRotate && !p.canRemove) || !!drag?.moved;
+    toolbar.hidden = selectedBounds.isEmpty() || !p.selectedTitle || !!drag?.moved;
     if (!toolbar.hidden) {
-      let corners = getBoxCorners(selectedBounds).map(project);
+      const worldCorners = getBoxCorners(selectedBounds);
+      let corners = worldCorners.map(project);
       let top = Math.min(...corners.map((corner) => corner.y));
       const halfWidth = toolbar.offsetWidth / 2;
+      const toolbarHeight = toolbar.offsetHeight;
+      const minimumTop = toolbarHeight + 18;
+      // The website header is outside this clipped canvas. Keep an 8 px inset
+      // at its upper edge and leave the bottom 56 px for the global controls.
+      const maximumTop = Math.max(minimumTop, host.clientHeight - 64);
+      const desiredTop = THREE.MathUtils.clamp(top, minimumTop, maximumTop);
       // Keep the toolbar in the air above the entire selection, even after a tight zoom.
       // Moving camera and target together preserves the viewing angle and selected object scale.
-      if (top < 56 && !drag) {
-        const distance = camera.position.distanceTo(selectedBounds.getCenter(new THREE.Vector3()));
-        const mmPerPixel = 2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.max(1, host.clientHeight);
-        const offset = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).multiplyScalar((56 - top) * mmPerPixel);
+      if (Math.abs(desiredTop - top) > .5 && !drag) {
+        const topCorner = worldCorners[corners.findIndex((corner) => corner.y === top)];
+        const depth = Math.max(1, -topCorner.clone().applyMatrix4(camera.matrixWorldInverse).z);
+        const mmPerPixel = 2 * depth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.max(1, host.clientHeight);
+        const offset = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion).multiplyScalar((desiredTop - top) * mmPerPixel);
         camera.position.add(offset);
         controls.target.add(offset);
         camera.updateMatrixWorld();
-        corners = getBoxCorners(selectedBounds).map(project);
+        corners = worldCorners.map(project);
         top = Math.min(...corners.map((corner) => corner.y));
       }
       const left = Math.min(...corners.map((corner) => corner.x));
       const right = Math.max(...corners.map((corner) => corner.x));
-      let x = Math.max(halfWidth + 8, Math.min(host.clientWidth - halfWidth - 8, (left + right) / 2));
-      const y = Math.max(8, top - toolbar.offsetHeight - 10);
-      // The three permanent scene controls occupy the top-right corner.
-      if (y < 150 && x + halfWidth > host.clientWidth - 164)
-        x = Math.max(halfWidth + 8, host.clientWidth - 172 - halfWidth);
+      const x = Math.max(halfWidth + 8, Math.min(host.clientWidth - halfWidth - 8, (left + right) / 2));
+      const y = Math.max(8, top - toolbarHeight - 10);
       toolbar.style.left = `${Math.round(x)}px`;
       toolbar.style.top = `${Math.round(y)}px`;
     }
+    annotations.children.forEach((object) => updateSelectionStroke(object, camera, host.clientHeight));
     if (!dimensionLines.visible) return;
     const segments = dimensionSegments(modelBounds, camera.position);
     const geometryKey = segments.flatMap((segment) => segment.flatMap((point) => point.toArray())).join(",");

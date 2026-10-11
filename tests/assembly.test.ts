@@ -66,9 +66,9 @@ test("catalog covers 44 Steel V12 groups and four 30 cm legs across bundles and 
     ...getBaseParts(200, true).map((p) => p.id),
     ...getBaseParts(300).map((p) => p.id),
   ]);
-  assert.equal(ids.size, 48);
-  assert.equal(Object.keys(modelIndex).length, 48);
-  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 56);
+  assert.equal(ids.size, 49);
+  assert.equal(Object.keys(modelIndex).length, 49);
+  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 57);
   assert.equal(CATALOG_VERSION, 6);
   assert.equal(COLORS.length, 14);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
@@ -83,7 +83,7 @@ test("base starts with exactly four 10 cm legs; 20 cm substitutes the complete s
     ["L01", "L02", "L03", "L04"],
   );
   const tall = { ...state, legHeight: 200 as const };
-  assert.equal(getTotalPrice(tall) - getTotalPrice(state), 2400);
+  assert.equal(getTotalPrice(tall) - getTotalPrice(state), 200);
   assert.deepEqual(
     getOrderLines(tall)[0].parts.filter((p) => /^X\d/.test(p)),
     ["X01", "X02", "X03", "X04"],
@@ -178,6 +178,7 @@ test("pipe supports retain all twelve bottom holes and allow reversed neighborin
     ["pipe-lt1", [[10, 190, 0], [90, 190, 0]]],
     ["pipe-lt2", [[110, 190, 0], [190, 110, 0]]],
     ["pipe-lt3", [[190, 90, 0], [190, 10, 0]]],
+    ["pipe-lt2n", [[110, 190, 0], [190, 110, 0]]],
   ]);
   for (const product of PRODUCTS.filter(product => product.category === "pipe")) {
     assert.equal(product.pipeFaces?.length, 2);
@@ -297,7 +298,7 @@ test("order colors contain only purchased parts and one shared leg color", () =>
   assert.ok(!("B01" in poolLines[0].colors));
   assert.ok(!("H06" in poolLines[0].colors));
   assert.deepEqual(poolLines[1].colors, { B01: "cream" });
-  assert.equal(poolLines[1].unitPrice, 2900);
+  assert.equal(poolLines[1].unitPrice, 2000);
 });
 test("each bundled part color survives encode/decode and parent movement carries child colors intact", () => {
   const villa = place(createInitialState(), "villa", 150, 190);
@@ -327,7 +328,7 @@ test("each bundled part color survives encode/decode and parent movement carries
   );
   assert.deepEqual(
     roundTrip.items.find((i) => i.productId === "roof-cottage")?.colors,
-    { G03: "pine", "G03-window": "cream" },
+    { G03: "pine", "G03-window": "cream", "G03-trim": "cream" },
   );
   const rotated = rotateItem(changed, villa.item.id, 180);
   assert.equal(rotated.ok, true, rotated.ok ? "" : rotated.reason);
@@ -337,7 +338,7 @@ test("each bundled part color survives encode/decode and parent movement carries
       [child.x, child.y, child.z, child.rotation],
       [222, 141, 200, 180],
     );
-    assert.deepEqual(child.colors, { G03: "pine", "G03-window": "cream" });
+    assert.deepEqual(child.colors, { G03: "pine", "G03-window": "cream", "G03-trim": "cream" });
   }
 });
 
@@ -409,7 +410,7 @@ function assertLegacyUpgrade(state: AssemblyState) {
   const cottage = state.items.find(item => item.productId === "roof-cottage")!;
   assert.deepEqual(villa.colors, { A01: "sage", A02: "sky", G05: "rose", G15: "butter", G16: "butter", G17: "butter", W01: "sky", W02: "sky", "A01-ribbon": "butter", "A01-bow": "butter", "G05-base": "cream" });
   assert.deepEqual([cottage.x, cottage.y, cottage.z, cottage.rotation], [78, 239, 200, 0]);
-  assert.deepEqual(cottage.colors, { G03: "red", "G03-window": "cream" });
+  assert.deepEqual(cottage.colors, { G03: "red", "G03-window": "cream", "G03-trim": "cream" });
   assert.equal(cottage.parentId, villa.id);
 }
 test("frozen catalog-2 code migrates four custom colors and reports the V4 loft safety change", () => {
@@ -584,7 +585,7 @@ test("no-leg mode removes all legs from the order and is incompatible with eithe
   const originalPrice = getTotalPrice(state);
   const noLegs = success(setLegHeight(state, 0));
   assert.equal(noLegs.legHeight, 0);
-  assert.equal(originalPrice - getTotalPrice(noLegs), 4000);
+  assert.equal(originalPrice - getTotalPrice(noLegs), 2000);
   for (const line of getOrderLines(noLegs)) {
     assert.ok(!line.parts.some(id => /^[LX]0[1-4]$/.test(id)));
     assert.ok(!("legs" in line.colors));
@@ -603,7 +604,7 @@ test("no-leg mode removes all legs from the order and is incompatible with eithe
   assert.equal(getMagnetPoints(state).length, 68);
   const poolLine = getOrderLines(state).find(line => line.id === "pool-base2")!;
   assert.deepEqual(poolLine.parts, ["B01"]);
-  assert.equal(poolLine.total, 2900);
+  assert.equal(poolLine.total, 2000);
   const restored = success(setPlatformPool(state, "base2", false));
   assert.equal(setLegHeight(restored, 0).ok, true);
 });
@@ -941,7 +942,7 @@ test("old first-floor hats move to an existing free second floor, with an explic
   const villa = result.state.items.find(item => item.productId === "villa")!;
   const hat = result.state.items.find(item => item.productId === "roof-cottage")!;
   assert.deepEqual([hat.x, hat.y, hat.z, hat.rotation, hat.parentId], [78, 239, 200, 0, villa.id]);
-  assert.deepEqual(hat.colors, { G03: "red", "G03-window": "cream" });
+  assert.deepEqual(hat.colors, { G03: "red", "G03-window": "cream", "G03-trim": "cream" });
   assert.match(result.messages.join(" "), /旧一层.*二层/);
   assert.deepEqual(migrateAssembly(result.state).messages, []);
 });
@@ -963,7 +964,7 @@ test("old right-offset upper hats resnap on the same parent while preserving loc
     const migratedHat = restored.state.items.find(item => item.id === "oldhat")!;
     assert.deepEqual([migratedHat.x, migratedHat.y, migratedHat.z], transformPoint([78, 239, 200], getProduct("villa"), parent.item));
     assert.equal(migratedHat.rotation, rotation);
-    assert.deepEqual(migratedHat.colors, { G03: "rose", "G03-window": "cream" });
+    assert.deepEqual(migratedHat.colors, { G03: "rose", "G03-window": "cream", "G03-trim": "cream" });
     assert.equal(JSON.stringify(oldLocal), before);
   }
 });
@@ -1039,7 +1040,7 @@ test("thirty-centimeter legs use complete Y parts and prices on all three platfo
   const initial = createInitialState();
   const tall = success(setLegHeight(initial, 300));
   assert.deepEqual(getBaseParts(300).filter(part => /^Y/.test(part.id)).map(part => part.id), ["Y01", "Y02", "Y03", "Y04"]);
-  assert.equal(getTotalPrice(tall) - getTotalPrice(initial), 4800);
+  assert.equal(getTotalPrice(tall) - getTotalPrice(initial), 400);
   const triple = success(addPlatform(success(addPlatform(tall))));
   const lines = getOrderLines(triple);
   assert.equal(lines.length, 3);
@@ -1052,21 +1053,22 @@ test("thirty-centimeter legs use complete Y parts and prices on all three platfo
   assert.equal(getTotalPrice(triple), 3 * getTotalPrice(tall));
 });
 
-test("bedding and leg height remain independent for every supported depth and leg length", () => {
+test("deeper bedding raises only shorter existing legs and never shortens legs or adds missing legs", () => {
   for (const legHeight of [0, 100, 200, 300] as const) {
     const initial = success(setLegHeight(createInitialState(), legHeight));
     for (const depth of [100, 200, 300] as const) {
       const thick = success(setBedding(initial, { mode: "thick", depth }));
-      assert.equal(thick.legHeight, legHeight);
-      assert.equal(getDisplayElevation(thick), (legHeight || depth) - 100);
+      const expectedHeight = legHeight === 0 ? 0 : Math.max(legHeight, depth);
+      assert.equal(thick.legHeight, expectedHeight);
+      assert.equal(getDisplayElevation(thick), (expectedHeight || depth) - 100);
       for (const nextHeight of [0, 100, 200, 300] as const) {
         const changedLegs = success(setLegHeight(thick, nextHeight));
         assert.deepEqual(changedLegs.bedding, { mode: "thick", depth });
         assert.equal(getDisplayElevation(changedLegs), (nextHeight || depth) - 100);
       }
       const thin = success(setBedding(thick, { mode: "thin", depth: 50 }));
-      assert.equal(thin.legHeight, legHeight);
-      assert.equal(getDisplayElevation(thin), (legHeight || 50) - 100);
+      assert.equal(thin.legHeight, expectedHeight);
+      assert.equal(getDisplayElevation(thin), (expectedHeight || 50) - 100);
     }
   }
 });
@@ -1297,4 +1299,86 @@ test("neighboring villas can rotate over empty stair space but cannot overlap ac
   assert.equal(blocked.state, rotated.state);
   assert.equal(JSON.stringify(rotated.state), before);
   assert.deepEqual(getPlacements(rotated.state, "villa", 0, rotated.item.id).filter(position => position.parentId === "base2"), []);
+});
+
+test("three populated platforms support every family turning through all four physically free directions", () => {
+  let state = success(addPlatform(success(addPlatform(createInitialState()))));
+  for (const platform of getPlatforms(state)) {
+    const position = getPlacements(state, "villa", 270).find(candidate => candidate.parentId === platform.id)!;
+    const villa = tryPlace(state, "villa", position, 270);
+    assert.equal(villa.ok, true);
+    if (!villa.ok) return;
+    const hatPosition = getPlacements(villa.state, "roof-cottage", 270).find(candidate => candidate.parentId === villa.item.id)!;
+    const hat = tryPlace(villa.state, "roof-cottage", hatPosition, 270);
+    assert.equal(hat.ok, true);
+    if (!hat.ok) return;
+    state = hat.state;
+  }
+  assert.equal(state.items.length, 6);
+  for (const villa of state.items.filter(item => item.productId === "villa")) {
+    let turnedState = state;
+    const unchangedNeighbors = state.items.filter(item => item.id !== villa.id && item.parentId !== villa.id);
+    for (const rotation of [0, 90, 180, 270] as const) {
+      const result = rotateItem(turnedState, villa.id);
+      assert.equal(result.ok, true, `${villa.parentId} → ${rotation}°: ${result.ok ? "" : result.reason}`);
+      if (!result.ok) return;
+      turnedState = result.state;
+      assert.equal(result.item.rotation, rotation);
+      assert.equal(result.item.parentId, villa.parentId);
+      const hat = turnedState.items.find(item => item.parentId === villa.id)!;
+      assert.equal(hat.rotation, rotation);
+      assert.deepEqual([hat.x, hat.y, hat.z], transformPoint([78, 239, 200], getProduct("villa"), result.item));
+      assert.deepEqual(turnedState.items.filter(item => item.id !== villa.id && item.parentId !== villa.id), unchangedNeighbors);
+      assert.deepEqual(validateAssembly(turnedState), turnedState);
+      assert.equal(encodeConfig(decodeConfig(encodeConfig(turnedState))), encodeConfig(turnedState));
+    }
+  }
+});
+
+test("the screenshot layout's blocked middle direction remains blocked even without hats, while matching side directions are reachable", () => {
+  let state = success(addPlatform(success(addPlatform(createInitialState()))));
+  for (const platform of getPlatforms(state)) {
+    const villa = autoPlace(state, "villa", platform.id);
+    assert.equal(villa.ok, true);
+    if (!villa.ok || !villa.item) return;
+    const hatPosition = getPlacements(villa.state, "roof-cottage", villa.item.rotation).find(candidate => candidate.parentId === villa.item!.id)!;
+    const hat = tryPlace(villa.state, "roof-cottage", hatPosition, villa.item.rotation);
+    assert.equal(hat.ok, true);
+    if (!hat.ok) return;
+    state = hat.state;
+  }
+  const villas = state.items.filter(item => item.productId === "villa");
+  assert.deepEqual(villas.map(item => [item.parentId, item.x, item.y, item.rotation]), [
+    ["base", 150, 190, 0], ["base2", 490, 150, 90], ["base3", 750, 190, 0],
+  ]);
+  const center = villas[1], withoutHats = { ...state, items: villas };
+  const blocked = rotateItem(state, center.id, 270);
+  assert.equal(blocked.ok, false);
+  if (!blocked.ok) assert.match(blocked.reason, /相邻的二层平台重叠.*31厘米.*30厘米/);
+  assert.equal(blocked.state, state);
+  assert.equal(rotateItem(withoutHats, center.id, 270).ok, false);
+  // Each side can legally turn to the center's direction without moving or
+  // recoloring the others. Three same-facing 90° families are attainable.
+  for (const side of [villas[0], villas[2]]) {
+    const result = rotateItem(state, side.id);
+    assert.equal(result.ok, true);
+    if (!result.ok) return;
+    state = result.state;
+  }
+  assert.deepEqual(state.items.filter(item => item.productId === "villa").map(item => item.rotation), [90, 90, 90]);
+  assert.deepEqual(state.items.filter(item => item.productId === "roof-cottage").map(item => item.rotation), [90, 90, 90]);
+  assert.deepEqual(validateAssembly(state), state);
+});
+
+test("raising bedding upgrades each platform's legs in the order while preserving imported shorter-leg saves", () => {
+  let state = success(addPlatform(success(addPlatform(createInitialState()))));
+  const raised = success(setBedding(state, { mode: "thick", depth: 300 }));
+  assert.equal(raised.legHeight, 300);
+  assert.equal(getOrderLines(raised).filter(line => line.parts.includes("Y01")).length, 3);
+  assert.equal(decodeConfig(encodeConfig(raised)).legHeight, 300);
+  state = success(setLegHeight(raised, 100));
+  const restored = decodeConfig(encodeConfig(state));
+  assert.equal(restored.legHeight, 100, "legacy or explicitly selected shorter legs are not rewritten on import");
+  assert.deepEqual(restored.bedding, { mode: "thick", depth: 300 });
+  assert.equal(success(setBedding(restored, { mode: "thick", depth: 200 })).legHeight, 200);
 });

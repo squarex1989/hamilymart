@@ -31,7 +31,7 @@ test("separate hat window color preserves every triangle and leaves the brim and
       assert.equal(object.userData.defaultColor, "#F1EADB");
     } else if (source === "G03_Snow") {
       assert.ok(new THREE.Box3().setFromObject(object).min.z > 260, "remaining Snow contains only brim and pompom");
-      assert.equal(getSourceColorSlot("G03", source, object.userData.colorKey), undefined);
+      assert.equal(getSourceColorSlot("G03", source, object.userData.colorKey), "G03-trim");
     }
   });
   assert.equal(windowTriangles, 764);

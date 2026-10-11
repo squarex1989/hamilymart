@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
 import { getBaseParts } from "../src/data/catalog";
-import { createSelectionBox, dimensionsInCentimeters, disposeAnnotation, getRenderedModelBounds } from "../src/lib/scene-annotations";
+import { createSelectionBox, dimensionsInCentimeters, disposeAnnotation, getRenderedModelBounds, updateSelectionStroke } from "../src/lib/scene-annotations";
 
 const model = (dimensions: [number, number, number], owner: string) => {
   const group = new THREE.Group();
@@ -45,9 +46,22 @@ test("a selected cover and pool use their own bounds, and the selection box has 
   assert.deepEqual(dimensionsInCentimeters(getRenderedModelBounds(scene, "cover:base:H01")), [6.4, 6.4, .8]);
   assert.deepEqual(dimensionsInCentimeters(getRenderedModelBounds(scene, "pool:base")), [15.4, 15.4, 5]);
   const helper = createSelectionBox(getRenderedModelBounds(scene, "cover:base:H01"));
-  assert.equal(((helper.children[0] as THREE.Mesh).material as THREE.Material).opacity, .1);
-  assert.equal(((helper.children[1] as THREE.Line).material as THREE.LineDashedMaterial).opacity, .2);
-  assert.ok((helper.children[1] as THREE.Line).geometry.getAttribute("lineDistance"));
+  assert.equal(((helper.children[0] as THREE.Mesh).material as THREE.Material).opacity, .2);
+  const edges = helper.children[1] as LineSegments2;
+  assert.ok(edges instanceof LineSegments2);
+  assert.equal(edges.material.opacity, .5);
+  assert.equal(edges.material.linewidth, 2.5);
+  assert.equal(edges.material.dashed, true);
+  assert.equal(edges.geometry.getAttribute("instanceStart").count, 12);
+  assert.ok(edges.geometry.getAttribute("instanceDistanceStart"));
+  const camera = new THREE.PerspectiveCamera(34, 1, 1, 4500);
+  camera.position.copy(helper.position).add(new THREE.Vector3(0, 0, 500));
+  updateSelectionStroke(helper, camera, 500);
+  const scale = edges.material.dashScale;
+  camera.position.z += 500;
+  updateSelectionStroke(helper, camera, 500);
+  assert.ok(Math.abs(edges.material.dashScale - scale / 2) < .0001, "dashes retain their screen length as the camera pulls back");
+  assert.equal(edges.material.linewidth, 2.5, "line width stays in CSS pixels after zooming");
   disposeAnnotation(helper);
 });
 

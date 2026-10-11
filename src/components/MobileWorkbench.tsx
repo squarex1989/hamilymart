@@ -63,7 +63,7 @@ export default function MobileWorkbench(props: WorkbenchProps) {
     </div> : <>
       <div className="mobile-product-rail" ref={rail} aria-label="横滑挑选配件">
         {props.products.map(product => <button className="mobile-product" key={product.id} disabled={!props.ready} onClick={() => props.onAdd(product.id)}>
-          <span className="mobile-product-picture"><img src={`/thumbnails/${product.id}.png?v=${MODEL_ASSET_VERSION}`} alt="" draggable={false} /></span><strong>{product.name}</strong><small>{product.parts.length > 1 ? `${product.parts.length} 件套装` : "磁吸配件"}</small>
+          <span className="mobile-product-picture"><img src={`/thumbnails/${product.id}.png?v=${MODEL_ASSET_VERSION}`} alt="" draggable={false} /></span><strong>{product.name}</strong><small className="mobile-product-price">¥{product.price / 100}</small>
         </button>)}
       </div>
       <nav className="mobile-category-bar" aria-label="配件分类">

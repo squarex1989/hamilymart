@@ -24,7 +24,7 @@ export default function DesktopWorkbench(props: Props) {
       <nav className="category-tabs" aria-label="配件分类">{[["all", "全部"], ["house", "小屋"], ["pipe", "管道"], ["garden", "花园"], ["toy", "玩具"]].map(([id, label]) => <button key={id} aria-pressed={props.category === id} className={props.category === id ? "active" : ""} onClick={() => props.onCategory(id)}>{label}</button>)}</nav>
       <div className="product-grid">{props.products.map(product => <article className="product-card" key={product.id}>
         <button className="product-visual" aria-label={`选择${product.name}`} disabled={!props.ready} onPointerDown={event => props.onStartDrag(product.id, event)} onClick={() => props.onAdd(product.id)}><img src={`/thumbnails/${product.id}.png?v=${MODEL_ASSET_VERSION}`} alt={product.name} draggable={false} /></button>
-        <div className="product-info"><h3>{product.name}</h3><p>{product.parts.length > 1 ? `${product.parts.length} 件组合 · 套餐` : "磁吸配件"}</p><div><strong>{money(product.price)}</strong><button className="add-button" aria-label={`添加${product.name}`} disabled={!props.ready} onClick={() => props.onAdd(product.id)}><Plus size={17} /></button></div></div>
+        <div className="product-info"><h3>{product.name}</h3><div><strong>{money(product.price)}</strong><button className="add-button" aria-label={`添加${product.name}`} disabled={!props.ready} onClick={() => props.onAdd(product.id)}><Plus size={17} /></button></div></div>
       </article>)}</div>
     </div>}
   </aside>;
