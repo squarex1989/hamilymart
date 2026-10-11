@@ -234,6 +234,21 @@ interface Surface {
   id: string;
   sourceParts?: ("P01" | "H06")[];
 }
+function receiverMatches(magnet: Vec3, receiver: Vec3, product: Product, surface: Surface): boolean {
+  const offset = surface.parentProduct === "base" ? product.baseMagnetOffsetMm ?? 0 : 0;
+  return offset > 0
+    ? close(magnet[2], receiver[2]) && Math.hypot(magnet[0] - receiver[0], magnet[1] - receiver[1]) <= offset + EPS
+    : samePoint(magnet, receiver);
+}
+/** Return distinct occupied steel receivers, with no receiver counted twice. */
+function matchedReceivers(magnets: Vec3[], product: Product, surface: Surface): Set<number> {
+  const matches = new Set<number>();
+  for (const magnet of magnets) {
+    const index = surface.points.findIndex((receiver, i) => !matches.has(i) && receiverMatches(magnet, receiver, product, surface));
+    if (index >= 0) matches.add(index);
+  }
+  return matches;
+}
 type ProductLookup = (id: string) => CollisionProduct;
 function getSurfaces(state: AssemblyState, excluded: Set<string>, lookup: ProductLookup = getProduct): Surface[] {
   const surfaces: Surface[] = getPlatforms(state).map(platform => {
@@ -317,6 +332,7 @@ function compatiblePlacement(
   const magnets = product.bottomMagnets.map((m) =>
     transformPoint(m, product, placement),
   );
+  const receivers = matchedReceivers(magnets, product, surface);
   const faces = facesFor(product, placement);
   for (const other of state.items) {
     if (excluded.has(other.id) || other.id === placement.parentId) continue;
@@ -325,7 +341,8 @@ function compatiblePlacement(
       const otherMagnets = otherProduct.bottomMagnets.map((m) =>
         transformPoint(m, otherProduct, other),
       );
-      if (magnets.some((m) => otherMagnets.some((n) => samePoint(m, n))))
+      const otherReceivers = matchedReceivers(otherMagnets, otherProduct, surface);
+      if ([...receivers].some(index => otherReceivers.has(index)) || magnets.some((m) => otherMagnets.some((n) => samePoint(m, n))))
         return false;
     }
     if (boxes.some((a) => getItemBounds(other, otherProduct).some((b) => overlap(a, b)))) {
@@ -376,16 +393,31 @@ export function getPlacements(
       )
     )
       continue;
-    // Every foot may be the matching anchor; a two-magnet fit need not involve the first foot.
+    // Keep exact placements, including all existing saves and four-point upper-floor fits.
+    const shifts: Vec3[] = surface.points.flatMap(anchor => local.map(foot =>
+      anchor.map((v, i) => round(v - foot[i])) as Vec3));
+    const offset = surface.parentProduct === "base" ? product.baseMagnetOffsetMm ?? 0 : 0;
+    if (offset > 0) {
+      // Balance a proven finite mismatch across two different magnets/steel discs.
+      // Only pair midpoints are offered, not arbitrary placements near a magnet.
+      for (let i = 0; i < local.length; i++) for (let j = i + 1; j < local.length; j++) {
+        const [a, b] = [local[i], local[j]];
+        for (const [p, first] of surface.points.entries()) for (const [q, second] of surface.points.entries()) {
+          if (p === q || !close(second[2] - first[2], b[2] - a[2])) continue;
+          const dx = second[0] - first[0] - (b[0] - a[0]);
+          const dy = second[1] - first[1] - (b[1] - a[1]);
+          if (Math.hypot(dx, dy) > 2 * offset + EPS) continue;
+          shifts.push(first.map((v, axis) => round((v + second[axis] - a[axis] - b[axis]) / 2)) as Vec3);
+        }
+      }
+    }
+    // Every foot may be a matching anchor; a two-magnet fit need not involve the first foot.
     const seen = new Set<string>();
-    for (const anchor of surface.points) for (const foot of local) {
-      const shift = anchor.map((v, i) => round(v - foot[i])) as Vec3;
+    for (const shift of shifts) {
       const key = `${surface.parentId}:${shift.join(",")}:${rotation}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      const magnetCount = local.filter((m, index) =>
-        local.findIndex(n => samePoint(m, n)) === index && surface.points.some((n) => samePoint(m.map((v, i) => v + shift[i]) as Vec3, n)),
-      ).length;
+      const magnetCount = matchedReceivers(local.map(m => m.map((v, i) => v + shift[i]) as Vec3), product, surface).size;
       if (magnetCount < (product.minimumMagnetMatches ?? 2)) continue;
       const placement: Placement = {
         x: shift[0],
@@ -792,7 +824,7 @@ function legacyProductLookup(source: 2 | 3 | 4 | 5 | 6): ProductLookup {
   return id => {
     const current = getProduct(id);
     const frozen = legacyCatalog6.products[id as keyof typeof legacyCatalog6.products];
-    const product: CollisionProduct = frozen ? { ...current, ...frozen,
+    const product: CollisionProduct = frozen ? { ...current, ...frozen, baseMagnetOffsetMm: undefined,
       ...(id === "villa" ? { preciseCollisionBoxes: LEGACY_VILLA_COLLISION_BOXES } : {}),
     } as CollisionProduct : current;
     if (source === 6) return product;

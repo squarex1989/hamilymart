@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { MODEL_ASSET_VERSION, VISIBLE_PRODUCTS } from "../src/data/catalog";
+import { MODEL_ASSET_VERSION, VISIBLE_PRODUCTS, type ColorMap } from "../src/data/catalog";
 import { addPlatform, autoPlace, createInitialState, getPlatforms, type ActionResult, type AssemblyState } from "../src/lib/assembly";
 import { COLOR_STYLES, applyColorStyle, getBaseStyleColors, getProductStyleColors } from "../src/lib/color-styles";
 import { colorNewAdditions, createCatalogStyleHint, detectColorStyle, originalProductThumbnailUrl, productThumbnailUrl, restoreCatalogStyle } from "../src/lib/catalog-style";
@@ -21,6 +21,22 @@ test("official styles are recognized from the saved assembly without a new HM3 f
     assert.equal(restoreCatalogStyle(restored, code), index);
     assert.equal(encodeConfig(restored), code);
     assert(!Object.hasOwn(restored, "styleIndex"));
+  }
+});
+
+test("official styles recognize either saved yellow ID without changing those saved choices", () => {
+  let sample = success(autoPlace(createInitialState(), "villa"));
+  sample = success(autoPlace(sample, "roof-cottage"));
+  for (const [index] of COLOR_STYLES.entries()) {
+    const styled = applyColorStyle(sample, index);
+    for (const yellow of ["butter", "yellow"] as const) {
+      const recolor = (colors: ColorMap): ColorMap => Object.fromEntries(Object.entries(colors).map(([part, color]) => [part, color === "butter" || color === "yellow" ? yellow : color]));
+      const historical: AssemblyState = { ...styled, baseColors: recolor(styled.baseColors), items: styled.items.map(item => ({ ...item, colors: recolor(item.colors) })) };
+      const code = encodeConfig(historical);
+      assert.equal(detectColorStyle(historical), index);
+      assert.equal(restoreCatalogStyle(decodeConfig(code), code), index);
+      assert.equal(encodeConfig(historical), code);
+    }
   }
 });
 

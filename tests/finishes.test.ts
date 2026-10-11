@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
-import { AVAILABLE_COLORS, COLORS, PRODUCTS, WOOD_COLOR_IDS, getColorSwatch, getDefaultColors, getEditableProductColorParts, getProductColorParts, getLinkedColorPartId, setProductColor, getSourceColorSlot, resolveLinkedProductColors } from "../src/data/catalog";
+import { AVAILABLE_COLORS, COLORS, PRODUCTS, WOOD_COLOR_IDS, canonicalColorId, getColorSwatch, getDefaultColors, getEditableProductColorParts, getProductColorParts, getLinkedColorPartId, setProductColor, getSourceColorSlot, resolveLinkedProductColors } from "../src/data/catalog";
 import { addPlatform, autoPlace, createInitialState, getOrderLines, migrateAssembly } from "../src/lib/assembly";
 import { decodeConfig, encodeConfig } from "../src/lib/config-code";
 import { applyFinish } from "../src/lib/scene-finishes";
@@ -25,9 +25,9 @@ test("wood finishes append to the HM3 palette and round-trip without changing or
   assert.equal(getColorSwatch("cream"), "#F1EADB");
 });
 
-test("warm yellow, black and gray append after every old color without replacing source gold", () => {
+test("one warm yellow occupies the original picker position while all serialized color indices remain valid", () => {
   assert.deepEqual(COLORS.slice(0, 14).map(({ id, hex }) => [id, hex]), [
-    ["cream", "#F1EADB"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#C99B46"],
+    ["cream", "#F1EADB"], ["pine", "#174A3A"], ["red", "#B8273C"], ["butter", "#F3B34E"],
     ["sage", "#A7BEA4"], ["rose", "#E9AEBC"], ["sky", "#A6C8DF"], ["lilac", "#C7B4D8"],
     ["white", "#FAFAF7"], ["marble", "#E2E2DE"], ["jade", "#299C82"],
     ["peachwood", "#BE896F"], ["wood", "#CCAB7A"], ["darkwood", "#654333"],
@@ -37,16 +37,45 @@ test("warm yellow, black and gray append after every old color without replacing
     { id: "black", name: "黑色", hex: "#303331" },
     { id: "gray", name: "灰色", hex: "#A4ABA9" },
   ]);
-  assert.equal(COLORS[3].name, "原金黄");
+  assert.equal(COLORS[3].name, "黄色");
+  assert.equal(AVAILABLE_COLORS.length, 13);
+  assert.deepEqual(AVAILABLE_COLORS[3], COLORS[3]);
+  assert.equal(AVAILABLE_COLORS.filter(color => color.name === "黄色").length, 1);
+  assert.ok(!AVAILABLE_COLORS.some(color => (color.name as string) === "原金黄"));
   assert.equal(getDefaultColors("villa")["A01-bow"], "butter");
   for (const color of COLORS.slice(14)) {
-    assert.ok(AVAILABLE_COLORS.some(available => available.id === color.id));
+    assert.equal(AVAILABLE_COLORS.some(available => available.id === color.id), color.id !== "yellow");
     let state = autoPlace(createInitialState(), "villa").state;
     state = { ...state, baseColors: { ...state.baseColors, P01: color.id }, items: state.items.map(item => ({ ...item, colors: { ...item.colors, "A01-ribbon": color.id } })) };
     const restored = decodeConfig(encodeConfig(state));
     assert.deepEqual(restored.baseColors, state.baseColors);
     assert.deepEqual(restored.items[0].colors, state.items[0].colors);
   }
+});
+
+test("historical yellow aliases retain their exact HM3 data but share render, order and contrast behavior", () => {
+  const previous = "HM3.WzMsNywxMDAsWzAsWzE0LDEsMCwwLDAsMCwwLDAsMF0sW11dLG51bGwsW1syLDI1MCw1MCwxMTAsMCxbMTQsMTRdLC0xXSxbMiw1MCw1MCwxMTAsMCxbMywzXSwtMV1dLG51bGwsWzAsNTBdLG51bGxd.46E5DFD2";
+  const state = decodeConfig(previous), before = JSON.stringify(state);
+  assert.equal(encodeConfig(state), previous);
+  assert.equal(state.baseColors.P01, "yellow");
+  assert.deepEqual(state.items.map(item => item.colors.SHB), ["yellow", "butter"]);
+  const order = getOrderLines(state).filter(line => line.sku === "HM-HS-003");
+  assert.equal(order.reduce((total, line) => total + line.quantity, 0), 2);
+  for (const line of order) for (const color of Object.values(line.colors)) {
+    assert.equal(COLORS.find(entry => entry.id === color)!.name, "黄色");
+    assert.equal(getColorSwatch(color), "#F3B34E");
+  }
+  assert.equal(canonicalColorId("yellow"), "butter");
+  assert.equal(getColorSwatch("butter"), getColorSwatch("yellow"));
+  for (const [body, detail] of [["butter", "yellow"], ["yellow", "butter"]] as const) {
+    const oldHat = { G03: body, "G03-window": detail, "G03-trim": detail };
+    assert.deepEqual(resolveLinkedProductColors(oldHat), { G03: body, "G03-window": "cream", "G03-trim": "cream" });
+    const changed = setProductColor(oldHat, "G03-window", detail);
+    assert.equal(changed["G03-window"], "cream");
+    assert.equal(changed["G03-trim"], "cream");
+    assert.equal(oldHat["G03-window"], detail);
+  }
+  assert.equal(JSON.stringify(state), before);
 });
 
 test("retired marble designs remain valid without offering marble in the picker", () => {

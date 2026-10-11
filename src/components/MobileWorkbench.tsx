@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { ArrowLeft, Check, Plus, Undo2, Redo2 } from "lucide-react";
-import { AVAILABLE_COLORS, getColorSwatch, getProduct } from "../data/catalog";
+import { AVAILABLE_COLORS, canonicalColorId, getColorSwatch, getProduct } from "../data/catalog";
 import type { ColorId, ProductPart } from "../data/catalog";
 import { getPlatforms } from "../lib/assembly";
 import type { AssemblyState, PlatformId } from "../lib/assembly";
@@ -37,6 +37,7 @@ export type WorkbenchProps = {
 /** A dedicated touch rail, separate from the desktop catalog and pointer-drag flow. */
 export default function MobileWorkbench(props: WorkbenchProps) {
   const rail = useRef<HTMLDivElement>(null);
+  const currentColor = canonicalColorId(props.currentColor);
   const platforms = getPlatforms(props.state);
   const platform = platforms.find(p => p.id === props.platformId);
   const editing = !!props.selectedId;
@@ -54,8 +55,8 @@ export default function MobileWorkbench(props: WorkbenchProps) {
         {props.parts.map(part => <button key={part.id} aria-pressed={props.colorPart === part.id} onClick={() => props.onColorPart(part.id)}>{/^[LXY]01$/.test(part.id) ? "支撑脚" : part.role}</button>)}
       </div>
       <div className="mobile-color-rail" aria-label="可选颜色">
-        {AVAILABLE_COLORS.map(color => <button key={color.id} className={props.currentColor === color.id ? "selected" : ""} aria-label={color.name} aria-pressed={props.currentColor === color.id} onClick={() => props.onColor(color.id)}>
-          <span className="mobile-color-chip" style={{ background: getColorSwatch(color.id) }}>{props.currentColor === color.id && <Check size={16} />}</span><small>{color.name}</small>
+        {AVAILABLE_COLORS.map(color => <button key={color.id} className={currentColor === color.id ? "selected" : ""} aria-label={color.name} aria-pressed={currentColor === color.id} onClick={() => props.onColor(color.id)}>
+          <span className="mobile-color-chip" style={{ background: getColorSwatch(color.id) }}>{currentColor === color.id && <Check size={16} />}</span><small>{color.name}</small>
         </button>)}
       </div>
       {props.editingPlatform && <div className="mobile-leg-options">

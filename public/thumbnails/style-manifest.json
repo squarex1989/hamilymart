@@ -24,7 +24,7 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "1c65602707ec97a8d4e60c8d936c0c626222a841c05b8b054e6caf077a8124e9"
+      "pngSha256": "6a6af32f680ad228d99bb3947665a66c11149744e906928f6ec00e5b6714f4e3"
     },
     "l-house": {
       "materialColors": {
@@ -35,7 +35,7 @@
         "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
         "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
       },
-      "pngSha256": "5e02bed8b5798eb2d4a9c7b4c5a34dfe58ef1f4f6b0613a7dea975cee5db9392"
+      "pngSha256": "328ae6c90b56c4fa64034959a2308d72b3815a66c43941594cb5f1fdb9174c9c"
     },
     "cube-house": {
       "materialColors": {
@@ -46,7 +46,7 @@
         "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
         "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
       },
-      "pngSha256": "e4a275508a12d0e5f6ab794969d0e45c103867f6bef1f1fd54a04eb5c22d9676"
+      "pngSha256": "349ec7cfa0dbb0772253d88f00c857e54e04c87311478b9be220aced71efc5a4"
     },
     "roof-cottage": {
       "materialColors": {
@@ -140,7 +140,7 @@
       "modelSha256": {
         "SS01": "a3b5930e1f7b359ec8749d3658e5bb232613f0fd4666e976203f82e99b2d6efd"
       },
-      "pngSha256": "51956b9edafc2fa3d110445fadb54854addda5ff5638c8011ff0cd29aa012ae5"
+      "pngSha256": "c67ce46bb0d934a5629ef87240cb9b87d9e47fbe77693004793b797429f725b0"
     }
   },
   "woodland": {

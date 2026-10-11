@@ -1,4 +1,4 @@
-import { MODEL_ASSET_VERSION, resolveLinkedProductColors, type ColorMap } from "../data/catalog";
+import { MODEL_ASSET_VERSION, canonicalColorId, resolveLinkedProductColors, type ColorMap } from "../data/catalog";
 import { getPlatforms, type AssemblyState } from "./assembly";
 import { COLOR_STYLES, applyColorStyle, getBaseStyleColors, getProductStyleColors } from "./color-styles";
 
@@ -7,7 +7,7 @@ export interface CatalogStyleHint { styleId: string; configurationCode: string }
 export interface StyledAssemblySnapshot { state: AssemblyState; styleIndex: number }
 
 function colorsSignature(state: AssemblyState): string {
-  const entries = (colors: ColorMap) => Object.entries(colors).sort(([a], [b]) => a.localeCompare(b));
+  const entries = (colors: ColorMap) => Object.entries(colors).map(([part, color]) => [part, canonicalColorId(color)]).sort(([a], [b]) => a.localeCompare(b));
   return JSON.stringify([
     getPlatforms(state).map(platform => entries(platform.baseColors)),
     state.items.map(item => entries(resolveLinkedProductColors(item.colors))),

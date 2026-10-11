@@ -136,8 +136,8 @@ test("incomplete magnetic match and intersections are rejected on strict import"
   const collision = tryPlace(result.state, "cube-house", { x: 50, y: 50 });
   assert.equal(collision.ok, false);
 });
-test("Steel V9 hat requires a villa and its planter cannot rotate into the fence", () => {
-  assert.equal(getPlacements(createInitialState(), "roof-cottage").length, 0);
+test("hat can use the first floor while the upper planter cannot rotate into its fence", () => {
+  assert.ok(getPlacements(createInitialState(), "roof-cottage").length > 0);
   assert.ok(getPlacements(createInitialState(), "planter").length > 0);
   const villa = place(createInitialState(), "villa", 150, 190);
   const loft = place(villa.state, "roof-cottage", 78, 239, 200);
@@ -342,7 +342,7 @@ test("each bundled part color survives encode/decode and parent movement carries
   }
 });
 
-test("all original colors remain available; the gift decoration defaults to gold", () => {
+test("source colors stay available with the approved warm-yellow replacement", () => {
   assert.equal(COLORS.length, 17);
   const entries = modelIndex as Record<
     string,
@@ -363,7 +363,7 @@ test("all original colors remain available; the gift decoration defaults to gold
           : SOURCE_PART_TRIM_COLORS[part.id]?.[component.colorKey] ?? SOURCE_TRIM_COLORS[component.colorKey];
       assert.equal(
         COLORS.find((c) => c.id === colorId)?.hex.toUpperCase(),
-        part.id === "A01" && component.colorKey === "ChristmasRed" ? "#C99B46" : component.color.toUpperCase(),
+        component.colorKey === "Gold" || (part.id === "A01" && component.colorKey === "ChristmasRed") ? "#F3B34E" : component.color.toUpperCase(),
         part.id + ":" + component.colorKey,
       );
     }
@@ -373,8 +373,8 @@ test("all original colors remain available; the gift decoration defaults to gold
 });
 
 
-test("V4 original palette is unchanged and the eight-piece villa keeps exact defaults", () => {
-  assert.deepEqual(COLORS.slice(0, 4).map(color => color.hex), ["#F1EADB", "#174A3A", "#B8273C", "#C99B46"]);
+test("the source palette uses the approved yellow and keeps all eight villa default slots", () => {
+  assert.deepEqual(COLORS.slice(0, 4).map(color => color.hex), ["#F1EADB", "#174A3A", "#B8273C", "#F3B34E"]);
   assert.deepEqual(getProduct("villa").parts.map(part => [part.id, part.defaultColor]), [
     ["A01", "pine"], ["A02", "cream"], ["G05", "red"], ["G15", "pine"],
     ["G16", "pine"], ["G17", "pine"], ["W01", "cream"], ["W02", "cream"],
@@ -805,17 +805,17 @@ test("different decorative colors produce separate order lines without adding ph
   assert.throws(() => validateAssembly({ ...changed, items: changed.items.map(item => ({ ...item, colors: { ...item.colors, "A01-ribbon": "not-a-stock-color" } })) }), /未知颜色/);
 });
 
-test("Steel V15 keeps the 162 mm hat and 146 by 94 mm holes without inventing base contacts", () => {
+test("Steel V16 keeps the 162 mm hat and uses audited partial overlap on real base steel", () => {
   const state = createInitialState();
   const product = getProduct("roof-cottage");
   assert.deepEqual(product.origin, [78, 239, 200]);
   assert.deepEqual(product.bottomMagnets, [[10, 192, 200], [10, 286, 200], [156, 192, 200], [156, 286, 200]]);
   assert.equal(product.collisionBoxes[0][3] - product.collisionBoxes[0][0], 162);
   assert.deepEqual(product.collisionBoxes[0], modelIndex.G03.bounds, "collision bounds must match the actual Steel V15 G03 asset");
-  for (const rotation of [0, 90, 180, 270] as const) assert.deepEqual(getPlacements(state, product.id, rotation), []);
-  assert.equal(autoPlace(state, product.id).ok, false);
+  for (const rotation of [0, 90, 180, 270] as const) assert.equal(getPlacements(state, product.id, rotation).length, 24);
+  assert.equal(autoPlace(state, product.id).ok, true);
   const extended = success(addPlatform(state, "right"));
-  assert.equal(autoPlace(extended, product.id, "base2").ok, false);
+  assert.equal(autoPlace(extended, product.id, "base2").ok, true);
 });
 
 test("Steel V15 hat keeps its stable upper-floor transform with all four source contacts", () => {
@@ -872,7 +872,7 @@ test("rotation keeps a valid original pivot and never jumps from a restricted se
   if (turn.ok) assert.deepEqual([turn.item.x, turn.item.y, turn.item.z], [50, 50, 110]);
   const villa = place(success(addPlatform(createInitialState(), "right")), "villa", 150, 190);
   const cottage = place(villa.state, "roof-cottage", 78, 239, 200);
-  assert.ok(!getPlacements(cottage.state, "roof-cottage", 90, cottage.item.id).some(placement => placement.parentId === "base2"));
+  assert.ok(getPlacements(cottage.state, "roof-cottage", 90, cottage.item.id).some(placement => placement.parentId === "base2"));
   const before = JSON.stringify(cottage.state);
   const blocked = rotateItem(cottage.state, cottage.item.id);
   assert.equal(blocked.ok, false);
@@ -1011,7 +1011,7 @@ test("hat migration reserves a restricted upper host before moving a first-floor
 
 test("palette adds three woods and retires marble while keeping every serialized color index", () => {
   assert.deepEqual(COLORS.slice(0, 11).map(color => color.id), ["cream", "pine", "red", "butter", "sage", "rose", "sky", "lilac", "white", "marble", "jade"]);
-  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "jade", "peachwood", "wood", "darkwood", "yellow", "black", "gray"]);
+  assert.deepEqual(AVAILABLE_COLORS.map(color => color.id), ["cream", "pine", "red", "butter", "rose", "sky", "white", "jade", "peachwood", "wood", "darkwood", "black", "gray"]);
   assert.equal(AVAILABLE_COLORS.find(color => color.id === "cream")?.name, "杏色");
   assert.equal(AVAILABLE_COLORS.find(color => color.id === "jade")?.name, "琉璃绿");
   assert.deepEqual(COLORS.slice(8, 11).map(color => color.hex), ["#FAFAF7", "#E2E2DE", "#299C82"]);

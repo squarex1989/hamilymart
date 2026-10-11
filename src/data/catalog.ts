@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v16-style1";
+export const MODEL_ASSET_VERSION = "steel-v16-style2";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -12,7 +12,7 @@ export const COLORS = [
   { id: "cream", name: "杏色", hex: "#F1EADB" },
   { id: "pine", name: "绿色", hex: "#174A3A" },
   { id: "red", name: "红色", hex: "#B8273C" },
-  { id: "butter", name: "原金黄", hex: "#C99B46" },
+  { id: "butter", name: "黄色", hex: "#F3B34E" },
   { id: "sage", name: "鼠尾草", hex: "#A7BEA4" },
   { id: "rose", name: "粉色", hex: "#E9AEBC" },
   { id: "sky", name: "蓝色", hex: "#A6C8DF" },
@@ -27,9 +27,13 @@ export const COLORS = [
   { id: "black", name: "黑色", hex: "#303331" },
   { id: "gray", name: "灰色", hex: "#A4ABA9" },
 ] as const;
-/** Serialized color indices are append-only; retired finishes still open in older designs. */
-export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac" && color.id !== "marble");
+/** Serialized indices stay fixed; index 14 is a same-yellow compatibility alias. */
+export const AVAILABLE_COLORS = COLORS.filter(color => color.id !== "sage" && color.id !== "lilac" && color.id !== "marble" && color.id !== "yellow");
 export type ColorId = (typeof COLORS)[number]["id"];
+/** Compare/render one yellow while retaining either historical ID in saved data. */
+export function canonicalColorId(color: ColorId): ColorId {
+  return color === "yellow" ? "butter" : color;
+}
 export const WOOD_COLOR_IDS = ["peachwood", "wood", "darkwood"] as const satisfies readonly ColorId[];
 /** Peachwood and imitation wood are solid finishes; only dark brown keeps a quiet grain. */
 export function getColorSwatch(colorId: string): string {
@@ -116,7 +120,7 @@ export function resolveHatContrast(colors: ColorMap): ColorMap {
   const result = { ...colors };
   const fallback = colors.G03 === "cream" || colors.G03 === "white" || colors.G03 === "wood" ? "pine" : "cream";
   for (const key of ["G03-window", "G03-trim"])
-    if ((result[key] ?? "cream") === colors.G03 || (["cream", "white"].includes(colors.G03) && ["cream", "white"].includes(result[key] ?? "cream"))) result[key] = fallback;
+    if (canonicalColorId(result[key] ?? "cream") === canonicalColorId(colors.G03) || (["cream", "white"].includes(colors.G03) && ["cream", "white"].includes(result[key] ?? "cream"))) result[key] = fallback;
   return result;
 }
 /** Effective rendered/order colors; old saved follower choices are left intact in storage. */
@@ -148,6 +152,8 @@ export interface Product {
   bottomMagnets: Vec3[];
   /** Only source-defined single-contact accessories opt out of the two-contact minimum. */
   minimumMagnetMatches?: number;
+  /** Audited partial overlap on base steel receivers; other surfaces remain concentric. */
+  baseMagnetOffsetMm?: number;
   /** Source-space conservative occupied volumes, separate boxes retain L-shaped clearance. */
   collisionBoxes: Bounds[];
   /** Source-space upward attachment positions and supporting area. */
@@ -356,7 +362,7 @@ export const PRODUCTS: Product[] = [
     name: "帽子小屋",
     category: "house",
     price: 4000,
-    description: "四点磁吸 · 安装于礼物盒二层平台",
+    description: "一层两点磁吸 · 二层四点磁吸",
     // Stable virtual pivot: source body and all four contacts moved +5 mm in
     // V15, matching the parent receivers, so old saved hat transforms survive.
     origin: [78, 239, 200],
@@ -372,6 +378,9 @@ export const PRODUCTS: Product[] = [
     ),
     collisionBoxes: [[2, 179.60000610351562, 200, 164, 298, 373.3333435058594]],
     allowedParents: ["base", "villa"],
+    // Ø8 magnets on Ø12 steel: 94 mm / 100 mm pairs, centered with 3 mm
+    // offset per magnet (89.36% overlap). Does not imply measured holding force.
+    baseMagnetOffsetMm: 3,
     allowedRelativeRotations: [0],
   },
   pipe(
