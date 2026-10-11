@@ -39,6 +39,7 @@ import {
 } from "./lib/assembly";
 import type { ActionResult, AssemblyState, Bedding, PlatformId } from "./lib/assembly";
 import { decodeConfigWithMigration, encodeConfig } from "./lib/config-code";
+import { copyText } from "./lib/clipboard";
 
 const STORAGE = "hamilymart.assembly.v2";
 const STYLE_STORAGE = "hamilymart.catalog-style.v1";
@@ -112,6 +113,8 @@ export default function App() {
   const [category, setCategory] = useState("all");
   const [showDimensions, setShowDimensions] = useState(false);
   const [modal, setModal] = useState<"code" | "order" | "bedding" | "clear" | null>(null);
+  const [orderCopied, setOrderCopied] = useState(false);
+  const [orderCopyFailed, setOrderCopyFailed] = useState(false);
   const [importCode, setImportCode] = useState(""),
     [importError, setImportError] = useState(""),
     [toast, setToast] = useState("");
@@ -127,6 +130,7 @@ export default function App() {
     codeField = useRef<HTMLTextAreaElement>(null);
   const configurationCode = useMemo(() => encodeConfig(state), [state]);
   const orderLines = useMemo(() => getOrderLines(state), [state]);
+  useEffect(() => { setOrderCopied(false); setOrderCopyFailed(false); }, [modal, configurationCode]);
   const total = getTotalPrice(state);
   const platforms = getPlatforms(state);
   const selectedCover = selectedId?.startsWith("cover:") ? selectedId.split(":")[2] : null;
@@ -335,10 +339,9 @@ export default function App() {
     select(null);
   }
   async function copy(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
+    if (await copyText(text)) {
       notify("已复制，发给朋友就能复现同一搭配");
-    } catch {
+    } else {
       codeField.current?.focus();
       codeField.current?.select();
       notify("请长按或使用系统复制，完整编号已选中");
@@ -359,8 +362,8 @@ export default function App() {
       );
     }
   }
-  function downloadOrder() {
-    const text = [
+  function getOrderText() {
+    return [
       "HamilyMart 搭配清单",
       ...orderLines.map(
         (l) =>
@@ -377,15 +380,17 @@ export default function App() {
       "搭配编号：",
       configurationCode,
     ].join("\n");
-    const url = URL.createObjectURL(
-      new Blob(["\ufeff" + text], { type: "text/plain;charset=utf-8" }),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "HamilyMart-搭配清单.txt";
-    a.click();
-    URL.revokeObjectURL(url);
-    notify("配件编号、颜色和价格清单已下载");
+  }
+  async function copyOrder() {
+    const copied = await copyText(getOrderText());
+    setOrderCopied(copied);
+    setOrderCopyFailed(!copied);
+  }
+  function orderCopyButton() {
+    return <button className="primary-button full-width" onClick={() => void copyOrder()} aria-label="复制编号与价格清单">
+      {orderCopied ? <Check size={16} /> : <Copy size={16} />}
+      {orderCopied ? "已复制编号与价格清单" : "复制编号与价格清单"}
+    </button>;
   }
   function undo() {
     const last = history.at(-1);
@@ -535,6 +540,7 @@ export default function App() {
                 <p className="modal-lead">
                   套餐内的配件已全部包含。
                 </p>
+                <div className="order-copy-top">{orderCopyButton()}</div>
                 <div className="order-lines">
                   {orderLines.map((line, i) => (
                     <article className="order-line" key={`${line.id}-${i}`}>
@@ -565,13 +571,11 @@ export default function App() {
                   </span>
                   <strong>{money(total)}</strong>
                 </div>
-                <button
-                  className="primary-button full-width"
-                  onClick={downloadOrder}
-                >
-                  <ArrowDownToLine size={16} />
-                  下载编号与价格清单
-                </button>
+                {orderCopyButton()}
+                {orderCopyFailed && <div className="order-copy-fallback">
+                  <p className="field-error" role="alert">复制未成功，请长按下方清单复制。</p>
+                  <textarea className="code-field" aria-label="清单内容" readOnly autoFocus rows={6} value={getOrderText()} onFocus={event => event.currentTarget.select()} />
+                </div>}
                 <button
                   className="outline-button full-width"
                   onClick={() => setModal("code")}

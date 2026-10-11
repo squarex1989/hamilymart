@@ -252,6 +252,10 @@ h1, h2, h3, p { margin: 0; }
 .dialog-footnote { display: block; margin-top: 14px; color: #a5ae9a; font-size: 9px; line-height: 1.7; text-align: center; }
 .field-error { margin-top: 8px; color: #b67565; font-size: 11px; line-height: 1.6; }
 .order-modal { width: min(590px, 100%); }
+.order-copy-top { margin-bottom: 24px; }
+.order-copy-top .full-width { margin-top: 0; }
+.order-copy-fallback { margin-top: 12px; }
+.order-copy-fallback .code-field { margin-top: 8px; }
 .order-lines { margin-top: 3px; }
 .order-line { padding: 18px 0; border-bottom: 1px solid #e1e7d7; }
 .order-line:first-child { padding-top: 0; }
