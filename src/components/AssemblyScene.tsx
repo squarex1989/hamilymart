@@ -8,7 +8,7 @@ import {
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { FoldVertical, RotateCw, Smartphone, Trash2 } from "lucide-react";
+import { FoldVertical, RotateCw, Trash2 } from "lucide-react";
 import {
   MODEL_ASSET_VERSION,
   getProduct,
@@ -24,7 +24,7 @@ import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
 import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
 import { createExplodedLayout, fitExplodedCamera } from "../lib/exploded-view";
-import { createBlankDoubleTap, createShakeDetector } from "../lib/scene-gestures";
+import { createBlankDoubleTap } from "../lib/scene-gestures";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
@@ -97,27 +97,6 @@ export default forwardRef<SceneHandle, Props>(
     const [loading, setLoading] = useState(true);
     const [failed, setFailed] = useState(false);
     const [exploded, setExploded] = useState(false);
-    const [shakeEnabled, setShakeEnabled] = useState(false);
-    const [canUseMotion] = useState(() => window.isSecureContext && typeof window.DeviceMotionEvent !== "undefined" && window.matchMedia("(pointer: coarse)").matches);
-    async function toggleShake() {
-      if (shakeEnabled) {
-        runtime.current?.setShakeEnabled(false);
-        setShakeEnabled(false);
-        return;
-      }
-      try {
-        const motion = window.DeviceMotionEvent as typeof DeviceMotionEvent & { requestPermission?: () => Promise<"granted" | "denied"> };
-        // Safari requires this call directly from the explicit button gesture.
-        if (motion.requestPermission && await motion.requestPermission() !== "granted") {
-          current.current.onError("摇动权限未开启，仍可双击 3D 空白处展开或恢复。");
-          return;
-        }
-        runtime.current?.setShakeEnabled(true);
-        setShakeEnabled(true);
-      } catch {
-        current.current.onError("此浏览器暂不支持摇动，请双击 3D 空白处展开或恢复。");
-      }
-    }
     useImperativeHandle(
       ref,
       () => ({
@@ -170,9 +149,8 @@ export default forwardRef<SceneHandle, Props>(
     }, [props.showDimensions]);
     return (
       <div ref={host} className="scene-canvas" aria-label="仓鼠屋 3D 装配画布">
-        {(exploded || canUseMotion) && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
-          {exploded && <button type="button" onClick={() => runtime.current?.toggleExploded()}><FoldVertical size={15} /><span>恢复组装</span></button>}
-          {canUseMotion && <button type="button" aria-pressed={shakeEnabled} aria-label={shakeEnabled ? "关闭摇一摇" : "启用摇一摇"} onClick={() => void toggleShake()}><Smartphone size={15} /><span>{shakeEnabled ? "摇一摇已开启" : "启用摇一摇"}</span></button>}
+        {exploded && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
+          <button type="button" onClick={() => runtime.current?.toggleExploded()}><FoldVertical size={15} /><span>恢复组装</span></button>
         </div>}
         <div ref={toolbar} className="scene-item-toolbar" role="toolbar" aria-label="已选配件操作" hidden
           onPointerDown={(event) => event.stopPropagation()}>
@@ -315,9 +293,7 @@ function createRuntime(
   let lastBlankPointerUp: { x: number; y: number; at: number; pointerType: string } | null = null;
   let lastInvalidTapAt = -Infinity;
   let lastExplosionToggleAt = -Infinity;
-  const shakeDetector = createShakeDetector();
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let shakeEnabled = false;
   let modelReady = false;
   let exploded = false;
   let explosionProgress = 0;
@@ -413,21 +389,9 @@ function createRuntime(
   function interruptCameraAnimation() {
     // Touch/orbit controls remain available while the pieces finish moving.
     cameraAnimation = null;
-    shakeDetector.reset();
   }
   controls.addEventListener("start", interruptCameraAnimation);
-  function setShakeEnabled(enabled: boolean) {
-    shakeEnabled = enabled;
-    shakeDetector.reset();
-  }
-  function motion(event: DeviceMotionEvent) {
-    if (!shakeEnabled || document.hidden || !modelReady || touchPointers.size || pressed || drag) {
-      shakeDetector.reset();
-      return;
-    }
-    if (shakeDetector.sample(event, performance.now())) toggleExploded();
-  }
-  function visibilityChanged() { shakeDetector.reset(); blankTaps.reset(); pressed = null; }
+  function visibilityChanged() { blankTaps.reset(); pressed = null; }
   function pointAt(x: number, y: number, z = 110): Point | null {
     const b = renderer.domElement.getBoundingClientRect();
     if (x < b.left || x > b.right || y < b.top || y > b.bottom) return null;
@@ -989,7 +953,6 @@ function createRuntime(
   window.addEventListener("pointermove", move, { passive: false });
   window.addEventListener("pointerup", end);
   window.addEventListener("pointercancel", cancel);
-  window.addEventListener("devicemotion", motion);
   document.addEventListener("visibilitychange", visibilityChanged);
   const resize = new ResizeObserver(() => {
     const w = host.clientWidth,
@@ -1033,7 +996,6 @@ function createRuntime(
     updateTargets,
     updateAnnotations,
     toggleExploded,
-    setShakeEnabled,
     startDrag: (productId: string, x: number, y: number, pointerId?: number) =>
       startDrag(productId, x, y, undefined, pointerId),
     home: () => { restoreExploded(); home(); },
@@ -1081,7 +1043,6 @@ function createRuntime(
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", cancel);
-      window.removeEventListener("devicemotion", motion);
       document.removeEventListener("visibilitychange", visibilityChanged);
       explosion = originalView = explosionAnimation = cameraAnimation = null;
       scene.traverse((o) => {

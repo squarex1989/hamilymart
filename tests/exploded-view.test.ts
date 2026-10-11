@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { createExplodedLayout, fitExplodedCamera } from "../src/lib/exploded-view";
-import { createBlankDoubleTap, createShakeDetector } from "../src/lib/scene-gestures";
+import { createBlankDoubleTap } from "../src/lib/scene-gestures";
 import { getBaseParts, getProduct, type ProductPart } from "../src/data/catalog";
 
 async function realOwner(id: string, parts: ProductPart[], origin: number[], position: number[], rotation = 0) {
@@ -37,13 +37,15 @@ function allTransforms(root: THREE.Object3D) {
   return result;
 }
 
-test("real GLBs separate every color control and linked physical part, without losing seesaw geometry", async () => {
+test("exploded GLBs keep requested assembly groups intact without losing geometry", async () => {
   const root = new THREE.Group();
   root.add(await realOwner("base", getBaseParts(100), [0, 0, 0], [0, 0, 0]));
   for (const [id, position, rotation] of [
     ["villa", [150, 190, 110], Math.PI / 2],
     ["roof-cottage", [50, 250, 200], 0],
     ["seesaw", [250, 60, 110], 0],
+    ["pipe-tt1", [350, 50, 110], 0],
+    ["pipe-tt2", [450, 50, 110], Math.PI / 2],
   ] as const) {
     const product = getProduct(id);
     root.add(await realOwner(id, product.parts, product.origin, [...position], rotation));
@@ -52,10 +54,20 @@ test("real GLBs separate every color control and linked physical part, without l
     const original = allTransforms(root);
     const layout = createExplodedLayout(root);
     const keys = layout.pieces.map(piece => piece.key);
-    for (const expected of ["villa:A01:A01-ribbon", "villa:A01:A01-bow", "villa:G05:G05-base", "villa:G05:body", "roof-cottage:G03:G03-window", "roof-cottage:G03:G03-trim"])
-      assert.ok(keys.includes(expected), `missing independent color region ${expected}`);
-    for (const part of ["G15", "G16", "G17", "W01", "W02", "L01", "L02", "L03", "L04", "SS01"])
-      assert.ok(layout.pieces.some(piece => piece.partId === part), `missing physical part ${part}`);
+    for (const expected of ["base:platform", "villa:A01", "villa:G05", "villa:upper-platform", "villa:grass", "roof-cottage:G03", "pipe-tt1:pipe", "pipe-tt2:pipe"])
+      assert.ok(keys.includes(expected), `missing intact assembly ${expected}`);
+    const groupedParts: Record<string, string[]> = {
+      "base:platform": ["P01", "H01", "H02", "H03", "H04", "H05", "H06", "L01", "L02", "L03", "L04"],
+      "villa:upper-platform": ["A02", "W01", "W02"],
+      "villa:grass": ["G15", "G16", "G17"],
+      "pipe-tt1:pipe": ["TT1T", "TTB"],
+      "pipe-tt2:pipe": ["TT2T", "TTB"],
+    };
+    for (const [key, partIds] of Object.entries(groupedParts))
+      assert.deepEqual(layout.pieces.find(piece => piece.key === key)?.partIds, partIds.sort());
+    for (const partId of ["A01", "G03", "G05"])
+      assert.equal(layout.pieces.filter(piece => piece.partIds.includes(partId)).length, 1, `${partId} decorations remain attached`);
+    assert.ok(layout.pieces.some(piece => piece.partId === "SS01"), "all seesaw meshes are retained");
     let originalMeshCount = 0;
     root.traverse(node => { if (node.userData.modelMesh) originalMeshCount++; });
     assert.equal(layout.pieces.flatMap(piece => piece.meshes).length, originalMeshCount);
@@ -66,6 +78,70 @@ test("real GLBs separate every color control and linked physical part, without l
     assert.notDeepEqual(allTransforms(root), original);
     layout.apply(.4); layout.restore();
     assert.deepEqual(allTransforms(root), original, "every local and world transform returns exactly to the assembly");
+  } finally { dispose(root); }
+});
+
+test("rotated and stacked real houses keep roofs directly above their own bodies", async () => {
+  for (const rotation of [0, Math.PI / 2, Math.PI, Math.PI * 1.5]) {
+    const root = new THREE.Group();
+    root.add(await realOwner("base", getBaseParts(100), [0, 0, 0], [0, 0, 0]));
+    const lHouse = getProduct("l-house"), cube = getProduct("cube-house");
+    root.add(await realOwner("lower", lHouse.parts, lHouse.origin, [150, 150, 110], rotation));
+    // The cube stands on the occupied back-left square of the L roof. Rotate
+    // its position with the L so all four real assembly orientations are covered.
+    const upperPosition = new THREE.Vector3(-50, 50, 0).applyAxisAngle(new THREE.Vector3(0, 0, 1), rotation)
+      .add(new THREE.Vector3(150, 150, 195.6));
+    root.add(await realOwner("upper", cube.parts, cube.origin, upperPosition.toArray(), rotation));
+    try {
+      const original = allTransforms(root);
+      const layout = createExplodedLayout(root);
+      const chain = ["P01", "LHB", "LHR", "SHB", "SHR"].map(partId => {
+        const piece = layout.pieces.find(entry => entry.partId === partId)!;
+        assert.equal(piece.offset.x, 0, `${partId} keeps its original horizontal alignment`);
+        assert.equal(piece.offset.y, 0, `${partId} keeps its original horizontal alignment`);
+        return piece.originalBounds.clone().translate(piece.offset);
+      });
+      for (let i = 1; i < chain.length; i++)
+        assert.ok(chain[i].min.z >= chain[i - 1].max.z + 21.99, `vertical assembly order inverted at ${i}, rotation ${rotation}`);
+      layout.apply(1); layout.restore();
+      assert.deepEqual(allTransforms(root), original);
+    } finally { dispose(root); }
+  }
+});
+
+test("all supported platform legs and covers stay in the same exploded assembly", async () => {
+  for (const height of [0, 100, 200, 300] as const) {
+    const root = new THREE.Group();
+    const parts = getBaseParts(height, false, ["H02"]);
+    root.add(await realOwner("base", parts, [0, 0, 0], [300, 0, 0]));
+    try {
+      const layout = createExplodedLayout(root);
+      assert.equal(layout.pieces.length, 1);
+      assert.deepEqual(layout.pieces[0].partIds, parts.map(part => part.id).sort());
+      assert.ok(!layout.pieces[0].partIds.includes("H02"), "removed cover is not recreated");
+      const original = allTransforms(root);
+      layout.apply(1); layout.restore();
+      assert.deepEqual(allTransforms(root), original);
+    } finally { dispose(root); }
+  }
+});
+
+test("three edge-sharing platforms stay level while each house stays above its own base", async () => {
+  const root = new THREE.Group(), house = getProduct("cube-house");
+  for (let index = 0; index < 3; index++) {
+    root.add(await realOwner(`base${index}`, getBaseParts(100), [0, 0, 0], [index * 300, 0, 0]));
+    root.add(await realOwner(`house${index}`, house.parts, house.origin, [index * 300 + 150, 150, 110], index * Math.PI / 2));
+  }
+  try {
+    const layout = createExplodedLayout(root);
+    for (let index = 0; index < 3; index++) {
+      const base = layout.pieces.find(piece => piece.key === `base${index}:platform`)!;
+      const body = layout.pieces.find(piece => piece.key === `house${index}:SHB:body`)!;
+      const roof = layout.pieces.find(piece => piece.key === `house${index}:SHR:body`)!;
+      assert.deepEqual(base.offset.toArray(), [0, 0, 0], "neighboring platforms do not lift one another");
+      assert.ok(body.originalBounds.min.z + body.offset.z >= base.originalBounds.max.z + 21.99);
+      assert.ok(roof.originalBounds.min.z + roof.offset.z >= body.originalBounds.max.z + body.offset.z + 21.99);
+    }
   } finally { dispose(root); }
 });
 
@@ -103,26 +179,6 @@ test("nested moving meshes are not translated twice and restore scaled, rotated 
   layout.restore();
   assert.deepEqual(allTransforms(root), original);
   dispose(root);
-});
-
-test("shake needs opposing impulses and debounces walking, rotation, isolated bumps and repeated shakes", () => {
-  const detector = createShakeDetector();
-  const sample = (x: number, y: number, z: number, at: number) => detector.sample({ acceleration: { x, y, z } }, at);
-  for (let at = 0; at < 800; at += 20) assert.equal(sample(Math.sin(at) * 3, 1, 2, at), false);
-  assert.equal(sample(21, 0, 0, 1000), false);
-  assert.equal(sample(-21, 0, 0, 1800), false, "an isolated bump expires");
-  assert.equal(sample(21, 0, 0, 1920), true);
-  assert.equal(sample(-25, 0, 0, 2050), false);
-  assert.equal(sample(25, 0, 0, 2190), false);
-  assert.equal(sample(-21, 0, 0, 4000), false);
-  assert.equal(sample(22, 0, 0, 4110), true);
-  detector.reset();
-  const gravityOnly = createShakeDetector();
-  for (let step = 0; step < 120; step++) {
-    const angle = step / 120 * Math.PI;
-    assert.equal(gravityOnly.sample({ acceleration: null, accelerationIncludingGravity: { x: Math.sin(angle) * 9.81, y: 0, z: Math.cos(angle) * 9.81 } }, step * 20), false);
-  }
-  assert.equal(detector.sample({ acceleration: { x: null, y: NaN, z: 0 } }, 8000), false);
 });
 
 test("blank double taps require nearby consecutive clicks of the same pointer type and can be cancelled", () => {

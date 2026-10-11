@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v16-tee-explode1";
+export const MODEL_ASSET_VERSION = "steel-v16-assembly-explode2";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -137,7 +137,7 @@ export interface Product {
   id: string;
   sku: string;
   name: string;
-  category: "house" | "pipe" | "garden" | "toy";
+  category: "house" | "pipe" | "facility";
   price: number;
   description: string;
   badge?: string;
@@ -456,7 +456,7 @@ export const PRODUCTS: Product[] = [
     id: "planter",
     sku: "HM-GD-001",
     name: "袜子花圃",
-    category: "garden",
+    category: "facility",
     price: 500,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [280.5, 264, 200],
@@ -476,7 +476,7 @@ export const PRODUCTS: Product[] = [
     id: "food-bowl",
     sku: "HM-GD-002",
     name: "方块食盆",
-    category: "garden",
+    category: "facility",
     price: 500,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [280.5, 264, 200],
@@ -491,7 +491,7 @@ export const PRODUCTS: Product[] = [
     id: "pool",
     sku: "HM-GD-003",
     name: "圆形泳池",
-    category: "garden",
+    category: "facility",
     price: BASE_PRODUCT.poolSurcharge,
     description: "嵌入平台大圆洞 · 自动移除大圆盖 · 需要支撑脚",
     installation: "insert",
@@ -506,7 +506,7 @@ export const PRODUCTS: Product[] = [
     id: "seesaw",
     sku: "HM-TY-001",
     name: "跷跷板",
-    category: "toy",
+    category: "facility",
     price: 1500,
     description: "18 × 8 cm · 中心单点磁吸 · 一体活动玩具",
     origin: [90, 90, 110],

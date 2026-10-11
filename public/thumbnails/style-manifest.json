@@ -416,16 +416,16 @@
       "renderer": "three-shared-v1",
       "materialColors": {
         "B01_Snow": "peachwood",
-        "B01_ChristmasRed": "red"
+        "B01_ChristmasRed": "darkwood"
       },
       "materialHexColors": {
         "B01_Snow": "#BE896F",
-        "B01_ChristmasRed": "#B8273C"
+        "B01_ChristmasRed": "#654333"
       },
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "3eeab214304ed1a62690d6fb4d88907f23f6982718617f61b2f062e9300d641c"
+      "pngSha256": "c19fc2a33f0d084d04380c0b471b309dcd5bf6b6410031d0862bd71c41d6183f"
     },
     "pipe-lt2n": {
       "renderer": "three-shared-v1",
@@ -661,16 +661,16 @@
       "renderer": "three-shared-v1",
       "materialColors": {
         "B01_Snow": "rose",
-        "B01_ChristmasRed": "red"
+        "B01_ChristmasRed": "white"
       },
       "materialHexColors": {
         "B01_Snow": "#E9AEBC",
-        "B01_ChristmasRed": "#B8273C"
+        "B01_ChristmasRed": "#FAFAF7"
       },
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "5dec38af5d0a50d987e5bc72b6a1ea3796a3b15f7c21c3c5c885c56ded7feb40"
+      "pngSha256": "5a240df47d085074a05d68cf3d75163567092ad73cab12ac44c90c354252b95c"
     },
     "pipe-lt2n": {
       "renderer": "three-shared-v1",
@@ -906,16 +906,16 @@
       "renderer": "three-shared-v1",
       "materialColors": {
         "B01_Snow": "sky",
-        "B01_ChristmasRed": "red"
+        "B01_ChristmasRed": "yellow"
       },
       "materialHexColors": {
         "B01_Snow": "#A6C8DF",
-        "B01_ChristmasRed": "#B8273C"
+        "B01_ChristmasRed": "#F3B34E"
       },
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "cb98989bbe9e5865536569222edd3487529c683b89f69aa9235b09e53fce8d82"
+      "pngSha256": "c8a97cf7f8da72ce74239c16756ec3d85ea7e2920db51bb135bdbbfdc0d4161b"
     },
     "pipe-lt2n": {
       "renderer": "three-shared-v1",
@@ -1151,16 +1151,16 @@
       "renderer": "three-shared-v1",
       "materialColors": {
         "B01_Snow": "jade",
-        "B01_ChristmasRed": "red"
+        "B01_ChristmasRed": "rose"
       },
       "materialHexColors": {
         "B01_Snow": "#299C82",
-        "B01_ChristmasRed": "#B8273C"
+        "B01_ChristmasRed": "#E9AEBC"
       },
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "40aa7b5bb5f20db442fe4072a668c89d789795a979bffc703fde96a244c0f292"
+      "pngSha256": "42be8c0c9deecd72e2da26c260395870b6744d093e1c74d59f0dfc5ae8b889ae"
     },
     "pipe-lt2n": {
       "renderer": "three-shared-v1",

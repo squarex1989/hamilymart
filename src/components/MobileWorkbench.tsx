@@ -7,7 +7,7 @@ import type { AssemblyState, PlatformId } from "../lib/assembly";
 import ProductThumbnail from "./ProductThumbnail";
 import "./mobile-workbench.css";
 
-const categories = [["all", "全部"], ["house", "小屋"], ["pipe", "管道"], ["garden", "花园"], ["toy", "玩具"]];
+const categories = [["all", "全部"], ["house", "小屋"], ["pipe", "管道"], ["facility", "设施"]];
 export type WorkbenchProps = {
   state: AssemblyState;
   styleIndex: number;

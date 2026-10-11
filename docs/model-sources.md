@@ -119,7 +119,7 @@ PYTHON
 
 导出页及文件写入接口仅存在于 Vite 开发环境。接口只接受同源 localhost、合法商品/风格和 480×400 PNG，正式构建仍使用静态 `<img>`，不为每张图创建 WebGL 或加载额外模型。`prepare-models.py` 现在只处理几何，旧 Blender 缩略图参数会明确报错并提示新入口，避免生成旧色调的图片。
 
-网页模型与缩略图的缓存版本由 `catalog.ts` 的 `MODEL_ASSET_VERSION` 独立控制，当前为 `steel-v16-tee-explode1`；资源缓存版本与搭配目录分别维护；当前目录为 7，编号格式仍为 HM3。本次接口变化已通过严格的旧目录验证和迁移处理。
+网页模型与缩略图的缓存版本由 `catalog.ts` 的 `MODEL_ASSET_VERSION` 独立控制，当前为 `steel-v16-assembly-explode2`；资源缓存版本与搭配目录分别维护；当前目录为 7，编号格式仍为 HM3。本次接口变化已通过严格的旧目录验证和迁移处理。
 
 ## 五种风格缩略图
 

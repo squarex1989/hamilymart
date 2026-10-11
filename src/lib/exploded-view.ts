@@ -5,90 +5,80 @@ import { getSourceColorSlot } from "../data/catalog";
 export interface ExplodedPiece {
   key: string;
   partId: string;
+  /** Physical parts which must travel together even when their colors differ. */
+  partIds: string[];
   meshes: THREE.Mesh[];
   originalBounds: THREE.Box3;
   offset: THREE.Vector3;
 }
 
 const GAP = 22;
-function intersectsWithGap(a: THREE.Box3, b: THREE.Box3) {
-  return a.min.x < b.max.x + GAP && a.max.x > b.min.x - GAP
-    && a.min.y < b.max.y + GAP && a.max.y > b.min.y - GAP
-    && a.min.z < b.max.z + GAP && a.max.z > b.min.z - GAP;
+const PIPE_PART = /^(ST|LT|TT)\d*N?[TB]$/;
+
+/** These are assembly groups, independent of the controls used to paint them. */
+function assemblyGroup(partId: string, sourcePart?: string, colorKey?: string) {
+  if (/^(P01|H0[1-6]|[LXY]0[1-4])$/.test(partId)) return "platform";
+  if (/^(A02|W0[12])$/.test(partId)) return "upper-platform";
+  if (/^G1[567]$/.test(partId)) return "grass";
+  if (PIPE_PART.test(partId)) return "pipe";
+  if (["A01", "G03", "G05"].includes(partId)) return partId;
+  return `${partId}:${getSourceColorSlot(partId, sourcePart, colorKey) ?? "body"}`;
 }
 
-/** Slide along a single axis until every previously arranged piece is clear. */
-function clearPosition(bounds: THREE.Box3, placed: THREE.Box3[], axis: "x" | "y" | "z", sign: number) {
-  const result = bounds.clone();
-  for (let step = 0; step <= placed.length; step++) {
-    const collisions = placed.filter(other => intersectsWithGap(result, other));
-    if (!collisions.length) return result;
-    const shift = sign > 0
-      ? Math.max(...collisions.map(other => other.max[axis] + GAP - result.min[axis]))
-      : Math.min(...collisions.map(other => other.min[axis] - GAP - result.max[axis]));
-    const delta = new THREE.Vector3();
-    delta[axis] = shift + sign * .01;
-    result.translate(delta);
-  }
-  return result;
+function overlapFootprints(a: THREE.Box3, b: THREE.Box3) {
+  // Edge-sharing platforms are neighboring columns, not a vertical stack.
+  // The small inward tolerance ignores float noise in exported coplanar edges.
+  return a.min.x < b.max.x - .01 && a.max.x > b.min.x + .01
+    && a.min.y < b.max.y - .01 && a.max.y > b.min.y + .01;
 }
 
 export function createExplodedLayout(root: THREE.Object3D) {
   root.updateWorldMatrix(true, true);
   const pieces: ExplodedPiece[] = [];
   for (const owner of root.children) {
+    const groups = new Map<string, ExplodedPiece>();
     for (const part of owner.children) {
       const partId = String(part.userData.partId ?? part.name);
-      const groups = new Map<string, ExplodedPiece>();
       part.traverse(node => {
         if (!(node instanceof THREE.Mesh) || !node.userData.modelMesh) return;
-        // Decorations with an independent color control move separately. Linked physical
-        // parts (four legs, two pillars, three grass borders) remain distinct pieces.
-        const slot = getSourceColorSlot(partId, node.userData.sourcePart, node.userData.colorKey) ?? "body";
-        if (!groups.has(slot)) groups.set(slot, {
-          key: `${owner.userData.itemId}:${partId}:${slot}`,
-          partId, meshes: [], originalBounds: new THREE.Box3(), offset: new THREE.Vector3(),
+        const group = assemblyGroup(partId, node.userData.sourcePart, node.userData.colorKey);
+        if (!groups.has(group)) groups.set(group, {
+          key: `${owner.userData.itemId}:${group}`,
+          partId, partIds: [], meshes: [], originalBounds: new THREE.Box3(), offset: new THREE.Vector3(),
         });
-        const piece = groups.get(slot)!;
+        const piece = groups.get(group)!;
+        if (!piece.partIds.includes(partId)) piece.partIds.push(partId);
         piece.meshes.push(node);
         node.geometry.computeBoundingBox();
         if (node.geometry.boundingBox) piece.originalBounds.union(node.geometry.boundingBox.clone().applyMatrix4(node.matrixWorld));
       });
-      pieces.push(...[...groups.values()].filter(piece => !piece.originalBounds.isEmpty()));
+    }
+    for (const [group, piece] of groups) {
+      piece.partIds.sort();
+      piece.partId = ({ platform: "P01", "upper-platform": "A02", grass: "G15" } as Record<string, string>)[group]
+        ?? piece.partIds[0];
+      if (!piece.originalBounds.isEmpty()) pieces.push(piece);
     }
   }
   const originalBounds = pieces.reduce((bounds, piece) => bounds.union(piece.originalBounds), new THREE.Box3());
-  const center = originalBounds.getCenter(new THREE.Vector3());
   const placed: THREE.Box3[] = [];
-  // Start with platforms as visual anchors; large bodies settle before small trim.
-  const volume = (piece: ExplodedPiece) => {
-    const size = piece.originalBounds.getSize(new THREE.Vector3());
-    return size.x * size.y * size.z;
-  };
-  pieces.sort((a, b) => Number(b.partId === "P01") - Number(a.partId === "P01")
-    || volume(b) - volume(a) || a.key.localeCompare(b.key));
+  // Keep the source's bottom-to-top order, including inset roof locating tabs.
+  // The gift body, stairs and upper-platform pillars start at the same height;
+  // their explicit order keeps the upper deck above its supporting assembly.
+  const order: Record<string, number> = { P01: 0, A01: 1, G05: 2, A02: 3, G15: 4 };
+  pieces.sort((a, b) => Math.round(a.originalBounds.min.z * 100) - Math.round(b.originalBounds.min.z * 100)
+    || (order[a.partId] ?? 5) - (order[b.partId] ?? 5)
+    || a.originalBounds.max.z - b.originalBounds.max.z || a.key.localeCompare(b.key));
   const expandedBounds = new THREE.Box3();
   for (const piece of pieces) {
-    const midpoint = piece.originalBounds.getCenter(new THREE.Vector3());
-    const preferred = midpoint.clone().sub(center).multiply(new THREE.Vector3(.38, .38, .48));
-    preferred.z += Math.max(0, 18 - originalBounds.min.z) + (midpoint.z - originalBounds.min.z) * .12;
-    const desired = piece.originalBounds.clone().translate(preferred);
-    if (desired.min.z < 12) desired.translate(new THREE.Vector3(0, 0, 12 - desired.min.z));
-    let next = desired;
-    if (placed.some(other => intersectsWithGap(next, other))) {
-      const candidates = (["x", "y", "z"] as const).flatMap(axis => [1, -1].map(sign => clearPosition(desired, placed, axis, sign)))
-        .filter(candidate => candidate.min.z >= 8 && !placed.some(other => intersectsWithGap(candidate, other)));
-      candidates.sort((a, b) => {
-        const cost = (candidate: THREE.Box3) => {
-          const delta = candidate.min.clone().sub(desired.min);
-          // Slightly prefer vertical separation for roofs, trim and stacked surfaces.
-          return delta.x ** 2 + delta.y ** 2 + delta.z ** 2 * .72;
-        };
-        return cost(a) - cost(b);
-      });
-      next = candidates[0] ?? clearPosition(desired, placed, "z", 1);
-    }
-    piece.offset.copy(next.min).sub(piece.originalBounds.min);
+    // Lift straight up without changing X/Y or rotation. Roofs remain aligned
+    // above their houses, and stacked houses stay above the roof they stood on.
+    // Only overlapping footprints require clearance, so separate columns need
+    // not turn into one excessively tall stack.
+    const supportHeight = placed.filter(other => overlapFootprints(piece.originalBounds, other))
+      .reduce((height, other) => Math.max(height, other.max.z + GAP), piece.originalBounds.min.z);
+    piece.offset.set(0, 0, supportHeight - piece.originalBounds.min.z);
+    const next = piece.originalBounds.clone().translate(piece.offset);
     expandedBounds.union(next);
     placed.push(next);
   }
