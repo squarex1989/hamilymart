@@ -98,6 +98,7 @@ export default function App({ startup }: { startup: DraftSession }) {
   const [history, setHistory] = useState<StyledAssemblySnapshot[]>([]);
   const [future, setFuture] = useState<StyledAssemblySnapshot[]>([]);
   const [styleIndex, setStyleIndex] = useState(startup.styleIndex);
+  const [viewResetKey, setViewResetKey] = useState(0);
   const dragFinishedAt = useRef(0);
   const scene = useRef<SceneHandle>(null),
     toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -302,6 +303,7 @@ export default function App({ startup }: { startup: DraftSession }) {
     try {
       const result = decodePastedDesign(importCode);
       commit(result.state, restoreCatalogStyle(result.state, encodeConfig(result.state)));
+      setViewResetKey(key => key + 1);
       setMigrationNotice(result.messages.join(" "));
       select(null);
       setImportError("");
@@ -359,6 +361,7 @@ export default function App({ startup }: { startup: DraftSession }) {
   }
   function clearDesign() {
     commit(createInitialState(), 0);
+    setViewResetKey(key => key + 1);
     select(null);
     setModal(null);
     setMigrationNotice("");
@@ -382,7 +385,7 @@ export default function App({ startup }: { startup: DraftSession }) {
     </header>
     <main className="workspace">
       <section className="studio" aria-label="3D 搭建工作台">
-        <AssemblyScene ref={scene} state={state} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
+        <AssemblyScene ref={scene} state={state} viewResetKey={viewResetKey} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
           getPreviewColors={productId => getProductStyleColors(productId, styleIndex)}
           showDimensions={showDimensions} canRotate={!!selectedItem}
           canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}

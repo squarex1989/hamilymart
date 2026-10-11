@@ -26,9 +26,9 @@ import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
 import { createSelectionBox, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
 import { DimensionLayoutCache, OverlayElement, projectToViewport, ToolbarMetrics } from "../lib/scene-overlay-layout";
-import { createExplodedLayout, fitExplodedCamera } from "../lib/exploded-view";
+import { createExplodedLayout } from "../lib/exploded-view";
 import { createBlankDoubleTap } from "../lib/scene-gestures";
-import { applySceneViewport, cameraForUsableHeight } from "../lib/scene-framing";
+import { applySceneViewport } from "../lib/scene-framing";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
@@ -46,6 +46,7 @@ export type SceneHandle = {
 };
 type Props = {
   state: AssemblyState;
+  viewResetKey?: number;
   selectedId: string | null;
   selectedTitle: string;
   activeProduct: string | null;
@@ -136,7 +137,7 @@ export default forwardRef<SceneHandle, Props>(
     }, []);
     useEffect(() => {
       runtime.current?.update();
-    }, [props.state, props.selectedId]);
+    }, [props.state, props.selectedId, props.viewResetKey]);
     useEffect(() => {
       runtime.current?.updateTargets();
     }, [props.activeProduct, props.rotation]);
@@ -231,8 +232,8 @@ function createRuntime(
   camera.up.set(0, 0, 1);
   const bottomActions = host.parentElement?.querySelector<HTMLElement>(".canvas-bottom-actions");
   const priceButton = host.parentElement?.querySelector<HTMLElement>(".canvas-price");
-  let usableHeight = 1;
   let toolbarTopInset = 8;
+  let toolbarBottomInset = 64;
   const updateViewportFraming = () => {
     const canvasBounds = host.getBoundingClientRect();
     const actionsBounds = bottomActions?.getBoundingClientRect();
@@ -243,7 +244,8 @@ function createRuntime(
       && actionsBounds.left < canvasBounds.right && actionsBounds.right > canvasBounds.left
       && actionsBounds.top < canvasBounds.bottom && actionsBounds.bottom > canvasBounds.top;
     const bottomInset = overlaps ? canvasBounds.bottom - actionsBounds.top + 10 : 0;
-    usableHeight = applySceneViewport(camera, host.clientWidth, host.clientHeight, bottomInset);
+    toolbarBottomInset = bottomInset;
+    applySceneViewport(camera, host.clientWidth, host.clientHeight, bottomInset);
   };
   const controls = new OrbitControls(camera, renderer.domElement);
   let cameraInteracting = false;
@@ -253,7 +255,7 @@ function createRuntime(
   controls.addEventListener("end", cameraInteractionEnded);
   controls.addEventListener("change", invalidatePreview);
   controls.enableDamping = true;
-  // The render loop is capped at 30 FPS; avoid a long low-resolution inertia tail.
+  // Initial damping; the loop adjusts it to the actual frame interval.
   controls.dampingFactor = 0.2;
   controls.minDistance = 300;
   controls.maxDistance = 4000;
@@ -268,8 +270,6 @@ function createRuntime(
         getItemBounds(item).map((b) => b[5]),
       ),
     ) + getDisplayElevation(props().state));
-  let framedTop = contentTop();
-  let framedLayout = JSON.stringify(getPlatforms(props().state).map(p => [p.x, p.y]));
   const sceneCenter = () => {
     const platforms = getPlatforms(props().state);
     return new THREE.Vector3(
@@ -279,8 +279,14 @@ function createRuntime(
     );
   };
   const home = () => {
+    // Drain orbit inertia before assigning an explicitly requested new view.
+    const damping = controls.enableDamping;
+    controls.enableDamping = false;
+    controls.update();
     updateViewportFraming();
     const height = contentTop();
+    camera.zoom = 1;
+    camera.updateProjectionMatrix();
     controls.target.copy(sceneCenter());
     camera.position.copy(
       new THREE.Vector3(...MODEL_CAMERA_DIRECTION)
@@ -289,6 +295,8 @@ function createRuntime(
         .add(controls.target),
     );
     controls.update();
+    controls.enableDamping = damping;
+    invalidatePreview();
   };
   home();
   const lighting = createModelLighting(scene);
@@ -337,8 +345,6 @@ function createRuntime(
   const dimensionLayout = new DimensionLayoutCache();
   let selectionCorners: THREE.Vector3[] = [];
   const projectedCorner = new THREE.Vector3();
-  const annotationOffset = new THREE.Vector3();
-  const annotationDepth = new THREE.Vector3();
   let ghost: THREE.Group | null = null;
   const ray = new THREE.Raycaster(),
     pointer = new THREE.Vector2();
@@ -357,9 +363,9 @@ function createRuntime(
   let exploded = false;
   let explosionProgress = 0;
   let explosion: ReturnType<typeof createExplodedLayout> | null = null;
-  let originalView: { position: THREE.Vector3; target: THREE.Vector3; maxDistance: number; far: number } | null = null;
   let explosionAnimation: { from: number; to: number; started: number; duration: number } | null = null;
-  let cameraAnimation: { fromPosition: THREE.Vector3; fromTarget: THREE.Vector3; toPosition: THREE.Vector3; toTarget: THREE.Vector3 } | null = null;
+  let renderedState: AssemblyState | null = null;
+  let consumedViewResetKey = props().viewResetKey ?? 0;
   let drag: {
     pointerId?: number;
     productId: string;
@@ -379,22 +385,9 @@ function createRuntime(
     if (!explosion) return;
     explosion.restore();
     explosion = null;
-    explosionAnimation = cameraAnimation = null;
+    explosionAnimation = null;
     explosionProgress = 0;
     exploded = false;
-    if (originalView) {
-      // Clear any residual orbit inertia before restoring the saved camera exactly.
-      controls.enableDamping = false;
-      controls.update();
-      controls.enableDamping = true;
-      camera.position.copy(originalView.position);
-      controls.target.copy(originalView.target);
-      controls.maxDistance = originalView.maxDistance;
-      camera.far = originalView.far;
-      camera.updateProjectionMatrix();
-      controls.update();
-      originalView = null;
-    }
     showSeams(true);
     targets.visible = annotations.visible = true;
     onExplodedChange(false);
@@ -409,17 +402,9 @@ function createRuntime(
     if (!explosion) {
       explosion = createExplodedLayout(objects);
       if (!explosion.pieces.length) { explosion = null; return; }
-      originalView = { position: camera.position.clone(), target: controls.target.clone(), maxDistance: controls.maxDistance, far: camera.far };
     }
     exploded = !exploded;
-    const view = exploded ? fitExplodedCamera(explosion.expandedBounds, cameraForUsableHeight(camera, usableHeight), controls.target) : originalView!;
-    controls.maxDistance = Math.max(controls.maxDistance, originalView!.maxDistance, view.position.distanceTo(view.target) * 1.15);
-    camera.far = Math.max(camera.far, originalView!.far, controls.maxDistance + explosion.expandedBounds.getSize(new THREE.Vector3()).length() * 2);
-    camera.updateProjectionMatrix();
-    cameraAnimation = {
-      fromPosition: camera.position.clone(), fromTarget: controls.target.clone(),
-      toPosition: view.position.clone(), toTarget: view.target.clone(),
-    };
+    invalidatePreview();
     explosionAnimation = { from: explosionProgress, to: exploded ? 1 : 0, started: performance.now(), duration: reducedMotion.matches ? 0 : 550 };
     targets.visible = annotations.visible = false;
     dimensionLines.visible = false;
@@ -435,21 +420,11 @@ function createRuntime(
     const eased = t * t * (3 - 2 * t);
     explosionProgress = THREE.MathUtils.lerp(explosionAnimation.from, explosionAnimation.to, eased);
     explosion.apply(explosionProgress);
-    if (cameraAnimation) {
-      camera.position.lerpVectors(cameraAnimation.fromPosition, cameraAnimation.toPosition, eased);
-      controls.target.lerpVectors(cameraAnimation.fromTarget, cameraAnimation.toTarget, eased);
-      camera.updateMatrixWorld();
-    }
     if (t === 1) {
-      explosionAnimation = cameraAnimation = null;
+      explosionAnimation = null;
       if (!exploded) restoreExploded();
     }
   }
-  function interruptCameraAnimation() {
-    // Touch/orbit controls remain available while the pieces finish moving.
-    cameraAnimation = null;
-  }
-  controls.addEventListener("start", interruptCameraAnimation);
   function visibilityChanged() {
     blankTaps.reset(); pressed = null;
     cameraInteracting = false;
@@ -551,6 +526,7 @@ function createRuntime(
           );
           seam.position.set((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] + 0.08);
           seam.userData.ownedGeometry = true;
+          seam.userData.coverSeam = true;
           child.add(seam);
         }
         group.add(child);
@@ -560,6 +536,15 @@ function createRuntime(
   }
   async function update() {
     if (budgetStopped || disposed) return;
+    const s = props().state;
+    const nextResetKey = props().viewResetKey ?? 0;
+    const resetView = nextResetKey !== consumedViewResetKey;
+    if (renderedState === s && !resetView) {
+      if (modelReady) updateSelection();
+      return;
+    }
+    renderedState = s;
+    consumedViewResetKey = nextResetKey;
     invalidatePreview();
     recentDrawTime = 0;
     frameBudget.reset();
@@ -568,14 +553,8 @@ function createRuntime(
     // Explicit edits return to assembly mode before replacing imported meshes.
     restoreExploded(false);
     const rev = ++revision;
-    const s = props().state;
-    const layout = JSON.stringify(getPlatforms(s).map(p => [p.x, p.y]));
     bedding.update(s);
-    if (Math.abs(contentTop() - framedTop) > 30 || layout !== framedLayout) {
-      framedTop = contentTop();
-      framedLayout = layout;
-      home();
-    }
+    if (resetView) home();
     const old = [...objects.children];
     old.forEach((o) => {
       objects.remove(o);
@@ -625,8 +604,7 @@ function createRuntime(
         const center = sceneCenter();
         lighting.centerAt(center.x, center.y);
         ready();
-        updateTargets();
-        updateAnnotations();
+        updateSelection();
       }
     } catch (e) {
       if (!disposed) {
@@ -634,6 +612,38 @@ function createRuntime(
         stopForFallback("部分本地模型暂不可用，已切换为简化视图。");
       }
     }
+  }
+  function updateSelection() {
+    // Picking is presentation state: reuse meshes and only change their hit IDs
+    // and removable-cover seams. It must never rebuild or reframe the scene.
+    const selectedId = props().selectedId;
+    for (const group of objects.children) {
+      const ownerId = group.userData.itemId as string;
+      const platform = /^(base|base2|base3)$/.test(ownerId);
+      const editingOwner = selectedId === ownerId || !!selectedId?.startsWith(`cover:${ownerId}:`);
+      for (const child of group.children) {
+        const partId = child.userData.partId as string;
+        const cover = /^H0[1-5]$/.test(partId);
+        child.userData.selectionId = platform
+          ? (cover && editingOwner ? `cover:${ownerId}:${partId}` : partId === "B01" ? `pool:${ownerId}` : ownerId)
+          : ownerId;
+        let seam = child.children.find(node => node.userData.coverSeam);
+        if (platform && cover && editingOwner && !seam) {
+          const b = index[partId].bounds, radius = (b[3] - b[0]) / 2;
+          const mesh = new THREE.Mesh(new THREE.RingGeometry(radius - 1, radius, 64), new THREE.MeshBasicMaterial({
+            color: "#89977e", transparent: true, opacity: .6, depthWrite: false,
+          }));
+          mesh.position.set((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, b[5] + .08);
+          mesh.userData.ownedGeometry = mesh.userData.coverSeam = true;
+          child.add(mesh); seam = mesh;
+        } else if (seam && !editingOwner) {
+          child.remove(seam); release(seam); seam = undefined;
+        }
+        if (seam) seam.visible = !isExploded();
+      }
+    }
+    updateTargets();
+    updateAnnotations();
   }
   function ring(x: number, y: number, z: number, r = 7, color = "#69a37b") {
     const m = new THREE.Mesh(
@@ -729,37 +739,17 @@ function createRuntime(
       toolbarMetrics.measure(toolbar, viewportWidth, viewportHeight, p.selectedTitle, p.canRotate, p.canRemove);
       const halfWidth = toolbarMetrics.width / 2;
       const toolbarHeight = toolbarMetrics.height;
-      let top = Infinity, left = Infinity, right = -Infinity, topCornerIndex = 0;
+      let top = Infinity, left = Infinity, right = -Infinity;
       for (let i = 0; i < selectionCorners.length; i++) {
         const point = project(selectionCorners[i], projectedCorner);
-        if (point.y < top) { top = point.y; topCornerIndex = i; }
+        top = Math.min(top, point.y);
         left = Math.min(left, point.x);
         right = Math.max(right, point.x);
       }
-      const minimumTop = toolbarHeight + toolbarTopInset + 10;
-      // Leave the top price row and bottom global controls clear. The selected
-      // model's actions remain above its box even when the user zooms in.
-      const maximumTop = Math.max(minimumTop, viewportHeight - 64);
-      const desiredTop = THREE.MathUtils.clamp(top, minimumTop, maximumTop);
-      // Keep the toolbar in the air above the entire selection, even after a tight zoom.
-      // Moving camera and target together preserves the viewing angle and selected object scale.
-      if (Math.abs(desiredTop - top) > .5 && !drag) {
-        const depth = Math.max(1, -annotationDepth.copy(selectionCorners[topCornerIndex]).applyMatrix4(camera.matrixWorldInverse).z);
-        const mmPerPixel = 2 * depth * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / Math.max(1, viewportHeight);
-        annotationOffset.set(0, 1, 0).applyQuaternion(camera.quaternion).multiplyScalar((desiredTop - top) * mmPerPixel);
-        camera.position.add(annotationOffset);
-        controls.target.add(annotationOffset);
-        camera.updateMatrixWorld();
-        top = left = Infinity; right = -Infinity;
-        for (const corner of selectionCorners) {
-          const point = project(corner, projectedCorner);
-          top = Math.min(top, point.y);
-          left = Math.min(left, point.x);
-          right = Math.max(right, point.x);
-        }
-      }
+      // Only move the HTML toolbar. Selection never moves the camera/target.
+      const maximumTop = Math.max(toolbarTopInset, viewportHeight - toolbarBottomInset - toolbarHeight - 8);
       const x = Math.max(halfWidth + 8, Math.min(viewportWidth - halfWidth - 8, (left + right) / 2));
-      const y = Math.max(toolbarTopInset, top - toolbarHeight - 10);
+      const y = THREE.MathUtils.clamp(top - toolbarHeight - 10, toolbarTopInset, maximumTop);
       toolbarOverlay.position(Math.round(x), Math.round(y));
     }
     annotations.children.forEach((object) => updateSelectionStroke(object, camera, viewportHeight));
@@ -1060,22 +1050,7 @@ function createRuntime(
     interactionQuality.reset(); framePacer.reset(); measuringInteraction = false;
     applyPixelBudget();
     renderer.setSize(w, h, false);
-    const aspectChanged = Math.abs(camera.aspect - w / h) > .05;
-    const previousUsableHeight = usableHeight;
     updateViewportFraming();
-    const usableHeightChanged = Math.abs(usableHeight - previousUsableHeight) > .01;
-    if (aspectChanged || (usableHeightChanged && isExploded())) {
-      if (explosion && isExploded()) {
-        cameraAnimation = null;
-        const view = fitExplodedCamera(explosion.expandedBounds, cameraForUsableHeight(camera, usableHeight), controls.target);
-        camera.position.copy(view.position);
-        controls.target.copy(view.target);
-        controls.maxDistance = Math.max(controls.maxDistance, view.distance * 1.15);
-        camera.far = Math.max(camera.far, controls.maxDistance + explosion.expandedBounds.getSize(new THREE.Vector3()).length() * 2);
-        camera.updateProjectionMatrix();
-        controls.update();
-      } else home();
-    }
   });
   resize.observe(host);
   if (bottomActions) resize.observe(bottomActions);
@@ -1097,7 +1072,7 @@ function createRuntime(
     controls.update();
     tickExplosion(time);
     const quality = previewQuality.nextFrame(time,
-      !modelReady || cameraInteracting || !!pressed || !!drag || !!explosionAnimation || !!cameraAnimation || !!hamster);
+      !modelReady || cameraInteracting || !!pressed || !!drag || !!explosionAnimation || !!hamster);
     if (quality === 'skip') {
       recentDrawTime = 0; measuringInteraction = false;
       frameBudget.reset(); interactionQuality.reset(); return;
@@ -1173,7 +1148,6 @@ function createRuntime(
       revision++;
       cancelAnimationFrame(frame);
       resize.disconnect();
-      controls.removeEventListener("start", interruptCameraAnimation);
       controls.removeEventListener("start", cameraInteractionStarted);
       controls.removeEventListener("end", cameraInteractionEnded);
       controls.removeEventListener("change", invalidatePreview);
@@ -1199,7 +1173,7 @@ function createRuntime(
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", cancel);
       document.removeEventListener("visibilitychange", visibilityChanged);
-      explosion = originalView = explosionAnimation = cameraAnimation = null;
+      explosion = explosionAnimation = null;
       scene.traverse((o) => {
         if (o instanceof THREE.Mesh && !objects.getObjectById(o.id)) {
           o.geometry.dispose();

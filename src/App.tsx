@@ -113,6 +113,7 @@ export default function App() {
     [rotation, setRotation] = useState<Rotation>(0);
   const [category, setCategory] = useState("all");
   const [showDimensions, setShowDimensions] = useState(false);
+  const [viewResetKey, setViewResetKey] = useState(0);
   const [modal, setModal] = useState<"import" | "order" | "bedding" | "clear" | null>(null);
   const [orderCopied, setOrderCopied] = useState(false);
   const [orderCopyFailed, setOrderCopyFailed] = useState(false);
@@ -342,6 +343,7 @@ export default function App() {
     try {
       const result = decodePastedDesign(importCode);
       commit(result.state, restoreCatalogStyle(result.state, encodeConfig(result.state)));
+      setViewResetKey(value => value + 1);
       setMigrationNotice(result.messages.join(" "));
       select(null);
       setImportError("");
@@ -404,6 +406,7 @@ export default function App() {
   }
   function clearDesign() {
     commit(createInitialState(), 0);
+    setViewResetKey(value => value + 1);
     select(null);
     setModal(null);
     setMigrationNotice("");
@@ -427,7 +430,7 @@ export default function App() {
     </header>
     <main className="workspace">
       <section className="studio" aria-label="3D 搭建工作台">
-        <AssemblyScene ref={scene} state={state} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
+        <AssemblyScene ref={scene} state={state} viewResetKey={viewResetKey} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
           getPreviewColors={productId => getProductStyleColors(productId, styleIndex)}
           showDimensions={showDimensions} canRotate={!!selectedItem}
           canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}
