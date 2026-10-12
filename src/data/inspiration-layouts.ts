@@ -34,11 +34,11 @@ export const INSPIRATION_LAYOUTS: readonly InspirationLayout[] = [
   {
     id: "1B", name: "转角叠叠屋", platformCount: 1,
     poolPlatforms: [],
-    openCovers: [{"platform":0,"coverId":"H03"}],
+    openCovers: [],
     items: [
-      { key: "p1-corner", productId: "l-house", platform: 0, position: [100, 100, 110], rotation: 90 },
-      { key: "p1-cube", productId: "cube-house", platform: 0, position: [50, 50, 195.6], rotation: 0, parentKey: "p1-corner" },
-      { key: "p1-seesaw", productId: "seesaw", platform: 0, position: [150, 200, 110], rotation: 90 },
+      { key: "p1-corner", productId: "l-house", platform: 0, position: [200, 200, 110], rotation: 270 },
+      { key: "p1-cube", productId: "cube-house", platform: 0, position: [250, 250, 195.6], rotation: 180, parentKey: "p1-corner" },
+      { key: "p1-seesaw", productId: "seesaw", platform: 0, position: [150, 100, 110], rotation: 270 },
     ],
   },
   {
@@ -77,14 +77,14 @@ export const INSPIRATION_LAYOUTS: readonly InspirationLayout[] = [
   {
     id: "2A", name: "错层生活街", platformCount: 2,
     poolPlatforms: [],
-    openCovers: [{"platform":0,"coverId":"H02"}],
+    openCovers: [],
     items: [
-      { key: "p1-corner", productId: "l-house", platform: 0, position: [100, 100, 110], rotation: 90 },
-      { key: "p1-cube", productId: "cube-house", platform: 0, position: [50, 50, 195.6], rotation: 0, parentKey: "p1-corner" },
-      { key: "p1-bowl", productId: "food-bowl", platform: 0, position: [210, 190, 110], rotation: 90 },
-      { key: "p2-villa", productId: "villa", platform: 1, position: [410, 150, 110], rotation: 90 },
-      { key: "p2-planter", productId: "planter", platform: 1, position: [336, 280.5, 200], rotation: 90, parentKey: "p2-villa" },
-      { key: "p2-seesaw", productId: "seesaw", platform: 1, position: [550, 100, 110], rotation: 90 },
+      { key: "p1-corner", productId: "l-house", platform: 0, position: [200, 200, 110], rotation: 270 },
+      { key: "p1-cube", productId: "cube-house", platform: 0, position: [250, 250, 195.6], rotation: 180, parentKey: "p1-corner" },
+      { key: "p1-bowl", productId: "food-bowl", platform: 0, position: [90, 110, 110], rotation: 270 },
+      { key: "p2-villa", productId: "villa", platform: 1, position: [450, 190, 110], rotation: 0 },
+      { key: "p2-planter", productId: "planter", platform: 1, position: [580.5, 264, 200], rotation: 0, parentKey: "p2-villa" },
+      { key: "p2-seesaw", productId: "seesaw", platform: 1, position: [400, 50, 110], rotation: 0 },
     ],
   },
   {
@@ -131,15 +131,15 @@ export const INSPIRATION_LAYOUTS: readonly InspirationLayout[] = [
   {
     id: "2E", name: "水岸探索", platformCount: 2,
     poolPlatforms: [0],
-    openCovers: [{"platform":1,"coverId":"H03"}],
+    openCovers: [{"platform":1,"coverId":"H05"}],
     items: [
       { key: "p1-cube", productId: "cube-house", platform: 0, position: [250, 50, 110], rotation: 0 },
       { key: "p1-bowl", productId: "food-bowl", platform: 0, position: [210, 190, 110], rotation: 90 },
       { key: "p1-planter", productId: "planter", platform: 0, position: [90, 210, 110], rotation: 90 },
-      { key: "p2-straight-left", productId: "pipe-st1", platform: 1, position: [350, 150, 110], rotation: 180 },
-      { key: "p2-straight-middle", productId: "pipe-st1", platform: 1, position: [450, 150, 110], rotation: 180 },
-      { key: "p2-elbow", productId: "pipe-lt2n", platform: 1, position: [550, 150, 110], rotation: 0 },
-      { key: "p2-seesaw", productId: "seesaw", platform: 1, position: [400, 250, 110], rotation: 180 },
+      { key: "p2-straight-left", productId: "pipe-st1", platform: 1, position: [350, 250, 110], rotation: 180 },
+      { key: "p2-straight-middle", productId: "pipe-st1", platform: 1, position: [450, 250, 110], rotation: 180 },
+      { key: "p2-elbow", productId: "pipe-lt2n", platform: 1, position: [550, 250, 110], rotation: 0 },
+      { key: "p2-seesaw", productId: "seesaw", platform: 1, position: [400, 150, 110], rotation: 180 },
     ],
   },
   {
@@ -169,9 +169,9 @@ export const INSPIRATION_LAYOUTS: readonly InspirationLayout[] = [
       { key: "p2-planter-left", productId: "planter", platform: 1, position: [310, 210, 110], rotation: 0 },
       { key: "p2-planter-right", productId: "planter", platform: 1, position: [510, 210, 110], rotation: 0 },
       { key: "p2-bowl", productId: "food-bowl", platform: 1, position: [410, 210, 110], rotation: 0 },
-      { key: "p3-corner", productId: "l-house", platform: 2, position: [700, 100, 110], rotation: 90 },
-      { key: "p3-cube", productId: "cube-house", platform: 2, position: [650, 50, 195.6], rotation: 0, parentKey: "p3-corner" },
-      { key: "p3-seesaw", productId: "seesaw", platform: 2, position: [750, 200, 110], rotation: 90 },
+      { key: "p3-corner", productId: "l-house", platform: 2, position: [800, 200, 110], rotation: 270 },
+      { key: "p3-cube", productId: "cube-house", platform: 2, position: [850, 250, 195.6], rotation: 180, parentKey: "p3-corner" },
+      { key: "p3-seesaw", productId: "seesaw", platform: 2, position: [750, 100, 110], rotation: 270 },
     ],
   },
   {
