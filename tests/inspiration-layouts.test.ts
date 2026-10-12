@@ -20,7 +20,7 @@ const recipes: Record<string, string[]> = {
   "1D": ["C ST SO E B"], "1E": ["P C S F"],
   "2A": ["L C B", "V F S"], "2B": ["V H F", "P C S B"],
   "2C": ["H F B", "T ST SO EO S"], "2D": ["L F B", "H C S"],
-  "2E": ["P C B F", "TO E SO S"],
+  "2E": ["P C B F", "ST ST E S"],
   "3A": ["V H F", "P C S B", "V H F"],
   "3B": ["V H F", "P F F B", "L C S"],
   "3C": ["L C B", "TO ST SO E", "H P S F"],
@@ -174,4 +174,40 @@ test("audit catches the reported edge, outward-door and blocked-door regressions
   assert(audit({...base,items:[item("cube-house",250,250)]}).some(issue => issue.includes("doorway outside")));
   assert(audit({...base,items:[item("roof-cottage",78,240),item("planter",210,210)]}).some(issue => issue.includes("blocked")));
   assert(audit({...base,baseInsert:"pool",items:[item("villa",150,190)]}).some(issue => issue.includes("over opening")));
+});
+
+
+test("1D rotates the entire arrangement 180 degrees including its open cover", () => {
+  const layout = INSPIRATION_LAYOUTS.find(l => l.id === "1D")!;
+  const previous: Record<string, [number, number, number]> = {
+    "p1-cube": [50,150,270], "p1-straight": [250,150,270], "p1-side": [150,50,180],
+    "p1-elbow": [250,50,270], "p1-bowl": [190,190,0],
+  };
+  for (const item of layout.items) {
+    const [x,y,rotation] = previous[item.key];
+    assert.deepEqual(item.position, [300-x,300-y,110]);
+    assert.equal(item.rotation, (rotation+180)%360);
+  }
+  assert.deepEqual(layout.openCovers, [{platform:0,coverId:"H05"}]);
+});
+
+test("3E is one connected pipe network across the platform seam", () => {
+  const layout = INSPIRATION_LAYOUTS.find(l => l.id === "3E")!;
+  const pipes = assemble(layout).items.filter(i => i.productId.startsWith("pipe-"));
+  const visited = new Set<string>(), pending = [pipes[0]];
+  while (pending.length) {
+    const item = pending.pop()!;
+    if (visited.has(item.id)) continue;
+    visited.add(item.id);
+    pending.push(...pipes.filter(other => !visited.has(other.id) && portals(item).some(a => portals(other).some(b => connected(a,b)))));
+  }
+  assert.equal(visited.size, pipes.length);
+  assert(pipes.some(a => pipes.some(b => a.parentId !== b.parentId && portals(a).some(p => portals(b).some(q => connected(p,q))))), "an actual mouth-to-mouth join must cross the platform seam");
+});
+
+test("2E uses a simple closed-wall pipe run with only two terminal entrances", () => {
+  const pipes = assemble(INSPIRATION_LAYOUTS.find(l => l.id === "2E")!).items.filter(i => i.productId.startsWith("pipe-"));
+  assert.deepEqual(pipes.map(i => i.productId).sort(), ["pipe-lt2n", "pipe-st1", "pipe-st1"]);
+  const faces = pipes.flatMap(portals);
+  assert.equal(faces.filter(a => !faces.some(b => connected(a,b))).length, 2);
 });
