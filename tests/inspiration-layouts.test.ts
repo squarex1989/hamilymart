@@ -164,7 +164,7 @@ test("open covers are limited to one and have a clear vertical passage", () => {
 
 test("house directions vary across the official collection", () => {
   const turns = new Set(INSPIRATION_LAYOUTS.flatMap(l => l.items.filter(i => ["villa", "l-house", "cube-house", "roof-cottage"].includes(i.productId)).map(i => i.rotation)));
-  assert.deepEqual([...turns].sort((a,b) => a-b), [0,90,180,270]);
+  assert.deepEqual([...turns].sort((a,b) => a-b), [0,90,270]);
 });
 
 test("audit catches the reported edge, outward-door and blocked-door regressions", () => {
@@ -177,7 +177,7 @@ test("audit catches the reported edge, outward-door and blocked-door regressions
 });
 
 
-test("1D rotates the entire arrangement 180 degrees including its open cover", () => {
+test("1D keeps its rotated layout while turning the house door toward the viewer", () => {
   const layout = INSPIRATION_LAYOUTS.find(l => l.id === "1D")!;
   const previous: Record<string, [number, number, number]> = {
     "p1-cube": [50,150,270], "p1-straight": [250,150,270], "p1-side": [150,50,180],
@@ -186,9 +186,9 @@ test("1D rotates the entire arrangement 180 degrees including its open cover", (
   for (const item of layout.items) {
     const [x,y,rotation] = previous[item.key];
     assert.deepEqual(item.position, [300-x,300-y,110]);
-    assert.equal(item.rotation, (rotation+180)%360);
+    assert.equal(item.rotation, item.productId === "cube-house" ? 270 : (rotation+180)%360);
   }
-  assert.deepEqual(layout.openCovers, [{platform:0,coverId:"H05"}]);
+  assert.deepEqual(layout.openCovers, [], "close the hole now inside the forward-facing doorway landing");
 });
 
 test("3E is one connected pipe network across the platform seam", () => {
@@ -228,4 +228,19 @@ test("visibility audit rejects a back-facing hat and a foreground obstruction", 
   // The cottage's front window and right door are independently screened.
   const right = { ...cube, id: "right-screen", x: hat.x + 150, y: hat.y };
   assert.equal(visibleHouseOpening({ ...state, items: [hat, cube, right] }, hat), false);
+});
+
+
+test("official houses prefer visible doors with only constrained pool-side hats using windows", () => {
+  const fallback: string[] = [];
+  for (const layout of INSPIRATION_LAYOUTS) {
+    const state = assemble(layout);
+    for (const item of state.items) {
+      if (!visibleHouseOpening(state, item, { doorsOnly: true })) {
+        assert(visibleHouseOpening(state, item), "fallback still exposes a window");
+        fallback.push(`${layout.id}/${item.id}`);
+      }
+    }
+  }
+  assert.deepEqual(fallback, ["3C/p3-hat", "3E/p3-hat"]);
 });

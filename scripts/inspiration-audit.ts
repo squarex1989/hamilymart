@@ -56,12 +56,12 @@ export function supports(state:AssemblyState,item:AssemblyItem):Bounds[]{
 export function connected(a:Portal,b:Portal){return a.pipe&&b.pipe&&a.itemId!==b.itemId&&a.center.every((v,i)=>Math.abs(v-b.center[i])<.1)&&a.normal.every((v,i)=>Math.abs(v+b.normal[i])<.1);}
 /** Source wall openings; visibility is checked against the unchanged home view.
  * A central patch must face the camera and clear other components' envelopes. */
-export function visibleHouseOpening(state:AssemblyState,item:AssemblyItem):boolean {
+export function visibleHouseOpening(state:AssemblyState,item:AssemblyItem,{doorsOnly=false}:{doorsOnly?:boolean}={}):boolean {
  if(!doors[item.productId])return true;
  const product=getProduct(item.productId);
  const openings=doors[item.productId].map(p=>({...p,center:[p.center[0],p.center[1],p.center[2]+30] as Vec3}));
- if(item.productId==='roof-cottage')openings.push({center:[83,179.6,245],normal:[0,-1,0]});
- if(item.productId==='cube-house')openings.push({center:[50,2,43],normal:[0,-1,0]},{center:[50,98,43],normal:[0,1,0]});
+ if(!doorsOnly&&item.productId==='roof-cottage')openings.push({center:[83,179.6,245],normal:[0,-1,0]});
+ if(!doorsOnly&&item.productId==='cube-house')openings.push({center:[50,2,43],normal:[0,-1,0]},{center:[50,98,43],normal:[0,1,0]});
  const direction=MODEL_CAMERA_DIRECTION;
  function hits(origin:Vec3,b:Bounds){
   let near=0,far=Infinity;
