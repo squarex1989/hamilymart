@@ -4,6 +4,7 @@
 import { getProduct, type Bounds, type Vec3 } from '../src/data/catalog';
 import { getItemBounds, getPlatforms, rotateVector, transformPoint, type AssemblyItem, type AssemblyState } from '../src/lib/assembly';
 import modelIndex from '../src/data/model-index.json';
+import { MODEL_CAMERA_DIRECTION } from '../src/lib/model-presentation';
 export const LANDING_DEPTH = 50;
 export const LANDING_WIDTH = 60;
 export type Portal = { itemId:string; center:Vec3; normal:Vec3; width:number; pipe:boolean };
@@ -53,9 +54,35 @@ export function supports(state:AssemblyState,item:AssemblyItem):Bounds[]{
  return [];
 }
 export function connected(a:Portal,b:Portal){return a.pipe&&b.pipe&&a.itemId!==b.itemId&&a.center.every((v,i)=>Math.abs(v-b.center[i])<.1)&&a.normal.every((v,i)=>Math.abs(v+b.normal[i])<.1);}
+/** Source wall openings; visibility is checked against the unchanged home view.
+ * A central patch must face the camera and clear other components' envelopes. */
+export function visibleHouseOpening(state:AssemblyState,item:AssemblyItem):boolean {
+ if(!doors[item.productId])return true;
+ const product=getProduct(item.productId);
+ const openings=doors[item.productId].map(p=>({...p,center:[p.center[0],p.center[1],p.center[2]+30] as Vec3}));
+ if(item.productId==='roof-cottage')openings.push({center:[83,179.6,245],normal:[0,-1,0]});
+ if(item.productId==='cube-house')openings.push({center:[50,2,43],normal:[0,-1,0]},{center:[50,98,43],normal:[0,1,0]});
+ const direction=MODEL_CAMERA_DIRECTION;
+ function hits(origin:Vec3,b:Bounds){
+  let near=0,far=Infinity;
+  for(let axis=0;axis<3;axis++){
+   const a=(b[axis]-origin[axis])/direction[axis],c=(b[axis+3]-origin[axis])/direction[axis];
+   near=Math.max(near,Math.min(a,c));far=Math.min(far,Math.max(a,c));
+  }
+  return far>Math.max(near,.001);
+ }
+ return openings.some(p=>{
+  const n=rotateVector(p.normal,item.rotation);
+  if(n.reduce((sum,v,i)=>sum+v*direction[i],0)<100)return false;
+  const center=transformPoint(p.center,product,item);
+  const samples=[-8,0,8].map(offset=>[center[0]-n[1]*offset+n[0],center[1]+n[0]*offset+n[1],center[2]] as Vec3);
+  return samples.every(point=>!state.items.some(other=>other.id!==item.id&&solidBounds(other).some(b=>hits(point,b))));
+ });
+}
 export function audit(state:AssemblyState,{partial=false}:{partial?:boolean}={}){
  const issues:string[]=[];const all=state.items.flatMap(portals);const width=getPlatforms(state).length*300;
  for(const item of state.items){
+  if(!visibleHouseOpening(state,item))issues.push(`${item.id}: no visible opening from home view`);
   for(const b of [...visualBounds(item),...(item.productId==='seesaw'?getItemBounds(item):[])])
    if(b[0]<-.02||b[1]<-.02||b[3]>width+.02||b[4]>300.02)issues.push(`${item.id}: overhang`);
   if(state.items.some(i=>i.id===item.parentId)){

@@ -3,7 +3,7 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { INSPIRATION_LAYOUTS, type InspirationLayout } from "../src/data/inspiration-layouts";
 import { INSPIRATION_LAYOUTS as MINI_LAYOUTS } from "../minitool/src/data/inspiration-layouts";
-import { audit, portals, connected, visualBounds } from "../scripts/inspiration-audit";
+import { audit, portals, connected, visualBounds, visibleHouseOpening } from "../scripts/inspiration-audit";
 import modelIndex from "../src/data/model-index.json";
 import * as web from "../src/lib/assembly";
 import * as mini from "../minitool/src/lib/assembly";
@@ -210,4 +210,22 @@ test("2E uses a simple closed-wall pipe run with only two terminal entrances", (
   assert.deepEqual(pipes.map(i => i.productId).sort(), ["pipe-lt2n", "pipe-st1", "pipe-st1"]);
   const faces = pipes.flatMap(portals);
   assert.equal(faces.filter(a => !faces.some(b => connected(a,b))).length, 2);
+});
+
+
+test("every official house shows a clear door or window in the default view", () => {
+  for (const layout of INSPIRATION_LAYOUTS) {
+    const state = assemble(layout);
+    for (const item of state.items) assert(visibleHouseOpening(state, item), `${layout.id}/${item.id}: visible opening`);
+  }
+});
+
+test("visibility audit rejects a back-facing hat and a foreground obstruction", () => {
+  const state = assemble(INSPIRATION_LAYOUTS.find(l => l.id === "1A")!);
+  const hat = state.items.find(i => i.productId === "roof-cottage")!;
+  assert.equal(visibleHouseOpening({ ...state, items: [hat] }, { ...hat, rotation: 180 }), false);
+  const cube = { ...hat, id: "screen", productId: "cube-house", parentId: "base", x: hat.x, y: hat.y - 90, z: hat.z, rotation: 0 as const };
+  // The cottage's front window and right door are independently screened.
+  const right = { ...cube, id: "right-screen", x: hat.x + 150, y: hat.y };
+  assert.equal(visibleHouseOpening({ ...state, items: [hat, cube, right] }, hat), false);
 });
