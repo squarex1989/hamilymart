@@ -261,3 +261,16 @@ test("2E swaps the complete pipe row and rocker without changing connector orien
  assert.deepEqual(items.filter(i=>i.productId.startsWith('pipe-')).map(i=>[i.position,i.rotation]), [[[350,250,110],180],[[450,250,110],180],[[550,250,110],0]]);
  assert.deepEqual(items.find(i=>i.productId==='seesaw')!.position,[400,150,110]);
 });
+
+
+test("every official rocker exposes its upper board toward the default viewer", () => {
+ // Source board is tilted +30 degrees around Y: its uphill end is -X,
+ // and its top normal is [sin(30), 0, cos(30)]. A half turn preserves
+ // the four magnetic contacts and full swing envelope, but changes the view.
+ for (const layout of INSPIRATION_LAYOUTS) for (const item of layout.items) {
+  if (item.productId !== "seesaw") continue;
+  const angle = item.rotation * Math.PI / 180;
+  const towardViewer = Math.cos(angle) * 480 + Math.sin(angle) * -710;
+  assert(towardViewer > 0, `${layout.id}/${item.key}: lower end faces viewer`);
+ }
+});
