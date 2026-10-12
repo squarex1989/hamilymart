@@ -258,7 +258,7 @@ test("requested platform turns move parent and child pieces rigidly about each p
 
 test("2E swaps the complete pipe row and rocker without changing connector orientation", () => {
  const items=INSPIRATION_LAYOUTS.find(l=>l.id==='2E')!.items;
- assert.deepEqual(items.filter(i=>i.productId.startsWith('pipe-')).map(i=>[i.position,i.rotation]), [[[350,250,110],180],[[450,250,110],180],[[550,250,110],0]]);
+ assert.deepEqual(items.filter(i=>i.productId.startsWith('pipe-')).map(i=>[i.position,i.rotation]), [[[350,250,110],0],[[450,250,110],0],[[550,250,110],0]]);
  assert.deepEqual(items.find(i=>i.productId==='seesaw')!.position,[400,150,110]);
 });
 
@@ -272,5 +272,13 @@ test("every official rocker exposes its upper board toward the default viewer", 
   const angle = item.rotation * Math.PI / 180;
   const towardViewer = Math.cos(angle) * 480 + Math.sin(angle) * -710;
   assert(towardViewer > 0, `${layout.id}/${item.key}: lower end faces viewer`);
+ }
+});
+
+
+test("2E straights and 3E second pipe use the requested unflipped orientation", () => {
+ for (const [layoutId, keys] of [["2E", ["p2-straight-left", "p2-straight-middle"]], ["3E", ["p1-straight"]]] as const) {
+  const layout = INSPIRATION_LAYOUTS.find(l => l.id === layoutId)!;
+  for (const key of keys) assert.equal(layout.items.find(i => i.key === key)!.rotation, 0);
  }
 });
