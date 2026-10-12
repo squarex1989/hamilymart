@@ -10,14 +10,13 @@ export default function DesktopWorkbench(props: Props) {
   const currentColor = canonicalColorId(props.currentColor);
   const platforms = getPlatforms(props.state);
   const platform = platforms.find(p => p.id === props.platformId);
-  const hasPool = platforms.some(p => p.baseInsert === "pool");
   return <aside className="desktop-workbench-v2" aria-label="桌面组件工作台">
     <header className="desktop-dock-heading">
       {props.selectedId ? <button className="back-to-catalog" onClick={() => props.onSelect(null)}><ArrowLeft size={17} />返回</button> : <div className="history-actions"><button aria-label="后退一步" disabled={!props.canUndo} onClick={props.onUndo}><Undo2 size={18} /></button><button aria-label="前进一步" disabled={!props.canRedo} onClick={props.onRedo}><Redo2 size={18} /></button></div>}
       <strong>{props.selectedId ? props.title : "给小家添点喜欢"}</strong>
     </header>
     {props.selectedId ? <div className="desktop-component-editor">
-      {props.editingPlatform && <section className="desktop-leg-options"><h3>支撑脚高度</h3><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} disabled={height === 0 && hasPool} title={height === 0 && hasPool ? "泳池需要支撑脚" : undefined} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div></section>}
+      {props.editingPlatform && <section className="desktop-leg-options"><h3>支撑脚高度</h3><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div></section>}
       <div className="desktop-part-options" aria-label="选择换色部位">{props.parts.map(part => <button key={part.id} aria-pressed={props.colorPart === part.id} onClick={() => props.onColorPart(part.id)}>{/^[LXY]01$/.test(part.id) ? "支撑脚" : part.role}</button>)}</div>
       <div className="desktop-color-options" aria-label="可选颜色">{AVAILABLE_COLORS.map(color => <button key={color.id} aria-label={color.name} aria-pressed={currentColor === color.id} onClick={() => props.onColor(color.id)}><span style={{ background: getColorSwatch(color.id) }}>{currentColor === color.id && <Check size={16} />}</span><small>{color.name}</small></button>)}</div>
       <p className="desktop-color-name">{COLORS.find(c => c.id === currentColor)?.name}</p>

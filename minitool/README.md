@@ -38,6 +38,7 @@ node minitool/scripts/audit-package.mjs
 - 阴影在组件、灯光、爆炸变换或可见性变化时更新，普通旋转视角复用阴影贴图。正常状态不再每帧遍历场景统计复杂度或隐藏垫料碎屑。
 - WebGL context lost 暂停绘制，context restored 后自动续绘；只有真实 3D 成功绘制后才关闭错误提示。手动重试及自动恢复保留设计和相机快照；不会自动循环重试。
 - 无腿始终可以选择，包括已有泳池的设计。有垫料时平台底面位于垫料高度；没有垫料时位于原始地面。修改垫料、增加泳池及恢复编号均保留明确选择的无腿状态；已有正腿配置的调整规则不变。
+- “给点灵感”与网站共用相同的 15 套磁吸布局数据：1/2/3 平台各 5 套，随机挑选时排除当前及上一次布局。替换保留当前配色、腿高、垫料及相机；已有同款的手动颜色优先保留，新增款式使用当前主题。一次切换对应一步撤销/重做，普通 HM3 编号即可保存与导入。
 - CSS 包含旧内核布局、安全区、视口高度、横向列表和软键盘的局部回退。
 - 顶栏用 `--minitool-native-left-space` / `--minitool-native-right-space` 为容器返回按钮及右侧两个按钮预留空间。价格位于 3D 区域右上，选中组件的操作栏避开价格行。
 - 视角由用户的旋转、平移和缩放手势控制。选中、配色、增删组件、移除平台、腿高、垫料、撤销/重做及拆解/恢复均保留当前相机位置、朝向和缩放；画布尺寸变化仅更新投影。初次打开、确认清空、成功导入设计或成功新增平台会重新取景；新增平台会将当前全部平台纳入画面。悬浮操作栏自行调整位置，不再移动相机；选择变化复用现有模型网格。
@@ -52,9 +53,13 @@ node minitool/scripts/audit-package.mjs
 
 `scripts/benchmark-orbit.cjs <label>` 将当前构建复制到临时快照，使用相同手机尺寸及轨迹进行三轮连续旋转对照，记录真实 WebGL 提交帧间隔、每帧绘制次数及分辨率。`HAMILY_BENCH_PLATFORMS=3` 可运行三平台对照，并分别统计主画面与阴影绘制次数。报告包含浏览器/GPU 环境与构建哈希；提交帧率并非 GPU 完成时间或真机屏幕帧率。
 
-`scripts/diagnose-camera.cjs <label>` 在真实浏览器内比较编辑前后提交给 WebGL 的视图和投影矩阵，同时检查操作过程中的瞬间变化，验证普通编辑保留视角、清空/导入允许重置、新增平台必须重新取景。默认检查小工具构建；通过 `HAMILY_CAMERA_DIST` 或 `HAMILY_CAMERA_URL` 可检查网站版，通过 `HAMILY_CAMERA_OUTPUT` 可指定报告目录，`HAMILY_REDUCED_MOTION=1` 可验证减少动态效果时的同步拆解。诊断仅在测试浏览器中注入，不进入交付包，也不读取 GPU 数据。
+`scripts/diagnose-camera.cjs <label>` 在真实浏览器内比较编辑前后提交给 WebGL 的视图和投影矩阵，同时检查操作过程中的瞬间变化，验证普通编辑及给点灵感/撤销保留视角、清空/导入允许重置、新增平台必须重新取景。默认检查小工具构建；通过 `HAMILY_CAMERA_DIST` 或 `HAMILY_CAMERA_URL` 可检查网站版，通过 `HAMILY_CAMERA_OUTPUT` 可指定报告目录，`HAMILY_REDUCED_MOTION=1` 可验证减少动态效果时的同步拆解。诊断仅在测试浏览器中注入，不进入交付包，也不读取 GPU 数据。
 
 `scripts/diagnose-recovery.cjs <label>` 对本地构建注入一次资源请求失败、WebGL 连接丢失、启动能力暂不可用及虚拟慢帧，验证重试/恢复保留设计与视角、复杂场景始终维持 3D。`HAMILY_RECOVERY_DIST` 可指定网站构建。故障注入只在测试浏览器中生效；虚拟慢帧不是实际设备性能测量。
+
+`scripts/diagnose-inspiration.cjs <label>` 检查小工具构建的真实按钮流程：320/390 px 工具栏、按平台数量换布局、配色/腿高/垫料保留、一步撤销重做与刷新恢复。存储使用隔离的原生 API mock，不访问用户存档；通过 `HAMILY_INSPIRATION_DIST`、`HAMILY_INSPIRATION_OUTPUT` 可指定构建和报告路径。它仍是本地 Chrome 诊断，不能代替小红书容器验收。
+
+`scripts/render-inspiration-gallery.cjs` 从正式布局数据生成隔离存档并逐套重新打开 3D 画面，输出 15 张截图及汇总图供视觉核对；不进入交付包。可通过 `HAMILY_GALLERY_DIST`、`HAMILY_GALLERY_OUTPUT`、`HAMILY_GALLERY_STYLE` 指定构建、输出和配色。
 
 ## 2026-10-12 优化验证
 

@@ -331,6 +331,18 @@ async function reproduceTightHatSelection(page, report) {
       assert.equal(await page.getByRole('button', { name: '增加平台', exact: true }).isDisabled(), true);
     }, { requireStateChange: true, allowReset: true, requireViewChange: true });
     await measure(page, report, 'deselect-third-platform', () => back(page));
+    const beforeInspiration = await state(page);
+    await measure(page, report, 'inspiration-preserves-camera', async () => {
+      await page.getByRole('button', { name: '给点灵感', exact: true }).click();
+      const inspired = await state(page);
+      assert(inspired.items.length > 0 && inspired.extension && inspired.thirdPlatform);
+      assert.equal(inspired.legHeight, beforeInspiration.legHeight);
+      assert.deepEqual(inspired.bedding, beforeInspiration.bedding);
+    }, { requireStateChange: true });
+    await measure(page, report, 'undo-inspiration-preserves-camera', async () => {
+      await page.getByRole('button', { name: '后退一步', exact: true }).click();
+      assert.deepEqual(await state(page), beforeInspiration, 'One undo must restore the entire previous design');
+    }, { requireStateChange: true });
     await measure(page, report, 'add-accessory', async () => {
       await page.locator('.mobile-product').filter({ has: page.locator('strong', { hasText: '方糖小屋' }) }).click();
       assert.equal((await state(page)).items.length, 1);

@@ -752,7 +752,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 .app-shell .scene-view-actions { top: 68px; left: 16px; }
 .app-shell .scene-view-actions button { min-height: 44px; }
 .app-shell.is-mobile .scene-view-actions { top: 64px; left: 12px; }
-.canvas-bottom-actions { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 8; display: flex; align-items: stretch; width: max-content; max-width: calc(100% - 20px); grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; padding: 4px; border: 1px solid rgba(210, 220, 205, 0.8784); border-radius: 12px; background: rgba(252, 252, 244, 0.9294); box-shadow: 0 2px 12px rgba(47, 69, 51, 0.0627); }
+.canvas-bottom-actions { flex-wrap: nowrap; position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 8; display: flex; align-items: stretch; width: max-content; max-width: calc(100% - 20px); grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; padding: 4px; border: 1px solid rgba(210, 220, 205, 0.8784); border-radius: 12px; background: rgba(252, 252, 244, 0.9294); box-shadow: 0 2px 12px rgba(47, 69, 51, 0.0627); }
 .canvas-bottom-actions > button { display: flex; align-items: center; justify-content: center; grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; min-height: 40px; padding: 6px 12px; border-radius: 8px; background: transparent; color: #57704d; font-size: 11px; white-space: nowrap; }
 .canvas-bottom-actions > button:disabled { opacity: .4; }
 .canvas-bottom-actions > button[aria-pressed=true] { background: #e6efdc; color: #47623b; }
@@ -763,7 +763,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 .app-shell.is-mobile .canvas-bottom-actions { left: 8px; right: 8px; bottom: 8px; width: auto; max-width: none; transform: none; grid-gap: 0; --compat-row-gap: 0; --compat-column-gap: 0; gap: 0; padding: 3px; }
 .app-shell.is-mobile .canvas-bottom-actions > button { flex: 1; grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; min-width: 0; min-height: 40px; padding: 5px 2px; font-size: 10px; }
 .app-shell.is-mobile .canvas-bottom-actions > button > svg { width: 14px; height: 14px; flex-shrink: 0; }
-.app-shell.is-mobile .canvas-bottom-actions .clear-design-button { flex: 0 0 35px; min-width: 35px; }
+.app-shell.is-mobile .canvas-bottom-actions .clear-design-button { flex: 0 0 44px; min-width: 44px; }
 @media(max-width:350px) { .app-shell.is-mobile .canvas-bottom-actions > button { flex-direction: column; grid-gap: 1px; --compat-row-gap: 1px; --compat-column-gap: 1px; gap: 1px; font-size: 9px; } }
 .desktop-workbench-v2 { display: grid; grid-template-rows: 58px minmax(0, 1fr); min-width: 0; min-height: 0; background: var(--paper); border-left: 1px solid var(--line); }
 .desktop-workbench-v2 .desktop-dock-heading { justify-content: flex-start; grid-gap: 18px; --compat-row-gap: 18px; --compat-column-gap: 18px; gap: 18px; padding: 0 18px; }

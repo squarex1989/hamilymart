@@ -583,7 +583,7 @@ test("small covers may be removed independently and restored; pool owns the larg
   assert.ok(getOrderLines(state)[0].parts.includes("H01"));
 });
 
-test("no-leg mode removes all legs from the order and is incompatible with either platform pool", () => {
+test("no-leg mode removes all legs from the order and preserves either platform pool", () => {
   let state = success(addPlatform(createInitialState(), "right"));
   const originalPrice = getTotalPrice(state);
   const noLegs = success(setLegHeight(state, 0));
@@ -594,14 +594,14 @@ test("no-leg mode removes all legs from the order and is incompatible with eithe
     assert.ok(!("legs" in line.colors));
   }
   assert.equal(getBaseParts(0).length, 7);
-  assert.equal(setPlatformPool(noLegs, "base", true).ok, false);
-  assert.equal(setPlatformPool(noLegs, "base2", true).ok, false);
-  assert.equal(autoPlace(noLegs, "pool").ok, false);
-  assert.throws(() => validateAssembly({ ...noLegs, baseInsert: "pool" }), /不兼容/);
+  assert.equal(setPlatformPool(noLegs, "base", true).ok, true);
+  assert.equal(setPlatformPool(noLegs, "base2", true).ok, true);
+  assert.equal(autoPlace(noLegs, "pool").ok, true);
+  assert.equal(validateAssembly({ ...noLegs, baseInsert: "pool" }).legHeight, 0);
   state = success(setPlatformPool(state, "base2", true));
-  const refused = setLegHeight(state, 0);
-  assert.equal(refused.ok, false);
-  assert.equal(refused.state, state);
+  const withoutLegs = success(setLegHeight(state, 0));
+  assert.equal(withoutLegs.legHeight, 0);
+  assert.equal(withoutLegs.extension?.baseInsert, "pool");
   assert.equal(state.baseInsert, "lid");
   assert.equal(state.extension?.baseInsert, "pool");
   assert.equal(getMagnetPoints(state).length, 68);

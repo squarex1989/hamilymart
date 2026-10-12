@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, Check, ChevronDown, Copy, Info, Layers2, Plus, Ruler, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowDownToLine, Check, ChevronDown, Copy, Info, Layers2, Lightbulb, Plus, Ruler, Sparkles, Trash2, X } from "lucide-react";
 import AssemblyScene from "./components/AssemblyScene";
 import MobileWorkbench from "./components/MobileWorkbench";
 import type { WorkbenchProps } from "./components/MobileWorkbench";
@@ -41,6 +41,7 @@ import { encodeConfig } from "./lib/config-code";
 import { decodePastedDesign } from "./lib/import-design";
 import { createNewUserState } from "./lib/starter-assembly";
 import { copyText } from "./lib/clipboard";
+import { createInspiredDesign } from "./lib/inspiration";
 
 const STORAGE = "hamilymart.assembly.v2";
 const STYLE_STORAGE = "hamilymart.catalog-style.v1";
@@ -127,6 +128,7 @@ export default function App() {
   const [future, setFuture] = useState<StyledAssemblySnapshot[]>([]);
   const [styleIndex, setStyleIndex] = useState(startup.styleIndex);
   const dragFinishedAt = useRef(0);
+  const lastInspirationByPlatformCount = useRef<Record<number, string | undefined>>({});
   const scene = useRef<SceneHandle>(null),
     toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const configurationCode = useMemo(() => encodeConfig(state), [state]);
@@ -405,6 +407,15 @@ export default function App() {
     commit(applyColorStyle(state, next), next);
     notify(COLOR_STYLES[next].name);
   }
+  function giveInspiration() {
+    if (!ready) return;
+    const result = createInspiredDesign(state, styleIndex, lastInspirationByPlatformCount.current[platforms.length]);
+    if (!result.ok) { notify(result.reason); return; }
+    commit(result.state);
+    lastInspirationByPlatformCount.current[platforms.length] = result.layout.id;
+    select(null);
+    notify(result.layout.name);
+  }
   function clearDesign() {
     commit(createInitialState(), 0);
     setViewResetKey(value => value + 1);
@@ -440,6 +451,7 @@ export default function App() {
         <button type="button" className="canvas-dimensions" aria-label="显示尺寸" title="显示尺寸" aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={20} aria-hidden="true" /></button>
         <div className="canvas-bottom-actions" aria-label="搭建选项">
           <button disabled={platforms.length >= 3} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
+          <button disabled={!ready} onClick={giveInspiration}><Lightbulb size={16} /><span>给点灵感</span></button>
           <button onClick={nextStyle}><Sparkles size={16} /><span>换个配色</span></button>
           <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料高度</span></button>
           <button className="clear-design-button" aria-label="清空当前设计" title="清空当前设计" onClick={() => setModal("clear")}><Trash2 size={18} /></button>

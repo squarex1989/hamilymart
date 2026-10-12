@@ -641,7 +641,6 @@ export function setBedding(state: AssemblyState, value: Bedding): ActionResult {
   } catch (error) { return { ok: false, state, reason: error instanceof Error ? error.message : "垫料设置无效" }; }
 }
 export function setLegHeight(state: AssemblyState, legHeight: 0 | 100 | 200 | 300): ActionResult {
-  if (legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) return { ok: false, state, reason: "无腿平台不兼容泳池，请先移除泳池" };
   return action(state, { ...state, legHeight });
 }
 export function setHamster(state: AssemblyState, hamster: string | null): ActionResult {
@@ -663,7 +662,6 @@ export function setPlatformColors(state: AssemblyState, platformId: PlatformId, 
 }
 export function setPlatformPool(state: AssemblyState, platformId: PlatformId, enabled: boolean): ActionResult {
   if (!getPlatforms(state).some(platform => platform.id === platformId)) return { ok: false, state, reason: "未找到平台" };
-  if (enabled && state.legHeight === 0) return { ok: false, state, reason: "无腿平台不兼容泳池，请先选择支撑脚" };
   const baseInsert = enabled ? "pool" as const : "lid" as const;
   return action(state, updatePlatform(state, platformId, { baseInsert }), "泳池位置已被占用，请先移开组件");
 }
@@ -673,7 +671,6 @@ export function changeBaseInsert(state: AssemblyState, baseInsert: "lid" | "pool
 /** Choose the strongest available magnetic fit, then a compact position; never leave a pending placement. */
 export function autoPlace(state: AssemblyState, productId: string, preferredPlatformId?: PlatformId): ActionResult {
   if (productId === "pool") {
-    if (state.legHeight === 0) return { ok: false, state, reason: "无腿平台不兼容泳池，请先选择支撑脚" };
     for (const platform of getPlatforms(state).sort((a, b) => Number(b.id === preferredPlatformId) - Number(a.id === preferredPlatformId))) {
       if (platform.baseInsert === "pool") continue;
       const result = setPlatformPool(state, platform.id, true);
@@ -747,7 +744,6 @@ function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup, lega
   }
   if (state.thirdPlatform && !state.extension) throw new Error("第三个平台依赖第二个平台");
   if (state.hamster !== null && (typeof state.hamster !== "string" || !HAMSTER_VARIANTS.some(variant => variant.id === state.hamster))) throw new Error("仓鼠品种无效");
-  if (state.legHeight === 0 && getPlatforms(state).some(platform => platform.baseInsert === "pool")) throw new Error("无腿平台不兼容泳池");
   const ids = new Set<string>();
   const pending = input.items.map((raw) => {
     if (

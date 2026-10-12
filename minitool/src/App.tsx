@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, ChevronDown, FileText, Info, Layers2, Plus, Ruler, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowDownToLine, ChevronDown, FileText, Info, Layers2, Lightbulb, Plus, Ruler, Sparkles, Trash2, X } from "lucide-react";
 import AssemblyScene from "./components/AssemblyScene";
 import MobileWorkbench from "./components/MobileWorkbench";
 import type { WorkbenchProps } from "./components/MobileWorkbench";
@@ -40,6 +40,7 @@ import { encodeConfig } from "./lib/config-code";
 import { decodePastedDesign } from "./lib/import-design";
 import { selectManualCopyText } from "./lib/clipboard";
 import type { DraftSession } from "./lib/draft-session";
+import { createInspiredDesign } from "./lib/inspiration";
 const platformName = (id: string) => id === "base3" ? "第三平台" : id === "base2" ? "第二平台" : "基础平台";
 const HOUSE_ORDER = ["villa", "roof-cottage", "l-house", "cube-house"];
 const money = (cents: number) =>
@@ -100,6 +101,7 @@ export default function App({ startup }: { startup: DraftSession }) {
   const [styleIndex, setStyleIndex] = useState(startup.styleIndex);
   const [viewResetKey, setViewResetKey] = useState(0);
   const dragFinishedAt = useRef(0);
+  const lastInspirationByPlatformCount = useRef<Record<number, string | undefined>>({});
   const scene = useRef<SceneHandle>(null),
     toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const configurationCode = useMemo(() => encodeConfig(state), [state]);
@@ -360,6 +362,15 @@ export default function App({ startup }: { startup: DraftSession }) {
     commit(applyColorStyle(state, next), next);
     notify(COLOR_STYLES[next].name);
   }
+  function giveInspiration() {
+    if (!ready) return;
+    const result = createInspiredDesign(state, styleIndex, lastInspirationByPlatformCount.current[platforms.length]);
+    if (!result.ok) { notify(result.reason); return; }
+    commit(result.state);
+    lastInspirationByPlatformCount.current[platforms.length] = result.layout.id;
+    select(null);
+    notify(result.layout.name);
+  }
   function clearDesign() {
     commit(createInitialState(), 0);
     setViewResetKey(key => key + 1);
@@ -396,6 +407,7 @@ export default function App({ startup }: { startup: DraftSession }) {
         <button type="button" className="header-price canvas-price" onClick={() => setModal("order")} aria-label={`搭配清单，总价 ${money(total)}`}><span>{money(total)}</span><ChevronDown size={14} /></button>
         <div className="canvas-bottom-actions" aria-label="搭建选项">
           <button disabled={platforms.length >= 3} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
+          <button disabled={!ready} onClick={giveInspiration}><Lightbulb size={16} /><span>给点灵感</span></button>
           <button onClick={nextStyle}><Sparkles size={16} /><span>换个配色</span></button>
           <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料高度</span></button>
           <button className="clear-design-button" aria-label="清空当前设计" title="清空当前设计" onClick={() => setModal("clear")}><Trash2 size={18} /></button>

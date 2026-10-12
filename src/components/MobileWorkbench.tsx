@@ -41,7 +41,6 @@ export default function MobileWorkbench(props: WorkbenchProps) {
   const platforms = getPlatforms(props.state);
   const platform = platforms.find(p => p.id === props.platformId);
   const editing = !!props.selectedId;
-  const hasPool = platforms.some(p => p.baseInsert === "pool");
   useEffect(() => { rail.current?.scrollTo({ left: 0 }); }, [props.category]);
   return <aside className={`mobile-workbench ${editing ? "is-editing" : ""}`} aria-label="移动端组件工作台">
     <header className="mobile-dock-header">
@@ -52,7 +51,7 @@ export default function MobileWorkbench(props: WorkbenchProps) {
     </header>
     {editing ? <div className="mobile-edit-body">
       {props.editingPlatform && <div className="mobile-leg-options">
-        <span>腿高</span><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} disabled={height === 0 && hasPool} title={height === 0 && hasPool ? "泳池需要支撑脚" : undefined} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div>
+        <span>腿高</span><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div>
       </div>}
       <div className="mobile-part-rail" aria-label="选择换色部位">
         {props.parts.map(part => <button key={part.id} aria-pressed={props.colorPart === part.id} onClick={() => props.onColorPart(part.id)}>{/^[LXY]01$/.test(part.id) ? "支撑脚" : part.role}</button>)}
