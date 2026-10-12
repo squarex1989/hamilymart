@@ -19,10 +19,10 @@ function itemsForLayout(layout: InspirationLayout): ShapeItem[] {
 }
 
 /** Shape matching ignores colors, generated IDs and rendering elevation. */
-function shapeSignature(items: readonly ShapeItem[], pools: readonly boolean[]): string {
+function shapeSignature(items: readonly ShapeItem[], pools: readonly boolean[], covers: readonly (readonly string[])[]): string {
   const descriptor = (item: ShapeItem) => [item.productId, item.x, item.y, item.z, item.rotation];
   const byId = new Map(items.map(item => [item.id, item]));
-  return JSON.stringify([pools, items.map(item => JSON.stringify([
+  return JSON.stringify([pools, covers.map(ids => [...ids].sort()), items.map(item => JSON.stringify([
     ...descriptor(item), byId.has(item.parentId) ? descriptor(byId.get(item.parentId)!) : item.parentId,
   ])).sort()]);
 }
@@ -30,9 +30,9 @@ function shapeSignature(items: readonly ShapeItem[], pools: readonly boolean[]):
 /** Recognition also works after a refresh or HM3 import, which rewrites item IDs. */
 export function findInspirationLayout(state: AssemblyState): InspirationLayout | undefined {
   const platforms = getPlatforms(state);
-  const shape = shapeSignature(state.items, platforms.map(platform => platform.baseInsert === "pool"));
+  const shape = shapeSignature(state.items, platforms.map(platform => platform.baseInsert === "pool"), platforms.map(platform => platform.removedCovers));
   return INSPIRATION_LAYOUTS.find(layout => layout.platformCount === platforms.length
-    && shapeSignature(itemsForLayout(layout), platformIds.slice(0, layout.platformCount).map((_, index) => layout.poolPlatforms.some(platform => platform === index))) === shape);
+    && shapeSignature(itemsForLayout(layout), platformIds.slice(0, layout.platformCount).map((_, index) => layout.poolPlatforms.some(platform => platform === index)), platformIds.slice(0, layout.platformCount).map((_, index) => (layout.openCovers ?? []).filter(cover => cover.platform === index).map(cover => cover.coverId))) === shape);
 }
 
 /** Authored geometry is independent of palette and support height; replace atomically. */
@@ -52,7 +52,7 @@ export function applyInspirationLayout(state: AssemblyState, styleIndex: number,
           ...platform.baseColors,
           ...(pool && platform.baseInsert !== "pool" ? { B01: getProductStyleColors("pool", styleIndex).B01 } : {}),
         },
-        removedCovers: [],
+        removedCovers: (layout.openCovers ?? []).filter(cover => cover.platform === index).map(cover => cover.coverId),
       };
     });
     const extension = (index: number): PlatformExtension | null => inserts[index]

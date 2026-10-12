@@ -3,6 +3,8 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { INSPIRATION_LAYOUTS, type InspirationLayout } from "../src/data/inspiration-layouts";
 import { INSPIRATION_LAYOUTS as MINI_LAYOUTS } from "../minitool/src/data/inspiration-layouts";
+import { audit, portals, connected, visualBounds } from "../scripts/inspiration-audit";
+import modelIndex from "../src/data/model-index.json";
 import * as web from "../src/lib/assembly";
 import * as mini from "../minitool/src/lib/assembly";
 import { getDefaultColors, getProduct } from "../src/data/catalog";
@@ -12,14 +14,14 @@ const aliases: Record<string, string> = {
   ST: "pipe-st1", SO: "pipe-st2", E: "pipe-lt2n", EO: "pipe-lt2",
   T: "pipe-tt1", TO: "pipe-tt2", F: "planter", B: "food-bowl", S: "seesaw", P: "pool",
 };
-// Approved counts are independent of the authored coordinate fixtures.
+// Audited recipes keep separate expectations from the coordinate fixtures.
 const recipes: Record<string, string[]> = {
-  "1A": ["V H P F"], "1B": ["L C S B"], "1C": ["H S F B"],
+  "1A": ["V H F"], "1B": ["L C S"], "1C": ["H S F B"],
   "1D": ["C ST SO E B"], "1E": ["P C S F"],
-  "2A": ["L C B", "V F S"], "2B": ["V H P F", "C S B"],
+  "2A": ["L C B", "V F S"], "2B": ["V H F", "P C S B"],
   "2C": ["H F B", "T ST SO EO S"], "2D": ["L F B", "H C S"],
   "2E": ["P C B F", "TO E SO S"],
-  "3A": ["V H P F", "C S B", "V H F"],
+  "3A": ["V H F", "P C S B", "V H F"],
   "3B": ["V H F", "P F F B", "L C S"],
   "3C": ["L C B", "TO ST SO E", "H P S F"],
   "3D": ["H F B", "P S F", "H C F"],
@@ -39,6 +41,11 @@ function assemble(layout: InspirationLayout, engine: typeof web | typeof mini = 
     else if (platform === 1) state.extension!.baseInsert = "pool";
     else state.thirdPlatform!.baseInsert = "pool";
   }
+  for (const cover of layout.openCovers ?? []) {
+    if (cover.platform === 0) state.removedCovers = [cover.coverId];
+    else if (cover.platform === 1) state.extension!.removedCovers = [cover.coverId];
+    else state.thirdPlatform!.removedCovers = [cover.coverId];
+  }
   for (const item of layout.items) {
     const [x, y, z] = item.position;
     const parentId = item.parentKey ?? ["base", "base2", "base3"][item.platform];
@@ -53,7 +60,7 @@ function assemble(layout: InspirationLayout, engine: typeof web | typeof mini = 
   return engine.validateAssembly(state);
 }
 
-test("15 official layouts preserve every approved recipe and platform assignment", () => {
+test("15 official layouts preserve every audited recipe and platform assignment", () => {
   assert.equal(INSPIRATION_LAYOUTS.length, 15);
   assert.deepEqual(INSPIRATION_LAYOUTS.map(layout => layout.id), Object.keys(recipes));
   assert.equal(new Set(INSPIRATION_LAYOUTS.map(layout => layout.name)).size, 15);
@@ -79,7 +86,7 @@ test("approved roof attachments remain upstairs and ground-floor hats remain on 
     let expectedOwner: string | undefined;
     if (item.productId === "roof-cottage" || item.productId === "planter")
       expectedOwner = zone.find(candidate => candidate.productId === "villa")?.key;
-    if (item.productId === "cube-house" || (layout.id === "2D" && item.platform === 0 && item.productId === "planter"))
+    if (item.productId === "cube-house")
       expectedOwner = zone.find(candidate => candidate.productId === "l-house")?.key;
     assert.equal(item.parentKey, expectedOwner, `${layout.id}: correct floor for ${item.key}`);
   }
@@ -113,15 +120,10 @@ test("every official pipe zone forms one real connected run with opposing port f
       const pipes = state.items.filter(item => ids.has(item.id));
       if (!pipes.length) continue;
       checkedZones++;
-      const faces = pipes.map(item => getProduct(item.productId).pipeFaces!.map(face => ({
-        center: web.transformPoint(face.center, getProduct(item.productId), item),
-        normal: web.rotateVector(face.normal, item.rotation),
-      })));
+      const faces = pipes.map(portals);
       const neighbors = pipes.map(() => new Set<number>());
       for (let i = 0; i < pipes.length; i++) for (let j = i + 1; j < pipes.length; j++) {
-        if (faces[i].some(a => faces[j].some(b =>
-          a.center.every((coordinate, axis) => Math.abs(coordinate - b.center[axis]) < .01) &&
-          a.normal.every((coordinate, axis) => Math.abs(coordinate + b.normal[axis]) < .01)))) {
+        if (faces[i].some(a => faces[j].some(b => connected(a, b)))) {
           neighbors[i].add(j); neighbors[j].add(i);
         }
       }
@@ -138,16 +140,38 @@ test("every official pipe zone forms one real connected run with opposing port f
   assert.equal(checkedZones, 6);
 });
 
-test("single-contact accessories have at most 30mm overhang at the outside of the whole assembly", () => {
-  let maximum = 0;
+test("all layouts stay within the platform and leave supported 60 by 50mm entrance landings", () => {
+  for (const layout of INSPIRATION_LAYOUTS) assert.deepEqual(audit(assemble(layout)), [], layout.id);
+});
+
+test("open covers are limited to one and have a clear vertical passage", () => {
+  let opened = 0;
   for (const layout of INSPIRATION_LAYOUTS) {
+    assert((layout.openCovers?.length ?? 0) <= 1);
     const state = assemble(layout);
-    for (const item of state.items) for (const bounds of web.getItemBounds(item)) {
-      const overhang = Math.max(0, -bounds[0], -bounds[1], bounds[3] - layout.platformCount * 300, bounds[4] - 300);
-      maximum = Math.max(maximum, overhang);
-      assert(overhang <= 30.01, `${layout.id} ${item.id}: ${overhang}mm overhang`);
-      if (overhang > 6) assert.equal(getProduct(item.productId).minimumMagnetMatches, 1);
+    for (const cover of layout.openCovers ?? []) {
+      opened++;
+      const b = modelIndex[cover.coverId].bounds;
+      const cx = cover.platform * 300 + (b[0] + b[3]) / 2, cy = (b[1] + b[4]) / 2;
+      for (const item of state.items) for (const r of [...visualBounds(item), ...(item.productId === "seesaw" ? web.getItemBounds(item) : [])]) {
+        assert(Math.hypot(Math.max(r[0], Math.min(cx, r[3])) - cx, Math.max(r[1], Math.min(cy, r[4])) - cy) >= 35,
+          `${layout.id}: opening ${cover.coverId} is obstructed by ${item.id}`);
+      }
     }
   }
-  assert.ok(maximum <= 30);
+  assert(opened >= 8, "provide open bedding access in the layouts with enough free space");
+});
+
+test("house directions vary across the official collection", () => {
+  const turns = new Set(INSPIRATION_LAYOUTS.flatMap(l => l.items.filter(i => ["villa", "l-house", "cube-house", "roof-cottage"].includes(i.productId)).map(i => i.rotation)));
+  assert.deepEqual([...turns].sort((a,b) => a-b), [0,90,180,270]);
+});
+
+test("audit catches the reported edge, outward-door and blocked-door regressions", () => {
+  const base = web.createInitialState();
+  const item = (productId:string, x:number, y:number, rotation:0|90|180|270=0) => ({id:productId,productId,parentId:"base",x,y,z:110,rotation,colors:getDefaultColors(productId)});
+  assert(audit({...base,items:[item("food-bowl",290,190)]}).some(issue => issue.includes("overhang")));
+  assert(audit({...base,items:[item("cube-house",250,250)]}).some(issue => issue.includes("doorway outside")));
+  assert(audit({...base,items:[item("roof-cottage",78,240),item("planter",210,210)]}).some(issue => issue.includes("blocked")));
+  assert(audit({...base,baseInsert:"pool",items:[item("villa",150,190)]}).some(issue => issue.includes("over opening")));
 });

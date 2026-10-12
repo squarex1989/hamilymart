@@ -47,9 +47,9 @@ for (const [runtime, api, encode, decode] of [["web", web, encodeConfig, decodeC
 
   test(`${runtime}: new-user defaults and the previous layout never repeat immediately`, () => {
     const initial = createNewUserState();
-    assert.equal(api.findInspirationLayout(initial)?.id, "1A");
+    assert.equal(api.findInspirationLayout(initial), undefined, "legacy starter pool combination is distinct from the audited dry-yard 1A");
     const next = success(api.createInspiredDesign(initial, 0, undefined, () => 0));
-    assert.notEqual(next.layout.id, "1A");
+    assert.notEqual(encode(next.state), encode(initial));
     for (const count of [1, 2, 3]) {
       const seen = new Set<string>();
       for (const random of [0, .2, .4, .6, .8, .999, 1, -1, NaN]) {
@@ -90,7 +90,7 @@ for (const [runtime, api, encode, decode] of [["web", web, encodeConfig, decodeC
     assert.equal(state.baseColors.B01, getProductStyleColors("pool", 3).B01);
     assert.equal(state.legHeight, 100, "existing shorter-leg choices are not changed by a template");
     assert.deepEqual(state.bedding, before.bedding);
-    assert.deepEqual(state.removedCovers, []);
+    assert.deepEqual(state.removedCovers, (INSPIRATION_LAYOUTS.find(layout => layout.id === "3A")!.openCovers ?? []).filter(cover => cover.platform === 0).map(cover => cover.coverId));
     assert.equal(JSON.stringify(before), beforeJSON);
   });
 
