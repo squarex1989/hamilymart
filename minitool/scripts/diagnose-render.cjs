@@ -4,10 +4,10 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../dist');
+const root = path.resolve(process.env.HAMILY_RENDER_DIST || path.join(__dirname, '../dist'));
 const output = path.resolve(__dirname, '../generated');
 const DEVICE_DPR = 3;
-const STILL_PIXEL_LIMIT = 2_000_000;
+const STILL_PIXEL_LIMIT = 3_000_000;
 const INTERACTION_DPR_LIMIT = 2; // Starts at 1.5; sustained frame headroom may promote to 2.
 const DPR_TOLERANCE = .025; // Canvas backing dimensions are rounded to whole pixels.
 const STILL_OBSERVATION_MS = 850;
@@ -42,6 +42,7 @@ async function snapshot(page) {
       capturedAt: performance.now(),
       devicePixelRatio,
       drawCalls: observed.drawCalls,
+      firstSharpAfterRelease: observed.firstSharpAfterRelease,
       globalDrawCalls: window.__hamilyDraws,
       lastDraw: observed.lastDraw,
       canvasVisible: getComputedStyle(canvas).display !== 'none' && box.width > 0 && box.height > 0,
@@ -79,7 +80,7 @@ function assertStillResolution(state) {
   const expected = expectedStillDpr(state);
   assert(Math.abs(state.canvas.effectiveDprX - expected) <= DPR_TOLERANCE, `Still DPR X ${state.canvas.effectiveDprX} != ${expected}`);
   assert(Math.abs(state.canvas.effectiveDprY - expected) <= DPR_TOLERANCE, `Still DPR Y ${state.canvas.effectiveDprY} != ${expected}`);
-  assert(state.canvas.pixelCount <= STILL_PIXEL_LIMIT, 'Still render exceeds 2M pixels');
+  assert(state.canvas.pixelCount <= STILL_PIXEL_LIMIT, 'Still render exceeds 3M pixels');
   assert.equal(state.lastDraw?.width, state.canvas.width, 'Backing-store resize must be followed by an actual draw');
   assert.equal(state.lastDraw?.height, state.canvas.height, 'Backing-store resize must be followed by an actual draw');
 }
@@ -127,7 +128,7 @@ async function assertIdleDraws(page) {
     page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: DEVICE_DPR, isMobile: true, hasTouch: true });
     page.on('pageerror', error => errors.push(error.message));
     page.on('console', message => { if (message.type() === 'error' && !message.text().includes('404')) errors.push(message.text()); });
-    page.on('response', response => { if (/\/models\/.*\.js$/.test(response.url())) modelLoads.push({ url: response.url().split('/').pop(), status: response.status() }); });
+    page.on('response', response => { if (/\/models\/.*\.js(?:\?|$)/.test(response.url())) modelLoads.push({ url: response.url().split('/').pop(), status: response.status() }); });
     await page.addInitScript(() => {
       const saved = new Map();
       window.xhs = { launchOptions: { miniToolEnv: { buildVersion: 9460000 } }, miniTool: { getStorage: async ({ key }) => ({ data: saved.get(key) || null }), setStorage: async ({ key, data }) => { saved.set(key, data); } } };
@@ -144,6 +145,10 @@ async function assertIdleDraws(page) {
             context[method] = (...parameters) => {
               window.__hamilyDraws++;
               observed.drawCalls++;
+              if (window.__hamilyReleasedAt && !observed.firstSharpAfterRelease
+                && observed.canvas.width / observed.canvas.clientWidth >= Math.min(devicePixelRatio, 3) - .025) {
+                observed.firstSharpAfterRelease = performance.now();
+              }
               observed.lastDraw = { width: observed.canvas.width, height: observed.canvas.height, at: performance.now() };
               return draw(...parameters);
             };
@@ -211,15 +216,17 @@ async function assertIdleDraws(page) {
     } finally {
       await page.mouse.up();
     }
-    const pointerReleasedAt = await page.evaluate(() => performance.now());
+    const pointerReleasedAt = await page.evaluate(() => window.__hamilyReleasedAt = performance.now());
     report.restored = await waitForStillResolution(page);
     report.restoration = {
       pointerReleasedAt,
-      highResolutionDrawAt: report.restored.lastDraw.at,
-      highResolutionDrawAfterReleaseMs: report.restored.lastDraw.at - pointerReleasedAt,
+      highResolutionDrawAt: report.restored.firstSharpAfterRelease,
+      finalSettledDrawAfterReleaseMs: report.restored.lastDraw.at - pointerReleasedAt,
+      highResolutionDrawAfterReleaseMs: report.restored.firstSharpAfterRelease - pointerReleasedAt,
       effectiveDprX: report.restored.canvas.effectiveDprX,
       effectiveDprY: report.restored.canvas.effectiveDprY,
     };
+    assert(report.restoration.highResolutionDrawAfterReleaseMs >= 0 && report.restoration.highResolutionDrawAfterReleaseMs < 700, 'A released gesture must regain high resolution during its inertia tail');
     report.restoredIdle = await assertIdleDraws(page);
     report.screenshots.restoredStill = path.join(output, 'render-diagnostic-mobile-dpr3-after-interaction.png');
     await page.screenshot({ path: report.screenshots.restoredStill });

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import { parse } from '@babel/parser';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const dist = path.join(root, 'dist');
+const dist = path.resolve(process.env.HAMILY_AUDIT_DIST || path.join(root, 'dist'));
 const failures = [], warnings = [], files = [];
 const walkFiles = dir => { for (const name of readdirSync(dir)) { const target = path.join(dir,name); if(statSync(target).isDirectory())walkFiles(target);else files.push(target); } };walkFiles(dist);
 const allowed = new Set(['.html','.css','.js','.png','.jpg','.jpeg','.gif','.webp','.svg','.woff','.woff2','.json']);
@@ -39,6 +39,7 @@ for(const [id,report] of Object.entries(modelReport)){
  let sum=0;
  for(const mesh of context.window.HamilyModels[id]()){
   if(mesh.p.length%3||mesh.i.length%3||mesh.p.some(n=>!Number.isFinite(n))||mesh.i.some(i=>!Number.isInteger(i)||i<0||i>=mesh.p.length/3))failures.push(`Invalid geometry ${id}`);
+  if(mesh.v!==2||!mesh.n||mesh.n.length!==mesh.p.length||mesh.n.some(n=>!Number.isFinite(n)))failures.push(`Missing baked normals ${id}`);
   if(!mesh.extras.sourcePart||!mesh.extras.colorKey)failures.push(`Missing material role ${id}`);
   sum+=mesh.i.length/3;vertices+=mesh.p.length/3;
  }

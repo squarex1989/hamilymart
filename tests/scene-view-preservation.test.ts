@@ -104,10 +104,10 @@ test("ordinary edits never reset the view; clear/import reset once before asynch
     props: () => ({ state, viewResetKey }), revision: 0, disposed: false, renderError: false, modelReady: true, lastViewResetKey: 0,
     restoreExploded() {}, bedding: { update() {} }, home: () => resets.push(state),
     objects: new THREE.Group(), release() {}, getPlatforms, getBaseParts, getProduct,
-    build: () => delay ? new Promise<THREE.Group>(resolve => pending.push(resolve)) : Promise.resolve(new THREE.Group()),
+    reconcileGroups: () => delay ? new Promise<THREE.Group>(resolve => pending.push(resolve)) : Promise.resolve(new THREE.Group()),
     elevation: () => 0, hamster: null, sceneCenter: () => new THREE.Vector3(),
-    lighting: { centerAt() {} }, ready() {}, updateSelection() {}, console,
-    fail: (message: string) => assert.fail(message),
+    lighting: { centerAt() {} }, modelBatches: { rebuild() {} }, invalidateShadows() {}, ready() {}, updateSelection() {}, console,
+    stopForError: (message: string) => assert.fail(message),
   });
   await context.update();
   const platform = addPlatform(state); assert(platform.ok); state = platform.state;
@@ -141,7 +141,7 @@ test("explode, reverse and edit restoration preserve the current camera includin
     modelReady: true, disposed: false, renderError: false, contextUnavailable: false, exploded: false, explosion: null, explosionAnimation: null, explosionProgress: 0,
     performance: { now: () => 1000 }, lastExplosionToggleAt: 0, cancel() {}, pressed: null, blankTaps: { reset() {} },
     reducedMotion: { matches: true }, targets: new THREE.Group(), annotations: new THREE.Group(), dimensionLines: { visible: false },
-    dimensionLabels: [], toolbar: { hidden: true }, showSeams() {}, onExplodedChange() {}, updateTargets() {}, updateAnnotations() {},
+    modelBatches: { refresh() {} }, invalidateShadows() {}, dimensionLabels: [], toolbar: { hidden: true }, showSeams() {}, onExplodedChange() {}, updateTargets() {}, updateAnnotations() {},
   });
   const original = cameraState(camera, target);
   context.toggleExploded();

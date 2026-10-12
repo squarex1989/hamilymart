@@ -1,12 +1,11 @@
 const PROFILES = [
-  { fps: 30, dpr: 1 },
   { fps: 30, dpr: 1.5 },
   { fps: 60, dpr: 1.5 },
   { fps: 60, dpr: 2 },
 ] as const;
 
-/** Promote only from observed RAF cadence and CPU submission headroom.
- * No GPU readback, device lists or idle-frame performance guesses. */
+/** One recoverable controller. Observe raw RAF before pacing; CPU time is only
+ * submission headroom, never a claim about completed GPU frames. */
 export class InteractionQuality {
   private level = 1;
   private elapsed = 0;
@@ -16,21 +15,30 @@ export class InteractionQuality {
   private cpuPeak = 0;
   private renders = 0;
   private healthyWindows = 0;
-  private cooldown = 0;
+  private slowWindows = 0;
+  private cooldownUntil = 0;
+  private pausedUntil = 0;
+  private skipNextRaf = true;
   get fps() { return PROFILES[this.level].fps; }
   get dpr() { return PROFILES[this.level].dpr; }
 
-  recordRender(milliseconds: number) {
+  recordRender(milliseconds: number, now: number) {
+    if (now < this.pausedUntil || !Number.isFinite(now)
+      || !(milliseconds >= 0) || !Number.isFinite(milliseconds)) return;
     this.cpuTotal += milliseconds;
     this.cpuPeak = Math.max(this.cpuPeak, milliseconds);
     this.renders++;
   }
-  observeRaf(milliseconds: number): boolean {
-    if (!(milliseconds > 0) || milliseconds > 250) { this.reset(); return false; }
+  observeRaf(milliseconds: number, now: number): boolean {
+    if (!Number.isFinite(now) || !(milliseconds > 0) || milliseconds > 250) {
+      this.reset(); return false;
+    }
+    if (now < this.pausedUntil) { this.skipNextRaf = true; return false; }
+    // The first interval after a pause can include hidden time, upload or resize.
+    if (this.skipNextRaf) { this.skipNextRaf = false; return false; }
     this.elapsed += milliseconds;
     this.frames++;
     if (milliseconds > 24) this.delayed++;
-    this.cooldown = Math.max(0, this.cooldown - milliseconds);
     if (this.elapsed < 1000 || this.renders < 12) return false;
     const cadence = this.elapsed / this.frames;
     const delayedRatio = this.delayed / this.frames;
@@ -41,25 +49,42 @@ export class InteractionQuality {
       : cadence > 36 || cpu > 24;
     const previousLevel = this.level;
     if (slow) {
-      this.level = Math.max(0, this.level - 1);
       this.healthyWindows = 0;
-      this.cooldown = 5000;
-    } else if (healthy && !this.cooldown) {
-      this.healthyWindows++;
-      // Prove the 60 FPS tier before increasing its pixel count.
-      if (this.healthyWindows >= (this.level === 1 ? 1 : 2)) {
-        this.level = Math.min(PROFILES.length - 1, this.level + 1);
-        this.healthyWindows = 0;
+      this.slowWindows++;
+      if (this.slowWindows >= 2) {
+        // Remove extra pixels first; keep at least 30 FPS and DPR 1.5.
+        this.level = Math.max(0, this.level - 1);
+        this.slowWindows = 0;
+        this.cooldownUntil = now + 5000;
       }
-    } else this.healthyWindows = 0;
+    } else {
+      this.slowWindows = 0;
+      if (healthy && now >= this.cooldownUntil) {
+        this.healthyWindows++;
+        if (this.healthyWindows >= 2) {
+          this.level = Math.min(PROFILES.length - 1, this.level + 1);
+          this.healthyWindows = 0;
+        }
+      } else this.healthyWindows = 0;
+    }
     this.clearWindow();
     return previousLevel !== this.level;
   }
   private clearWindow() {
     this.elapsed = this.frames = this.delayed = this.cpuTotal = this.cpuPeak = this.renders = 0;
   }
-  /** A new scene, idle time or hidden tab is not a performance measurement. */
-  reset() { this.clearWindow(); this.healthyWindows = 0; }
+  /** Call after a first upload/resize, or on entering idle/background. All times
+   * must share the performance.now()/RAF clock. No timers or GPU reads are used. */
+  pauseSampling(now: number, durationMs = 250) {
+    this.reset();
+    if (Number.isFinite(now)) this.pausedUntil = Math.max(this.pausedUntil, now + Math.max(0, durationMs));
+  }
+  /** Discard partial observations, retaining quality and a wall-clock cooldown. */
+  reset() {
+    this.clearWindow();
+    this.healthyWindows = this.slowWindows = 0;
+    this.skipNextRaf = true;
+  }
 }
 
 /** Retain the target phase: small RAF jitter must not turn 30 FPS into 20. */

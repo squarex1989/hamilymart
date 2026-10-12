@@ -79,13 +79,14 @@ function recoveryRuntime() {
     disposed: false, renderError: false, contextUnavailable: false, notifiedReady: true, modelReady: true, frame: 17,
     camera, controls: { target, enabled: true, update() {}, getPolarAngle: () => 0 },
     scene: new THREE.Scene(), document: { hidden: false }, host: { clientWidth: 390, clientHeight: 420 },
-    renderer: { setSize() {}, render() { renders++; } },
+    renderer: { setSize() {}, render() { renders++; } }, invalidateShadows() {},
     clock: { getDelta: () => 0 }, updateViewportFraming() {}, cancel() {},
     blankTaps: { reset() {} }, pressed: {}, touchPointers: new Set([1]),
     toolbar: { hidden: false }, dimensionLabels: [{ hidden: false }], fail: (message: string) => errors.push(message),
     cancelAnimationFrame: (id: number) => canceled.push(id), requestAnimationFrame: (callback: unknown) => { scheduled.push(callback); return 18; },
     performance: { now: () => 1000 }, tickExplosion() {}, layoutAnnotations() {}, isExploded: () => false,
-    bedding: { setVisible() {} }, floor: { visible: true }, grid: { visible: true }, lighting: { underside: { visible: false } },
+    bedding: { setVisible() {} }, lastBeddingVisible: true, drag: null,
+    floor: { visible: true }, grid: { visible: true }, lighting: { underside: { visible: false } },
     hamster: null, ready: () => { readyCalls++; }, console: { error() {} },
   });
   return { context, camera, target, errors, scheduled, canceled, renders: () => renders, ready: () => readyCalls };

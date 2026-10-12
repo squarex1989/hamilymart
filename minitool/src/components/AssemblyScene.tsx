@@ -6,10 +6,12 @@ import {
   useState,
 } from "react";
 import * as THREE from "three";
+import { createModelBatches, MODEL_PICK_LAYER } from "../lib/model-batches";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { loadPart } from "../lib/offline-models";
-import { budgetPixelRatio, FrameBudget } from "../lib/render-budget";
+import { budgetPixelRatio } from "../lib/render-budget";
 import { PreviewQuality } from "../lib/preview-quality";
+import { stableOrbitUpdate } from "../lib/stable-orbit";
 import { FramePacer, InteractionQuality } from "../lib/interaction-quality";
 import { FoldVertical, RotateCw, Trash2 } from "lucide-react";
 import {
@@ -211,32 +213,41 @@ function createRuntime(
     antialias: true,
     alpha: true,
     preserveDrawingBuffer: false,
-    powerPreference: "low-power",
+    powerPreference: "high-performance",
   });
-  const frameBudget = new FrameBudget();
   const interactionQuality = new InteractionQuality();
   const framePacer = new FramePacer();
   const previewQuality = new PreviewQuality();
-  const invalidatePreview = () => previewQuality.invalidate(performance.now());
+  let needsWarmupFrame = true;
+  const invalidatePreview = () => {
+    const now = performance.now();
+    previewQuality.invalidate(now);
+    // Edits/upload work must not be mistaken for sustained orbit performance.
+    interactionQuality.pauseSampling(now);
+    needsWarmupFrame = true;
+    renderer.shadowMap.needsUpdate = true;
+  };
   let pausedFor: "context" | "error" | null = null;
   let needsReady = false;
   let lastDrawTime = 0;
-  let recentDrawTime = 0;
   let recentRafTime = 0;
   let measuringInteraction = false;
   let viewportWidth = Math.max(1, host.clientWidth), viewportHeight = Math.max(1, host.clientHeight);
   const applyPixelBudget = (still = false) => {
-    const ratio = budgetPixelRatio(viewportWidth, viewportHeight, window.devicePixelRatio,
-      frameBudget.reducedResolution || interactionQuality.dpr === 1, still,
-      Math.min(4096, renderer.capabilities.maxTextureSize), Math.min(interactionQuality.dpr, frameBudget.dprCap));
+    const ratio = budgetPixelRatio(viewportWidth, viewportHeight, window.devicePixelRatio, still,
+      Math.min(4096, renderer.capabilities.maxTextureSize), interactionQuality.dpr);
     if (Math.abs(renderer.getPixelRatio() - ratio) < .001) return false;
     renderer.setPixelRatio(ratio);
+    needsWarmupFrame = true;
+    interactionQuality.pauseSampling(performance.now());
     return true;
   };
   renderer.setSize(viewportWidth, viewportHeight, false);
   applyPixelBudget();
   configureModelRenderer(renderer);
-  renderer.shadowMap.enabled = false;
+  // Camera orbit reuses the shadow texture; only model/light changes redraw it.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   renderer.domElement.style.touchAction = "none";
   host.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
@@ -262,11 +273,12 @@ function createRuntime(
   };
   const controls = new OrbitControls(camera, renderer.domElement);
   let cameraInteracting = false;
-  const cameraInteractionStarted = () => { cameraInteracting = true; invalidatePreview(); };
-  const cameraInteractionEnded = () => { cameraInteracting = false; invalidatePreview(); };
+  const cameraInteractionStarted = () => { cameraInteracting = true; previewQuality.invalidate(performance.now()); };
+  const cameraInteractionEnded = () => { cameraInteracting = false; previewQuality.gestureEnded(performance.now()); };
+  const cameraChanged = () => previewQuality.cameraChanged(performance.now());
   controls.addEventListener("start", cameraInteractionStarted);
   controls.addEventListener("end", cameraInteractionEnded);
-  controls.addEventListener("change", invalidatePreview);
+  controls.addEventListener("change", cameraChanged);
   controls.enableDamping = true;
   // Initial damping; the loop adjusts it to the actual frame interval.
   controls.dampingFactor = 0.2;
@@ -338,6 +350,7 @@ function createRuntime(
   const objects = new THREE.Group();
   objects.userData.hamsterEnvironment = true;
   scene.add(objects);
+  const modelBatches = createModelBatches(scene, objects);
   const bedding = createBedding(scene);
   // Gate the scene too: a saved configuration may already contain a hamster.
   const hamster = FEATURES.hamsterPreview ? createHamsterSimulation(scene) : null;
@@ -370,6 +383,7 @@ function createRuntime(
   let ghost: THREE.Group | null = null;
   const ray = new THREE.Raycaster(),
     pointer = new THREE.Vector2();
+  ray.layers.enable(MODEL_PICK_LAYER);
   let disposed = false,
     revision = 0,
     ghostRevision = 0;
@@ -397,6 +411,13 @@ function createRuntime(
     moved: boolean;
     point: Point | null;
     placement: Placement | null;
+    candidates?: {
+      state: AssemblyState;
+      productId: string;
+      itemId?: string;
+      rotation: number;
+      values: Placement[];
+    };
   } | null = null;
   const elevation = () => getDisplayElevation(props().state);
   const isExploded = () => exploded || explosionProgress > 0;
@@ -406,6 +427,7 @@ function createRuntime(
   function restoreExploded(refresh = true) {
     if (!explosion) return;
     explosion.restore();
+    modelBatches.refresh();
     explosion = null;
     explosionAnimation = null;
     explosionProgress = 0;
@@ -442,6 +464,8 @@ function createRuntime(
     const eased = t * t * (3 - 2 * t);
     explosionProgress = THREE.MathUtils.lerp(explosionAnimation.from, explosionAnimation.to, eased);
     explosion.apply(explosionProgress);
+    modelBatches.refresh();
+    renderer.shadowMap.needsUpdate = true;
     if (t === 1) {
       explosionAnimation = null;
       if (!exploded) restoreExploded();
@@ -455,7 +479,7 @@ function createRuntime(
     recentRafTime = 0; measuringInteraction = false;
     interactionQuality.reset(); framePacer.reset();
     if (document.hidden) cancelAnimationFrame(frame);
-    else if (!pausedFor && !disposed) { lastDrawTime = recentDrawTime = 0; frameBudget.reset(); invalidatePreview(); clock.getDelta(); cancelAnimationFrame(frame); frame = requestAnimationFrame(draw); }
+    else if (!pausedFor && !disposed) { lastDrawTime = 0; invalidatePreview(); clock.getDelta(); cancelAnimationFrame(frame); frame = requestAnimationFrame(draw); }
   }
   function pauseForError(message: string, reason: "context" | "error" = "error") {
     if (disposed || pausedFor === "error" || pausedFor === reason) return;
@@ -475,28 +499,34 @@ function createRuntime(
     pausedFor = null;
     controls.enabled = true;
     needsReady = modelReady;
-    recentRafTime = lastDrawTime = recentDrawTime = 0;
+    recentRafTime = lastDrawTime = 0;
     measuringInteraction = false;
-    frameBudget.reset(); interactionQuality.reset(); framePacer.reset();
+    interactionQuality.reset(); framePacer.reset();
     invalidatePreview();
     void update();
     cancelAnimationFrame(frame);
     if (!document.hidden) frame = requestAnimationFrame(draw);
   }
 
-  function pointAt(x: number, y: number, z = 110): Point | null {
+  function pointAt(x: number, y: number): (z?: number) => Point | null {
     const b = renderer.domElement.getBoundingClientRect();
-    if (x < b.left || x > b.right || y < b.top || y > b.bottom) return null;
-    pointer.set(
-      ((x - b.left) / b.width) * 2 - 1,
-      (-(y - b.top) / b.height) * 2 + 1,
-    );
+    if (!b.width || !b.height || x < b.left || x > b.right || y < b.top || y > b.bottom) return () => null;
+    pointer.set(((x - b.left) / b.width) * 2 - 1, (-(y - b.top) / b.height) * 2 + 1);
     ray.setFromCamera(pointer, camera);
-    const p = ray.ray.intersectPlane(
-      new THREE.Plane(new THREE.Vector3(0, 0, 1), -(z + elevation())),
-      new THREE.Vector3(),
-    );
-    return p ? { x: p.x, y: p.y, z } : null;
+    // One event can have many magnets on the same supporting surface.
+    const pointerRay = ray.ray.clone();
+    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1));
+    const intersection = new THREE.Vector3();
+    const displayElevation = elevation();
+    const surfaces = new Map<number, Point | null>();
+    return (z = 110) => {
+      if (surfaces.has(z)) return surfaces.get(z)!;
+      plane.constant = -(z + displayElevation);
+      const hit = pointerRay.intersectPlane(plane, intersection);
+      const result = hit ? { x: hit.x, y: hit.y, z } : null;
+      surfaces.set(z, result);
+      return result;
+    };
   }
   function pick(x: number, y: number) {
     const b = renderer.domElement.getBoundingClientRect();
@@ -579,6 +609,66 @@ function createRuntime(
     }
     return group;
   }
+  async function reconcileGroups(s: AssemblyState, rev: number) {
+    const existing = new Map(objects.children.map(group => [group.userData.itemId as string, group]));
+    const definitions = [
+      ...getPlatforms(s).map(platform => ({
+        id: platform.id,
+        parts: getBaseParts(s.legHeight, platform.baseInsert, platform.removedCovers),
+        origin: [0, 0, 0],
+        colors: platform.baseColors,
+        x: platform.x, y: platform.y, z: 0, rotation: 0,
+      })),
+      ...s.items.map(item => ({
+        ...item,
+        parts: getProduct(item.productId).parts,
+        origin: getProduct(item.productId).origin,
+      })),
+    ];
+    const replacements = new Set<THREE.Group>();
+    let abandoned = false;
+    const stale = () => disposed || revision !== rev;
+    try {
+      const next = await Promise.all(definitions.map(async def => {
+        // Position, parent and selection do not change a group's local model.
+        // Sort color slots so equivalent imported/undo states can reuse it too.
+        const contentKey = JSON.stringify([def.parts, def.origin,
+          Object.keys(def.colors).sort().map(key => [key, def.colors[key]])]);
+        const previous = existing.get(def.id);
+        if (previous?.userData.modelContentKey === contentKey) return { def, group: previous };
+        const group = await build(def.parts, def.origin, def.colors, false, def.id);
+        if (abandoned || stale()) { release(group); return null; }
+        group.userData.itemId = def.id;
+        group.userData.modelContentKey = contentKey;
+        replacements.add(group);
+        return { def, group };
+      }));
+      if (stale()) {
+        replacements.forEach(release);
+        return false;
+      }
+      // Commit together: a failed or superseded load never removes usable models.
+      const retained = new Set(next.map(entry => entry!.group));
+      for (const group of objects.children.slice()) {
+        if (retained.has(group)) continue;
+        objects.remove(group);
+        release(group);
+      }
+      const displayElevation = getDisplayElevation(s);
+      for (const entry of next) {
+        if (!entry) continue;
+        const { def, group } = entry;
+        group.position.set(def.x, def.y, def.z + displayElevation);
+        group.rotation.z = def.rotation * Math.PI / 180;
+        if (group.parent !== objects) objects.add(group);
+      }
+      return true;
+    } catch (error) {
+      abandoned = true;
+      replacements.forEach(release);
+      throw error;
+    }
+  }
   async function update() {
     if (pausedFor || disposed) return;
     const s = props().state;
@@ -591,8 +681,6 @@ function createRuntime(
     renderedState = s;
     consumedViewResetKey = nextResetKey;
     invalidatePreview();
-    recentDrawTime = 0;
-    frameBudget.reset();
     interactionQuality.reset(); measuringInteraction = false;
     modelReady = false;
     // Explicit edits return to assembly mode before replacing imported meshes.
@@ -600,51 +688,12 @@ function createRuntime(
     const rev = ++revision;
     bedding.update(s);
     if (resetView) home();
-    const old = [...objects.children];
-    old.forEach((o) => {
-      objects.remove(o);
-      release(o);
-    });
-    const definitions = [
-      ...getPlatforms(s).map(platform => ({
-        id: platform.id,
-        parts: getBaseParts(s.legHeight, platform.baseInsert, platform.removedCovers),
-        origin: [0, 0, 0],
-        colors: platform.baseColors,
-        x: platform.x,
-        y: platform.y,
-        z: 0,
-        rotation: 0,
-      })),
-      ...s.items.map((item) => ({
-        ...item,
-        parts: getProduct(item.productId).parts,
-        origin: getProduct(item.productId).origin,
-      })),
-    ];
     try {
-      await Promise.all(
-        definitions.map(async (def) => {
-          const g = await build(
-            def.parts,
-            def.origin,
-            def.colors,
-            false,
-            def.id,
-          );
-          if (disposed || revision !== rev) {
-            release(g);
-            return;
-          }
-          g.position.set(def.x, def.y, def.z + elevation());
-          g.rotation.z = (def.rotation * Math.PI) / 180;
-          g.userData.itemId = def.id;
-          objects.add(g);
-        }),
-      );
+      await reconcileGroups(s, rev);
       if (rev === revision && !disposed) {
         modelReady = true;
         objects.updateMatrixWorld(true);
+        modelBatches.rebuild();
         hamster?.update(s);
         const center = sceneCenter();
         lighting.centerAt(center.x, center.y);
@@ -715,6 +764,17 @@ function createRuntime(
       }
     });
   }
+  function placementCandidates(productId: string, rotation: number, itemId?: string) {
+    const state = props().state;
+    const cached = drag?.candidates;
+    if (cached && cached.state === state && cached.productId === productId
+      && cached.itemId === itemId && cached.rotation === rotation) return cached.values;
+    const values = getPlacements(state, productId, rotation as 0, itemId);
+    if (drag && drag.productId === productId && drag.itemId === itemId) {
+      drag.candidates = { state, productId, itemId, rotation, values };
+    }
+    return values;
+  }
   function updateTargets() {
     invalidatePreview();
     clearTargets();
@@ -724,13 +784,13 @@ function createRuntime(
     const product = drag?.productId ?? p.activeProduct ?? selected?.productId;
     if (product) {
       const itemId = drag?.itemId ?? (!p.activeProduct ? selected?.id : undefined);
-      const placements = getPlacements(
-        p.state,
+      const placements = placementCandidates(
         product,
-        (!p.activeProduct && selected ? selected.rotation : p.rotation) as 0,
+        !drag && !p.activeProduct && selected ? selected.rotation : p.rotation,
         itemId,
       );
       const surfaceRay = new THREE.Raycaster();
+      surfaceRay.layers.enable(MODEL_PICK_LAYER);
       placements.forEach((pos) => {
         if (selected && itemId && p.state.items.some((item) => item.parentId === itemId)
           && !tryPlace(p.state, product, pos, pos.rotation, selected.colors, itemId).ok) return;
@@ -896,16 +956,12 @@ function createRuntime(
     if (!drag.moved) return;
     e.preventDefault();
     const p = props();
-    const candidates = getPlacements(
-      p.state,
-      drag.productId,
-      p.rotation as 0,
-      drag.itemId,
-    );
+    const candidates = placementCandidates(drag.productId, p.rotation, drag.itemId);
+    const at = pointAt(e.clientX, e.clientY);
     let nearest: Placement | null = null,
       dist = Infinity;
     for (const c of candidates) {
-      const pos = pointAt(e.clientX, e.clientY, c.z);
+      const pos = at(c.z);
       if (!pos) continue;
       const d = Math.hypot(pos.x - c.x, pos.y - c.y);
       if (d < dist) {
@@ -913,7 +969,7 @@ function createRuntime(
         nearest = c;
       }
     }
-    const raw = pointAt(e.clientX, e.clientY, nearest?.z ?? 110);
+    const raw = at(nearest?.z ?? 110);
     drag.point = raw;
     drag.placement = dist <= 42 ? nearest : null;
     if (ghost) {
@@ -1025,15 +1081,12 @@ function createRuntime(
     }
     const active = props().activeProduct;
     if (active) {
-      const placements = getPlacements(
-        props().state,
-        active,
-        props().rotation as 0,
-      );
+      const placements = placementCandidates(active, props().rotation);
+      const at = pointAt(e.clientX, e.clientY);
       let near: Placement | null = null,
         best = Infinity;
       for (const pos of placements) {
-        const hit = pointAt(e.clientX, e.clientY, pos.z);
+        const hit = at(pos.z);
         if (hit) {
           const d = Math.hypot(hit.x - pos.x, hit.y - pos.y);
           if (d < best) {
@@ -1042,7 +1095,7 @@ function createRuntime(
           }
         }
       }
-      const hit = pointAt(e.clientX, e.clientY, near?.z ?? 110);
+      const hit = at(near?.z ?? 110);
       if (hit)
         props().onDrop(
           active,
@@ -1092,8 +1145,6 @@ function createRuntime(
     if (!w || !h) return;
     viewportWidth = w; viewportHeight = h;
     invalidatePreview();
-    recentDrawTime = 0;
-    frameBudget.reset();
     interactionQuality.reset(); framePacer.reset(); measuringInteraction = false;
     applyPixelBudget();
     renderer.setSize(w, h, false);
@@ -1103,61 +1154,50 @@ function createRuntime(
   if (bottomActions) resize.observe(bottomActions);
   if (priceButton) resize.observe(priceButton);
   const clock = new THREE.Clock();
+  const updateOrbit = stableOrbitUpdate(camera, controls);
+  let lastBeddingVisible = true;
   const draw = (time = performance.now()) => {
     if (disposed || pausedFor || document.hidden) return;
     frame = requestAnimationFrame(draw);
     // Measure the browser's unsuppressed cadence, not our own 30 FPS cap.
-    if (measuringInteraction && recentRafTime && !frameBudget.reducedResolution)
-      interactionQuality.observeRaf(time - recentRafTime);
+    if (measuringInteraction && recentRafTime)
+      interactionQuality.observeRaf(time - recentRafTime, time);
     recentRafTime = time;
-    if (!framePacer.shouldDraw(time, Math.min(frameBudget.fpsCap, interactionQuality.fps))) return;
+    if (!framePacer.shouldDraw(time, interactionQuality.fps)) return;
     const frameStarted = performance.now();
     const controlDelta = lastDrawTime ? Math.min(65, time - lastDrawTime) : 1000 / 30;
     lastDrawTime = time;
     // Keep inertia duration comparable at 30 and 60 FPS.
     controls.dampingFactor = 1 - Math.pow(.8, controlDelta / (1000 / 30));
-    controls.update();
+    updateOrbit();
     tickExplosion(time);
     const quality = previewQuality.nextFrame(time,
       !modelReady || cameraInteracting || !!pressed || !!drag || !!explosionAnimation || !!hamster);
     if (quality === 'skip') {
-      recentDrawTime = 0; measuringInteraction = false;
-      frameBudget.reset(); interactionQuality.reset(); return;
+      measuringInteraction = false;
+      interactionQuality.reset(); return;
     }
     layoutAnnotations();
     const resizedBuffer = applyPixelBudget(quality === 'still');
     measuringInteraction = quality === 'interactive' && modelReady && !resizedBuffer;
     if (!measuringInteraction) interactionQuality.reset();
-    const elapsed = recentDrawTime && !resizedBuffer && quality === 'interactive' ? time - recentDrawTime : 0;
-    recentDrawTime = quality === 'interactive' ? time : 0;
-    // A settled high-resolution draw, resize, hidden-tab pause or model upload
-    // is not evidence that continuous interaction has become slow.
-    if (elapsed > 0 && modelReady) {
-      const action = frameBudget.sample(elapsed);
-      if (action === 'reduce-quality') { applyPixelBudget(); bedding.setLowQuality(true); }
-    }
     const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
-    bedding.setVisible(!viewingUnderside && !isExploded());
-    bedding.setLowQuality(frameBudget.reducedResolution || interactionQuality.dpr === 1);
+    const beddingVisible = !viewingUnderside && !isExploded();
+    if (floor.visible === viewingUnderside || lastBeddingVisible !== beddingVisible)
+      renderer.shadowMap.needsUpdate = true;
+    bedding.setVisible(beddingVisible);
+    lastBeddingVisible = beddingVisible;
     floor.visible = grid.visible = !viewingUnderside;
     lighting.underside.visible = viewingUnderside;
-    let triangles = 0, calls = 0;
-    scene.traverseVisible(object => {
-      if (object instanceof THREE.Mesh) {
-        triangles += ((object.geometry.index?.count ?? object.geometry.getAttribute('position')?.count ?? 0) / 3) * (object instanceof THREE.InstancedMesh ? object.count : 1);
-        calls += Array.isArray(object.material) ? Math.max(1, object.geometry.groups.length) : 1;
-      } else if (object instanceof THREE.Line || object instanceof THREE.Points) calls++;
-    });
-    if (frameBudget.constrainGeometry(triangles, calls) === 'reduce-quality') {
-      // Keep every component and its geometry. Only rendering cost changes.
-      applyPixelBudget(quality === 'still');
-      bedding.setLowQuality(true);
-    }
     hamster?.tick(Math.min(clock.getDelta(), .05));
+    if (drag || hamster) renderer.shadowMap.needsUpdate = true;
     try {
       renderer.render(scene, camera);
       if (needsReady && modelReady && !pausedFor) { needsReady = false; ready(); }
-      if (measuringInteraction) interactionQuality.recordRender(performance.now() - frameStarted);
+      if (needsWarmupFrame) {
+        needsWarmupFrame = false;
+        interactionQuality.pauseSampling(performance.now());
+      } else if (measuringInteraction) interactionQuality.recordRender(performance.now() - frameStarted, time);
     }
     catch (error) {
       console.error("HamilyMart 3D frame failed", error);
@@ -1203,8 +1243,9 @@ function createRuntime(
       resize.disconnect();
       controls.removeEventListener("start", cameraInteractionStarted);
       controls.removeEventListener("end", cameraInteractionEnded);
-      controls.removeEventListener("change", invalidatePreview);
+      controls.removeEventListener("change", cameraChanged);
       controls.dispose();
+      modelBatches.dispose();
       hamster?.dispose();
       bedding.dispose();
       annotations.children.forEach(disposeAnnotation);

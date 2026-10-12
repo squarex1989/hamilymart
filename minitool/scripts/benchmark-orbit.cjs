@@ -15,8 +15,15 @@ assert(/^[a-zA-Z0-9_-]+$/.test(label), 'Use a simple output label');
 const source = path.resolve(process.env.HAMILY_BENCH_DIST || path.join(__dirname, '../dist'));
 const output = path.resolve(__dirname, '../generated');
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hamily-orbit-'));
-fs.cpSync(source, root, { recursive: true });
+// The build manifest excludes unrelated synchronization copies from diagnostics.
+const manifestPath = path.resolve(__dirname, '../generated/build-files.json');
+const manifest = source === path.resolve(__dirname, '../dist') && fs.existsSync(manifestPath)
+  ? new Set(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).map(entry => entry.file)) : null;
+fs.cpSync(source, root, { recursive: true, filter: file => fs.statSync(file).isDirectory() || !manifest || manifest.has(path.relative(source, file)) });
+const platformCount = Number(process.env.HAMILY_BENCH_PLATFORMS || 1);
+assert([1, 3].includes(platformCount), 'Benchmark supports one or three platforms');
 const config = {
+  platformCount,
   viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true,
   rounds: 3, warmupMs: 2000, measureMs: 12000, orbitPeriodMs: 4000,
   safeArea: { top: 44, bottom: 34 }, headless: true, channel: 'chrome',
@@ -63,6 +70,8 @@ function summarize(round) {
     drawnRafIntervalMs: distribution(drawRafIntervals),
     driverRafIntervalMs: distribution(rafIntervals),
     drawCallsPerFrame: distribution(round.frames.map(frame => frame.calls)),
+    mainDrawCallsPerFrame: distribution(round.frames.map(frame => frame.calls - (frame.shadowCalls || 0))),
+    shadowDrawCalls: round.frames.reduce((sum, frame) => sum + (frame.shadowCalls || 0), 0),
     drawCalls: round.frames.reduce((sum, frame) => sum + frame.calls, 0),
     resolutionCounts,
     effectiveDpr: Object.keys(resolutionCounts).map(value => { const [width, height] = value.split('x').map(Number); return { width, height, dprX: width / round.canvas.cssWidth, dprY: height / round.canvas.cssHeight }; }),
@@ -100,7 +109,7 @@ function summarize(round) {
       const modelLoads = [];
       page.on('pageerror', error => report.errors.push(error.message));
       page.on('console', message => { if (message.type() === 'error' && !message.text().includes('404')) report.errors.push(message.text()); });
-      page.on('response', response => { if (/\/models\/.*\.js$/.test(response.url())) modelLoads.push({ file: response.url().split('/').pop(), status: response.status() }); });
+      page.on('response', response => { if (/\/models\/.*\.js(?:\?|$)/.test(response.url())) modelLoads.push({ file: response.url().split('/').pop(), status: response.status() }); });
       await page.addInitScript(({ safeArea }) => {
         const saved = new Map();
         window.xhs = { launchOptions: { miniToolEnv: { buildVersion: 9460000 } }, miniTool: { getStorage: async ({ key }) => ({ data: saved.get(key) || null }), setStorage: async ({ key, data }) => { saved.set(key, data); } } };
@@ -117,6 +126,11 @@ function summarize(round) {
           if (gl && ['webgl', 'webgl2'].includes(args[0]) && !bench.contexts.some(item => item.gl === gl)) {
             const context = { gl, canvas: this, type: args[0], totalDraws: 0, lastDrawAt: 0 };
             bench.contexts.push(context);
+            const bindFramebuffer = gl.bindFramebuffer.bind(gl);
+            gl.bindFramebuffer = (target, framebuffer) => {
+              if (target === gl.FRAMEBUFFER || target === gl.DRAW_FRAMEBUFFER) context.framebuffer = framebuffer;
+              return bindFramebuffer(target, framebuffer);
+            };
             for (const method of ['drawElements', 'drawArrays', 'drawElementsInstanced', 'drawArraysInstanced']) if (gl[method]) {
               const draw = gl[method].bind(gl);
               gl[method] = (...parameters) => {
@@ -126,10 +140,11 @@ function summarize(round) {
                   else {
                     let frame = bench.frames[bench.frames.length - 1];
                     if (!frame || frame.rafTimestamp !== bench.activeRaf) {
-                      frame = { rafTimestamp: bench.activeRaf, firstDrawAt: performance.now(), calls: 0, width: this.width, height: this.height };
+                      frame = { rafTimestamp: bench.activeRaf, firstDrawAt: performance.now(), calls: 0, shadowCalls: 0, width: this.width, height: this.height };
                       bench.frames.push(frame);
                     }
                     frame.calls++;
+                    if (context.framebuffer) frame.shadowCalls++;
                   }
                 } else context.lastDrawAt = performance.now();
                 return draw(...parameters);
@@ -151,6 +166,18 @@ function summarize(round) {
         return context && context.totalDraws > 0 && !document.querySelector('.scene-loading') && performance.now() - context.lastDrawAt >= 650;
       }, null, { timeout: 30000 });
       assert(modelLoads.length >= 15 && modelLoads.every(item => item.status === 200), 'Initial models must load completely');
+      if (platformCount === 3) {
+        await page.getByRole('button', { name: '增加平台', exact: true }).click();
+        await page.getByRole('button', { name: '增加平台', exact: true }).click();
+        const box = await page.locator('.scene-canvas').boundingBox();
+        await page.mouse.move(box.x + box.width * .5, box.y + box.height * .5);
+        await page.mouse.wheel(0, 700);
+        await page.waitForFunction(() => {
+          const canvas = document.querySelector('.scene-canvas canvas');
+          const context = window.__orbitBench.contexts.find(item => item.canvas === canvas);
+          return context && performance.now() - context.lastDrawAt >= 650;
+        });
+      }
       const initial = await page.evaluate(() => {
         const canvas = document.querySelector('.scene-canvas canvas');
         const box = canvas.getBoundingClientRect();

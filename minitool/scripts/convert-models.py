@@ -2,6 +2,8 @@
 from pathlib import Path
 import json
 import struct
+import hashlib
+import subprocess
 import numpy as np
 import trimesh
 import fast_simplification
@@ -164,21 +166,52 @@ def convert_model(path):
                            'p': stored_values, 'i': combined.faces.reshape(-1).tolist(),
                            'material': source['materials'][primitive.get('material', 0)]})
             after += len(combined.faces)
-    payload = json.dumps(meshes, ensure_ascii=False, separators=(',', ':'))
-    content = '(window.HamilyModels=window.HamilyModels||{})[' + json.dumps(path.stem) + ']=function(){return ' + payload + ';};\n'
-    (OUT / (path.stem + '.js')).write_text(content)
-    return {'sourceTriangles': before, 'previewTriangles': after, 'bytes': len(content.encode()),
-            'maxBoundsErrorMm': max_bounds_error, 'components': component_reports}
+    return meshes, {'sourceTriangles': before, 'previewTriangles': after,
+                    'maxBoundsErrorMm': max_bounds_error, 'components': component_reports}
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    report = {path.stem: convert_model(path) for path in sorted((ROOT / 'public/models').glob('*.glb'))}
-    (ROOT / 'minitool/generated/model-report.json').write_text(json.dumps(report, indent=2))
+    sources = sorted((ROOT / 'public/models').glob('*.glb'))
+    helper = ROOT / 'minitool/scripts/bake-model-normals.mjs'
+    report_path = ROOT / 'minitool/generated/model-report.json'
+    cache_path = ROOT / 'minitool/generated/model-cache.json'
+    dependencies = [Path(__file__), helper, ROOT / 'minitool/src/data/offline-model-format.json',
+                    ROOT / 'node_modules/three/examples/jsm/utils/BufferGeometryUtils.js',
+                    ROOT / 'node_modules/three/package.json']
+    digest = hashlib.sha256()
+    for path in dependencies + sources:
+        digest.update(str(path.relative_to(ROOT)).encode())
+        digest.update(path.read_bytes())
+    key = digest.hexdigest()
+    cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
+    if cache.get('key') == key and report_path.exists() and all(
+            (OUT / name).exists() and hashlib.sha256((OUT / name).read_bytes()).hexdigest() == sha
+            for name, sha in cache.get('files', {}).items()) and len(cache.get('files', {})) == len(sources):
+        report = json.loads(report_path.read_text())
+    else:
+        models, report = {}, {}
+        for path in sources:
+            models[path.stem], report[path.stem] = convert_model(path)
+        result = subprocess.run(['node', str(helper)], input=json.dumps(models), text=True,
+                                capture_output=True, check=True)
+        baked = json.loads(result.stdout)
+        hashes = {}
+        for model_id, asset in baked.items():
+            payload = json.dumps(asset['meshes'], ensure_ascii=False, separators=(',', ':'))
+            content = '(window.HamilyModels=window.HamilyModels||{})[' + json.dumps(model_id) + ']=function(){return ' + payload + ';};\n'
+            destination = OUT / (model_id + '.js')
+            destination.write_text(content)
+            hashes[destination.name] = hashlib.sha256(destination.read_bytes()).hexdigest()
+            report[model_id].update(bytes=len(content.encode()), bakedGeometry=asset['reports'], formatVersion=asset['meshes'][0]['v'])
+        report_path.write_text(json.dumps(report, indent=2))
+        cache_path.write_text(json.dumps({'key': key, 'files': hashes}, indent=2))
     print(json.dumps({'models': len(report), 'sourceTriangles': sum(x['sourceTriangles'] for x in report.values()),
                       'previewTriangles': sum(x['previewTriangles'] for x in report.values()),
                       'assetBytes': sum(x['bytes'] for x in report.values()),
-                      'largestAssetBytes': max(x['bytes'] for x in report.values())}))
+                      'largestAssetBytes': max(x['bytes'] for x in report.values()),
+                      'previousGeometryBytes': sum(m['previousGeometryBytes'] for x in report.values() for m in x['bakedGeometry']),
+                      'geometryBytes': sum(m['geometryBytes'] for x in report.values() for m in x['bakedGeometry'])}))
 
 
 if __name__ == '__main__':

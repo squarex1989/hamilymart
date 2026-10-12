@@ -31,7 +31,7 @@ test("a reduced-motion explosion repaints an already settled preview without mov
   assert.equal(quality.nextFrame(500, false), "still");
   assert.equal(quality.nextFrame(600, false), "skip");
   const context = vm.createContext({
-    THREE, createExplodedLayout, objects, camera, controls: { target },
+    THREE, createExplodedLayout, objects, camera, controls: { target }, modelBatches: { refresh() {} }, renderer: { shadowMap: { needsUpdate: false } },
     modelReady: true, disposed: false, pausedFor: null, exploded: false, explosion: null, explosionProgress: 0, explosionAnimation: null,
     performance: { now: () => 1000 }, lastExplosionToggleAt: 0,
     invalidatePreview: () => quality.invalidate(1000), cancel() {}, pressed: null, blankTaps: { reset() {} },

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
+import format from '../src/data/offline-model-format.json';
 import { loadPart } from '../src/lib/offline-models';
 
 type FakeScript = {
@@ -10,7 +11,7 @@ type FakeScript = {
   removeCount: number;
   remove: () => void;
 };
-type Outcome = 'error' | 'empty' | 'throw' | 'success';
+type Outcome = 'error' | 'empty' | 'throw' | 'stale' | 'success';
 
 test('offline script failures remain retryable and never block the shared model queue', async t => {
   const oldWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
@@ -29,7 +30,7 @@ test('offline script failures remain retryable and never block the shared model 
     head: {
       appendChild(script: FakeScript) {
         requests.push(script);
-        const match = /^\.\/models\/([A-Z][A-Z0-9]+)\.js$/.exec(script.src);
+        const match = /^\.\/models\/([A-Z][A-Z0-9]+)\.js\?v=creased36-indexed-v2$/.exec(script.src);
         assert.ok(match, 'the real loader must request its same-origin model script');
         const id = match[1];
         const outcome = outcomes.get(id)?.shift();
@@ -40,10 +41,10 @@ test('offline script failures remain retryable and never block the shared model 
             factoryCalls.set(id, (factoryCalls.get(id) ?? 0) + 1);
             if (outcome === 'throw') throw new Error(`broken factory: ${id}`);
             return [{
-              name: id,
+              v: outcome === 'stale' ? 1 : format.version, name: id,
               extras: { sourcePart: `${id}_Snow`, colorKey: 'Snow' },
               p: [0, 0, 0, 1000, 0, 0, 0, 1000, 0],
-              i: [0, 1, 2],
+              i: [0, 1, 2], n: [0, 0, 1, 0, 0, 1, 0, 0, 1],
               material: { pbrMetallicRoughness: { baseColorFactor: [1, .5, .25, 1] } },
             }];
           };
@@ -66,7 +67,7 @@ test('offline script failures remain retryable and never block the shared model 
   });
 
   for (const [failure, error] of [
-    ['error', /缺少本地模型/], ['empty', /模型内容不完整/], ['throw', /broken factory/],
+    ['error', /缺少本地模型/], ['empty', /模型内容不完整/], ['throw', /broken factory/], ['stale', /模型格式已更新/],
   ] as const) await t.test(`${failure}: same-ID retry loads again, queued work continues, success stays cached`, async () => {
     const id = `RETRY${failure.toUpperCase()}`, nextId = `NEXT${failure.toUpperCase()}`;
     outcomes.set(id, [failure, 'success']);
@@ -90,14 +91,16 @@ test('offline script failures remain retryable and never block the shared model 
     assert.ok(mesh instanceof THREE.Mesh, 'the real parser constructs a Three.js mesh');
     mesh.geometry.computeBoundingBox();
     assert.deepEqual(mesh.geometry.boundingBox!.max.toArray(), [1, 1, 0]);
+    assert.equal(mesh.geometry.index!.count, 3, 'runtime retains baked vertex indices');
+    assert.deepEqual(Array.from(mesh.geometry.getAttribute('normal').array), [0,0,1,0,0,1,0,0,1]);
     assert.equal(mesh.userData.sourcePart, `${id}_Snow`);
     assert.equal(factories[id], undefined, 'successful upload releases source data');
     assert.strictEqual(loadPart(id), retry, 'successful models retain their promise cache');
     assert.strictEqual(await loadPart(id), group, 'the already parsed group is reused');
-    assert.equal(factoryCalls.get(id), failure === 'throw' ? 2 : 1);
+    assert.equal(factoryCalls.get(id), failure === 'throw' || failure === 'stale' ? 2 : 1);
     assert.equal(factoryCalls.get(nextId), 1);
-    assert.equal(requests.filter(script => script.src === `./models/${id}.js`).length, 2);
-    assert.equal(requests.filter(script => script.src === `./models/${nextId}.js`).length, 1);
+    assert.equal(requests.filter(script => script.src === `./models/${id}.js?v=${format.cacheRevision}`).length, 2);
+    assert.equal(requests.filter(script => script.src === `./models/${nextId}.js?v=${format.cacheRevision}`).length, 1);
     assert.ok(requests.every(script => script.removeCount === 1), 'success and failure both clean up their script nodes');
   });
 });
