@@ -1,0 +1,1999 @@
+[
+  {
+    "id": "1A",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": null,
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "pool",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-villa",
+          "productId": "villa",
+          "parentId": "base",
+          "x": 150,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "A01": "pine",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "p1-villa",
+          "x": 78,
+          "y": 239,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "p1-villa",
+          "x": 280.5,
+          "y": 264,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "1B",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": null,
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-corner",
+          "productId": "l-house",
+          "parentId": "base",
+          "x": 100,
+          "y": 200,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LHB": "pine",
+            "LHR": "cream"
+          }
+        },
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "p1-corner",
+          "x": 50,
+          "y": 250,
+          "z": 195.6,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-seesaw",
+          "productId": "seesaw",
+          "parentId": "base",
+          "x": 210,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 290,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "1C",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": null,
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "base",
+          "x": 78,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-seesaw",
+          "productId": "seesaw",
+          "parentId": "base",
+          "x": 210,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "base",
+          "x": 210,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 290,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "1D",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": null,
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "base",
+          "x": 50,
+          "y": 50,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-straight",
+          "productId": "pipe-st1",
+          "parentId": "base",
+          "x": 50,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST1T": "cream",
+            "ST1B": "cream"
+          }
+        },
+        {
+          "id": "p1-side",
+          "productId": "pipe-st2",
+          "parentId": "base",
+          "x": 150,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST2T": "cream",
+            "ST2B": "cream"
+          }
+        },
+        {
+          "id": "p1-elbow",
+          "productId": "pipe-lt2n",
+          "parentId": "base",
+          "x": 250,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LT2NT": "cream",
+            "LT2B": "cream"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 210,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "1E",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": null,
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "pool",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "base",
+          "x": 250,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-seesaw",
+          "productId": "seesaw",
+          "parentId": "base",
+          "x": 290,
+          "y": 90,
+          "z": 110,
+          "rotation": 90,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "base",
+          "x": 10,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "2A",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-corner",
+          "productId": "l-house",
+          "parentId": "base",
+          "x": 100,
+          "y": 200,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LHB": "pine",
+            "LHR": "cream"
+          }
+        },
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "p1-corner",
+          "x": 50,
+          "y": 250,
+          "z": 195.6,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 210,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p2-villa",
+          "productId": "villa",
+          "parentId": "base2",
+          "x": 450,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "A01": "pine",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "p2-planter",
+          "productId": "planter",
+          "parentId": "p2-villa",
+          "x": 580.5,
+          "y": 264,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 390,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "2B",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "pool",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-villa",
+          "productId": "villa",
+          "parentId": "base",
+          "x": 150,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "A01": "pine",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "p1-villa",
+          "x": 78,
+          "y": 239,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "p1-villa",
+          "x": 280.5,
+          "y": 264,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-cube",
+          "productId": "cube-house",
+          "parentId": "base2",
+          "x": 350,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 510,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p2-bowl",
+          "productId": "food-bowl",
+          "parentId": "base2",
+          "x": 510,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "2C",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "base",
+          "x": 78,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "base",
+          "x": 210,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 290,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p2-straight",
+          "productId": "pipe-st1",
+          "parentId": "base2",
+          "x": 350,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST1T": "cream",
+            "ST1B": "cream"
+          }
+        },
+        {
+          "id": "p2-tee",
+          "productId": "pipe-tt1",
+          "parentId": "base2",
+          "x": 450,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "TT1T": "cream",
+            "TTB": "cream"
+          }
+        },
+        {
+          "id": "p2-elbow",
+          "productId": "pipe-lt2",
+          "parentId": "base2",
+          "x": 550,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LT2T": "cream",
+            "LT2B": "cream"
+          }
+        },
+        {
+          "id": "p2-side",
+          "productId": "pipe-st2",
+          "parentId": "base2",
+          "x": 550,
+          "y": 150,
+          "z": 110,
+          "rotation": 270,
+          "colors": {
+            "ST2T": "cream",
+            "ST2B": "cream"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 410,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "2D",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-corner",
+          "productId": "l-house",
+          "parentId": "base",
+          "x": 100,
+          "y": 200,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LHB": "pine",
+            "LHR": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "p1-corner",
+          "x": 90,
+          "y": 290,
+          "z": 195.6,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 210,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p2-hat",
+          "productId": "roof-cottage",
+          "parentId": "base2",
+          "x": 378,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p2-cube",
+          "productId": "cube-house",
+          "parentId": "base2",
+          "x": 550,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 410,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "2E",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": null,
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "pool",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "base",
+          "x": 250,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 290,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "base",
+          "x": 10,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-side",
+          "productId": "pipe-st2",
+          "parentId": "base2",
+          "x": 350,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST2T": "cream",
+            "ST2B": "cream"
+          }
+        },
+        {
+          "id": "p2-tee",
+          "productId": "pipe-tt2",
+          "parentId": "base2",
+          "x": 450,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "TT2T": "cream",
+            "TTB": "cream"
+          }
+        },
+        {
+          "id": "p2-elbow",
+          "productId": "pipe-lt2n",
+          "parentId": "base2",
+          "x": 550,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LT2NT": "cream",
+            "LT2B": "cream"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 410,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "3A",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "pool",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-villa",
+          "productId": "villa",
+          "parentId": "base",
+          "x": 150,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "A01": "pine",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "p1-villa",
+          "x": 78,
+          "y": 239,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "p1-villa",
+          "x": 280.5,
+          "y": 264,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-cube",
+          "productId": "cube-house",
+          "parentId": "base2",
+          "x": 350,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 510,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p2-bowl",
+          "productId": "food-bowl",
+          "parentId": "base2",
+          "x": 510,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p3-villa",
+          "productId": "villa",
+          "parentId": "base3",
+          "x": 750,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "A01": "pine",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "p3-hat",
+          "productId": "roof-cottage",
+          "parentId": "p3-villa",
+          "x": 678,
+          "y": 239,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p3-planter",
+          "productId": "planter",
+          "parentId": "p3-villa",
+          "x": 880.5,
+          "y": 264,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "3B",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "pool",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-villa",
+          "productId": "villa",
+          "parentId": "base",
+          "x": 150,
+          "y": 190,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "A01": "pine",
+            "A02": "cream",
+            "G05": "red",
+            "G15": "pine",
+            "G16": "pine",
+            "G17": "pine",
+            "W01": "cream",
+            "W02": "cream",
+            "A01-ribbon": "butter",
+            "A01-bow": "butter",
+            "G05-base": "cream"
+          }
+        },
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "p1-villa",
+          "x": 78,
+          "y": 239,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "p1-villa",
+          "x": 280.5,
+          "y": 264,
+          "z": 200,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-planter-left",
+          "productId": "planter",
+          "parentId": "base2",
+          "x": 390,
+          "y": 290,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-planter-right",
+          "productId": "planter",
+          "parentId": "base2",
+          "x": 510,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p2-bowl",
+          "productId": "food-bowl",
+          "parentId": "base2",
+          "x": 490,
+          "y": 290,
+          "z": 110,
+          "rotation": 90,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p3-corner",
+          "productId": "l-house",
+          "parentId": "base3",
+          "x": 700,
+          "y": 200,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LHB": "pine",
+            "LHR": "cream"
+          }
+        },
+        {
+          "id": "p3-cube",
+          "productId": "cube-house",
+          "parentId": "p3-corner",
+          "x": 650,
+          "y": 250,
+          "z": 195.6,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p3-seesaw",
+          "productId": "seesaw",
+          "parentId": "base3",
+          "x": 810,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "3C",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "pool",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-corner",
+          "productId": "l-house",
+          "parentId": "base",
+          "x": 100,
+          "y": 200,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LHB": "pine",
+            "LHR": "cream"
+          }
+        },
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "p1-corner",
+          "x": 50,
+          "y": 250,
+          "z": 195.6,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 210,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p2-straight",
+          "productId": "pipe-st1",
+          "parentId": "base2",
+          "x": 350,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST1T": "cream",
+            "ST1B": "cream"
+          }
+        },
+        {
+          "id": "p2-tee",
+          "productId": "pipe-tt2",
+          "parentId": "base2",
+          "x": 450,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "TT2T": "cream",
+            "TTB": "cream"
+          }
+        },
+        {
+          "id": "p2-elbow",
+          "productId": "pipe-lt2n",
+          "parentId": "base2",
+          "x": 550,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LT2NT": "cream",
+            "LT2B": "cream"
+          }
+        },
+        {
+          "id": "p2-side",
+          "productId": "pipe-st2",
+          "parentId": "base2",
+          "x": 550,
+          "y": 150,
+          "z": 110,
+          "rotation": 270,
+          "colors": {
+            "ST2T": "cream",
+            "ST2B": "cream"
+          }
+        },
+        {
+          "id": "p3-hat",
+          "productId": "roof-cottage",
+          "parentId": "base3",
+          "x": 678,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p3-seesaw",
+          "productId": "seesaw",
+          "parentId": "base3",
+          "x": 890,
+          "y": 110,
+          "z": 110,
+          "rotation": 90,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p3-planter",
+          "productId": "planter",
+          "parentId": "base3",
+          "x": 810,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "3D",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "pool",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-hat",
+          "productId": "roof-cottage",
+          "parentId": "base",
+          "x": 78,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p1-planter",
+          "productId": "planter",
+          "parentId": "base",
+          "x": 210,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 290,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p2-seesaw",
+          "productId": "seesaw",
+          "parentId": "base2",
+          "x": 510,
+          "y": 290,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p2-planter",
+          "productId": "planter",
+          "parentId": "base2",
+          "x": 310,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        },
+        {
+          "id": "p3-hat",
+          "productId": "roof-cottage",
+          "parentId": "base3",
+          "x": 678,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p3-cube",
+          "productId": "cube-house",
+          "parentId": "base3",
+          "x": 850,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p3-planter",
+          "productId": "planter",
+          "parentId": "base3",
+          "x": 810,
+          "y": 110,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "3E",
+    "state": {
+      "version": 1,
+      "catalogVersion": 7,
+      "legHeight": 100,
+      "removedCovers": [],
+      "extension": {
+        "direction": "right",
+        "baseInsert": "lid",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "thirdPlatform": {
+        "direction": "right",
+        "baseInsert": "pool",
+        "baseColors": {
+          "P01": "cream",
+          "legs": "pine",
+          "H01": "cream",
+          "H02": "cream",
+          "H03": "cream",
+          "H04": "cream",
+          "H05": "cream",
+          "H06": "cream",
+          "B01": "cream"
+        },
+        "removedCovers": []
+      },
+      "bedding": {
+        "mode": "thin",
+        "depth": 50
+      },
+      "hamster": null,
+      "baseInsert": "lid",
+      "baseColors": {
+        "P01": "cream",
+        "legs": "pine",
+        "H01": "cream",
+        "H02": "cream",
+        "H03": "cream",
+        "H04": "cream",
+        "H05": "cream",
+        "H06": "cream",
+        "B01": "cream"
+      },
+      "items": [
+        {
+          "id": "p1-cube",
+          "productId": "cube-house",
+          "parentId": "base",
+          "x": 50,
+          "y": 50,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "SHB": "pine",
+            "SHR": "cream"
+          }
+        },
+        {
+          "id": "p1-straight",
+          "productId": "pipe-st1",
+          "parentId": "base",
+          "x": 50,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST1T": "cream",
+            "ST1B": "cream"
+          }
+        },
+        {
+          "id": "p1-side",
+          "productId": "pipe-st2",
+          "parentId": "base",
+          "x": 150,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "ST2T": "cream",
+            "ST2B": "cream"
+          }
+        },
+        {
+          "id": "p1-elbow",
+          "productId": "pipe-lt2n",
+          "parentId": "base",
+          "x": 250,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LT2NT": "cream",
+            "LT2B": "cream"
+          }
+        },
+        {
+          "id": "p1-bowl",
+          "productId": "food-bowl",
+          "parentId": "base",
+          "x": 210,
+          "y": 90,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "O01": "red"
+          }
+        },
+        {
+          "id": "p2-tee",
+          "productId": "pipe-tt1",
+          "parentId": "base2",
+          "x": 350,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "TT1T": "cream",
+            "TTB": "cream"
+          }
+        },
+        {
+          "id": "p2-top-tee",
+          "productId": "pipe-tt2",
+          "parentId": "base2",
+          "x": 450,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "TT2T": "cream",
+            "TTB": "cream"
+          }
+        },
+        {
+          "id": "p2-elbow",
+          "productId": "pipe-lt2",
+          "parentId": "base2",
+          "x": 550,
+          "y": 250,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "LT2T": "cream",
+            "LT2B": "cream"
+          }
+        },
+        {
+          "id": "p2-straight",
+          "productId": "pipe-st1",
+          "parentId": "base2",
+          "x": 550,
+          "y": 150,
+          "z": 110,
+          "rotation": 270,
+          "colors": {
+            "ST1T": "cream",
+            "ST1B": "cream"
+          }
+        },
+        {
+          "id": "p3-hat",
+          "productId": "roof-cottage",
+          "parentId": "base3",
+          "x": 678,
+          "y": 240,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G03": "red",
+            "G03-window": "cream",
+            "G03-trim": "cream"
+          }
+        },
+        {
+          "id": "p3-seesaw",
+          "productId": "seesaw",
+          "parentId": "base3",
+          "x": 890,
+          "y": 110,
+          "z": 110,
+          "rotation": 90,
+          "colors": {
+            "SS01": "butter"
+          }
+        },
+        {
+          "id": "p3-planter",
+          "productId": "planter",
+          "parentId": "base3",
+          "x": 810,
+          "y": 210,
+          "z": 110,
+          "rotation": 0,
+          "colors": {
+            "G06": "red"
+          }
+        }
+      ]
+    }
+  }
+]

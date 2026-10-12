@@ -1,0 +1,25 @@
+{
+  "origin": [
+    90,
+    90,
+    110
+  ],
+  "bottomMagnets": [
+    [
+      90,
+      90,
+      110
+    ]
+  ],
+  "minimumMagnetMatches": 1,
+  "collisionBoxes": [
+    [
+      -0.7,
+      50,
+      110,
+      180.7,
+      130,
+      159.8
+    ]
+  ]
+}

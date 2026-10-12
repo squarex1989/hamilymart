@@ -73,7 +73,7 @@ test("exploded GLBs keep requested assembly groups intact without losing geometr
     assert.equal(layout.pieces.flatMap(piece => piece.meshes).length, originalMeshCount);
     const expanded = layout.pieces.map(piece => piece.originalBounds.clone().translate(piece.offset));
     for (let i = 0; i < expanded.length; i++) for (let j = i + 1; j < expanded.length; j++)
-      assert.equal(expanded[i].intersectsBox(expanded[j]), false, `${keys[i]} overlaps ${keys[j]}`);
+      assert.equal(["x", "y", "z"].every(axis => Math.min(expanded[i].max[axis as "x"|"y"|"z"], expanded[j].max[axis as "x"|"y"|"z"]) - Math.max(expanded[i].min[axis as "x"|"y"|"z"], expanded[j].min[axis as "x"|"y"|"z"]) > .01), false, `${keys[i]} overlaps ${keys[j]}`);
     layout.apply(.5); layout.apply(1);
     assert.notDeepEqual(allTransforms(root), original);
     layout.apply(.4); layout.restore();

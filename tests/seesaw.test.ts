@@ -1,79 +1,75 @@
-import test from "node:test";
-import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import * as THREE from "three";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import modelIndex from "../src/data/model-index.json";
-import { PRODUCTS, getProduct, getDefaultColors, type Rotation } from "../src/data/catalog";
-import { autoPlace, createInitialState, getMagnetPoints, getOrderLines, getPlacements, getTotalPrice, tryPlace, validateAssembly } from "../src/lib/assembly";
-import { decodeConfig, encodeConfig } from "../src/lib/config-code";
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import modelIndex from '../src/data/model-index.json';
+import { PRODUCTS,getProduct,getDefaultColors,getProductColorParts,type Rotation } from '../src/data/catalog';
+import { autoPlace,createInitialState,getMagnetPoints,getOrderLines,getPlacements,getTotalPrice,validateAssembly,transformPoint,migrateAssembly } from '../src/lib/assembly';
+import * as mini from '../minitool/src/lib/assembly';
+import { decodeConfig,encodeConfig } from '../src/lib/config-code';
+import { getModelMaterialColor } from '../src/lib/model-colors';
+import { getProductStyleColors } from '../src/lib/color-styles';
+import { createCatalogStyleHint,restoreCatalogStyle } from '../src/lib/catalog-style';
 
-test("V16 tilted seesaw keeps its centered source magnet and full swing clearance", () => {
-  const product = getProduct("seesaw");
-  assert.equal(PRODUCTS[13]?.id, "seesaw");
-  assert.deepEqual(PRODUCTS.slice(0, 13).map(p => p.id), [
-    "villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-st2", "pipe-st3",
-    "pipe-lt1", "pipe-lt2", "pipe-lt3", "planter", "food-bowl", "pool",
-  ]);
-  assert.deepEqual(product.origin, [90, 90, 110]);
-  assert.deepEqual(product.bottomMagnets, [[90, 90, 110]]);
-  assert.deepEqual(getDefaultColors("seesaw"), { SS01: "butter" });
-  assert.deepEqual(product.collisionBoxes, [[-.7, 50, 110, 180.7, 130, 159.8]]);
-  const b = modelIndex.SS01.bounds;
-  assert.ok(Math.abs(b[3] - b[0] - 177.612692) < .001);
-  assert.ok(Math.abs(b[4] - b[1] - 80) < .001);
-  assert.ok(Math.abs(b[5] - b[2] - 46.947923) < .001);
-  assert.equal(b[2], 110, "the stationary base still rests on the platform");
-  assert.equal(modelIndex.SS01.components[0].color, "#C99B46");
+async function load(){const bytes=readFileSync(new URL('../public/models/SS01.glb',import.meta.url));return (await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),'')).scene;}
+test('V17 rocker requires the four 20x80mm contacts shown in the platform reference',()=>{
+ const p=getProduct('seesaw');assert.equal(PRODUCTS[13].id,'seesaw');assert.deepEqual(p.origin,[100,250,110]);
+ assert.deepEqual(p.bottomMagnets,[[90,210,110],[110,210,110],[90,290,110],[110,290,110]]);assert.equal(p.minimumMagnetMatches,4);
+ assert.deepEqual(getProductColorParts(p.id).map(x=>x.id),['SS01','SS01-base']);
+ assert.deepEqual(getDefaultColors(p.id),{SS01:'butter','SS01-base':'pine'});
+ assert.deepEqual(p.collisionBoxes,[[9.3,200,110,190.7,300,210]]);
 });
-
-test("the real V16 GLB slopes by 10 degrees while its magnet seat and base remain level", async () => {
-  const bytes = readFileSync(new URL('../public/models/SS01.glb', import.meta.url));
-  const model = (await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), '')).scene;
-  model.updateMatrixWorld(true);
-  const hits = (x: number, y: number, below = false) => new THREE.Raycaster(new THREE.Vector3(x, y, below ? 100 : 180), new THREE.Vector3(0, 0, below ? 1 : -1)).intersectObject(model, true).map(hit => hit.point.z);
-  const high = hits(20, 90)[0], low = hits(160, 90)[0];
-  assert.ok(high - low > 24, "the two ends must visibly differ in height");
-  assert.ok(Math.abs(Math.atan((high - low) / 140) * 180 / Math.PI - 10) < .02);
-  for (const x of [80, 100]) assert.ok(Math.abs(hits(x, 90, true)[0] - 110) < .01);
-  assert.ok(Math.abs(hits(90, 90, true)[0] - 114.2) < .02, "centered magnet cavity retains its original depth");
-  const box = new THREE.Box3().setFromObject(model);
-  const [xmin, ymin, zmin, xmax, ymax, zmax] = getProduct('seesaw').collisionBoxes[0];
-  assert.ok(box.min.x >= xmin && box.min.y >= ymin && box.min.z >= zmin && box.max.x <= xmax && box.max.y <= ymax && box.max.z <= zmax);
+test('actual V17 GLB has a tilted 180x100mm ribbed board, four real pockets, and independent watertight source color bodies',async()=>{
+ const model=await load();model.updateMatrixWorld(true);const index=modelIndex.SS01;
+ assert.equal(index.components.length,2);assert.deepEqual(index.components.map(c=>c.id),['SS01_Gold','SS01_PineGreen']);
+ const bounds=new THREE.Box3().setFromObject(model);assert.ok(bounds.max.z>207 && bounds.max.z<210);assert.ok(Math.abs(bounds.min.z-110)<.001);
+ const bodies: Record<string,THREE.Mesh>={};model.traverse(o=>{if(o instanceof THREE.Mesh)bodies[o.userData.sourcePart]=o;});
+ const board=bodies.SS01_Gold;const positions=board.geometry.getAttribute('position');
+ const pivot=new THREE.Vector3(100,250,152.7049173596981);const leveled=new THREE.Box3();let ribs=0;
+ for(let i=0;i<positions.count;i++){const v=new THREE.Vector3().fromBufferAttribute(positions,i).sub(pivot).applyAxisAngle(new THREE.Vector3(0,1,0),-Math.PI/6);leveled.expandByPoint(v);if(v.z>12.5)ribs++;}
+ assert.ok(Math.abs(leveled.max.x-leveled.min.x-180)<.06);assert.ok(Math.abs(leveled.max.y-leveled.min.y-100)<.01);assert.ok(ribs>100,'actual raised rib geometry is present');
+ const below=(x:number,y:number)=>new THREE.Raycaster(new THREE.Vector3(x,y,100),new THREE.Vector3(0,0,1)).intersectObject(bodies.SS01_PineGreen,true)[0]?.point.z;
+ for(const [x,y] of [[90,210],[110,210],[90,290],[110,290]])assert.ok(Math.abs(below(x,y)!-114.2)<.02,'magnet pocket must be 4.2mm deep');
+ assert.ok(Math.abs(below(100,250)!-110)<.02,'old central hole is absent');
+ const b=getProduct('seesaw').collisionBoxes[0];assert.ok(bounds.min.x>=b[0]&&bounds.max.x<=b[3]&&bounds.min.y>=b[1]&&bounds.max.y<=b[4]&&bounds.max.z<=b[5]);
 });
-
-test("seesaw can attach at every real empty platform receiver in four directions", () => {
-  const state = createInitialState();
-  const magnets = getMagnetPoints(state);
-  for (const rotation of [0, 90, 180, 270] as Rotation[]) {
-    const positions = getPlacements(state, "seesaw", rotation);
-    assert.equal(positions.length, magnets.length);
-    for (const { point } of magnets) {
-      assert.ok(positions.some(p => p.x === point[0] && p.y === point[1] && p.z === point[2] && p.parentId === "base"));
-    }
+for(const [name,engine] of [['web', {createInitialState,getMagnetPoints,getPlacements,validateAssembly,migrateAssembly}],['mini',mini]] as const){
+ test(`${name}: every advertised rocker position aligns all four contacts, never a single receiver`,()=>{
+  const s=engine.createInitialState(),p=getProduct('seesaw');
+  for(const r of [0,90,180,270] as Rotation[]){const candidates=engine.getPlacements(s,'seesaw',r);assert(candidates.length>0);assert(!candidates.some(c=>c.x===90&&c.y===90));
+   for(const c of candidates){assert.equal(c.magnetCount,4);for(const point of p.bottomMagnets){const actual=transformPoint(point,p,c);assert(engine.getMagnetPoints(s).some(m=>m.parentId===c.parentId&&m.point.every((v,i)=>Math.abs(v-actual[i])<.01)));}}
   }
+  assert(engine.getPlacements(s,'seesaw',0).some(c=>c.x===100&&c.y===250));
+ });
+ test(`${name}: historical single-magnet rockers relocate atomically and keep old custom color on both bodies`,()=>{
+  const old={...engine.createInitialState(),catalogVersion:7,items:[{id:'old',productId:'seesaw',x:90,y:90,z:110,rotation:0,parentId:'base',colors:{SS01:'sky'}}]};const before=JSON.stringify(old);
+  const result=engine.migrateAssembly(old);assert.equal(result.state.items.length,1);assert.deepEqual(result.state.items[0].colors,{SS01:'sky','SS01-base':'sky'});assert.match(result.messages.join(),/四点/);assert.notDeepEqual([result.state.items[0].x,result.state.items[0].y],[90,90]);assert.equal(JSON.stringify(old),before);
+  assert.throws(()=>engine.migrateAssembly({...old,items:[{...old.items[0],x:91}]}),/磁吸/);
+  assert.throws(()=>engine.validateAssembly({...result.state,items:[{...result.state.items[0],x:90,y:90}]}),/磁吸/);
+ });
+}
+test('V17 independent colors survive HM3, order lines and all five material palettes',()=>{
+ const first=createInitialState();const placed=autoPlace(first,'seesaw');assert(placed.ok);const state={...placed.state,items:placed.state.items.map(i=>({...i,colors:{SS01:'rose' as const,'SS01-base':'sky' as const}}))};
+ assert.equal(getTotalPrice(state)-getTotalPrice(first),1500);assert.deepEqual(decodeConfig(encodeConfig(state)).items[0].colors,state.items[0].colors);
+ assert.deepEqual(getOrderLines(state).find(l=>l.sku.startsWith('HM-TY-001'))!.colors,state.items[0].colors);
+ const part=getProduct('seesaw').parts[0];
+ for(let i=0;i<5;i++){const colors=getProductStyleColors('seesaw',i);assert.notEqual(colors.SS01,colors['SS01-base']);assert.equal(getModelMaterialColor(part,'SS01_Gold','Gold',colors),colors.SS01);assert.equal(getModelMaterialColor(part,'SS01_PineGreen','PineGreen',colors),colors['SS01-base']);}
+});
+test('catalog upgrades preserve a matching persisted palette hint, including manually recolored designs',()=>{
+ const code='HM3.WzMsNywxMDAsWzAsWzE0LDEsMCwwLDAsMCwwLDAsMF0sW11dLG51bGwsW1syLDI1MCw1MCwxMTAsMCxbMTQsMTRdLC0xXSxbMiw1MCw1MCwxMTAsMCxbMywzXSwtMV1dLG51bGwsWzAsNTBdLG51bGxd.46E5DFD2';
+ const migrated=decodeConfig(code);const updated=encodeConfig(migrated);assert.notEqual(updated,code);
+ assert.equal(restoreCatalogStyle(migrated,updated,JSON.stringify(createCatalogStyleHint(3,code))),3);
+ assert.notEqual(restoreCatalogStyle(createInitialState(),encodeConfig(createInitialState()),JSON.stringify(createCatalogStyleHint(3,code))),3);
 });
 
-test("seesaw auto-placement, pricing, colors and HM3 code round-trip stay intact", () => {
-  const initial = createInitialState();
-  const result = autoPlace(initial, "seesaw");
-  assert.equal(result.ok, true);
-  const item = result.state.items[0];
-  assert.equal(item.productId, "seesaw");
-  assert.deepEqual([item.x, item.y, item.z], [90, 90, 110]);
-  assert.equal(getTotalPrice(result.state) - getTotalPrice(initial), 1500);
-  const line = getOrderLines(result.state).find(l => l.sku.startsWith("HM-TY-001"));
-  assert.ok(line);
-  assert.deepEqual(line.parts, ["SS01"]);
-  const recolored = { ...result.state, items: [{ ...item, colors: { SS01: "sky" as const } }] };
-  assert.deepEqual(decodeConfig(encodeConfig(recolored)).items[0].colors, { SS01: "sky" });
-});
-
-test("seesaw reserves space against other objects and cannot occupy a used magnet", () => {
-  const result = tryPlace(createInitialState(), "seesaw", { x: 90, y: 90, z: 110 });
-  assert.equal(result.ok, true);
-  if (!result.ok) return;
-  assert.ok(!getPlacements(result.state, "seesaw").some(p => p.x === 90 && p.y === 90));
-  assert.ok(!getPlacements(result.state, "food-bowl").some(p => p.x === 110 && p.y === 90));
-  assert.throws(() => validateAssembly({ ...result.state, items: [...result.state.items, { ...result.item, id: "another-seesaw" }] }), /磁吸|重叠|碰撞|放置/);
+test('all 15 existing official designs migrate without losing any component, pool, support or custom colors',()=>{
+ const fixtures=JSON.parse(readFileSync(new URL('./fixtures/catalog-7-inspiration.json',import.meta.url),'utf8'));
+ for(const engine of [{migrateAssembly},mini])for(const fixture of fixtures){
+  const before=JSON.stringify(fixture.state);const migrated=engine.migrateAssembly(fixture.state).state;
+  assert.equal(migrated.items.length,fixture.state.items.length,fixture.id);assert.equal(migrated.baseInsert,fixture.state.baseInsert);
+  assert.equal(migrated.legHeight,fixture.state.legHeight);assert.deepEqual(migrated.bedding,fixture.state.bedding);
+  for(const old of fixture.state.items){const updated=migrated.items.find((i:any)=>i.id===old.id)!;assert(updated);for(const [key,color] of Object.entries(old.colors))assert.equal(updated.colors[key],color);}
+  assert.equal(JSON.stringify(fixture.state),before);
+ }
 });

@@ -1,6 +1,6 @@
 {
-  "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba",
-  "sourceVersion": "Steel receivers V16 tilted seesaw",
+  "sourceSha256": "2bd026e9baed5bfb6df61ed4d3dce1fa3acab984b58fe2d7ec0a5d5befc4c095",
+  "sourceVersion": "Steel receivers V17 four-magnet anti-slip seesaw",
   "supplementalSources": [],
   "units": "millimeter",
   "upAxis": "Z",
@@ -875,21 +875,29 @@
       }
     },
     "SS01": {
-      "bytes": 152180,
+      "bytes": 266816,
       "components": [
         {
           "id": "SS01_Gold",
-          "sourceTriangles": 6768,
-          "triangles": 5302,
-          "sampledMaxErrorMm": 0.015794,
+          "sourceTriangles": 14372,
+          "triangles": 7350,
+          "sampledMaxErrorMm": 0.011895,
           "boundsMaxErrorMm": 0.0,
-          "volumeRelativeError": 2.825e-05
+          "volumeRelativeError": 0.00011654
+        },
+        {
+          "id": "SS01_PineGreen",
+          "sourceTriangles": 3640,
+          "triangles": 3110,
+          "sampledMaxErrorMm": 0.012221,
+          "boundsMaxErrorMm": 0.0,
+          "volumeRelativeError": 3.96e-06
         }
       ],
       "source": {
-        "sourceDirectory": "unified_complete_steel_v16",
-        "sourceVersion": "Steel receivers V16 tilted seesaw",
-        "sourceSha256": "cd50954dd42c8acd55142384ee49e35f35fbaabc89184fdfb392441e45114eba"
+        "sourceDirectory": "unified_complete_steel_v17",
+        "sourceVersion": "Steel receivers V17 four-magnet anti-slip seesaw",
+        "sourceSha256": "2bd026e9baed5bfb6df61ed4d3dce1fa3acab984b58fe2d7ec0a5d5befc4c095"
       }
     },
     "Y01": {

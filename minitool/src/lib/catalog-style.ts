@@ -1,5 +1,6 @@
 import { MODEL_ASSET_VERSION, canonicalColorId, resolveLinkedProductColors, type ColorMap } from "../data/catalog";
 import { getPlatforms, type AssemblyState } from "./assembly";
+import { decodeConfig, encodeConfig } from "./config-code";
 import { COLOR_STYLES, applyColorStyle, getBaseStyleColors, getProductStyleColors } from "./color-styles";
 
 /** UI context only: never changes AssemblyState or the HM3 payload. */
@@ -28,7 +29,7 @@ export function createCatalogStyleHint(styleIndex: number, configurationCode: st
 export function restoreCatalogStyle(state: AssemblyState, configurationCode: string, storedHint: string | null = null): number {
   try {
     const hint: unknown = storedHint ? JSON.parse(storedHint) : null;
-    if (hint && typeof hint === "object" && "configurationCode" in hint && hint.configurationCode === configurationCode && "styleId" in hint) {
+    if (hint && typeof hint === "object" && "configurationCode" in hint && typeof hint.configurationCode === "string" && (hint.configurationCode === configurationCode || encodeConfig(decodeConfig(hint.configurationCode)) === configurationCode) && "styleId" in hint) {
       const index = COLOR_STYLES.findIndex(style => style.id === hint.styleId);
       if (index >= 0) return index;
     }

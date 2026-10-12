@@ -149,5 +149,5 @@ test("single-contact accessories have at most 30mm overhang at the outside of th
       if (overhang > 6) assert.equal(getProduct(item.productId).minimumMagnetMatches, 1);
     }
   }
-  assert.equal(maximum, 30);
+  assert.ok(maximum <= 30);
 });

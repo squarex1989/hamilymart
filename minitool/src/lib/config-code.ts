@@ -69,8 +69,8 @@ export function decodeConfigWithMigration(input: string): AssemblyMigrationResul
   try { payload = JSON.parse(atob(body.replaceAll("-", "+").replaceAll("_", "/"))); }
   catch { throw new Error("搭配编号内容损坏"); }
   const format = Number(formatText), legacy = format === 1;
-  if (!Array.isArray(payload) || payload.length !== (format === 3 ? 9 : 6) || payload[0] !== format || !(format === 1 ? [2, 3] : format === 2 ? [4, 5] : [6, CATALOG_VERSION]).includes(payload[1])) throw new Error("搭配目录版本不兼容");
-  const sourceCatalogVersion = payload[1] as 2 | 3 | 4 | 5 | 6 | 7;
+  if (!Array.isArray(payload) || payload.length !== (format === 3 ? 9 : 6) || payload[0] !== format || !(format === 1 ? [2, 3] : format === 2 ? [4, 5] : [6, 7, CATALOG_VERSION]).includes(payload[1])) throw new Error("搭配目录版本不兼容");
+  const sourceCatalogVersion = payload[1] as 2 | 3 | 4 | 5 | 6 | 7 | 8;
   const initial = createInitialState(), baseKeys = Object.keys(initial.baseColors);
   const state: Omit<AssemblyState, "catalogVersion"> & { catalogVersion: number } = { ...initial, catalogVersion: sourceCatalogVersion, legHeight: payload[2], items: [] };
   const decodeInsert = (value: unknown) => { if (value !== 0 && value !== 1) throw new Error("平台款式无效"); return value ? "pool" as const : "lid" as const; };

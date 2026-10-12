@@ -1,1 +1,1035 @@
-{"H01":{"bounds":[16.999999999999993,217.0,105.0,83.0,283.0,110.0],"components":[{"id":"H01_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5c0f\u5706\u9f50\u5e73\u76d6_H01"},"H02":{"bounds":[117.0,217.0,105.0,183.0,283.0,110.0],"components":[{"id":"H02_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5c0f\u5706\u9f50\u5e73\u76d6_H02"},"H03":{"bounds":[217.0,217.0,105.0,283.0,283.0,110.0],"components":[{"id":"H03_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5c0f\u5706\u9f50\u5e73\u76d6_H03"},"H04":{"bounds":[217.0,117.0,105.0,283.0,183.0,110.0],"components":[{"id":"H04_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5c0f\u5706\u9f50\u5e73\u76d6_H04"},"H05":{"bounds":[217.0,16.999999999999993,105.0,283.0,83.0,110.0],"components":[{"id":"H05_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5c0f\u5706\u9f50\u5e73\u76d6_H05"},"L01":{"bounds":[7.5,7.5,0.0,22.5,22.5,100.0],"components":[{"id":"L01_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H100"},"L02":{"bounds":[7.5,277.5,0.0,22.5,292.5,100.0],"components":[{"id":"L02_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H100"},"L03":{"bounds":[277.5,7.5,0.0,292.5,22.5,100.0],"components":[{"id":"L03_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H100"},"L04":{"bounds":[277.5,277.5,0.0,292.5,292.5,100.0],"components":[{"id":"L04_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H100"},"X01":{"bounds":[7.5,7.5,-100.0,22.5,22.5,100.0],"components":[{"id":"X01_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H200"},"X02":{"bounds":[7.5,277.5,-100.0,22.5,292.5,100.0],"components":[{"id":"X02_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H200"},"X03":{"bounds":[277.5,7.5,-100.0,292.5,22.5,100.0],"components":[{"id":"X03_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H200"},"X04":{"bounds":[277.5,277.5,-100.0,292.5,292.5,100.0],"components":[{"id":"X04_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5706\u67f1\u652f\u6491\u817f_D15_H200"},"B01":{"bounds":[22.0,22.0,30.649999618530273,178.0,178.0,113.6500015258789],"components":[{"id":"B01_Snow","colorKey":"Snow","color":"#F1EADB"},{"id":"B01_ChristmasRed","colorKey":"ChristmasRed","color":"#B8273C"}],"nameZh":"\u539f\u5c3a\u5bf8\u5706\u5f62\u6c60\u76c6_D156_\u5185\u5f84138_\u51c0\u6df180"},"LHB":{"bounds":[2.0,2.0,0.0,198.0,198.0,80.0],"components":[{"id":"LHB_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u4e09\u683cL\u5f62\u623f\u5c4b_\u52a0\u5bbd\u95e8\u6839_\u8fde\u7eed\u5e95\u9762"},"SHB":{"bounds":[2.0,2.0,0.0,98.0,98.0,80.0],"components":[{"id":"SHB_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5355\u683c\u5c0f\u623f\u5c4b_\u4e24\u4e2a\u5bf9\u89d2\u78c1\u5ea7"},"SHR":{"bounds":[1.9999999970197677,1.9999999970197677,72.0,98.00000000298023,98.00000000298023,83.4],"components":[{"id":"SHR_Gold","colorKey":"Gold","color":"#C99B46"}],"nameZh":"\u5c0f\u623f_\u9876\u76d6_8mm\u5b9a\u4f4d\u51f8\u6761"},"ST1T":{"bounds":[0.0,6.799999999999997,2.200000077486038,100.0,93.2,89.6],"components":[{"id":"ST1T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"ST1_\u6807\u51c6\u76f4\u7ba1_\u72ec\u7acb\u7ba1\u4f53"},"ST2T":{"bounds":[100.0,6.799999999999997,2.200000077486038,200.0,93.2,89.6],"components":[{"id":"ST2T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"ST2_\u4fa7\u5f00\u53e3\u76f4\u7ba1_\u72ec\u7acb\u7ba1\u4f53"},"ST3T":{"bounds":[200.0,6.799999999999997,2.200000077486038,300.0,93.2,89.6],"components":[{"id":"ST3T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"ST3_\u6807\u51c6\u76f4\u7ba1_\u72ec\u7acb\u7ba1\u4f53"},"LT1T":{"bounds":[0.0,106.8,2.200000077486038,100.0,193.2,89.6],"components":[{"id":"LT1T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT1_\u6807\u51c6\u76f4\u7ba1_\u72ec\u7acb\u7ba1\u4f53"},"LT2T":{"bounds":[100.0,100.0,2.200000077486038,193.20000000298023,193.20000000298023,89.60000000149012],"components":[{"id":"LT2T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT2_\u9876\u90e8\u5f00\u53e3\u8f6c\u89d2\u7ba1_\u72ec\u7acb\u7ba1\u4f53"},"LT3T":{"bounds":[106.8,0.0,2.200000077486038,193.2,100.0,89.6],"components":[{"id":"LT3T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT3_\u6807\u51c6\u76f4\u7ba1_\u72ec\u7acb\u7ba1\u4f53"},"W01":{"bounds":[282.5,182.5,110.0,297.5,197.5,196.0],"components":[{"id":"W01_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u524d\u67f1_6mm\u8d2f\u7a7f\u6241\u63d2\u7247"},"W02":{"bounds":[282.5,282.5,110.0,297.5,297.5,200.0],"components":[{"id":"W02_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u540e\u67f1_10mm\u8d2f\u7a7f\u6241\u63d2\u7247"},"LT2NT":{"bounds":[100.0,100.0,2.200000077486038,193.20000000298023,193.20000000298023,89.60000000149012],"components":[{"id":"LT2NT_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT2N_\u65e0\u4e0a\u90e8\u5f00\u5b54L\u578b\u5f2f\u7ba1_\u9009\u914d\u66ff\u6362\u7ba1\u4f53"},"P01":{"bounds":[0.0,0.0,100.0,300.0,300.0,110.0],"components":[{"id":"P01_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u4e3b\u5e73\u53f0_32\u9876\u9762\u94a2\u7247_4\u5e95\u9762\u94a2\u7247_\u53d6\u6d88\u51f9\u70b9"},"H06":{"bounds":[21.799999237060547,21.799999237060547,102.0,178.19998168945312,178.1999969482422,110.0],"components":[{"id":"H06_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5927\u5706\u76d6_4\u679a\u5706\u94a2\u7247_0.4mm\u5e73\u9762\u5c01\u76d6"},"LHR":{"bounds":[2.0,2.0,72.0,198.0,198.0,85.6],"components":[{"id":"LHR_Gold","colorKey":"Gold","color":"#C99B46"}],"nameZh":"L\u623f\u9876\u76d6_4\u679a\u5706\u94a2\u7247_0.4mm\u5e73\u9762\u5c01\u76d6"},"A01":{"bounds":[2.006274700164795,179.2,110.0,198.0,297.99371337890625,190.0],"components":[{"id":"A01_PineGreen","colorKey":"PineGreen","color":"#174A3A"},{"id":"A01_Gold","colorKey":"Gold","color":"#C99B46"},{"id":"A01_ChristmasRed","colorKey":"ChristmasRed","color":"#B8273C"}],"nameZh":"\u7eaf\u7eff\u623f\u95f4_\u9ec4\u8272\u7b49\u5bbd\u4e1d\u5e26_\u7ea2\u8272\u4e94\u89d2\u661f"},"ST1B":{"bounds":[0.0,46.0,0.0,100.0,96.0,25.0],"components":[{"id":"ST1B_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"ST1B_\u7ba1\u9053\u5e95\u5ea7_\u5e95\u90e8\u53cc\u78c1\u5438_\u4e24\u7aef\u5b9e\u5fc3"},"ST2B":{"bounds":[100.0,46.0,0.0,200.0,96.0,25.0],"components":[{"id":"ST2B_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"ST2B_\u7ba1\u9053\u5e95\u5ea7_\u5e95\u90e8\u53cc\u78c1\u5438_\u4e24\u7aef\u5b9e\u5fc3"},"ST3B":{"bounds":[200.0,46.0,0.0,300.0,96.0,25.0],"components":[{"id":"ST3B_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"ST3B_\u7ba1\u9053\u5e95\u5ea7_\u5e95\u90e8\u53cc\u78c1\u5438_\u4e24\u7aef\u5b9e\u5fc3"},"LT1B":{"bounds":[0.0,146.0,0.0,100.0,196.0,25.0],"components":[{"id":"LT1B_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT1B_\u7ba1\u9053\u5e95\u5ea7_\u5e95\u90e8\u53cc\u78c1\u5438_\u4e24\u7aef\u5b9e\u5fc3"},"LT2B":{"bounds":[100.0,100.0,0.0,196.0,196.0,25.0],"components":[{"id":"LT2B_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT2B_\u7ba1\u9053\u5e95\u5ea7_\u5e95\u90e8\u53cc\u78c1\u5438_\u4e24\u7aef\u5b9e\u5fc3"},"LT3B":{"bounds":[146.0,0.0,0.0,196.0,100.0,25.0],"components":[{"id":"LT3B_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"LT3B_\u7ba1\u9053\u5e95\u5ea7_\u5e95\u90e8\u53cc\u78c1\u5438_\u4e24\u7aef\u5b9e\u5fc3"},"G05":{"bounds":[219.0,82.0,110.0,300.0,194.0,201.42300415039062],"components":[{"id":"G05_Snow","colorKey":"Snow","color":"#F1EADB"},{"id":"G05_ChristmasRed","colorKey":"ChristmasRed","color":"#B8273C"}],"nameZh":"\u6ce2\u6d6a\u697c\u68af_\u4e0a\u7aef\u6263\u642d_\u5e95\u90e8\u5355\u78c1\u94c1"},"G03":{"bounds":[2.0,179.60000610351562,200.0,164.0,298.0,373.3333435058594],"components":[{"id":"G03_ChristmasRed","colorKey":"ChristmasRed","color":"#B8273C"},{"id":"G03_Snow","colorKey":"Snow","color":"#F1EADB"},{"id":"G03_WindowSnow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u7ea2\u5e3d\u623f\u4e0e\u767d\u7a97\u6846_\u4e00\u4f53\u591a\u8272\u6253\u5370"},"G06":{"bounds":[264.0,220.0,200.0,296.0,294.0,261.5],"components":[{"id":"G06_ChristmasRed","colorKey":"ChristmasRed","color":"#B8273C"},{"id":"G06_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u5723\u8bde\u9774_\u5355\u78c1\u94c1_\u5171\u7528\u94a2\u7247\u4f4d"},"O01":{"bounds":[241.0,236.0,200.0,296.0,296.0,221.0],"components":[{"id":"O01_ChristmasRed","colorKey":"ChristmasRed","color":"#B8273C"},{"id":"O01_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u9009\u914d\u7ea2\u767d\u98df\u7897_\u5355\u78c1\u94c1_\u5171\u7528\u94a2\u7247\u4f4d"},"G16":{"bounds":[1.4000000953674316,196.0,192.0,3.799999952316284,296.0,237.99957275390625],"components":[{"id":"G16_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u5de6\u4fa7\u6ce2\u6d6a\u8349_2\u63d2\u7247"},"G17":{"bounds":[296.20001220703125,196.0,192.0,298.6000061035156,296.0,237.99957275390625],"components":[{"id":"G17_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u53f3\u4fa7\u6ce2\u6d6a\u8349_2\u63d2\u7247"},"G15":{"bounds":[1.4,296.2,192.0,298.6,298.59999999999997,237.99402183145284],"components":[{"id":"G15_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"\u540e\u4fa7\u6ce2\u6d6a\u8349_3\u63d2\u7247"},"A02":{"bounds":[0.0,180.0,182.0,300.0,300.0,200.0],"components":[{"id":"A02_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u4e8c\u5c42\u5e73\u53f0_300mm\u9f50\u8fb9_5\u679a\u94a2\u7247_\u697c\u68af\u6263\u642d\u69fd"},"SS01":{"bounds":[2.930135829371139,50.0,110.0,180.54282772543496,130.0,156.9479230250146],"components":[{"id":"SS01_Gold","colorKey":"Gold","color":"#C99B46"}],"nameZh":"\u8df7\u8df7\u677f_180\u00d780_\u9ed8\u8ba4\u503e\u659c10\u5ea6_\u4e00\u4f53\u6d3b\u52a8"},"Y01":{"bounds":[7.5,7.5,-200.0,22.5,22.5,100.0],"components":[{"id":"Y01_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"30cm\u652f\u6491\u811a1"},"Y02":{"bounds":[7.5,277.5,-200.0,22.5,292.5,100.0],"components":[{"id":"Y02_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"30cm\u652f\u6491\u811a2"},"Y03":{"bounds":[277.5,7.5,-200.0,292.5,22.5,100.0],"components":[{"id":"Y03_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"30cm\u652f\u6491\u811a3"},"Y04":{"bounds":[277.5,277.5,-200.0,292.5,292.5,100.0],"components":[{"id":"Y04_PineGreen","colorKey":"PineGreen","color":"#174A3A"}],"nameZh":"30cm\u652f\u6491\u811a4"},"TT1T":{"bounds":[0.0,0.0,2.200044110417366,100.0,93.2,89.6],"components":[{"id":"TT1T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"T\u578b\u4e09\u901a\u7ba1\u4f53"},"TT2T":{"bounds":[0.0,0.0,2.200044110417366,100.0,93.2,89.6],"components":[{"id":"TT2T_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"\u9876\u5f00\u53e3T\u578b\u4e09\u901a\u7ba1\u4f53"},"TTB":{"bounds":[0.0,46.0,0.0,100.0,96.0,25.0],"components":[{"id":"TTB_Snow","colorKey":"Snow","color":"#F1EADB"}],"nameZh":"T\u578b\u4e09\u901a\u78c1\u5438\u5e95\u5ea7"}}
+{
+  "H01": {
+    "url": "/models/H01.glb",
+    "bounds": [
+      16.999999999999993,
+      217.0,
+      105.0,
+      83.0,
+      283.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H01"
+  },
+  "H02": {
+    "url": "/models/H02.glb",
+    "bounds": [
+      117.0,
+      217.0,
+      105.0,
+      183.0,
+      283.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H02"
+  },
+  "H03": {
+    "url": "/models/H03.glb",
+    "bounds": [
+      217.0,
+      217.0,
+      105.0,
+      283.0,
+      283.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H03_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H03"
+  },
+  "H04": {
+    "url": "/models/H04.glb",
+    "bounds": [
+      217.0,
+      117.0,
+      105.0,
+      283.0,
+      183.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H04_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H04"
+  },
+  "H05": {
+    "url": "/models/H05.glb",
+    "bounds": [
+      217.0,
+      16.999999999999993,
+      105.0,
+      283.0,
+      83.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H05_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "小圆齐平盖_H05"
+  },
+  "L01": {
+    "url": "/models/L01.glb",
+    "bounds": [
+      7.5,
+      7.5,
+      0.0,
+      22.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "L02": {
+    "url": "/models/L02.glb",
+    "bounds": [
+      7.5,
+      277.5,
+      0.0,
+      22.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L02_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "L03": {
+    "url": "/models/L03.glb",
+    "bounds": [
+      277.5,
+      7.5,
+      0.0,
+      292.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L03_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "L04": {
+    "url": "/models/L04.glb",
+    "bounds": [
+      277.5,
+      277.5,
+      0.0,
+      292.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "L04_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H100"
+  },
+  "X01": {
+    "url": "/models/X01.glb",
+    "bounds": [
+      7.5,
+      7.5,
+      -100.0,
+      22.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "X02": {
+    "url": "/models/X02.glb",
+    "bounds": [
+      7.5,
+      277.5,
+      -100.0,
+      22.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X02_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "X03": {
+    "url": "/models/X03.glb",
+    "bounds": [
+      277.5,
+      7.5,
+      -100.0,
+      292.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X03_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "X04": {
+    "url": "/models/X04.glb",
+    "bounds": [
+      277.5,
+      277.5,
+      -100.0,
+      292.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "X04_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "圆柱支撑腿_D15_H200"
+  },
+  "B01": {
+    "url": "/models/B01.glb",
+    "bounds": [
+      22.0,
+      22.0,
+      30.649999618530273,
+      178.0,
+      178.0,
+      113.6500015258789
+    ],
+    "components": [
+      {
+        "id": "B01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      },
+      {
+        "id": "B01_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "nameZh": "原尺寸圆形池盆_D156_内径138_净深80"
+  },
+  "LHB": {
+    "url": "/models/LHB.glb",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      198.0,
+      80.0
+    ],
+    "components": [
+      {
+        "id": "LHB_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "三格L形房屋_加宽门根_连续底面"
+  },
+  "SHB": {
+    "url": "/models/SHB.glb",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      98.0,
+      98.0,
+      80.0
+    ],
+    "components": [
+      {
+        "id": "SHB_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "单格小房屋_两个对角磁座"
+  },
+  "SHR": {
+    "url": "/models/SHR.glb",
+    "bounds": [
+      1.9999999970197677,
+      1.9999999970197677,
+      72.0,
+      98.00000000298023,
+      98.00000000298023,
+      83.4
+    ],
+    "components": [
+      {
+        "id": "SHR_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "nameZh": "小房_顶盖_8mm定位凸条"
+  },
+  "ST1T": {
+    "url": "/models/ST1T.glb",
+    "bounds": [
+      0.0,
+      6.799999999999997,
+      2.200000077486038,
+      100.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "ST1T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST1_标准直管_独立管体"
+  },
+  "ST2T": {
+    "url": "/models/ST2T.glb",
+    "bounds": [
+      100.0,
+      6.799999999999997,
+      2.200000077486038,
+      200.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "ST2T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST2_侧开口直管_独立管体"
+  },
+  "ST3T": {
+    "url": "/models/ST3T.glb",
+    "bounds": [
+      200.0,
+      6.799999999999997,
+      2.200000077486038,
+      300.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "ST3T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST3_标准直管_独立管体"
+  },
+  "LT1T": {
+    "url": "/models/LT1T.glb",
+    "bounds": [
+      0.0,
+      106.8,
+      2.200000077486038,
+      100.0,
+      193.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "LT1T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT1_标准直管_独立管体"
+  },
+  "LT2T": {
+    "url": "/models/LT2T.glb",
+    "bounds": [
+      100.0,
+      100.0,
+      2.200000077486038,
+      193.20000000298023,
+      193.20000000298023,
+      89.60000000149012
+    ],
+    "components": [
+      {
+        "id": "LT2T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT2_顶部开口转角管_独立管体"
+  },
+  "LT3T": {
+    "url": "/models/LT3T.glb",
+    "bounds": [
+      106.8,
+      0.0,
+      2.200000077486038,
+      193.2,
+      100.0,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "LT3T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT3_标准直管_独立管体"
+  },
+  "W01": {
+    "url": "/models/W01.glb",
+    "bounds": [
+      282.5,
+      182.5,
+      110.0,
+      297.5,
+      197.5,
+      196.0
+    ],
+    "components": [
+      {
+        "id": "W01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "前柱_6mm贯穿扁插片"
+  },
+  "W02": {
+    "url": "/models/W02.glb",
+    "bounds": [
+      282.5,
+      282.5,
+      110.0,
+      297.5,
+      297.5,
+      200.0
+    ],
+    "components": [
+      {
+        "id": "W02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "后柱_10mm贯穿扁插片"
+  },
+  "LT2NT": {
+    "url": "/models/LT2NT.glb",
+    "bounds": [
+      100.0,
+      100.0,
+      2.200000077486038,
+      193.20000000298023,
+      193.20000000298023,
+      89.60000000149012
+    ],
+    "components": [
+      {
+        "id": "LT2NT_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT2N_无上部开孔L型弯管_选配替换管体"
+  },
+  "P01": {
+    "url": "/models/P01.glb",
+    "bounds": [
+      0.0,
+      0.0,
+      100.0,
+      300.0,
+      300.0,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "P01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "主平台_32顶面钢片_4底面钢片_取消凹点"
+  },
+  "H06": {
+    "url": "/models/H06.glb",
+    "bounds": [
+      21.799999237060547,
+      21.799999237060547,
+      102.0,
+      178.19998168945312,
+      178.1999969482422,
+      110.0
+    ],
+    "components": [
+      {
+        "id": "H06_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "大圆盖_4枚圆钢片_0.4mm平面封盖"
+  },
+  "LHR": {
+    "url": "/models/LHR.glb",
+    "bounds": [
+      2.0,
+      2.0,
+      72.0,
+      198.0,
+      198.0,
+      85.6
+    ],
+    "components": [
+      {
+        "id": "LHR_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "nameZh": "L房顶盖_4枚圆钢片_0.4mm平面封盖"
+  },
+  "A01": {
+    "url": "/models/A01.glb",
+    "bounds": [
+      2.006274700164795,
+      179.2,
+      110.0,
+      198.0,
+      297.99371337890625,
+      190.0
+    ],
+    "components": [
+      {
+        "id": "A01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      },
+      {
+        "id": "A01_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      },
+      {
+        "id": "A01_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "nameZh": "纯绿房间_黄色等宽丝带_红色五角星"
+  },
+  "ST1B": {
+    "url": "/models/ST1B.glb",
+    "bounds": [
+      0.0,
+      46.0,
+      0.0,
+      100.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "ST1B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST1B_管道底座_底部双磁吸_两端实心"
+  },
+  "ST2B": {
+    "url": "/models/ST2B.glb",
+    "bounds": [
+      100.0,
+      46.0,
+      0.0,
+      200.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "ST2B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST2B_管道底座_底部双磁吸_两端实心"
+  },
+  "ST3B": {
+    "url": "/models/ST3B.glb",
+    "bounds": [
+      200.0,
+      46.0,
+      0.0,
+      300.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "ST3B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "ST3B_管道底座_底部双磁吸_两端实心"
+  },
+  "LT1B": {
+    "url": "/models/LT1B.glb",
+    "bounds": [
+      0.0,
+      146.0,
+      0.0,
+      100.0,
+      196.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "LT1B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT1B_管道底座_底部双磁吸_两端实心"
+  },
+  "LT2B": {
+    "url": "/models/LT2B.glb",
+    "bounds": [
+      100.0,
+      100.0,
+      0.0,
+      196.0,
+      196.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "LT2B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT2B_管道底座_底部双磁吸_两端实心"
+  },
+  "LT3B": {
+    "url": "/models/LT3B.glb",
+    "bounds": [
+      146.0,
+      0.0,
+      0.0,
+      196.0,
+      100.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "LT3B_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "LT3B_管道底座_底部双磁吸_两端实心"
+  },
+  "G05": {
+    "url": "/models/G05.glb",
+    "bounds": [
+      219.0,
+      82.0,
+      110.0,
+      300.0,
+      194.0,
+      201.42300415039062
+    ],
+    "components": [
+      {
+        "id": "G05_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      },
+      {
+        "id": "G05_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "nameZh": "波浪楼梯_上端扣搭_底部单磁铁"
+  },
+  "G03": {
+    "url": "/models/G03.glb",
+    "bounds": [
+      2.0,
+      179.60000610351562,
+      200.0,
+      164.0,
+      298.0,
+      373.3333435058594
+    ],
+    "components": [
+      {
+        "id": "G03_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "G03_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      },
+      {
+        "id": "G03_WindowSnow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "红帽房与白窗框_一体多色打印"
+  },
+  "G06": {
+    "url": "/models/G06.glb",
+    "bounds": [
+      264.0,
+      220.0,
+      200.0,
+      296.0,
+      294.0,
+      261.5
+    ],
+    "components": [
+      {
+        "id": "G06_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "G06_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "圣诞靴_单磁铁_共用钢片位"
+  },
+  "O01": {
+    "url": "/models/O01.glb",
+    "bounds": [
+      241.0,
+      236.0,
+      200.0,
+      296.0,
+      296.0,
+      221.0
+    ],
+    "components": [
+      {
+        "id": "O01_ChristmasRed",
+        "colorKey": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "O01_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "选配红白食碗_单磁铁_共用钢片位"
+  },
+  "G16": {
+    "url": "/models/G16.glb",
+    "bounds": [
+      1.4000000953674316,
+      196.0,
+      192.0,
+      3.799999952316284,
+      296.0,
+      237.99957275390625
+    ],
+    "components": [
+      {
+        "id": "G16_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "左侧波浪草_2插片"
+  },
+  "G17": {
+    "url": "/models/G17.glb",
+    "bounds": [
+      296.20001220703125,
+      196.0,
+      192.0,
+      298.6000061035156,
+      296.0,
+      237.99957275390625
+    ],
+    "components": [
+      {
+        "id": "G17_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "右侧波浪草_2插片"
+  },
+  "G15": {
+    "url": "/models/G15.glb",
+    "bounds": [
+      1.4,
+      296.2,
+      192.0,
+      298.6,
+      298.59999999999997,
+      237.99402183145284
+    ],
+    "components": [
+      {
+        "id": "G15_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "后侧波浪草_3插片"
+  },
+  "A02": {
+    "url": "/models/A02.glb",
+    "bounds": [
+      0.0,
+      180.0,
+      182.0,
+      300.0,
+      300.0,
+      200.0
+    ],
+    "components": [
+      {
+        "id": "A02_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "二层平台_300mm齐边_5枚钢片_楼梯扣搭槽"
+  },
+  "SS01": {
+    "url": "/models/SS01.glb",
+    "bounds": [
+      26.482461986137366,
+      200.0,
+      110.0,
+      183.51753801386263,
+      300.0,
+      207.52606371740615
+    ],
+    "components": [
+      {
+        "id": "SS01_Gold",
+        "colorKey": "Gold",
+        "color": "#C99B46"
+      },
+      {
+        "id": "SS01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "跷跷板_180x100_四磁吸_防滑_最高100mm"
+  },
+  "Y01": {
+    "url": "/models/Y01.glb",
+    "bounds": [
+      7.5,
+      7.5,
+      -200.0,
+      22.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y01_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚1"
+  },
+  "Y02": {
+    "url": "/models/Y02.glb",
+    "bounds": [
+      7.5,
+      277.5,
+      -200.0,
+      22.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y02_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚2"
+  },
+  "Y03": {
+    "url": "/models/Y03.glb",
+    "bounds": [
+      277.5,
+      7.5,
+      -200.0,
+      292.5,
+      22.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y03_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚3"
+  },
+  "Y04": {
+    "url": "/models/Y04.glb",
+    "bounds": [
+      277.5,
+      277.5,
+      -200.0,
+      292.5,
+      292.5,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "Y04_PineGreen",
+        "colorKey": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "nameZh": "30cm支撑脚4"
+  },
+  "TT1T": {
+    "url": "/models/TT1T.glb",
+    "bounds": [
+      0.0,
+      0.0,
+      2.200044110417366,
+      100.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "TT1T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "T型三通管体"
+  },
+  "TT2T": {
+    "url": "/models/TT2T.glb",
+    "bounds": [
+      0.0,
+      0.0,
+      2.200044110417366,
+      100.0,
+      93.2,
+      89.6
+    ],
+    "components": [
+      {
+        "id": "TT2T_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "顶开口T型三通管体"
+  },
+  "TTB": {
+    "url": "/models/TTB.glb",
+    "bounds": [
+      0.0,
+      46.0,
+      0.0,
+      100.0,
+      96.0,
+      25.0
+    ],
+    "components": [
+      {
+        "id": "TTB_Snow",
+        "colorKey": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "nameZh": "T型三通磁吸底座"
+  }
+}

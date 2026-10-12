@@ -68,8 +68,8 @@ test("catalog covers source groups, four 30 cm legs and three T-pipe groups acro
   ]);
   assert.equal(ids.size, 52);
   assert.equal(Object.keys(modelIndex).length, 52);
-  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 60);
-  assert.equal(CATALOG_VERSION, 7);
+  assert.equal(Object.values(modelIndex).reduce((total, model) => total + model.components.length, 0), 61);
+  assert.equal(CATALOG_VERSION, 8);
   assert.equal(COLORS.length, 17);
   for (const p of PRODUCTS) assert.ok(p.installation === "insert" || p.bottomMagnets.length >= (p.minimumMagnetMatches ?? 2));
 });
@@ -405,7 +405,7 @@ test("cottage follows the villa safe direction at all four parent orientations",
   }
 });
 function assertLegacyUpgrade(state: AssemblyState) {
-  assert.equal(state.catalogVersion, 7);
+  assert.equal(state.catalogVersion, 8);
   assert.equal(state.legHeight, 200);
   assert.equal(state.baseColors.P01, "lilac");
   assert.equal(state.items.length, 2);
@@ -457,7 +457,7 @@ test("current states and unversioned eight-color villas never receive legacy dir
   const { catalogVersion: _catalogVersion, ...unversioned } = bad;
   assert.throws(() => migrateAssembly(unversioned), /磁吸位/);
   assert.throws(() => migrateAssembly(bad, 2), /版本标记冲突/);
-  assert.throws(() => migrateAssembly({ ...valid, catalogVersion: 8 }), /版本/);
+  assert.throws(() => migrateAssembly({ ...valid, catalogVersion: 9 }), /版本/);
 });
 test("legacy migration only repairs the documented 180-degree loft, never malformed positions or 90-degree lofts", () => {
   assert.throws(() => migrateAssembly({ ...LEGACY_LOCAL_STATE, items: LEGACY_LOCAL_STATE.items.map(item => item.productId === "roof-cottage" ? { ...item, rotation: 90 } : item) }), /磁吸位/);
@@ -465,7 +465,7 @@ test("legacy migration only repairs the documented 180-degree loft, never malfor
   assert.throws(() => migrateAssembly({ ...LEGACY_LOCAL_STATE, catalogVersion: 3 }), /颜色不完整/);
   const { catalogVersion: _catalogVersion, ...oldEmpty } = createInitialState();
   assert.deepEqual(migrateAssembly(oldEmpty).messages, []);
-  assert.equal(migrateAssembly(oldEmpty).state.catalogVersion, 7);
+  assert.equal(migrateAssembly(oldEmpty).state.catalogVersion, 8);
 });
 
 test("catalog-3 code with a valid checksum still rejects an unsafe reversed loft", () => {
@@ -666,7 +666,7 @@ test("HM3 preserves platforms, pool, missing covers, colors, parent families and
 test("valid HM1 catalog 3 migrates without moving, recoloring or dropping the existing pool", () => {
   const code = "HM1.WzEsMywxMDAsMSxbMCwxLDAsMCwwLDAsMCwwLDZdLFtbMCwxNTAsMTkwLDExMCwwLFsxLDAsMiwxLDQsNSw2LDddLC0xXSxbMyw3OCwyMzksMjAwLDAsWzJdLDBdXV0.3B0F2D99";
   const result = decodeConfigWithMigration(code);
-  assert.equal(result.state.catalogVersion, 7);
+  assert.equal(result.state.catalogVersion, 8);
   assert.equal(result.state.extension, null);
   assert.deepEqual(result.state.removedCovers, []);
   assert.equal(result.state.baseInsert, "pool");
@@ -742,7 +742,7 @@ test("existing HM2 and local bow choices carry over to the star across the catal
     assert.equal(state.items[0].colors["A01-ribbon"], "rose");
     assert.equal(state.items[0].colors["A01-bow"], "sky");
     assert.equal(encodeConfig(state), encodeConfig(decoded));
-    assert.equal(state.catalogVersion, 7);
+    assert.equal(state.catalogVersion, 8);
     assert.equal(state.items[0].colors[getSourceColorSlot("A01", "A01_StarGold", "Gold")!], "sky");
     assert.equal(getOrderLines(state).find(line => line.sku === "HM-HS-001")?.parts.length, 8);
   }

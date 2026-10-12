@@ -1,5 +1,5 @@
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v16-apricot-starter1";
+export const MODEL_ASSET_VERSION = "steel-v17-four-magnet-seesaw";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -74,6 +74,7 @@ export const SOURCE_COMPONENT_COLOR_SLOTS: Record<string, Record<string, string>
     A01_ChristmasRed: "A01-bow",
   },
   G05: { G05_Snow: "G05-base" },
+  SS01: { SS01_PineGreen: "SS01-base" },
   // Preserve the existing window slot before appending the brim/pompom control.
   G03: { G03_WindowSnow: "G03-window", G03_Snow: "G03-trim" },
 };
@@ -86,6 +87,7 @@ export function getSourceColorSlot(
     ?? (colorKey ? SOURCE_PART_COLOR_SLOTS[groupId]?.[colorKey] : undefined);
 }
 export const COLOR_SLOTS: Record<string, ProductPart> = {
+  "SS01-base": { id: "SS01-base", role: "跷跷板底座", defaultColor: "pine" },
   "A01-ribbon": { id: "A01-ribbon", role: "礼物盒丝带", defaultColor: "butter" },
   // Keep the persisted key and position so previous bow colors become the star colors.
   "A01-bow": { id: "A01-bow", role: "五角星", defaultColor: "butter" },
@@ -508,13 +510,13 @@ export const PRODUCTS: Product[] = [
     name: "跷跷板",
     category: "facility",
     price: 1500,
-    description: "18 × 8 cm · 中心单点磁吸 · 一体活动玩具",
-    origin: [90, 90, 110],
-    parts: [part("SS01", "跷跷板", "butter")],
-    bottomMagnets: [[90, 90, 110]],
-    minimumMagnetMatches: 1,
-    // V16 source full swing envelope, rounded outwards to 0.1 mm.
-    collisionBoxes: [[-0.7, 50, 110, 180.7, 130, 159.8]],
+    description: "18 × 10 cm · 四点磁吸 · 最高 10 cm · 圆角防滑棱",
+    origin: [100, 250, 110],
+    parts: [part("SS01", "防滑板面", "butter")],
+    bottomMagnets: [[90, 210, 110], [110, 210, 110], [90, 290, 110], [110, 290, 110]],
+    minimumMagnetMatches: 4,
+    // Reserve the complete +/-32 degree swing, not just the default pose.
+    collisionBoxes: [[9.3, 200, 110, 190.7, 300, 210]],
     allowedParents: ["base"],
   },
   // The source LT2N uses the same real LT2B support, magnets and end faces as LT2.
@@ -564,4 +566,4 @@ export function getDefaultColors(productId: string): ColorMap {
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 7;
+export const CATALOG_VERSION = 8;

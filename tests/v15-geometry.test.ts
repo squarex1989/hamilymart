@@ -91,7 +91,7 @@ test("old single-contact accessories on L-house roofs keep their physical positi
   }
 });
 
-test("catalog-7 imports never repair corrupted current positions or repeat the old five-millimeter shift", () => {
+test("current imports never repair corrupted current positions or repeat the old five-millimeter shift", () => {
   const current = migrateAssembly(fixtures[0].state).state;
   const hat = current.items.find(item => item.productId === "roof-cottage")!;
   const bowl = current.items.find(item => item.productId === "food-bowl" && item.parentId !== "base2")!;
@@ -102,6 +102,6 @@ test("catalog-7 imports never repair corrupted current positions or repeat the o
   }
   const migratedAgain = migrateAssembly(current).state;
   assert.deepEqual(migratedAgain, current);
-  const foreign = { ...current, catalogVersion: 8 } as unknown as AssemblyState;
+  const foreign = { ...current, catalogVersion: 9 } as unknown as AssemblyState;
   assert.throws(() => migrateAssembly(foreign), /版本/);
 });

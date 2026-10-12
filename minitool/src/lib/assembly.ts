@@ -1,6 +1,7 @@
 import { HAMSTER_VARIANTS } from "../data/hamsters";
 import modelIndex from "../data/model-index.json";
 import legacyCatalog6 from "../data/legacy-catalog-6.json";
+import legacySeesaw from "../data/legacy-seesaw-v16.json";
 import {
   BASE_PRODUCT,
   CATALOG_VERSION,
@@ -780,7 +781,7 @@ function validateAssemblyWithCatalog(value: unknown, lookup: ProductLookup, lega
       rotation: raw.rotation,
       parentId: raw.parentId,
       colors: normalizeColors(
-        raw.colors,
+        product.id === "seesaw" && product.minimumMagnetMatches === 1 && raw.colors ? { "SS01-base": raw.colors.SS01, ...raw.colors } : raw.colors,
         getProductColorParts(product.id).map((p) => p.id),
         getDefaultColors(product.id),
       ),
@@ -819,9 +820,11 @@ function hasLegacyVillaColors(value: unknown): boolean {
   return keys.length === LEGACY_VILLA_PARTS.length && LEGACY_VILLA_PARTS.every(key => keys.includes(key));
 }
 /** Original catalog geometry is used only to validate historical imports before upgrading. */
-function legacyProductLookup(source: 2 | 3 | 4 | 5 | 6): ProductLookup {
+function legacyProductLookup(source: 2 | 3 | 4 | 5 | 6 | 7): ProductLookup {
   return id => {
     const current = getProduct(id);
+    if (id === "seesaw") return { ...current, ...legacySeesaw } as CollisionProduct;
+    if (source === 7) return current;
     const frozen = legacyCatalog6.products[id as keyof typeof legacyCatalog6.products];
     const product: CollisionProduct = frozen ? { ...current, ...frozen, baseMagnetOffsetMm: undefined,
       ...(id === "villa" ? { preciseCollisionBoxes: LEGACY_VILLA_COLLISION_BOXES } : {}),
@@ -889,7 +892,7 @@ function upgradeSteelV15(previous: AssemblyState): AssemblyMigrationResult {
     return { ...item, x: round(item.x + dx), y: round(item.y + dy) };
   });
   try {
-    const state = validateAssembly({ ...previous, items });
+    const state = validateAssemblyWithCatalog({ ...previous, items }, legacyProductLookup(7));
     const messages = previous.items.some(item => item.productId === "villa")
       ? [`二层平台已更新为 30 厘米宽，原有组件与配色已保留。${moved ? "二层花圃和食盆已随磁吸位向内移动 5 毫米。" : ""}`]
       : [];
@@ -898,19 +901,61 @@ function upgradeSteelV15(previous: AssemblyState): AssemblyMigrationResult {
     throw new Error(`旧搭配无法兼容 30 厘米二层平台，原存档已保留、组件未删除：${error instanceof Error ? error.message : "磁吸位不匹配"}`);
   }
 }
+/** Only old catalogs may relocate the enlarged four-contact rocker; never drop a part. */
+function upgradeSeesawV17(previous: AssemblyState): AssemblyMigrationResult {
+  const seesaws = previous.items.filter(item => item.productId === "seesaw");
+  if (!seesaws.length) return { state: validateAssembly(previous), messages: [] };
+  let state = validateAssembly({ ...previous, items: previous.items.filter(item => item.productId !== "seesaw") });
+  const pending: AssemblyItem[] = [];
+  for (const item of seesaws) {
+    const matches = getPlacements(state, "seesaw", item.rotation).some(p => p.parentId === item.parentId && samePoint([p.x,p.y,p.z],[item.x,item.y,item.z]));
+    if (matches) state = { ...state, items: [...state.items, item] };
+    else pending.push(item);
+  }
+  for (const item of pending) {
+    const choices = (current: AssemblyState) => ([0,90,180,270] as Rotation[]).flatMap(turn => getPlacements(current, "seesaw", turn))
+      .filter(p => p.parentId === item.parentId)
+      .sort((a,b) => Math.hypot(a.x-item.x,a.y-item.y)-Math.hypot(b.x-item.x,b.y-item.y) || Number(a.rotation !== item.rotation)-Number(b.rotation !== item.rotation) || a.key.localeCompare(b.key));
+    let candidate = choices(state)[0];
+    // Old official pool/hat layouts can leave enough room only after moving a
+    // small single-contact accessory. Preserve its parent, direction and color.
+    if (!candidate) {
+      const smallItems = state.items.filter(other => other.parentId === item.parentId && ["planter", "food-bowl"].includes(other.productId));
+      for (const small of smallItems) {
+        const without = { ...state, items: state.items.filter(other => other.id !== small.id) };
+        const options = getPlacements(without, small.productId, small.rotation).filter(p => p.parentId === small.parentId)
+          .sort((a,b) => Math.hypot(a.x-small.x,a.y-small.y)-Math.hypot(b.x-small.x,b.y-small.y) || a.key.localeCompare(b.key));
+        for (const point of options) {
+          const adjusted = { ...state, items: state.items.map(other => other.id === small.id ? { ...small, x:point.x, y:point.y, z:point.z } : other) };
+          candidate = choices(adjusted)[0];
+          if (candidate) { state = adjusted; break; }
+        }
+        if (candidate) break;
+      }
+    }
+    if (!candidate) throw new Error("新版四磁吸跷跷板需要更大空间，旧搭配无法完整安装；原存档已保留，组件未删除，请调整布局后重试。");
+    state = { ...state, items: [...state.items, { ...item, x:candidate.x, y:candidate.y, z:candidate.z, rotation:candidate.rotation, parentId:candidate.parentId }] };
+  }
+  return { state: validateAssembly(state), messages: ["跷跷板已更新为四点磁吸防滑版，原有配色已保留；安装位置已按新底座调整，必要时同平台的小配件会移到附近空位。"] };
+}
 /** Validate historical geometry before migrating; current configurations never receive placement repairs. */
-export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5 | 6 | 7): AssemblyMigrationResult {
+export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4 | 5 | 6 | 7 | 8): AssemblyMigrationResult {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("搭配数据格式不正确");
   const raw = value as Record<string, unknown>;
   if (!Array.isArray(raw.items)) throw new Error("组件数量无效");
-  if (sourceCatalogVersion !== undefined && ![2, 3, 4, 5, 6, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
+  if (sourceCatalogVersion !== undefined && ![2, 3, 4, 5, 6, 7, CATALOG_VERSION].includes(sourceCatalogVersion)) throw new Error("搭配目录版本不兼容");
   if (sourceCatalogVersion !== undefined && raw.catalogVersion !== undefined && raw.catalogVersion !== sourceCatalogVersion) throw new Error("搭配目录版本标记冲突");
   const rawItems = raw.items;
   const villas = rawItems.filter(item => item && typeof item === "object" && item.productId === "villa");
   const inferredLegacy = raw.catalogVersion === undefined && villas.length > 0 && villas.every(item => hasLegacyVillaColors(item.colors));
   const source = sourceCatalogVersion ?? raw.catalogVersion ?? (inferredLegacy ? 2 : CATALOG_VERSION);
   if (source === CATALOG_VERSION) return { state: validateAssembly(value), messages: [] };
-  if (source === 6) return upgradeSteelV15(validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION }, legacyProductLookup(6)));
+  if (source === 7) return upgradeSeesawV17(validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION }, legacyProductLookup(7)));
+  if (source === 6) {
+    const deck = upgradeSteelV15(validateAssemblyWithCatalog({ ...raw, catalogVersion: CATALOG_VERSION }, legacyProductLookup(6)));
+    const rocker = upgradeSeesawV17(deck.state);
+    return { state: rocker.state, messages: [...deck.messages, ...rocker.messages] };
+  }
   if (source !== 2 && source !== 3 && source !== 4 && source !== 5) throw new Error("搭配目录版本不兼容");
   if (![0, 100, 200].includes(raw.legHeight as number) || (raw.thirdPlatform !== undefined && raw.thirdPlatform !== null)) throw new Error("旧搭配包含该版本不支持的平台或脚长");
   const messages: string[] = [];
@@ -945,7 +990,8 @@ export function migrateAssembly(value: unknown, sourceCatalogVersion?: 2 | 3 | 4
   try {
     const upgraded = source < 5 ? upgradeSteelV9(relocated) : { state: validateAssemblyWithCatalog(relocated, legacyProductLookup(6)), messages: ["搭配目录已升级，原有组件与配色已保留。"] };
     const current = upgradeSteelV15(upgraded.state);
-    return { state: current.state, messages: [...messages, ...upgraded.messages, ...current.messages] };
+    const rocker = upgradeSeesawV17(current.state);
+    return { state: rocker.state, messages: [...messages, ...upgraded.messages, ...current.messages, ...rocker.messages] };
   } catch (error) {
     if (relocated !== previous) throw new Error(`旧平台布局无法兼容右侧连续布局，原存档已保留：${error instanceof Error ? error.message : "组件相撞"}`);
     throw error;

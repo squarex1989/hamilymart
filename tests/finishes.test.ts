@@ -52,10 +52,10 @@ test("one warm yellow occupies the original picker position while all serialized
   }
 });
 
-test("historical yellow aliases retain their exact HM3 data but share render, order and contrast behavior", () => {
+test("historical yellow aliases retain their color IDs across the catalog upgrade but share render, order and contrast behavior", () => {
   const previous = "HM3.WzMsNywxMDAsWzAsWzE0LDEsMCwwLDAsMCwwLDAsMF0sW11dLG51bGwsW1syLDI1MCw1MCwxMTAsMCxbMTQsMTRdLC0xXSxbMiw1MCw1MCwxMTAsMCxbMywzXSwtMV1dLG51bGwsWzAsNTBdLG51bGxd.46E5DFD2";
   const state = decodeConfig(previous), before = JSON.stringify(state);
-  assert.equal(encodeConfig(state), previous);
+  assert.deepEqual(decodeConfig(encodeConfig(state)), state);
   assert.equal(state.baseColors.P01, "yellow");
   assert.deepEqual(state.items.map(item => item.colors.SHB), ["yellow", "butter"]);
   const order = getOrderLines(state).filter(line => line.sku === "HM-HS-003");
