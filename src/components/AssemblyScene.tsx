@@ -27,6 +27,7 @@ import { createExplodedLayout } from "../lib/exploded-view";
 import { createBlankDoubleTap } from "../lib/scene-gestures";
 import { applySceneViewport, getSelectionToolbarPosition } from "../lib/scene-framing";
 import { updateSelectionMetadata } from "../lib/scene-selection";
+import { captureSceneView, restoreSceneView, type SceneViewSnapshot } from "../lib/scene-recovery";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
@@ -73,11 +74,13 @@ const index = modelIndex as Record<
   { url: string; bounds: number[]; components: { colorKey: string }[] }
 >;
 function loadPart(id: string) {
-  if (!cache.has(id))
-    cache.set(
-      id,
-      loader.loadAsync(`${index[id].url}?v=${MODEL_ASSET_VERSION}`).then((g) => g.scene),
-    );
+  if (!cache.has(id)) {
+    const request = loader.loadAsync(`${index[id].url}?v=${MODEL_ASSET_VERSION}`).then((g) => g.scene).catch(error => {
+      if (cache.get(id) === request) cache.delete(id);
+      throw error;
+    });
+    cache.set(id, request);
+  }
   return cache.get(id)!;
 }
 function release(root: THREE.Object3D) {
@@ -97,8 +100,10 @@ export default forwardRef<SceneHandle, Props>(
     const current = useRef(props);
     current.current = props;
     const runtime = useRef<ReturnType<typeof createRuntime> | null>(null);
+    const savedView = useRef<SceneViewSnapshot | undefined>(undefined);
+    const [retryVersion, setRetryVersion] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [failed, setFailed] = useState(false);
+    const [failure, setFailure] = useState<string | null>(null);
     const [exploded, setExploded] = useState(false);
     useImperativeHandle(
       ref,
@@ -113,34 +118,49 @@ export default forwardRef<SceneHandle, Props>(
     );
     useEffect(() => {
       if (!host.current) return;
+      let active = true;
+      let instance: ReturnType<typeof createRuntime> | null = null;
+      setLoading(true);
+      setFailure(null);
+      setExploded(false);
       try {
-        runtime.current = createRuntime(
+        instance = createRuntime(
           host.current,
           () => current.current,
           () => {
+            if (!active) return;
             setLoading(false);
+            setFailure(null);
             current.current.onReady();
           },
           (e) => {
-            setFailed(true);
+            if (!active) return;
+            setLoading(false);
+            setFailure(e);
             current.current.onError(e);
           },
           toolbar.current!,
-          setExploded,
+          value => { if (active) setExploded(value); },
+          savedView.current,
         );
-        runtime.current.update();
-      } catch {
-        setFailed(true);
+        runtime.current = instance;
+        void instance.update();
+      } catch (error) {
+        console.error("3D initialization failed", error);
         setLoading(false);
-        current.current.onError(
-          "3D 画布未能启动，请使用支持 WebGL 的浏览器重试。",
-        );
+        const message = "3D 画布未能启动。设计已保留，可以重新加载3D。";
+        setFailure(message);
+        current.current.onError(message);
       }
       return () => {
-        runtime.current?.dispose();
-        runtime.current = null;
+        active = false;
+        if (instance) {
+          savedView.current = instance.captureView();
+          instance.dispose();
+        }
+        if (runtime.current === instance) runtime.current = null;
       };
-    }, []);
+    }, [retryVersion]);
     useEffect(() => {
       runtime.current?.update();
     }, [props.state, props.viewResetKey]);
@@ -155,7 +175,7 @@ export default forwardRef<SceneHandle, Props>(
     }, [props.showDimensions]);
     return (
       <div ref={host} className="scene-canvas" aria-label="仓鼠屋 3D 装配画布">
-        {exploded && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
+        {exploded && !failure && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
           <button type="button" onClick={() => runtime.current?.toggleExploded()}><FoldVertical size={15} /><span>恢复组装</span></button>
         </div>}
         <div ref={toolbar} className="scene-item-toolbar" role="toolbar" aria-label="已选配件操作" hidden
@@ -166,18 +186,18 @@ export default forwardRef<SceneHandle, Props>(
             {props.canRemove && <button type="button" aria-label="移除已选配件" onClick={props.onRemove}><Trash2 size={16} /><span>移除</span></button>}
           </div>}
         </div>
-        {loading && !failed && (
+        {loading && !failure && (
           <div className="scene-loading">
             <span className="loading-orbit" />
             <strong>正在搬来小小家…</strong>
             <span>加载真实 3D 模型</span>
           </div>
         )}
-        {failed && (
-          <div className="scene-loading">
+        {failure && (
+          <div className="scene-loading scene-error" role="alert" onPointerDown={event => event.stopPropagation()}>
             <strong>暂时无法显示 3D</strong>
-            <span>请刷新页面，或使用支持 WebGL 的浏览器</span>
-            <button onClick={() => location.reload()}>重新加载</button>
+            <span>{failure}</span>
+            <button type="button" onClick={() => setRetryVersion(value => value + 1)}>重新加载3D</button>
           </div>
         )}
       </div>
@@ -192,6 +212,7 @@ function createRuntime(
   fail: (e: string) => void,
   toolbar: HTMLDivElement,
   onExplodedChange: (exploded: boolean) => void,
+  savedView?: SceneViewSnapshot,
 ) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -199,6 +220,8 @@ function createRuntime(
     preserveDrawingBuffer: true,
     powerPreference: "high-performance",
   });
+  let initializingControls: OrbitControls | undefined;
+  try {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
   configureModelRenderer(renderer);
   renderer.domElement.style.touchAction = "none";
@@ -218,6 +241,7 @@ function createRuntime(
     applySceneViewport(camera, host.clientWidth, host.clientHeight, bottomInset);
   };
   const controls = new OrbitControls(camera, renderer.domElement);
+  initializingControls = controls;
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
   controls.minDistance = 300;
@@ -248,6 +272,8 @@ function createRuntime(
     controls.update();
     controls.enableDamping = damping;
     updateViewportFraming();
+    camera.zoom = 1;
+    camera.updateProjectionMatrix();
     const height = contentTop();
     controls.target.copy(sceneCenter());
     camera.position.copy(
@@ -258,8 +284,11 @@ function createRuntime(
     );
     controls.update();
   };
-  home();
-  let lastViewResetKey = props().viewResetKey ?? 0;
+  if (savedView) {
+    updateViewportFraming();
+    restoreSceneView(camera, controls.target, savedView);
+  } else home();
+  let lastViewResetKey = savedView?.consumedViewResetKey ?? props().viewResetKey ?? 0;
   const lighting = createModelLighting(scene);
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(2000, 2000),
@@ -308,6 +337,9 @@ function createRuntime(
     revision = 0,
     ghostRevision = 0;
   let frame = 0;
+  let renderError = false;
+  let contextUnavailable = false;
+  let notifiedReady = false;
   let pressed: { x: number; y: number; id: string | null; at: number; moved?: boolean; placement?: Placement } | null = null;
   const touchPointers = new Set<number>();
   const blankTaps = createBlankDoubleTap();
@@ -348,7 +380,7 @@ function createRuntime(
     if (refresh) { updateTargets(); updateAnnotations(); }
   }
   function toggleExploded() {
-    if (!modelReady || disposed) return;
+    if (!modelReady || disposed || renderError || contextUnavailable) return;
     lastExplosionToggleAt = performance.now();
     cancel();
     pressed = null;
@@ -378,7 +410,51 @@ function createRuntime(
       if (!exploded) restoreExploded();
     }
   }
-  function visibilityChanged() { blankTaps.reset(); pressed = null; }
+  function pauseScene(message: string) {
+    cancelAnimationFrame(frame);
+    cancel();
+    blankTaps.reset(); pressed = null; touchPointers.clear();
+    controls.enabled = false;
+    toolbar.hidden = true;
+    dimensionLabels.forEach(label => { label.hidden = true; });
+    notifiedReady = false;
+    fail(message);
+  }
+  function stopForError(message: string) {
+    if (disposed || renderError) return;
+    renderError = true;
+    pauseScene(message);
+  }
+  function contextLost(event: Event) {
+    event.preventDefault();
+    if (disposed) return;
+    contextUnavailable = true;
+    if (!renderError) pauseScene("3D 显示连接暂时中断，设计和视角已保留。恢复后会自动继续，也可以重新加载3D。");
+  }
+  function contextRestored() {
+    if (disposed) return;
+    contextUnavailable = false;
+    // Restoring WebGL cannot fix an independent resource or rendering failure.
+    if (renderError) return;
+    try {
+      controls.enabled = true;
+      clock.getDelta();
+      renderer.setSize(Math.max(1, host.clientWidth), Math.max(1, host.clientHeight));
+      updateViewportFraming();
+      cancelAnimationFrame(frame);
+      if (!document.hidden) frame = requestAnimationFrame(draw);
+    } catch (error) {
+      console.error("3D context restoration failed", error);
+      stopForError("3D 显示连接未能恢复，设计和视角已保留。请重新加载3D。");
+    }
+  }
+  function visibilityChanged() {
+    blankTaps.reset(); pressed = null;
+    cancelAnimationFrame(frame);
+    if (!document.hidden && !disposed && !renderError && !contextUnavailable) {
+      clock.getDelta(); frame = requestAnimationFrame(draw);
+    }
+  }
   function pointAt(x: number, y: number, z = 110): Point | null {
     const b = renderer.domElement.getBoundingClientRect();
     if (x < b.left || x > b.right || y < b.top || y > b.bottom) return null;
@@ -413,9 +489,11 @@ function createRuntime(
     ownerId?: string,
   ) {
     const group = new THREE.Group();
-    await Promise.all(
+    let abandoned = false;
+    try { await Promise.all(
       parts.map(async (part) => {
         const loaded = await loadPart(part.id);
+        if (abandoned) return;
         const child = loaded.clone(true);
         const editingOwner = !!ownerId && (props().selectedId === ownerId || !!props().selectedId?.startsWith(`cover:${ownerId}:`));
         const selectionId = ownerId && /^(base|base2|base3)$/.test(ownerId)
@@ -467,14 +545,21 @@ function createRuntime(
         }
         group.add(child);
       }),
-    );
+    ); } catch (error) {
+      abandoned = true;
+      release(group);
+      throw error;
+    }
     return group;
   }
   async function update() {
+    if (disposed || renderError) return;
+    const rev = ++revision;
+    try {
     modelReady = false;
+    notifiedReady = false;
     // Explicit edits return to assembly mode before replacing imported meshes.
     restoreExploded(false);
-    const rev = ++revision;
     const s = props().state;
     bedding.update(s);
     // Only clear/import requests reset the view, once, against the current state.
@@ -506,7 +591,6 @@ function createRuntime(
         origin: getProduct(item.productId).origin,
       })),
     ];
-    try {
       await Promise.all(
         definitions.map(async (def) => {
           const g = await build(
@@ -532,18 +616,17 @@ function createRuntime(
         hamster?.update(s);
         const center = sceneCenter();
         lighting.centerAt(center.x, center.y);
-        ready();
         updateSelection();
       }
     } catch (e) {
-      if (!disposed) {
+      if (!disposed && rev === revision) {
         console.error(e);
-        fail("部分模型加载失败，请刷新页面重试。");
+        stopForError("部分模型加载失败，设计和视角已保留。请重新加载3D。");
       }
     }
   }
   function updateSelection() {
-    if (!modelReady || disposed) return;
+    if (!modelReady || disposed || renderError) return;
     updateSelectionMetadata(objects, props().selectedId, isExploded());
     updateTargets();
     updateAnnotations();
@@ -574,6 +657,7 @@ function createRuntime(
     });
   }
   function updateTargets() {
+    if (disposed || renderError) return;
     clearTargets();
     if (isExploded()) return;
     const p = props();
@@ -608,6 +692,7 @@ function createRuntime(
     }
   }
   function updateAnnotations() {
+    if (disposed || renderError) return;
     for (const object of [...annotations.children]) {
       annotations.remove(object);
       disposeAnnotation(object);
@@ -706,6 +791,7 @@ function createRuntime(
     itemId?: string,
     pointerId?: number,
   ) {
+    if (disposed || renderError || contextUnavailable) return;
     restoreExploded();
     blankTaps.reset();
     drag = {
@@ -719,9 +805,10 @@ function createRuntime(
       placement: null,
     };
     controls.enabled = false;
+    const request = drag;
     void makeGhost(productId, itemId).catch(() => {
-      cancel();
-      fail("配件模型加载失败，请重试。");
+      if (disposed || drag !== request) return;
+      stopForError("配件模型加载失败，设计和视角已保留。请重新加载3D。");
     });
     updateTargets();
   }
@@ -917,6 +1004,9 @@ function createRuntime(
     }
   }
   const element = renderer.domElement;
+  element.addEventListener("webglcontextlost", contextLost);
+  element.addEventListener("webglcontextrestored", contextRestored);
+  renderer.debug.onShaderError = () => stopForError("当前3D材质未能正常显示，设计和视角已保留。请重新加载3D。");
   window.addEventListener("pointerdown", touchStart, true);
   element.addEventListener("pointerdown", down);
   element.addEventListener("pointerup", up);
@@ -929,27 +1019,35 @@ function createRuntime(
     const w = host.clientWidth,
       h = host.clientHeight;
     if (!w || !h) return;
-    renderer.setSize(w, h);
     updateViewportFraming();
+    if (!contextUnavailable && !renderError) renderer.setSize(w, h);
   });
   resize.observe(host);
   if (bottomActions) resize.observe(bottomActions);
   const clock = new THREE.Clock();
   const draw = () => {
-    if (disposed) return;
-    frame = requestAnimationFrame(draw);
-    controls.update();
-    tickExplosion(performance.now());
-    layoutAnnotations();
-    const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
-    bedding.setVisible(!viewingUnderside && !isExploded());
-    floor.visible = grid.visible = !viewingUnderside;
-    lighting.underside.visible = viewingUnderside;
-    hamster?.tick(Math.min(clock.getDelta(), .05));
-    renderer.render(scene, camera);
+    if (disposed || renderError || contextUnavailable || document.hidden) return;
+    try {
+      controls.update();
+      tickExplosion(performance.now());
+      layoutAnnotations();
+      const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
+      bedding.setVisible(!viewingUnderside && !isExploded());
+      floor.visible = grid.visible = !viewingUnderside;
+      lighting.underside.visible = viewingUnderside;
+      hamster?.tick(Math.min(clock.getDelta(), .05));
+      renderer.render(scene, camera);
+      if (renderError || contextUnavailable) return;
+      if (modelReady && !notifiedReady) { notifiedReady = true; ready(); }
+      frame = requestAnimationFrame(draw);
+    } catch (error) {
+      console.error("3D frame failed", error);
+      stopForError("3D 暂时无法继续显示，设计和视角已保留。请重新加载3D。");
+    }
   };
-  draw();
+  frame = requestAnimationFrame(draw);
   return {
+    captureView: () => captureSceneView(camera, controls.target, lastViewResetKey),
     update,
     updateSelection,
     updateTargets,
@@ -998,6 +1096,8 @@ function createRuntime(
       element.removeEventListener("pointerdown", down);
       element.removeEventListener("pointerup", up);
       element.removeEventListener("dblclick", nativeDoubleClick);
+      element.removeEventListener("webglcontextlost", contextLost);
+      element.removeEventListener("webglcontextrestored", contextRestored);
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", cancel);
@@ -1013,4 +1113,11 @@ function createRuntime(
       element.remove();
     },
   };
+  } catch (error) {
+    initializingControls?.dispose();
+    renderer.dispose();
+    renderer.domElement.remove();
+    host.querySelectorAll(".scene-dimension-label").forEach(element => element.remove());
+    throw error;
+  }
 }

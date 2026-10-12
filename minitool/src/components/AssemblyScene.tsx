@@ -8,7 +8,7 @@ import {
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { loadPart } from "../lib/offline-models";
-import { budgetPixelRatio, FrameBudget, SCENE_GEOMETRY_BUDGET } from "../lib/render-budget";
+import { budgetPixelRatio, FrameBudget } from "../lib/render-budget";
 import { PreviewQuality } from "../lib/preview-quality";
 import { FramePacer, InteractionQuality } from "../lib/interaction-quality";
 import { FoldVertical, RotateCw, Trash2 } from "lucide-react";
@@ -32,6 +32,13 @@ import { applySceneViewport } from "../lib/scene-framing";
 import "./scene-overlays.css";
 
 type Point = { x: number; y: number; z: number };
+type ViewSnapshot = {
+  position: THREE.Vector3;
+  quaternion: THREE.Quaternion;
+  target: THREE.Vector3;
+  zoom: number;
+  viewResetKey: number;
+};
 export type SceneHandle = {
   startDrag: (
     productId: string,
@@ -89,8 +96,11 @@ export default forwardRef<SceneHandle, Props>(
     const current = useRef(props);
     current.current = props;
     const runtime = useRef<ReturnType<typeof createRuntime> | null>(null);
+    const savedView = useRef<ViewSnapshot | null>(null);
+    const [retryKey, setRetryKey] = useState(0);
     const [loading, setLoading] = useState(true);
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [exploded, setExploded] = useState(false);
     useImperativeHandle(
       ref,
@@ -105,22 +115,31 @@ export default forwardRef<SceneHandle, Props>(
     );
     useEffect(() => {
       if (!host.current) return;
+      let active = true;
+      setLoading(true);
+      setFailed(false);
+      setExploded(false);
       try {
         runtime.current = createRuntime(
           host.current,
           () => current.current,
           () => {
+            if (!active) return;
+            setFailed(false);
             setLoading(false);
             current.current.onReady();
           },
           (e) => {
+            if (!active) return;
             setFailed(true);
+            setErrorMessage(e);
             setLoading(false);
             current.current.onReady();
             current.current.onError(e);
           },
           toolbar.current!,
           setExploded,
+          savedView.current,
         );
         runtime.current.update();
       } catch (error) {
@@ -128,13 +147,16 @@ export default forwardRef<SceneHandle, Props>(
         setFailed(true);
         setLoading(false);
         current.current.onReady();
-        current.current.onError("当前设备采用简化视图，仍可选配、调整颜色和查看清单。");
+        setErrorMessage("3D 暂时无法启动，请重新加载。设计已保留。");
+        current.current.onError("3D 暂时无法启动，请重新加载。设计已保留。");
       }
       return () => {
+        active = false;
+        if (runtime.current) savedView.current = runtime.current.captureView();
         runtime.current?.dispose();
         runtime.current = null;
       };
-    }, []);
+    }, [retryKey]);
     useEffect(() => {
       runtime.current?.update();
     }, [props.state, props.selectedId, props.viewResetKey]);
@@ -146,7 +168,7 @@ export default forwardRef<SceneHandle, Props>(
     }, [props.showDimensions]);
     return (
       <div ref={host} className="scene-canvas" aria-label="仓鼠屋 3D 装配画布">
-        {exploded && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
+        {exploded && !failed && <div className="scene-view-actions" onPointerDown={event => event.stopPropagation()}>
           <button type="button" onClick={() => runtime.current?.toggleExploded()}><FoldVertical size={15} /><span>恢复组装</span></button>
         </div>}
         <div ref={toolbar} className="scene-item-toolbar" role="toolbar" aria-label="已选配件操作" hidden
@@ -165,21 +187,10 @@ export default forwardRef<SceneHandle, Props>(
           </div>
         )}
         {failed && (
-          <div className="scene-loading scene-fallback" style={{padding: 20, overflowY: 'auto', justifyContent: 'flex-start'}}>
-            <strong>简化搭配视图</strong>
-            <span>仍可选配、换色、导入和查看清单</span>
-            <label htmlFor="fallback-component">选择已搭建组件</label>
-            <select id="fallback-component" value={props.selectedId ?? ''} onChange={event => props.onSelect(event.target.value || null)} style={{width: '90%', minHeight: 40, background: '#fcfbf5', color: '#315b45'}}>
-              <option value="">选择组件…</option>
-              {getPlatforms(props.state).map((platform, i) => <option key={platform.id} value={platform.id}>第 {i + 1} 个平台</option>)}
-              {getPlatforms(props.state).filter(platform => platform.baseInsert === 'pool').map(platform => <option key={`pool:${platform.id}`} value={`pool:${platform.id}`}>圆形泳池 · {platform.id}</option>)}
-              {props.state.items.map((item, i) => <option key={item.id} value={item.id}>{i + 1}. {getProduct(item.productId).name}</option>)}
-              {getPlatforms(props.state).filter(platform => props.selectedId === platform.id || props.selectedId?.startsWith(`cover:${platform.id}:`)).flatMap(platform => ['H01','H02','H03','H04','H05'].filter(id => !platform.removedCovers.includes(id)).map(id => <option key={`${platform.id}:${id}`} value={`cover:${platform.id}:${id}`}>小圆盖 {id}</option>))}
-            </select>
-            <div style={{display: 'flex', marginTop: 8}}>
-              {props.canRotate && <button type="button" onClick={props.onRotate}>旋转</button>}
-              {props.canRemove && <button type="button" onClick={props.onRemove} style={{marginLeft: 8}}>移除</button>}
-            </div>
+          <div className="scene-loading scene-error" role="alert" onPointerDown={event => event.stopPropagation()}>
+            <strong>3D 预览暂时中断</strong>
+            <span>{errorMessage}</span>
+            <button type="button" className="primary-button" onClick={() => setRetryKey(key => key + 1)}>重新加载3D</button>
           </div>
         )}
       </div>
@@ -194,6 +205,7 @@ function createRuntime(
   fail: (e: string) => void,
   toolbar: HTMLDivElement,
   onExplodedChange: (exploded: boolean) => void,
+  savedView: ViewSnapshot | null = null,
 ) {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -206,7 +218,8 @@ function createRuntime(
   const framePacer = new FramePacer();
   const previewQuality = new PreviewQuality();
   const invalidatePreview = () => previewQuality.invalidate(performance.now());
-  let budgetStopped = false;
+  let pausedFor: "context" | "error" | null = null;
+  let needsReady = false;
   let lastDrawTime = 0;
   let recentDrawTime = 0;
   let recentRafTime = 0;
@@ -215,7 +228,7 @@ function createRuntime(
   const applyPixelBudget = (still = false) => {
     const ratio = budgetPixelRatio(viewportWidth, viewportHeight, window.devicePixelRatio,
       frameBudget.reducedResolution || interactionQuality.dpr === 1, still,
-      Math.min(4096, renderer.capabilities.maxTextureSize), interactionQuality.dpr);
+      Math.min(4096, renderer.capabilities.maxTextureSize), Math.min(interactionQuality.dpr, frameBudget.dprCap));
     if (Math.abs(renderer.getPixelRatio() - ratio) < .001) return false;
     renderer.setPixelRatio(ratio);
     return true;
@@ -298,7 +311,16 @@ function createRuntime(
     controls.enableDamping = damping;
     invalidatePreview();
   };
-  home();
+  if (savedView) {
+    controls.enableDamping = false;
+    camera.position.copy(savedView.position);
+    controls.target.copy(savedView.target);
+    camera.zoom = savedView.zoom;
+    updateViewportFraming();
+    controls.update();
+    camera.quaternion.copy(savedView.quaternion);
+    controls.enableDamping = true;
+  } else home();
   const lighting = createModelLighting(scene);
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(2000, 2000),
@@ -365,7 +387,7 @@ function createRuntime(
   let explosion: ReturnType<typeof createExplodedLayout> | null = null;
   let explosionAnimation: { from: number; to: number; started: number; duration: number } | null = null;
   let renderedState: AssemblyState | null = null;
-  let consumedViewResetKey = props().viewResetKey ?? 0;
+  let consumedViewResetKey = savedView?.viewResetKey ?? props().viewResetKey ?? 0;
   let drag: {
     pointerId?: number;
     productId: string;
@@ -394,7 +416,7 @@ function createRuntime(
     if (refresh) { updateTargets(); updateAnnotations(); }
   }
   function toggleExploded() {
-    if (!modelReady || disposed) return;
+    if (!modelReady || disposed || pausedFor) return;
     lastExplosionToggleAt = performance.now();
     cancel();
     pressed = null;
@@ -433,17 +455,34 @@ function createRuntime(
     recentRafTime = 0; measuringInteraction = false;
     interactionQuality.reset(); framePacer.reset();
     if (document.hidden) cancelAnimationFrame(frame);
-    else if (!budgetStopped && !disposed) { lastDrawTime = recentDrawTime = 0; frameBudget.reset(); invalidatePreview(); clock.getDelta(); cancelAnimationFrame(frame); frame = requestAnimationFrame(draw); }
+    else if (!pausedFor && !disposed) { lastDrawTime = recentDrawTime = 0; frameBudget.reset(); invalidatePreview(); clock.getDelta(); cancelAnimationFrame(frame); frame = requestAnimationFrame(draw); }
   }
-  function stopForFallback(message: string) {
-    if (budgetStopped || disposed) return;
-    budgetStopped = true; cancelAnimationFrame(frame); controls.enabled = false;
-    renderer.domElement.style.display = 'none'; toolbar.hidden = true;
+  function pauseForError(message: string, reason: "context" | "error" = "error") {
+    if (disposed || pausedFor === "error" || pausedFor === reason) return;
+    pausedFor = reason; cancelAnimationFrame(frame);
+    cancel(); blankTaps.reset(); pressed = null; touchPointers.clear();
+    controls.enabled = false;
+    toolbar.hidden = true;
     dimensionLabels.forEach(label => { label.hidden = true; });
     fail(message);
   }
-  function contextLost(event: Event) { event.preventDefault(); stopForFallback('3D 显示暂不可用，已保留设计并切换为简化视图。'); }
-  function contextRestored() { /* The preserved design stays editable in bounded DOM fallback. */ }
+  function contextLost(event: Event) {
+    event.preventDefault();
+    pauseForError("3D 显示连接中断，正在等待恢复。也可以重新加载，设计和视角已保留。", "context");
+  }
+  function contextRestored() {
+    if (disposed || pausedFor !== "context") return;
+    pausedFor = null;
+    controls.enabled = true;
+    needsReady = modelReady;
+    recentRafTime = lastDrawTime = recentDrawTime = 0;
+    measuringInteraction = false;
+    frameBudget.reset(); interactionQuality.reset(); framePacer.reset();
+    invalidatePreview();
+    void update();
+    cancelAnimationFrame(frame);
+    if (!document.hidden) frame = requestAnimationFrame(draw);
+  }
 
   function pointAt(x: number, y: number, z = 110): Point | null {
     const b = renderer.domElement.getBoundingClientRect();
@@ -479,9 +518,11 @@ function createRuntime(
     ownerId?: string,
   ) {
     const group = new THREE.Group();
-    await Promise.all(
+    let abandoned = false;
+    try { await Promise.all(
       parts.map(async (part) => {
         const loaded = await loadPart(part.id);
+        if (abandoned) return;
         const child = loaded.clone(true);
         const editingOwner = !!ownerId && (props().selectedId === ownerId || props().selectedId?.startsWith(`cover:${ownerId}:`));
         const selectionId = ownerId && /^(base|base2|base3)$/.test(ownerId)
@@ -531,11 +572,15 @@ function createRuntime(
         }
         group.add(child);
       }),
-    );
+    ); } catch (error) {
+      abandoned = true;
+      release(group);
+      throw error;
+    }
     return group;
   }
   async function update() {
-    if (budgetStopped || disposed) return;
+    if (pausedFor || disposed) return;
     const s = props().state;
     const nextResetKey = props().viewResetKey ?? 0;
     const resetView = nextResetKey !== consumedViewResetKey;
@@ -603,13 +648,13 @@ function createRuntime(
         hamster?.update(s);
         const center = sceneCenter();
         lighting.centerAt(center.x, center.y);
-        ready();
+        needsReady = true;
         updateSelection();
       }
     } catch (e) {
-      if (!disposed) {
+      if (!disposed && rev === revision) {
         console.error(e);
-        stopForFallback("部分本地模型暂不可用，已切换为简化视图。");
+        pauseForError("部分 3D 模型加载失败，请重新加载。设计和视角已保留。");
       }
     }
   }
@@ -817,6 +862,7 @@ function createRuntime(
     itemId?: string,
     pointerId?: number,
   ) {
+    if (disposed || pausedFor) return;
     restoreExploded();
     blankTaps.reset();
     drag = {
@@ -830,9 +876,10 @@ function createRuntime(
       placement: null,
     };
     controls.enabled = false;
+    const request = drag;
     void makeGhost(productId, itemId).catch(() => {
-      cancel();
-      fail("配件模型加载失败，请重试。");
+      if (disposed || drag !== request) return;
+      pauseForError("配件 3D 模型加载失败，请重新加载。设计和视角已保留。");
     });
     updateTargets();
   }
@@ -1030,7 +1077,7 @@ function createRuntime(
   const element = renderer.domElement;
   element.addEventListener("webglcontextlost", contextLost);
   element.addEventListener("webglcontextrestored", contextRestored);
-  renderer.debug.onShaderError = () => stopForFallback("当前设备无法显示此材质，已切换为简化视图。");
+  renderer.debug.onShaderError = () => pauseForError("3D 材质暂时无法显示，请重新加载。设计和视角已保留。");
   window.addEventListener("pointerdown", touchStart, true);
   element.addEventListener("pointerdown", down);
   element.addEventListener("pointerup", up);
@@ -1057,13 +1104,13 @@ function createRuntime(
   if (priceButton) resize.observe(priceButton);
   const clock = new THREE.Clock();
   const draw = (time = performance.now()) => {
-    if (disposed || budgetStopped || document.hidden) return;
+    if (disposed || pausedFor || document.hidden) return;
     frame = requestAnimationFrame(draw);
     // Measure the browser's unsuppressed cadence, not our own 30 FPS cap.
     if (measuringInteraction && recentRafTime && !frameBudget.reducedResolution)
       interactionQuality.observeRaf(time - recentRafTime);
     recentRafTime = time;
-    if (!framePacer.shouldDraw(time, frameBudget.reducedResolution ? 30 : interactionQuality.fps)) return;
+    if (!framePacer.shouldDraw(time, Math.min(frameBudget.fpsCap, interactionQuality.fps))) return;
     const frameStarted = performance.now();
     const controlDelta = lastDrawTime ? Math.min(65, time - lastDrawTime) : 1000 / 30;
     lastDrawTime = time;
@@ -1087,8 +1134,7 @@ function createRuntime(
     // is not evidence that continuous interaction has become slow.
     if (elapsed > 0 && modelReady) {
       const action = frameBudget.sample(elapsed);
-      if (action === 'fallback') { stopForFallback('当前场景较复杂，已保留设计并切换为简化视图。'); return; }
-      if (action === 'reduce-resolution') { applyPixelBudget(); bedding.setLowQuality(true); }
+      if (action === 'reduce-quality') { applyPixelBudget(); bedding.setLowQuality(true); }
     }
     const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
     bedding.setVisible(!viewingUnderside && !isExploded());
@@ -1102,21 +1148,28 @@ function createRuntime(
         calls += Array.isArray(object.material) ? Math.max(1, object.geometry.groups.length) : 1;
       } else if (object instanceof THREE.Line || object instanceof THREE.Points) calls++;
     });
-    if (triangles > SCENE_GEOMETRY_BUDGET.triangles || calls > SCENE_GEOMETRY_BUDGET.calls) {
-      stopForFallback('当前场景较复杂，已保留全部配件，切换为简化视图。'); return;
+    if (frameBudget.constrainGeometry(triangles, calls) === 'reduce-quality') {
+      // Keep every component and its geometry. Only rendering cost changes.
+      applyPixelBudget(quality === 'still');
+      bedding.setLowQuality(true);
     }
     hamster?.tick(Math.min(clock.getDelta(), .05));
     try {
       renderer.render(scene, camera);
+      if (needsReady && modelReady && !pausedFor) { needsReady = false; ready(); }
       if (measuringInteraction) interactionQuality.recordRender(performance.now() - frameStarted);
     }
     catch (error) {
       console.error("HamilyMart 3D frame failed", error);
-      stopForFallback('3D 显示暂不可用，已切换为简化视图。');
+      pauseForError("3D 渲染暂时中断，请重新加载。设计和视角已保留。");
     }
   };
   draw();
   return {
+    captureView: (): ViewSnapshot => ({
+      position: camera.position.clone(), quaternion: camera.quaternion.clone(),
+      target: controls.target.clone(), zoom: camera.zoom, viewResetKey: consumedViewResetKey,
+    }),
     update,
     updateTargets,
     updateAnnotations,

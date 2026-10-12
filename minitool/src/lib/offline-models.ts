@@ -11,7 +11,12 @@ function readModel(id: string): Promise<ModelMesh[]> {
     const script = document.createElement('script');
     script.src = `./models/${id}.js`;
     const timeout = setTimeout(() => { script.remove(); reject(new Error(`本地模型加载超时：${id}`)); }, 15000);
-    script.onload = () => { clearTimeout(timeout); script.remove(); const make = window.HamilyModels?.[id]; if (make) resolve(make()); else reject(new Error(`模型内容不完整：${id}`)); };
+    script.onload = () => {
+      clearTimeout(timeout); script.remove();
+      const make = window.HamilyModels?.[id];
+      try { if (make) resolve(make()); else reject(new Error(`模型内容不完整：${id}`)); }
+      catch (error) { reject(error); }
+    };
     script.onerror = () => { clearTimeout(timeout); script.remove(); reject(new Error(`缺少本地模型：${id}`)); };
     document.head.appendChild(script);
   });
@@ -38,8 +43,15 @@ export function loadPart(id: string): Promise<THREE.Group> {
       await new Promise<void>(resolve => setTimeout(resolve, 0));
       return group;
     });
-    queue = task.then(() => undefined, () => undefined);
-    cache.set(id, task);
+    const cached = task.catch(error => {
+      // A rejected promise is not a model: a user retry must be able to load it again.
+      if (cache.get(id) === cached) cache.delete(id);
+      // A failed script factory must also be re-requested, not reused on retry.
+      if (window.HamilyModels) delete window.HamilyModels[id];
+      throw error;
+    });
+    queue = cached.then(() => undefined, () => undefined);
+    cache.set(id, cached);
   }
   return cache.get(id)!;
 }

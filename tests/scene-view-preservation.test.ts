@@ -17,8 +17,13 @@ const source = ts.createSourceFile("AssemblyScene.tsx", readFileSync(new URL("..
   ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 const runtime = source.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === "createRuntime") as ts.FunctionDeclaration;
 function handlers(names: string[], bindings: Record<string, unknown>) {
-  const code = runtime.body!.statements.filter(node => ts.isFunctionDeclaration(node) && names.includes(node.name!.text))
-    .map(node => node.getText(source)).join("\n");
+  const declarations: string[] = [];
+  const visit = (node: ts.Node) => {
+    if (ts.isFunctionDeclaration(node) && names.includes(node.name!.text)) declarations.push(node.getText(source));
+    ts.forEachChild(node, visit);
+  };
+  visit(runtime.body!);
+  const code = declarations.join("\n");
   const context = vm.createContext(bindings);
   const output = ts.transpileModule(code, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
   vm.runInContext(output, context);
@@ -96,7 +101,7 @@ test("ordinary edits never reset the view; clear/import reset once before asynch
   const pending: Array<(group: THREE.Group) => void> = [];
   let delay = false;
   const context = handlers(["update"], {
-    props: () => ({ state, viewResetKey }), revision: 0, disposed: false, modelReady: true, lastViewResetKey: 0,
+    props: () => ({ state, viewResetKey }), revision: 0, disposed: false, renderError: false, modelReady: true, lastViewResetKey: 0,
     restoreExploded() {}, bedding: { update() {} }, home: () => resets.push(state),
     objects: new THREE.Group(), release() {}, getPlatforms, getBaseParts, getProduct,
     build: () => delay ? new Promise<THREE.Group>(resolve => pending.push(resolve)) : Promise.resolve(new THREE.Group()),
@@ -133,7 +138,7 @@ test("explode, reverse and edit restoration preserve the current camera includin
   house.children[1].position.z = 25; objects.add(base, house);
   const context = handlers(["restoreExploded", "toggleExploded", "tickExplosion"], {
     THREE, createExplodedLayout, objects, camera, controls: { target, maxDistance: 4000 },
-    modelReady: true, disposed: false, exploded: false, explosion: null, explosionAnimation: null, explosionProgress: 0,
+    modelReady: true, disposed: false, renderError: false, contextUnavailable: false, exploded: false, explosion: null, explosionAnimation: null, explosionProgress: 0,
     performance: { now: () => 1000 }, lastExplosionToggleAt: 0, cancel() {}, pressed: null, blankTaps: { reset() {} },
     reducedMotion: { matches: true }, targets: new THREE.Group(), annotations: new THREE.Group(), dimensionLines: { visible: false },
     dimensionLabels: [], toolbar: { hidden: true }, showSeams() {}, onExplodedChange() {}, updateTargets() {}, updateAnnotations() {},

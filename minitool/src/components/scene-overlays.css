@@ -109,3 +109,5 @@
 }
 .scene-view-actions button:focus { outline: 2px solid #59855c; outline-offset: 2px; }
 .scene-view-actions button:focus-visible { outline: 2px solid #59855c; outline-offset: 2px; }
+.scene-error { z-index: 8; padding: 24px; text-align: center; background: rgba(221, 224, 226, .86); }
+.scene-error > span { max-width: 320px; color: #4d6453; font-size: 12px; line-height: 1.6; }
