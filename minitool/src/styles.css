@@ -746,6 +746,12 @@ h1, h2, h3, p { margin: 0; }
 html, body, button, a, img, svg, canvas, div, section, aside, header, footer, nav, span, p, h1, h2, h3, strong, small, label { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 img, a { -webkit-user-drag: none; }
 input, textarea { -webkit-user-select: text; user-select: text; }
+.canvas-dimensions { position: absolute; z-index: 9; top: 16px; left: 16px; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 1px solid #d2dccd; border-radius: 12px; background: rgba(252, 252, 244, .93); color: #57704d; box-shadow: 0 2px 9px rgba(51, 76, 51, .1); }
+.canvas-dimensions:hover, .canvas-dimensions[aria-pressed=true] { border-color: #86a174; background: #e6efdc; color: #47623b; }
+.app-shell.is-mobile .canvas-dimensions { top: 12px; left: 12px; }
+.app-shell .scene-view-actions { top: 68px; left: 16px; }
+.app-shell .scene-view-actions button { min-height: 44px; }
+.app-shell.is-mobile .scene-view-actions { top: 64px; left: 12px; }
 .canvas-bottom-actions { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 8; display: flex; align-items: stretch; width: max-content; max-width: calc(100% - 20px); grid-gap: 3px; --compat-row-gap: 3px; --compat-column-gap: 3px; gap: 3px; padding: 4px; border: 1px solid rgba(210, 220, 205, 0.8784); border-radius: 12px; background: rgba(252, 252, 244, 0.9294); box-shadow: 0 2px 12px rgba(47, 69, 51, 0.0627); }
 .canvas-bottom-actions > button { display: flex; align-items: center; justify-content: center; grid-gap: 6px; --compat-row-gap: 6px; --compat-column-gap: 6px; gap: 6px; min-height: 40px; padding: 6px 12px; border-radius: 8px; background: transparent; color: #57704d; font-size: 11px; white-space: nowrap; }
 .canvas-bottom-actions > button:disabled { opacity: .4; }

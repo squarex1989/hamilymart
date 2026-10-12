@@ -95,7 +95,7 @@ test("offscreen selection toolbars clamp to the canvas while camera pose and zoo
   }
 });
 
-test("ordinary edits never reset the view; clear/import reset once before asynchronous model completion", async () => {
+test("design updates preserve the view unless an explicit reset requests reframing before model loading", async () => {
   let state = createInitialState(), viewResetKey = 0;
   const resets: typeof state[] = [];
   const pending: Array<(group: THREE.Group) => void> = [];
@@ -116,7 +116,7 @@ test("ordinary edits never reset the view; clear/import reset once before asynch
   await context.update();
   state = { ...state, baseColors: { ...state.baseColors, P01: "rose" } };
   await context.update();
-  assert.equal(resets.length, 0, "layout, height and color edits keep the view");
+  assert.equal(resets.length, 0, "state changes, including undoing layout changes, do not reset the view by themselves");
   delay = true; viewResetKey++;
   const imported = state;
   const importing = context.update();
@@ -130,6 +130,46 @@ test("ordinary edits never reset the view; clear/import reset once before asynch
   await context.update();
   assert.deepEqual(resets, [imported, state]);
 });
+
+for (const appPath of ["../src/App.tsx", "../minitool/src/App.tsx"]) {
+  test(`${appPath}: adding a platform requests exactly one reframe only when the addition succeeds`, () => {
+    const appSource = ts.createSourceFile(appPath, readFileSync(new URL(appPath, import.meta.url), "utf8"),
+      ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    let handler: ts.FunctionDeclaration | undefined;
+    const visit = (node: ts.Node) => {
+      if (ts.isFunctionDeclaration(node) && node.name?.text === "addNextPlatform") handler = node;
+      ts.forEachChild(node, visit);
+    };
+    visit(appSource);
+    assert(handler, "app exposes its platform action");
+    let current = createInitialState(), resetKey = 8;
+    const selections: string[] = [], notices: string[] = [];
+    const context = vm.createContext({
+      get state() { return current; }, styleIndex: 0, addPlatform, getPlatforms,
+      colorNewAdditions: (_old: unknown, next: typeof current) => next,
+      commit: (next: typeof current) => { current = next; },
+      setViewResetKey: (update: (value: number) => number) => { resetKey = update(resetKey); },
+      select: (id: string) => selections.push(id), notify: (message: string) => notices.push(message),
+    });
+    vm.runInContext(ts.transpileModule(handler.getText(appSource), {
+      compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None },
+    }).outputText, context);
+    context.addNextPlatform();
+    assert.equal(getPlatforms(current).length, 2);
+    assert.equal(resetKey, 9);
+    assert.equal(selections.at(-1), "base2");
+    context.addNextPlatform();
+    assert.equal(getPlatforms(current).length, 3);
+    assert.equal(resetKey, 10);
+    assert.equal(selections.at(-1), "base3");
+    const full = current;
+    context.addNextPlatform();
+    assert.equal(current, full);
+    assert.equal(resetKey, 10, "rejected fourth platform keeps the current camera");
+    assert.equal(selections.length, 2);
+    assert.equal(notices.length, 1);
+  });
+}
 
 test("explode, reverse and edit restoration preserve the current camera including gestures made while exploded", () => {
   const camera = new THREE.PerspectiveCamera(34, 1, 10, 4500), target = new THREE.Vector3(100, 80, 90);

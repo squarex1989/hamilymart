@@ -194,6 +194,7 @@ export default function App() {
     const result = addPlatform(state);
     if (!result.ok) { notify(result.reason); return; }
     commit(colorNewAdditions(state, result.state, styleIndex));
+    setViewResetKey(value => value + 1);
     select(getPlatforms(result.state).at(-1)!.id);
   }
   function chooseBedding(bedding: Bedding) {
@@ -436,11 +437,11 @@ export default function App() {
           canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}
           onRotate={rotateSelected} onRemove={removeSelected} onSelect={select} onDrop={drop}
           onDragEnd={() => { dragFinishedAt.current = Date.now(); }} onReady={() => setReady(true)} onError={notify} />
+        <button type="button" className="canvas-dimensions" aria-label="显示尺寸" title="显示尺寸" aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={20} aria-hidden="true" /></button>
         <div className="canvas-bottom-actions" aria-label="搭建选项">
           <button disabled={platforms.length >= 3} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
           <button onClick={nextStyle}><Sparkles size={16} /><span>换个配色</span></button>
           <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料高度</span></button>
-          <button aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={16} /><span>显示尺寸</span></button>
           <button className="clear-design-button" aria-label="清空当前设计" title="清空当前设计" onClick={() => setModal("clear")}><Trash2 size={18} /></button>
         </div>
         {(migrationNotice || toast || !saved) && <div className="canvas-notice" role="status"><Info size={16} /><span>{migrationNotice || toast || "暂未保存，请复制搭配编号"}</span><button aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); }}><X size={16} /></button></div>}

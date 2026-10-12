@@ -142,7 +142,8 @@ async function measure(page, report, name, action, options = {}) {
   const viewPreserved = maxViewDelta <= config.epsilon, projectionPreserved = maxProjectionDelta <= config.epsilon;
   const passed = captured.validDraws > 0 && (options.allowReset || viewPreserved && (options.allowProjection || projectionPreserved))
     && (!options.requireStateChange || changedState)
-    && (!options.requireProjectionChange || !projectionPreserved);
+    && (!options.requireProjectionChange || !projectionPreserved)
+    && (!options.requireViewChange || !viewPreserved);
   const check = { name, policy: options.allowReset ? 'reset-allowed' : options.allowProjection ? 'view-preserved-projection-may-change' : 'view-and-projection-preserved', passed, viewPreserved, projectionPreserved, maxViewDelta, maxProjectionDelta, changedState, before, after, freshCameraDraws: captured.validDraws, cameraSamples: samples.length, samples };
   report.checks.push(check);
   console.log(JSON.stringify({ name, passed, maxViewDelta, maxProjectionDelta, changedState }));
@@ -315,7 +316,7 @@ async function reproduceTightHatSelection(page, report) {
       await page.getByRole('button', { name: '增加平台', exact: true }).click();
       assert.equal(await page.locator('.mobile-dock-header > strong').textContent(), '第二平台');
       assert((await state(page)).extension);
-    }, { requireStateChange: true });
+    }, { requireStateChange: true, allowReset: true, requireViewChange: true });
     await measure(page, report, 'remove-second-platform', async () => {
       await page.getByRole('button', { name: '移除已选配件', exact: true }).click();
       assert.equal((await state(page)).extension, null);
@@ -323,8 +324,13 @@ async function reproduceTightHatSelection(page, report) {
     await measure(page, report, 're-add-second-platform', async () => {
       await page.getByRole('button', { name: '增加平台', exact: true }).click();
       assert((await state(page)).extension);
-    }, { requireStateChange: true });
-    await measure(page, report, 'deselect-second-platform', () => back(page));
+    }, { requireStateChange: true, allowReset: true });
+    await measure(page, report, 'add-third-platform', async () => {
+      await page.getByRole('button', { name: '增加平台', exact: true }).click();
+      assert((await state(page)).thirdPlatform);
+      assert.equal(await page.getByRole('button', { name: '增加平台', exact: true }).isDisabled(), true);
+    }, { requireStateChange: true, allowReset: true, requireViewChange: true });
+    await measure(page, report, 'deselect-third-platform', () => back(page));
     await measure(page, report, 'add-accessory', async () => {
       await page.locator('.mobile-product').filter({ has: page.locator('strong', { hasText: '方糖小屋' }) }).click();
       assert.equal((await state(page)).items.length, 1);

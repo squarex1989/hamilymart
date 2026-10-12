@@ -21,6 +21,7 @@ import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
 import { configureModelRenderer, createModelLighting, createModelMaterial, MODEL_CAMERA_DIRECTION } from "../lib/model-presentation";
 import { createBedding } from "../lib/bedding-scene";
+import { BeddingFade } from "../lib/bedding-fade";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
 import { createSelectionBox, dimensionSegments, dimensionsInCentimeters, disposeAnnotation, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
@@ -771,7 +772,7 @@ function createRuntime(
     toolbar.hidden = isExploded() || selectedBounds.isEmpty() || !p.selectedTitle || !!drag?.moved;
     if (!toolbar.hidden) {
       const { x, y } = getSelectionToolbarPosition(selectedBounds, camera,
-        host.clientWidth, host.clientHeight, toolbar.offsetWidth, toolbar.offsetHeight);
+        host.clientWidth, host.clientHeight, toolbar.offsetWidth, toolbar.offsetHeight, 72);
       toolbar.style.left = `${Math.round(x)}px`;
       toolbar.style.top = `${Math.round(y)}px`;
     }
@@ -1075,6 +1076,7 @@ function createRuntime(
   if (bottomActions) resize.observe(bottomActions);
   const clock = new THREE.Clock();
   let lastBeddingVisible = true;
+  const beddingFade = new BeddingFade();
   const draw = () => {
     if (disposed || renderError || contextUnavailable || document.hidden) return;
     try {
@@ -1082,8 +1084,10 @@ function createRuntime(
       tickExplosion(performance.now());
       layoutAnnotations();
       const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
-      const beddingVisible = !viewingUnderside && !isExploded();
-      if (floor.visible === viewingUnderside || lastBeddingVisible !== beddingVisible || drag || hamster)
+      const beddingVisible = !isExploded();
+      const fading = beddingFade.step(controls.getPolarAngle(), performance.now());
+      const beddingShadowsChanged = bedding.setOpacity(fading.opacity);
+      if (floor.visible === viewingUnderside || lastBeddingVisible !== beddingVisible || beddingShadowsChanged || drag || hamster)
         invalidateShadows();
       bedding.setVisible(beddingVisible);
       lastBeddingVisible = beddingVisible;

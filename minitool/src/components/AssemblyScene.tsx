@@ -24,6 +24,7 @@ import type { AssemblyState, Placement } from "../lib/assembly";
 import modelIndex from "../data/model-index.json";
 import { configureModelRenderer, createModelLighting, createModelMaterial, MODEL_CAMERA_DIRECTION } from "../lib/model-presentation";
 import { createBedding } from "../lib/bedding-scene";
+import { BeddingFade } from "../lib/bedding-fade";
 import { createHamsterSimulation } from "../lib/hamster-scene";
 import { FEATURES } from "../data/features";
 import { createSelectionBox, dimensionsInCentimeters, disposeAnnotation, getBoxCorners, getRenderedModelBounds, updateSelectionStroke } from "../lib/scene-annotations";
@@ -1156,6 +1157,7 @@ function createRuntime(
   const clock = new THREE.Clock();
   const updateOrbit = stableOrbitUpdate(camera, controls);
   let lastBeddingVisible = true;
+  const beddingFade = new BeddingFade();
   const draw = (time = performance.now()) => {
     if (disposed || pausedFor || document.hidden) return;
     frame = requestAnimationFrame(draw);
@@ -1171,6 +1173,11 @@ function createRuntime(
     controls.dampingFactor = 1 - Math.pow(.8, controlDelta / (1000 / 30));
     updateOrbit();
     tickExplosion(time);
+    const fading = beddingFade.step(controls.getPolarAngle(), time);
+    const beddingShadowsChanged = bedding.setOpacity(fading.opacity);
+    // Opacity tail frames must finish even after OrbitControls settles. Mark
+    // pixels dirty without delaying the existing high-resolution deadline.
+    if (fading.changed) previewQuality.cameraChanged(time);
     const quality = previewQuality.nextFrame(time,
       !modelReady || cameraInteracting || !!pressed || !!drag || !!explosionAnimation || !!hamster);
     if (quality === 'skip') {
@@ -1182,8 +1189,8 @@ function createRuntime(
     measuringInteraction = quality === 'interactive' && modelReady && !resizedBuffer;
     if (!measuringInteraction) interactionQuality.reset();
     const viewingUnderside = controls.getPolarAngle() > Math.PI / 2;
-    const beddingVisible = !viewingUnderside && !isExploded();
-    if (floor.visible === viewingUnderside || lastBeddingVisible !== beddingVisible)
+    const beddingVisible = !isExploded();
+    if (floor.visible === viewingUnderside || lastBeddingVisible !== beddingVisible || beddingShadowsChanged)
       renderer.shadowMap.needsUpdate = true;
     bedding.setVisible(beddingVisible);
     lastBeddingVisible = beddingVisible;

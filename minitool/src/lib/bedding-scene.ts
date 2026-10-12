@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { getPlatforms, getDisplayElevation } from "./assembly";
 import type { AssemblyState } from "./assembly";
 import modelIndex from "../data/model-index.json";
+import { MIN_BEDDING_OPACITY } from "./bedding-fade";
 
 type Bounds = { minX: number; maxX: number; minY: number; maxY: number };
 type Pool = { x: number; y: number };
@@ -196,6 +197,26 @@ export function createBedding(scene: THREE.Scene) {
   group.name = "浅黄蓬松木屑垫料";
   scene.add(group);
   let signature = "";
+  let opacity = 1;
+  const materials: THREE.Material[] = [];
+  const shadowCasters: THREE.Mesh[] = [];
+  const applyOpacity = () => {
+    const translucent = opacity < 1;
+    for (const material of materials) {
+      const changed = material.transparent !== translucent;
+      material.opacity = opacity;
+      material.transparent = translucent;
+      // A faint pile must not write opaque depth over the platform and legs.
+      material.depthWrite = !translucent;
+      // The curled, double-sided chips do not need two blended passes.
+      material.forceSinglePass = translucent;
+      if (changed) material.needsUpdate = true;
+    }
+    // Three's normal depth shadow material treats the pile as solid even at
+    // 20% opacity. Disable only its casters while translucent; the cache needs
+    // refreshing at the two endpoints, never on every opacity animation frame.
+    for (const mesh of shadowCasters) mesh.castShadow = !translucent;
+  };
   const clear = () => {
     group.traverse(object => {
       if (object instanceof THREE.Mesh) {
@@ -204,9 +225,18 @@ export function createBedding(scene: THREE.Scene) {
       }
     });
     group.clear();
+    materials.length = shadowCasters.length = 0;
   };
   return {
     setVisible(visible: boolean) { group.visible = visible; },
+    setOpacity(value: number) {
+      const next = Math.max(MIN_BEDDING_OPACITY, Math.min(1, value));
+      if (next === opacity) return false;
+      const shadowsChanged = (opacity === 1) !== (next === 1) && shadowCasters.length > 0;
+      opacity = next;
+      applyOpacity();
+      return shadowsChanged;
+    },
     setLowQuality(low: boolean) { group.traverse(object => { if (object instanceof THREE.InstancedMesh) object.visible = !low; }); },
     update(state: AssemblyState) {
       const platforms = getPlatforms(state);
@@ -230,6 +260,10 @@ export function createBedding(scene: THREE.Scene) {
       const addMesh = (geometry: THREE.BufferGeometry, ownMaterial = material.clone()) => {
         const mesh = new THREE.Mesh(geometry, ownMaterial);
         mesh.castShadow = mesh.receiveShadow = true;
+        // Each surface has its own clone; other objects and texture owners
+        // never share a material whose transparency we animate.
+        materials.push(ownMaterial);
+        shadowCasters.push(mesh);
         group.add(mesh);
         return mesh;
       };
@@ -385,6 +419,8 @@ export function createBedding(scene: THREE.Scene) {
       chips.receiveShadow = true;
       chips.instanceMatrix.needsUpdate = true;
       group.add(chips);
+      materials.push(chips.material);
+      applyOpacity();
       fitOuterEnvelope(group, bounds);
     },
     dispose() { clear(); shavingsTexture.dispose(); scene.remove(group); },

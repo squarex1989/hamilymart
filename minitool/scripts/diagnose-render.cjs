@@ -277,6 +277,13 @@ async function assertIdleDraws(page) {
     }
     // Exercise cached annotation layout after selection, model changes, and resize.
     const dimensionsToggle = page.getByRole('button', { name: '显示尺寸', exact: true });
+    report.dimensionsButton = await dimensionsToggle.evaluate(button => {
+      const rect = button.getBoundingClientRect(), scene = button.closest('.studio').getBoundingClientRect();
+      return { text: button.textContent.trim(), x: rect.left - scene.left, y: rect.top - scene.top, width: rect.width, height: rect.height, svgCount: button.querySelectorAll('svg').length };
+    });
+    assert.equal(report.dimensionsButton.text, '', 'Dimensions control must show only its icon');
+    assert.equal(report.dimensionsButton.svgCount, 1);
+    assert(report.dimensionsButton.x >= 0 && report.dimensionsButton.x <= 20 && report.dimensionsButton.y >= 0 && report.dimensionsButton.y <= 20, 'Dimensions control must stay in the upper-left of the 3D region');
     await dimensionsToggle.click();
     assert.equal(await dimensionsToggle.getAttribute('aria-pressed'), 'true');
     report.annotationChecks = [];

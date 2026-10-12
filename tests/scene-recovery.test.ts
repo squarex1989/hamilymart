@@ -5,6 +5,7 @@ import vm from "node:vm";
 import ts from "typescript";
 import * as THREE from "three";
 import { captureSceneView, restoreSceneView } from "../src/lib/scene-recovery";
+import { BeddingFade } from "../src/lib/bedding-fade";
 
 const source = ts.createSourceFile("AssemblyScene.tsx", readFileSync(new URL("../src/components/AssemblyScene.tsx", import.meta.url), "utf8"),
   ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -85,7 +86,7 @@ function recoveryRuntime() {
     toolbar: { hidden: false }, dimensionLabels: [{ hidden: false }], fail: (message: string) => errors.push(message),
     cancelAnimationFrame: (id: number) => canceled.push(id), requestAnimationFrame: (callback: unknown) => { scheduled.push(callback); return 18; },
     performance: { now: () => 1000 }, tickExplosion() {}, layoutAnnotations() {}, isExploded: () => false,
-    bedding: { setVisible() {} }, lastBeddingVisible: true, drag: null,
+    bedding: { setVisible() {}, setOpacity: () => false }, beddingFade: new BeddingFade(), lastBeddingVisible: true, drag: null,
     floor: { visible: true }, grid: { visible: true }, lighting: { underside: { visible: false } },
     hamster: null, ready: () => { readyCalls++; }, console: { error() {} },
   });
@@ -103,6 +104,7 @@ test("context loss pauses 3D and auto-restoration only becomes ready after a suc
   assert.equal(r.context.contextUnavailable, false); assert.equal(r.context.controls.enabled, true);
   assert.equal(r.scheduled.length, 1); assert.equal(r.ready(), 0, "the restore event alone must not clear the error UI");
   r.context.draw();
+  assert.equal(r.context.renderError, false, "the restored frame must not encounter a runtime error");
   assert.equal(r.renders(), 1); assert.equal(r.ready(), 1);
   assert.deepEqual(captureSceneView(r.camera, r.target, 5), before);
 });
