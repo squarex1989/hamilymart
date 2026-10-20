@@ -1,0 +1,66 @@
+{
+  "artifact": "HamilyMart-minitool-20261020-v42.zip",
+  "files": 196,
+  "bytes": 7897676,
+  "sha256": "107dc42eef3606f1b91dc7a6f2df632237b37f33e573be0b0cfdeac515fe493a",
+  "zip_integrity": "passed",
+  "local_browser_checks": [
+    {
+      "label": "web",
+      "name": "奶糖小屋",
+      "passed": true
+    },
+    {
+      "label": "web",
+      "name": "奶糖二居室（2×2）",
+      "passed": true
+    },
+    {
+      "label": "web",
+      "name": "奶糖二居室（2×3）",
+      "passed": true
+    },
+    {
+      "label": "web",
+      "name": "奶糖二居室（艾特）",
+      "passed": true
+    },
+    {
+      "label": "mini",
+      "name": "奶糖小屋",
+      "passed": true
+    },
+    {
+      "label": "mini",
+      "name": "奶糖二居室（2×2）",
+      "passed": true
+    },
+    {
+      "label": "mini",
+      "name": "奶糖二居室（2×3）",
+      "passed": true
+    },
+    {
+      "label": "mini",
+      "name": "奶糖二居室（艾特）",
+      "passed": true
+    }
+  ],
+  "unit_tests": {
+    "targeted": 45,
+    "minitool": 82,
+    "layout_checks_passed": 17,
+    "preexisting_failure": "Inspiration coverage test expects urine-tray-aite in presets; unrelated to reversible front plates"
+  },
+  "pending": [
+    "physical print-fit test",
+    "creator platform simulator",
+    "Android container",
+    "iOS container"
+  ],
+  "audit_warnings": [
+    "ZIP 7.53 MiB exceeds recommended 2 MiB target but is under the 10 MiB limit",
+    "Pokemon wall model script is 2.09 MiB",
+    "Total uncompressed scripts and model data are 19.02 MiB"
+  ]
+}
