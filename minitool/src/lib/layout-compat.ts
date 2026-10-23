@@ -38,7 +38,7 @@ export function initLayoutCompatibility(): () => void {
 
   function updateViewport() {
     const viewport = window.visualViewport;
-    const height = viewport && viewport.height > 0 ? viewport.height : window.innerHeight;
+    const height = window.innerHeight;
     root.style.setProperty("--app-height", `${height}px`);
     root.style.setProperty("--app-viewport-top", `${viewport ? viewport.offsetTop : 0}px`);
     root.style.setProperty("--mobile-dock-height", `${Math.max(272, Math.min(332, height * .4))}px`);

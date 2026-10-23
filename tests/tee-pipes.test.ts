@@ -24,7 +24,7 @@ function cast(model: THREE.Object3D, origin: number[], direction: number[], far 
 }
 
 test("T products append stable indices, occupy one square, and retain bundled eight-yuan pricing", () => {
-  assert.deepEqual(PRODUCTS.slice(14).map(product => product.id), ["pipe-lt2n", "pipe-tt1", "pipe-tt2"]);
+  assert.deepEqual(PRODUCTS.slice(14, 17).map(product => product.id), ["pipe-lt2n", "pipe-tt1", "pipe-tt2"]);
   for (const id of ["pipe-tt1", "pipe-tt2"]) {
     const product = getProduct(id);
     assert.equal(product.price, 800);

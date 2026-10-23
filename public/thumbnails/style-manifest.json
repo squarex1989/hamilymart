@@ -1,7 +1,7 @@
 {
   "original": {
     "villa": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "A01_PineGreen": "pine",
         "A01_Gold": "butter",
@@ -29,8 +29,8 @@
         "W02_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
-        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "A01": "a72e3b41f7eb4fae45d593f93ff3e177cd17467a63faf2a14f60c5199614f758",
+        "A02": "9ee098378f7db18c64aac8b7c932b37e0986a8db3c5de6a946477287f60f3de1",
         "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
         "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
         "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
@@ -38,42 +38,42 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "e5ab98c9ea020058d4d56a457e909de837b318f3dab137685fb9f94856e1d0e6"
+      "pngSha256": "214a2f91a117e3fb0324b2bec42e17e93eb63f99bb1ba6cbd9ec050618232a2f"
     },
     "l-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
-        "LHB_PineGreen": "pine",
-        "LHR_Gold": "cream"
+        "LHB_PineGreen": "cream",
+        "LHR_Snow": "butter"
       },
       "materialHexColors": {
-        "LHB_PineGreen": "#174A3A",
-        "LHR_Gold": "#FEF1DB"
+        "LHB_PineGreen": "#FEF1DB",
+        "LHR_Snow": "#F3B34E"
       },
       "modelSha256": {
-        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
-        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+        "LHB": "50dd9521c984de5f8e2daf6e915a6b03d9887801e1e883db95c7ebb12e79c2ca",
+        "LHR": "91d2dccbfe4497564b0531a7c255a005883f055b46476512116e71ee28fdabcc"
       },
-      "pngSha256": "9a72b7df54cf32b5da6b6493236eee1dcde4123951a8e089c88b1872ca36cd4c"
+      "pngSha256": "6ca80f9b0a31ea2f4a4665edaabe3948858f47ba7900c319296121c7ad3a667f"
     },
     "cube-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
-        "SHB_PineGreen": "pine",
-        "SHR_Gold": "cream"
+        "SHB_PineGreen": "cream",
+        "SHR_Snow": "butter"
       },
       "materialHexColors": {
-        "SHB_PineGreen": "#174A3A",
-        "SHR_Gold": "#FEF1DB"
+        "SHB_PineGreen": "#FEF1DB",
+        "SHR_Snow": "#F3B34E"
       },
       "modelSha256": {
-        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
-        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+        "SHB": "12173775b31452a0b998484ad28c2861d67cf98432e08c0358fc0fbe9dc6ae35",
+        "SHR": "a12165dc903633633743f57ed93a123882627225ae2ca426520a25ae14168478"
       },
-      "pngSha256": "9414200b595fb96e45683fe6052cc5124281570c002bc841901ab9b4a7753e83"
+      "pngSha256": "0de6e850df208f53a3dcaf22e786ff858776bcf6939a7e83aef6919702be8e07"
     },
     "roof-cottage": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G03_ChristmasRed": "red",
         "G03_Snow": "cream",
@@ -87,10 +87,10 @@
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "83c353a051502539e55a51a85e40007bb14af5064beedf4f6eca262e49e17edf"
+      "pngSha256": "ecc38b0f2d78ac79349138f77fdc2e02c948e2f40983bae1b8254362161acbdc"
     },
     "pipe-st1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST1T_Snow": "cream",
         "ST1B_Snow": "cream"
@@ -103,10 +103,10 @@
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "fc68dc77fefae3563693d07818173e21a0b802967ef98bf3cc9f695c5337dac4"
+      "pngSha256": "052c94102e5a75a4d0cca851bcba7b1f986ee3e6ee73765c608884605590a84e"
     },
     "pipe-st2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST2T_Snow": "cream",
         "ST2B_Snow": "cream"
@@ -119,10 +119,10 @@
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "e2567a03cc30b65e456407da82562f581ebf0ca01464de255ee8934340263d59"
+      "pngSha256": "fd4099b7f7e79b9d10e5ac777d9c526d900968222b4074deef2bf5a48b621214"
     },
     "pipe-lt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2T_Snow": "cream",
         "LT2B_Snow": "cream"
@@ -135,10 +135,10 @@
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "54ad9ce7f009c6cee3cc7ee824be1156c79b249cf3b8c394d2d751dfd66009bc"
+      "pngSha256": "0f0dbcea7793a92f637eebc84bffd516fe8db55265c05ff4207c865e84334d7e"
     },
     "planter": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G06_ChristmasRed": "red",
         "G06_Snow": "cream"
@@ -150,10 +150,10 @@
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "809f95bfdd87bc5d06f4603942e7f75c25bdb96da197d543267c338be6dc4452"
+      "pngSha256": "bab1cd8269c0dbea5282c533a001c483f00086c40fbc5ef56fa46dd30005c268"
     },
     "food-bowl": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "O01_ChristmasRed": "red",
         "O01_Snow": "cream"
@@ -163,12 +163,12 @@
         "O01_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+        "O01": "8a98e833608ab52c774e69abbf06d0c7c19c8f210b514743b9611bf5c430a301"
       },
-      "pngSha256": "1a048864a5dcd2634c593bc1febf99bfbe85b3920a0801de2bc82eca346ac035"
+      "pngSha256": "a32ca3af4087a913ae67c9e3f802edf6afad884cb59d81a7fd9110157b36adb4"
     },
     "pool": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "B01_Snow": "cream",
         "B01_ChristmasRed": "red"
@@ -180,10 +180,10 @@
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "a1ad0541c03bff3b0018975baa724fb1c9a1e6a767f669a8630379f5623de9d2"
+      "pngSha256": "ed1f93075f8d1c38657209e8b6febeaa9c71186d456aa28259c7316238be162e"
     },
     "pipe-lt2n": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2NT_Snow": "cream",
         "LT2B_Snow": "cream"
@@ -196,10 +196,10 @@
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "0463f12661305004b74a136477844f870476ad62938f1c9031c3dd9b4e0574e5"
+      "pngSha256": "967dc9700ea7a4996a7abb2d218e3c3f1b8ab8c30508697bdd27e963b1e76a84"
     },
     "seesaw": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SS01_Gold": "butter",
         "SS01_PineGreen": "pine"
@@ -211,10 +211,10 @@
       "modelSha256": {
         "SS01": "13c26a1397a622d1556396bac3d3975a6ceeea12bf296f0b4176adc7eddab877"
       },
-      "pngSha256": "1304b160b9a7c10510afcb35c5b887d34fff2c362e5389e6b3296ab5b26c1ac8"
+      "pngSha256": "cd2f20879e35f6b05867790c6c7ff1a2e1e421d70aa0041c1b2f3e567e1b718b"
     },
     "pipe-tt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT2T_Snow": "cream",
         "TTB_Snow": "cream"
@@ -227,10 +227,10 @@
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "69b3797fc5027e3d1bdaf6722481579e984acb62ad679e1bc054440056463b90"
+      "pngSha256": "9175134aca4966887cf20f5733aa029a76e1c5d335e43bc06107ef3c10d9a8f8"
     },
     "pipe-tt1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT1T_Snow": "cream",
         "TTB_Snow": "cream"
@@ -243,12 +243,244 @@
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "324ff5e1d13729303ef09e63c213c04b9fda2fa01f2e7dd6de5caf440c7d7ac6"
+      "pngSha256": "f27cf11956d90597324fb493b6ce2970df8c8ec6c812f0c6e421105c1e66f566"
+    },
+    "stairs-straight-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS11_Snow": "cream"
+      },
+      "materialHexColors": {
+        "RS11_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "RS11": "30a326feb2e3a20b9bf2b038db679aa793bb75f66d028b8ec2b285c94b97194b"
+      },
+      "pngSha256": "c8e869e69e6fd5f25a8fc5c4f5fa4ea05b8c6cd0389ec1fd23cda5cf6820d565"
+    },
+    "stairs-right-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS21_Snow": "cream"
+      },
+      "materialHexColors": {
+        "RS21_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "RS21": "2bc4f0e496d43ab52732bc3e13992bc304c75528e41335e8728178f337afa607"
+      },
+      "pngSha256": "69cab66f57b8a2c134d0e7dd310d9b220779785818f40cae9b423749d76eac03"
+    },
+    "stairs-left-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS31_Snow": "cream"
+      },
+      "materialHexColors": {
+        "RS31_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "RS31": "5694fc87d49258eb08f77ea21ba51571ef00ca63b9f5af20f1bd036dd089c540"
+      },
+      "pngSha256": "5d6e0251c84b7054c288066b8f0cb23b85b6dc31a7475f4ed43d4a3ffd4840cc"
+    },
+    "milk-house-right": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCRB_Snow": "cream",
+        "MCRR_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MCRB_Snow": "#FEF1DB",
+        "MCRR_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MCRB": "8f94e4aa71fee19d3f91f576b88d06b2a4974f62745f69607cd46919411a9849",
+        "MCRR": "5bf412079ef2b6932e4c1154b7530399fdcdb29f55acb6cfaaa72c6679091a8b"
+      },
+      "pngSha256": "fb7f44d0335769b73d743d81005ab9a722d1e9d906416b0579df4014e095c7e4"
+    },
+    "milk-house-double": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDB_Snow": "cream",
+        "MCDR_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MCDB_Snow": "#FEF1DB",
+        "MCDR_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MCDB": "6fa171b21da573265f0b8d7b92972fb6b4c13189ddd862a5d59a12e730483ba2",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "3da14d7c7e2ff568b128fb13c1aa99633e09393e0dea19a6da5dc9b1c39be05d"
+    },
+    "sag-bridge": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "BR01_Sky": "sky"
+      },
+      "materialHexColors": {
+        "BR01_Sky": "#A6C8DF"
+      },
+      "modelSha256": {
+        "BR01": "f2a07b32c3c37fe81d158afe577a8df4e79f501412a4411613784e16a5b6c8d2"
+      },
+      "pngSha256": "a64bac68beaa4359b4df894d0381a134272619b56ea0e1fe88c7ece4957865b9"
+    },
+    "pokemon-center": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "PCW_cyan": "sky",
+        "PCW_dark": "black",
+        "PCW_white": "white",
+        "PCR_red": "red",
+        "PCR_white": "white",
+        "PCR_cyan": "sky",
+        "PCR_dark": "black"
+      },
+      "materialHexColors": {
+        "PCW_cyan": "#A6C8DF",
+        "PCW_dark": "#303331",
+        "PCW_white": "#FAFAF7",
+        "PCR_red": "#B8273C",
+        "PCR_white": "#FAFAF7",
+        "PCR_cyan": "#A6C8DF",
+        "PCR_dark": "#303331"
+      },
+      "modelSha256": {
+        "PCW": "986e382f9ed7a0a0704547742229a64a2a0cb4c8b6ba51dd5acc31c64fe3b65e",
+        "PCR": "b7207f8e8a7806907dc58adf6fb1c7b1b07fb5fa753fd30727f480cef3117509"
+      },
+      "pngSha256": "7bacf6c2c73d7bcddbe245a6fca27788310fb69e38bf1dae397f68714903bcd4"
+    },
+    "pipe-down": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "DP01_Snow": "cream"
+      },
+      "materialHexColors": {
+        "DP01_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "DP01": "e28559bd8d93acf951465c4ce0a9dd394ab91e42e735f3a53916e234d54f3050"
+      },
+      "pngSha256": "d4766407b4e06282dc1a386c136a9d4b7b803223547a9d9a9a3e592f5d96a366"
+    },
+    "milk-house-double-2x3": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23B_Snow": "cream",
+        "MC23R_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MC23B_Snow": "#FEF1DB",
+        "MC23R_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MC23B": "2e8f3d63cb80d43a676272c45c01ca4eb04d31ee68e03672f5063edbbe5789af",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "82afc64ed8d3f549b39016c4eed689cff12bd31e62a9efb8eb1c4441acbe0120"
+    },
+    "milk-house-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATB_Snow": "cream",
+        "MCATR_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MCATB_Snow": "#FEF1DB",
+        "MCATR_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MCATB": "2cb77ddb6d665d54015f4d9b7b9f083c8fc2f0fce124c794cc695dceb77f0cc8",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "8d346b796f0812532ed30c4fa1392fb6a2e10e6086b9b99d482712a8c19e6c7c"
+    },
+    "urine-tray-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "UT01_Snow": "cream"
+      },
+      "materialHexColors": {
+        "UT01_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "UT01": "24b85d15e0ae2ac1eab8d9d518b02283035e6f3ea7643342aa7f7cf06dd62a31"
+      },
+      "pngSha256": "110ae060f77a1b2a636b0c2f58cafe6c14b52568feae29ceebd1f7d4e3d9e3eb"
+    },
+    "milk-house-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCLB_Snow": "cream",
+        "MCLR_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MCLB_Snow": "#FEF1DB",
+        "MCLR_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MCLB": "5070af2cffc4421a6d7ad1d082077dff3bc3fa1ea7833826040e2c062565e10b",
+        "MCLR": "204c815df506aa2be8caee1330691b47d784b0fe3b7d57330b3dcbb2b6a0f995"
+      },
+      "pngSha256": "48581dcf56f63264f1e340a08af33bb8f54f54207ff6d3ea1acb8ab27d0c2e98"
+    },
+    "milk-house-double-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDLB_Snow": "cream",
+        "MCDR_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MCDLB_Snow": "#FEF1DB",
+        "MCDR_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MCDLB": "2036cb33a36bd11c00a6a64c46e658f2fe881db01c29f8e56608f207f747a2e7",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "94684d27b9e72cda6acab7bd2bb7126872f31b92ba0990759b31b1f491eed97f"
+    },
+    "milk-house-double-2x3-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23LB_Snow": "cream",
+        "MC23R_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MC23LB_Snow": "#FEF1DB",
+        "MC23R_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MC23LB": "7c10d5388edf6f76f7353d9511e8deea926a9abe0334b804bcb33eb50860236d",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "5d9e67d56bd477256222e1db8b1d47e11b3dbb614c77225e3b51de4e550fdee8"
+    },
+    "milk-house-aite-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATLB_Snow": "cream",
+        "MCATR_Gold": "butter"
+      },
+      "materialHexColors": {
+        "MCATLB_Snow": "#FEF1DB",
+        "MCATR_Gold": "#F3B34E"
+      },
+      "modelSha256": {
+        "MCATLB": "a331a9ddee896c3696a8231e076011745d49cd0eee40c9e4aaa6cef9ba89c865",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "825ffddeb73ee91d2c8d242cf4652e43f2136bd5ca50c5cbff3a0e31f1c1285a"
     }
   },
   "woodland": {
     "villa": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "A01_PineGreen": "darkwood",
         "A01_Gold": "wood",
@@ -276,8 +508,8 @@
         "W02_Snow": "#CCAB7A"
       },
       "modelSha256": {
-        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
-        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "A01": "a72e3b41f7eb4fae45d593f93ff3e177cd17467a63faf2a14f60c5199614f758",
+        "A02": "9ee098378f7db18c64aac8b7c932b37e0986a8db3c5de6a946477287f60f3de1",
         "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
         "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
         "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
@@ -285,42 +517,42 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "b4c3a92f2db74905f665ee13688df8a13df4ce1db32e600468f3639fa8ed5c10"
+      "pngSha256": "54c46deb5e7a7baad4add9c75c416fe8714955b07a1e34f6458974582f93adbf"
     },
     "l-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LHB_PineGreen": "darkwood",
-        "LHR_Gold": "peachwood"
+        "LHR_Snow": "peachwood"
       },
       "materialHexColors": {
         "LHB_PineGreen": "#654333",
-        "LHR_Gold": "#BE896F"
+        "LHR_Snow": "#BE896F"
       },
       "modelSha256": {
-        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
-        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+        "LHB": "50dd9521c984de5f8e2daf6e915a6b03d9887801e1e883db95c7ebb12e79c2ca",
+        "LHR": "91d2dccbfe4497564b0531a7c255a005883f055b46476512116e71ee28fdabcc"
       },
-      "pngSha256": "0920caa118231081682020f6700b013c87b93db6d2e2c210a1c03cea3f5ac657"
+      "pngSha256": "61ad2e26b0866093c8a174e960da9e10e7c717cd1a98fd3e3c731d453a1d47e4"
     },
     "cube-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SHB_PineGreen": "darkwood",
-        "SHR_Gold": "peachwood"
+        "SHR_Snow": "peachwood"
       },
       "materialHexColors": {
         "SHB_PineGreen": "#654333",
-        "SHR_Gold": "#BE896F"
+        "SHR_Snow": "#BE896F"
       },
       "modelSha256": {
-        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
-        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+        "SHB": "12173775b31452a0b998484ad28c2861d67cf98432e08c0358fc0fbe9dc6ae35",
+        "SHR": "a12165dc903633633743f57ed93a123882627225ae2ca426520a25ae14168478"
       },
-      "pngSha256": "344644bdda09b875ec5adbb85bd9984b0a8d8a8e0a1a3262d5b994240c11287d"
+      "pngSha256": "6682870558d655a51d238653a18c5abf325d9c16a30f977b7f321db125152227"
     },
     "roof-cottage": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G03_ChristmasRed": "peachwood",
         "G03_Snow": "darkwood",
@@ -334,10 +566,10 @@
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "0b857be3959e3fb2820fd4e69ee55bc2997bd180083726fc17467a1d42e75333"
+      "pngSha256": "2d1a6d75c7ede7e5892205a48d36d387aeae0ecce11b53737dd0d60f25bd82a0"
     },
     "pipe-st1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST1T_Snow": "wood",
         "ST1B_Snow": "darkwood"
@@ -350,10 +582,10 @@
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "f5ce5d94841aa9fd1b6c4789743b7edebf2577fe7ff6463eff3da25460b83e4b"
+      "pngSha256": "01e9fb8c72df4bb147956511177ac32814765549df6084f41b46a43e2f68fcd8"
     },
     "pipe-st2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST2T_Snow": "wood",
         "ST2B_Snow": "darkwood"
@@ -366,10 +598,10 @@
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "58198e4018141fb9fc361511c7bc44df9acba79cee9f3afb2ae19b60338013a6"
+      "pngSha256": "77e849655792a85803b99e76df185d34f9c51e4fac634b07c7d3ff4d05359c96"
     },
     "pipe-lt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2T_Snow": "wood",
         "LT2B_Snow": "darkwood"
@@ -382,10 +614,10 @@
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "d1cdb31f55940c085430c1527d13b7e2826a3718b3e1a99bc11cbfd24ab69436"
+      "pngSha256": "7053b45d0799ae40951a2acc634b5693b0a4c4869dd3a8467c9ad833a28f14a1"
     },
     "planter": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G06_ChristmasRed": "peachwood",
         "G06_Snow": "cream"
@@ -397,10 +629,10 @@
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "511d577bea12c1e91fd76e7b3d9386e3b5edd5aa44c444e0d6468496f04d2b9c"
+      "pngSha256": "afd4a117df416a93f018676523cdd5dd78f73c4fc58336e6098990055d127fdd"
     },
     "food-bowl": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "O01_ChristmasRed": "peachwood",
         "O01_Snow": "cream"
@@ -410,12 +642,12 @@
         "O01_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+        "O01": "8a98e833608ab52c774e69abbf06d0c7c19c8f210b514743b9611bf5c430a301"
       },
-      "pngSha256": "acaea1c8498ea427545ca3f98ca09a742b113d6693634b46c63de78fa9b4c2f8"
+      "pngSha256": "ea612c5be305e8bf860b0d51ff1dfd84300307b45476c1c2d29c90fba32afff3"
     },
     "pool": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "B01_Snow": "peachwood",
         "B01_ChristmasRed": "darkwood"
@@ -427,10 +659,10 @@
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "c19fc2a33f0d084d04380c0b471b309dcd5bf6b6410031d0862bd71c41d6183f"
+      "pngSha256": "b9710fe17820cc11da5b94f9d04a4cb9e06500c86412d7311037bebb63d1100e"
     },
     "pipe-lt2n": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2NT_Snow": "wood",
         "LT2B_Snow": "darkwood"
@@ -443,10 +675,10 @@
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "9b0da228866ec8b13bbdea5a90a84cb2f1783bf6ff67363e01f7c85a7ea72f05"
+      "pngSha256": "a8578fd16013a708f345a170d3a4fa5aeb4a9491cfea4b283d0c54db2e317d58"
     },
     "seesaw": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SS01_Gold": "peachwood",
         "SS01_PineGreen": "darkwood"
@@ -458,10 +690,10 @@
       "modelSha256": {
         "SS01": "13c26a1397a622d1556396bac3d3975a6ceeea12bf296f0b4176adc7eddab877"
       },
-      "pngSha256": "935b1312673d96c3dd512dedc03eb879767f3130cf355377e3dc5e143a9a9827"
+      "pngSha256": "5640fdb24072f51f61f2f982953f29b335540ed242f59fc2794debe7177a8f14"
     },
     "pipe-tt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT2T_Snow": "wood",
         "TTB_Snow": "darkwood"
@@ -474,10 +706,10 @@
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "290d79dd234f0ec4428f4947ff73bea0d3006a1c33276aeb30779a8cc393e4b7"
+      "pngSha256": "6cd8b8b19bfa1c21b554bc5e114979daa065274aeae22b67996b160e95428fe3"
     },
     "pipe-tt1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT1T_Snow": "wood",
         "TTB_Snow": "darkwood"
@@ -490,12 +722,244 @@
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "423e489f1d440886a69af678c632a2b973746027d10d3aca227779c9659f439c"
+      "pngSha256": "8ebb9f25e88f94a0ab89bf8de7bb009daeac8a1fc07d97ece832418cc7ca5f78"
+    },
+    "stairs-straight-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS11_Snow": "wood"
+      },
+      "materialHexColors": {
+        "RS11_Snow": "#CCAB7A"
+      },
+      "modelSha256": {
+        "RS11": "30a326feb2e3a20b9bf2b038db679aa793bb75f66d028b8ec2b285c94b97194b"
+      },
+      "pngSha256": "d93209783a0f7a7a21294c9e7f786a2040c8773f8b6572bf0317047be081aa9b"
+    },
+    "stairs-right-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS21_Snow": "wood"
+      },
+      "materialHexColors": {
+        "RS21_Snow": "#CCAB7A"
+      },
+      "modelSha256": {
+        "RS21": "2bc4f0e496d43ab52732bc3e13992bc304c75528e41335e8728178f337afa607"
+      },
+      "pngSha256": "9dc8dd8f0e3203e757c42e04aaf3bf2eb2106a6bed6ddb3e25297c82e824f3a7"
+    },
+    "stairs-left-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS31_Snow": "wood"
+      },
+      "materialHexColors": {
+        "RS31_Snow": "#CCAB7A"
+      },
+      "modelSha256": {
+        "RS31": "5694fc87d49258eb08f77ea21ba51571ef00ca63b9f5af20f1bd036dd089c540"
+      },
+      "pngSha256": "375d6538465fc4b62f00a6a384180a23bed3be7d4ee5b01efaa9c60f1fd3204b"
+    },
+    "milk-house-right": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCRB_Snow": "darkwood",
+        "MCRR_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MCRB_Snow": "#654333",
+        "MCRR_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MCRB": "8f94e4aa71fee19d3f91f576b88d06b2a4974f62745f69607cd46919411a9849",
+        "MCRR": "5bf412079ef2b6932e4c1154b7530399fdcdb29f55acb6cfaaa72c6679091a8b"
+      },
+      "pngSha256": "751807506c8481947d1356deb44a8b9a940923af591c05f3d4cf5afc90765f32"
+    },
+    "milk-house-double": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDB_Snow": "darkwood",
+        "MCDR_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MCDB_Snow": "#654333",
+        "MCDR_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MCDB": "6fa171b21da573265f0b8d7b92972fb6b4c13189ddd862a5d59a12e730483ba2",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "78a81df4629e797ead2822bbefd7463f905afe11324de4d1afe74491f34f008a"
+    },
+    "sag-bridge": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "BR01_Sky": "darkwood"
+      },
+      "materialHexColors": {
+        "BR01_Sky": "#654333"
+      },
+      "modelSha256": {
+        "BR01": "f2a07b32c3c37fe81d158afe577a8df4e79f501412a4411613784e16a5b6c8d2"
+      },
+      "pngSha256": "1d53b24f310950a7f043b88ac292ae935c6fcc78406f94d4ebfbe2d41e432664"
+    },
+    "pokemon-center": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "PCW_cyan": "sky",
+        "PCW_dark": "darkwood",
+        "PCW_white": "wood",
+        "PCR_red": "peachwood",
+        "PCR_white": "wood",
+        "PCR_cyan": "sky",
+        "PCR_dark": "darkwood"
+      },
+      "materialHexColors": {
+        "PCW_cyan": "#A6C8DF",
+        "PCW_dark": "#654333",
+        "PCW_white": "#CCAB7A",
+        "PCR_red": "#BE896F",
+        "PCR_white": "#CCAB7A",
+        "PCR_cyan": "#A6C8DF",
+        "PCR_dark": "#654333"
+      },
+      "modelSha256": {
+        "PCW": "986e382f9ed7a0a0704547742229a64a2a0cb4c8b6ba51dd5acc31c64fe3b65e",
+        "PCR": "b7207f8e8a7806907dc58adf6fb1c7b1b07fb5fa753fd30727f480cef3117509"
+      },
+      "pngSha256": "dfedb46e7216f230c72edab98015885dc3c4df4af28584e03ee2e2404c56af80"
+    },
+    "pipe-down": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "DP01_Snow": "wood"
+      },
+      "materialHexColors": {
+        "DP01_Snow": "#CCAB7A"
+      },
+      "modelSha256": {
+        "DP01": "e28559bd8d93acf951465c4ce0a9dd394ab91e42e735f3a53916e234d54f3050"
+      },
+      "pngSha256": "4e71ea6e37926e7d020964f6961ec36ee70cb8143e0ab4809c1fe4004b792e41"
+    },
+    "milk-house-double-2x3": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23B_Snow": "darkwood",
+        "MC23R_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MC23B_Snow": "#654333",
+        "MC23R_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MC23B": "2e8f3d63cb80d43a676272c45c01ca4eb04d31ee68e03672f5063edbbe5789af",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "d5da3f7265e90c72e76275ee1c4815f56253af7674d0a7efc35538be3fc82c69"
+    },
+    "milk-house-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATB_Snow": "darkwood",
+        "MCATR_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MCATB_Snow": "#654333",
+        "MCATR_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MCATB": "2cb77ddb6d665d54015f4d9b7b9f083c8fc2f0fce124c794cc695dceb77f0cc8",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "ac4d66e0743cbc742b0da1e00c3c91fecdac07f15993b2a4d835fac9b25373ba"
+    },
+    "urine-tray-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "UT01_Snow": "wood"
+      },
+      "materialHexColors": {
+        "UT01_Snow": "#CCAB7A"
+      },
+      "modelSha256": {
+        "UT01": "24b85d15e0ae2ac1eab8d9d518b02283035e6f3ea7643342aa7f7cf06dd62a31"
+      },
+      "pngSha256": "087ed9b1503d83f27af02799fde3de8f495142e659f9191c846a16b27d4f9325"
+    },
+    "milk-house-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCLB_Snow": "darkwood",
+        "MCLR_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MCLB_Snow": "#654333",
+        "MCLR_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MCLB": "5070af2cffc4421a6d7ad1d082077dff3bc3fa1ea7833826040e2c062565e10b",
+        "MCLR": "204c815df506aa2be8caee1330691b47d784b0fe3b7d57330b3dcbb2b6a0f995"
+      },
+      "pngSha256": "33bced84f9cf8f5806bac6e6de6091f04b7b41cec4cdb92b4bd022c08a7fab69"
+    },
+    "milk-house-double-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDLB_Snow": "darkwood",
+        "MCDR_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MCDLB_Snow": "#654333",
+        "MCDR_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MCDLB": "2036cb33a36bd11c00a6a64c46e658f2fe881db01c29f8e56608f207f747a2e7",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "688a6fc35a533ac6ced33a4ef63dec9d7e11fe5f3d7a7eef7f88e3f126a412fa"
+    },
+    "milk-house-double-2x3-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23LB_Snow": "darkwood",
+        "MC23R_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MC23LB_Snow": "#654333",
+        "MC23R_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MC23LB": "7c10d5388edf6f76f7353d9511e8deea926a9abe0334b804bcb33eb50860236d",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "c169d5fc08c82ec9bf4f81751bf94dc0ca7a6321f86eeb4839d757688c9d15ed"
+    },
+    "milk-house-aite-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATLB_Snow": "darkwood",
+        "MCATR_Gold": "peachwood"
+      },
+      "materialHexColors": {
+        "MCATLB_Snow": "#654333",
+        "MCATR_Gold": "#BE896F"
+      },
+      "modelSha256": {
+        "MCATLB": "a331a9ddee896c3696a8231e076011745d49cd0eee40c9e4aaa6cef9ba89c865",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "a574f83d7da551f87a7fb858675689a235ad313c324164a2459353ad541e2e3d"
     }
   },
   "strawberry": {
     "villa": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "A01_PineGreen": "rose",
         "A01_Gold": "white",
@@ -523,8 +987,8 @@
         "W02_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
-        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "A01": "a72e3b41f7eb4fae45d593f93ff3e177cd17467a63faf2a14f60c5199614f758",
+        "A02": "9ee098378f7db18c64aac8b7c932b37e0986a8db3c5de6a946477287f60f3de1",
         "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
         "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
         "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
@@ -532,42 +996,42 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "5cefc993404da2b37341033bad5734ab427ed3ec12cdcab7487a2e0ef10d8634"
+      "pngSha256": "ad459112210afaeac0cbc3a6becb3fd0eb9cad341ca6b722a02399c9d4cc16ea"
     },
     "l-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LHB_PineGreen": "rose",
-        "LHR_Gold": "cream"
+        "LHR_Snow": "cream"
       },
       "materialHexColors": {
         "LHB_PineGreen": "#E9AEBC",
-        "LHR_Gold": "#FEF1DB"
+        "LHR_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
-        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+        "LHB": "50dd9521c984de5f8e2daf6e915a6b03d9887801e1e883db95c7ebb12e79c2ca",
+        "LHR": "91d2dccbfe4497564b0531a7c255a005883f055b46476512116e71ee28fdabcc"
       },
-      "pngSha256": "3d942a2d675af97626b6d2081bfbae360f953e6263628879c7f7de7dd4a15ae3"
+      "pngSha256": "1d603a01c5ce9065e103563a1a7f954b3e006d714e289f76875e6343b6cc59ca"
     },
     "cube-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SHB_PineGreen": "rose",
-        "SHR_Gold": "cream"
+        "SHR_Snow": "cream"
       },
       "materialHexColors": {
         "SHB_PineGreen": "#E9AEBC",
-        "SHR_Gold": "#FEF1DB"
+        "SHR_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
-        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+        "SHB": "12173775b31452a0b998484ad28c2861d67cf98432e08c0358fc0fbe9dc6ae35",
+        "SHR": "a12165dc903633633743f57ed93a123882627225ae2ca426520a25ae14168478"
       },
-      "pngSha256": "5f76a9f95f29f2f94f36d1a179fc75442252e4770706e266d64ced9dd3e4a35a"
+      "pngSha256": "0cd177f0cb786dd9a34113fd6474c99b018e6720d670587a3117474d760413af"
     },
     "roof-cottage": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G03_ChristmasRed": "red",
         "G03_Snow": "cream",
@@ -581,10 +1045,10 @@
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "9a28ec03db36a431a6a7884662378579fbef0e0038ec0a747b62cefd778e8713"
+      "pngSha256": "4582dc925ed2f8ab63fdd8cc2d67db5359f35a1d7908590e6bd63a35b9eb8095"
     },
     "pipe-st1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST1T_Snow": "cream",
         "ST1B_Snow": "rose"
@@ -597,10 +1061,10 @@
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "15331e088cd05d250e29fe6bc36c9bf7ef78dbb76531812a005c73fc94adb3b5"
+      "pngSha256": "38f681dfee36f51c8894e97dbbab00a75499878f6333a49dc3f4f2573d14ef64"
     },
     "pipe-st2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST2T_Snow": "cream",
         "ST2B_Snow": "rose"
@@ -613,10 +1077,10 @@
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "b2b083b3ab759fc3e2e570bb9246c3a50c3c3d277b9fba3a68fe188befbcd852"
+      "pngSha256": "82bc53a35836bf26a244e4ec5df00870879b74de6a35efa5643e13a1dc885209"
     },
     "pipe-lt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2T_Snow": "cream",
         "LT2B_Snow": "rose"
@@ -629,10 +1093,10 @@
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "f6b828c089037460a0430e6d093639cae34148f8c8c9165766e969d87ad5ed56"
+      "pngSha256": "82d2dad32b3175c84294892863fa18914a0eb273c8461e052567c00f4922f070"
     },
     "planter": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G06_ChristmasRed": "red",
         "G06_Snow": "cream"
@@ -644,10 +1108,10 @@
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "809f95bfdd87bc5d06f4603942e7f75c25bdb96da197d543267c338be6dc4452"
+      "pngSha256": "bab1cd8269c0dbea5282c533a001c483f00086c40fbc5ef56fa46dd30005c268"
     },
     "food-bowl": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "O01_ChristmasRed": "red",
         "O01_Snow": "cream"
@@ -657,12 +1121,12 @@
         "O01_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+        "O01": "8a98e833608ab52c774e69abbf06d0c7c19c8f210b514743b9611bf5c430a301"
       },
-      "pngSha256": "1a048864a5dcd2634c593bc1febf99bfbe85b3920a0801de2bc82eca346ac035"
+      "pngSha256": "a32ca3af4087a913ae67c9e3f802edf6afad884cb59d81a7fd9110157b36adb4"
     },
     "pool": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "B01_Snow": "rose",
         "B01_ChristmasRed": "white"
@@ -674,10 +1138,10 @@
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "5a240df47d085074a05d68cf3d75163567092ad73cab12ac44c90c354252b95c"
+      "pngSha256": "33ef8b75d1fe8a1bb6f64b2411c79713b4d16816726a2b57e17dbcfd6fad8d40"
     },
     "pipe-lt2n": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2NT_Snow": "cream",
         "LT2B_Snow": "rose"
@@ -690,10 +1154,10 @@
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "b15d9f5cceb18988ac03a059c2bd984a4c7f90b8f24ac52e66bcaef485004992"
+      "pngSha256": "f7f303b862fb14bf1b02cb9a4b9b917bd52f1a6d8b23f9d4ff0fc9c30883a8a5"
     },
     "seesaw": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SS01_Gold": "yellow",
         "SS01_PineGreen": "rose"
@@ -705,10 +1169,10 @@
       "modelSha256": {
         "SS01": "13c26a1397a622d1556396bac3d3975a6ceeea12bf296f0b4176adc7eddab877"
       },
-      "pngSha256": "36cd1764fe60805171bc447a8b3b5b09b1738c95e420c5e69fc0485d31ae6463"
+      "pngSha256": "8129ba5db7daad4731a0fef89b1d783d847bf73627812f6c117cc19aa45fde9c"
     },
     "pipe-tt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT2T_Snow": "cream",
         "TTB_Snow": "rose"
@@ -721,10 +1185,10 @@
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "321733fb80b872fb6332b10c114332189d642d53bd4c6d06d969cfebe9fe6a28"
+      "pngSha256": "fc23086e5bba4c6b9e87ba613b9d553c4c19eac684b0c3ee123fb352c5175609"
     },
     "pipe-tt1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT1T_Snow": "cream",
         "TTB_Snow": "rose"
@@ -737,12 +1201,244 @@
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "963b70a48cf18d3a4cbc58bdda12a100ba16dc43097e77a9e0740afee15a02ed"
+      "pngSha256": "59d6a395a34f78198940ac9a603d392efca3d1951f0e74bfdb6d9d817ba6f83b"
+    },
+    "stairs-straight-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS11_Snow": "cream"
+      },
+      "materialHexColors": {
+        "RS11_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "RS11": "30a326feb2e3a20b9bf2b038db679aa793bb75f66d028b8ec2b285c94b97194b"
+      },
+      "pngSha256": "c8e869e69e6fd5f25a8fc5c4f5fa4ea05b8c6cd0389ec1fd23cda5cf6820d565"
+    },
+    "stairs-right-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS21_Snow": "cream"
+      },
+      "materialHexColors": {
+        "RS21_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "RS21": "2bc4f0e496d43ab52732bc3e13992bc304c75528e41335e8728178f337afa607"
+      },
+      "pngSha256": "69cab66f57b8a2c134d0e7dd310d9b220779785818f40cae9b423749d76eac03"
+    },
+    "stairs-left-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS31_Snow": "cream"
+      },
+      "materialHexColors": {
+        "RS31_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "RS31": "5694fc87d49258eb08f77ea21ba51571ef00ca63b9f5af20f1bd036dd089c540"
+      },
+      "pngSha256": "5d6e0251c84b7054c288066b8f0cb23b85b6dc31a7475f4ed43d4a3ffd4840cc"
+    },
+    "milk-house-right": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCRB_Snow": "rose",
+        "MCRR_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MCRB_Snow": "#E9AEBC",
+        "MCRR_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MCRB": "8f94e4aa71fee19d3f91f576b88d06b2a4974f62745f69607cd46919411a9849",
+        "MCRR": "5bf412079ef2b6932e4c1154b7530399fdcdb29f55acb6cfaaa72c6679091a8b"
+      },
+      "pngSha256": "c4afb3c82d5075ab61cee1af5cee215d960052104fd009dbb8f8d64f6fb20ead"
+    },
+    "milk-house-double": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDB_Snow": "rose",
+        "MCDR_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MCDB_Snow": "#E9AEBC",
+        "MCDR_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MCDB": "6fa171b21da573265f0b8d7b92972fb6b4c13189ddd862a5d59a12e730483ba2",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "7f39adfec7a8beaf6288acd5175c76b081100cf9e7cf7b4e0d2ce6a0d8b5617e"
+    },
+    "sag-bridge": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "BR01_Sky": "rose"
+      },
+      "materialHexColors": {
+        "BR01_Sky": "#E9AEBC"
+      },
+      "modelSha256": {
+        "BR01": "f2a07b32c3c37fe81d158afe577a8df4e79f501412a4411613784e16a5b6c8d2"
+      },
+      "pngSha256": "5145d37abbd911d90a6d54eaa80194502cba1fabb8cb8f8968b80428bf61438d"
+    },
+    "pokemon-center": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "PCW_cyan": "sky",
+        "PCW_dark": "gray",
+        "PCW_white": "cream",
+        "PCR_red": "red",
+        "PCR_white": "cream",
+        "PCR_cyan": "sky",
+        "PCR_dark": "gray"
+      },
+      "materialHexColors": {
+        "PCW_cyan": "#A6C8DF",
+        "PCW_dark": "#A4ABA9",
+        "PCW_white": "#FEF1DB",
+        "PCR_red": "#B8273C",
+        "PCR_white": "#FEF1DB",
+        "PCR_cyan": "#A6C8DF",
+        "PCR_dark": "#A4ABA9"
+      },
+      "modelSha256": {
+        "PCW": "986e382f9ed7a0a0704547742229a64a2a0cb4c8b6ba51dd5acc31c64fe3b65e",
+        "PCR": "b7207f8e8a7806907dc58adf6fb1c7b1b07fb5fa753fd30727f480cef3117509"
+      },
+      "pngSha256": "411dfb1e0c7f0ea783d8cef19f142ac6b1778ae9d917676310830199c6f78b70"
+    },
+    "pipe-down": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "DP01_Snow": "cream"
+      },
+      "materialHexColors": {
+        "DP01_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "DP01": "e28559bd8d93acf951465c4ce0a9dd394ab91e42e735f3a53916e234d54f3050"
+      },
+      "pngSha256": "d4766407b4e06282dc1a386c136a9d4b7b803223547a9d9a9a3e592f5d96a366"
+    },
+    "milk-house-double-2x3": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23B_Snow": "rose",
+        "MC23R_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MC23B_Snow": "#E9AEBC",
+        "MC23R_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MC23B": "2e8f3d63cb80d43a676272c45c01ca4eb04d31ee68e03672f5063edbbe5789af",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "5bc71e5743ecc47ed6373763be4e5dcf9e1e9cd9804fe6c83b35a55f64ef9023"
+    },
+    "milk-house-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATB_Snow": "rose",
+        "MCATR_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MCATB_Snow": "#E9AEBC",
+        "MCATR_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MCATB": "2cb77ddb6d665d54015f4d9b7b9f083c8fc2f0fce124c794cc695dceb77f0cc8",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "845dcf70ffc47a5d22b42d0f4f0a3441b478a48d600bbc13dbe3da1bf92764d1"
+    },
+    "urine-tray-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "UT01_Snow": "cream"
+      },
+      "materialHexColors": {
+        "UT01_Snow": "#FEF1DB"
+      },
+      "modelSha256": {
+        "UT01": "24b85d15e0ae2ac1eab8d9d518b02283035e6f3ea7643342aa7f7cf06dd62a31"
+      },
+      "pngSha256": "110ae060f77a1b2a636b0c2f58cafe6c14b52568feae29ceebd1f7d4e3d9e3eb"
+    },
+    "milk-house-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCLB_Snow": "rose",
+        "MCLR_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MCLB_Snow": "#E9AEBC",
+        "MCLR_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MCLB": "5070af2cffc4421a6d7ad1d082077dff3bc3fa1ea7833826040e2c062565e10b",
+        "MCLR": "204c815df506aa2be8caee1330691b47d784b0fe3b7d57330b3dcbb2b6a0f995"
+      },
+      "pngSha256": "e3ee5490f82d9250524bebedd414713a21920ae6944c4b6af4cda458265c41e9"
+    },
+    "milk-house-double-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDLB_Snow": "rose",
+        "MCDR_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MCDLB_Snow": "#E9AEBC",
+        "MCDR_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MCDLB": "2036cb33a36bd11c00a6a64c46e658f2fe881db01c29f8e56608f207f747a2e7",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "6bfb46ed0b1972dd15c547fe73a87948efb72e76779a66b49eee6231639ba0c2"
+    },
+    "milk-house-double-2x3-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23LB_Snow": "rose",
+        "MC23R_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MC23LB_Snow": "#E9AEBC",
+        "MC23R_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MC23LB": "7c10d5388edf6f76f7353d9511e8deea926a9abe0334b804bcb33eb50860236d",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "20b5142f7840a67f2bd7688b272288aaeddfe40ff8e6493cadcdd99c200e06b4"
+    },
+    "milk-house-aite-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATLB_Snow": "rose",
+        "MCATR_Gold": "cream"
+      },
+      "materialHexColors": {
+        "MCATLB_Snow": "#E9AEBC",
+        "MCATR_Gold": "#FEF1DB"
+      },
+      "modelSha256": {
+        "MCATLB": "a331a9ddee896c3696a8231e076011745d49cd0eee40c9e4aaa6cef9ba89c865",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "28bfaef42e64d234ae6ff9eaa5463bd3dd85a040595146b9e6bc282437bee1ce"
     }
   },
   "sky": {
     "villa": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "A01_PineGreen": "sky",
         "A01_Gold": "cream",
@@ -770,8 +1466,8 @@
         "W02_Snow": "#FAFAF7"
       },
       "modelSha256": {
-        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
-        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "A01": "a72e3b41f7eb4fae45d593f93ff3e177cd17467a63faf2a14f60c5199614f758",
+        "A02": "9ee098378f7db18c64aac8b7c932b37e0986a8db3c5de6a946477287f60f3de1",
         "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
         "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
         "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
@@ -779,42 +1475,42 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "fdf614b4ef5ee3b68557669c8458c4c80e6fd6b58b89974763f8d1e418dd8afb"
+      "pngSha256": "c375a3e49ad6a066c21f0fa0e628f825836e06ecf83b7701acf681aa614a018e"
     },
     "l-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LHB_PineGreen": "sky",
-        "LHR_Gold": "white"
+        "LHR_Snow": "white"
       },
       "materialHexColors": {
         "LHB_PineGreen": "#A6C8DF",
-        "LHR_Gold": "#FAFAF7"
+        "LHR_Snow": "#FAFAF7"
       },
       "modelSha256": {
-        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
-        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+        "LHB": "50dd9521c984de5f8e2daf6e915a6b03d9887801e1e883db95c7ebb12e79c2ca",
+        "LHR": "91d2dccbfe4497564b0531a7c255a005883f055b46476512116e71ee28fdabcc"
       },
-      "pngSha256": "518293783fbf535072f734aafa81c9a48e6117c7b98a833c72c39e81ddbcc88d"
+      "pngSha256": "d1dc47fe33eef1fe0acd07f18148f15de29fc04981f954e85e63cba239006ff7"
     },
     "cube-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SHB_PineGreen": "sky",
-        "SHR_Gold": "white"
+        "SHR_Snow": "white"
       },
       "materialHexColors": {
         "SHB_PineGreen": "#A6C8DF",
-        "SHR_Gold": "#FAFAF7"
+        "SHR_Snow": "#FAFAF7"
       },
       "modelSha256": {
-        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
-        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+        "SHB": "12173775b31452a0b998484ad28c2861d67cf98432e08c0358fc0fbe9dc6ae35",
+        "SHR": "a12165dc903633633743f57ed93a123882627225ae2ca426520a25ae14168478"
       },
-      "pngSha256": "2ffd49aeeca039775db3b06b1a9a3a7f9d340764948fecaf3dcb7aae9b578fcb"
+      "pngSha256": "bd65a5b20d563ef46a3dd06508e9bfaac0a57fe8a29cfc02e4b1421efbbc0fe3"
     },
     "roof-cottage": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G03_ChristmasRed": "sky",
         "G03_Snow": "white",
@@ -828,10 +1524,10 @@
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "0a722ae5cdbc643f72948a2136b649162dd45c0c43e296f5cb1e15fc4820ff6c"
+      "pngSha256": "05810775ef40df2fa0fe3bba7171ff73f92ea7e3c4ccd3e4b7f875ec7a78a0ec"
     },
     "pipe-st1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST1T_Snow": "white",
         "ST1B_Snow": "sky"
@@ -844,10 +1540,10 @@
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "c1e64f7a8c1e5dc66b5994e3ee747cc86e7f6e36823917fe02b9d0b51ef775b7"
+      "pngSha256": "efc7a72c4d24477f119c91f6385746347c026825abdb16dcb02f61e0d97e4d51"
     },
     "pipe-st2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST2T_Snow": "white",
         "ST2B_Snow": "sky"
@@ -860,10 +1556,10 @@
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "d9d4876f591693746757820eb3f2969062990257c543ce11469c227986720fa6"
+      "pngSha256": "1d4dc2088644fecb313e87d38aa343ef191bbd3d438431c9d6dc0c034be111e3"
     },
     "pipe-lt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2T_Snow": "white",
         "LT2B_Snow": "sky"
@@ -876,10 +1572,10 @@
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "4a1cf3a576f1efbd91abd715842d4a137809ee516c63609e5dedd9f392adeca4"
+      "pngSha256": "598467604b0cd4ef78510d5f27f4192b01a079ce3267d31a2b06c2dd1964a18e"
     },
     "planter": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G06_ChristmasRed": "yellow",
         "G06_Snow": "cream"
@@ -891,10 +1587,10 @@
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "91d7f07f35f5587b0357b330ddd8801d6261445c287eddb9683cdcfbec070bc8"
+      "pngSha256": "fc3f8e0f2bd4575f7629e9987082cec18f6df02fba94f9f155a18861f025ebe5"
     },
     "food-bowl": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "O01_ChristmasRed": "yellow",
         "O01_Snow": "cream"
@@ -904,12 +1600,12 @@
         "O01_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+        "O01": "8a98e833608ab52c774e69abbf06d0c7c19c8f210b514743b9611bf5c430a301"
       },
-      "pngSha256": "d73df0ab3e3801493edc9b2afba24dd081bb86dd6f1ce243702811cf47cb3cf1"
+      "pngSha256": "eeed38dc1e0cee7042dd4865e25788812e4dd506b1fbc38d4addc2146aff9683"
     },
     "pool": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "B01_Snow": "sky",
         "B01_ChristmasRed": "yellow"
@@ -921,10 +1617,10 @@
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "c8a97cf7f8da72ce74239c16756ec3d85ea7e2920db51bb135bdbbfdc0d4161b"
+      "pngSha256": "aff4a9b3ac8bb516409e356a857f2ad28db8708629472d0b0353ced9ff46a42e"
     },
     "pipe-lt2n": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2NT_Snow": "white",
         "LT2B_Snow": "sky"
@@ -937,10 +1633,10 @@
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "c533573c0a62719f8cb887a7fc5c72923ba6224ed114b91b81a1c965eefa8349"
+      "pngSha256": "25acb2ed6f51ef8c63da841aded57501f15319e7186146ad87dea23da58e2890"
     },
     "seesaw": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SS01_Gold": "yellow",
         "SS01_PineGreen": "sky"
@@ -952,10 +1648,10 @@
       "modelSha256": {
         "SS01": "13c26a1397a622d1556396bac3d3975a6ceeea12bf296f0b4176adc7eddab877"
       },
-      "pngSha256": "a2c7fdeba7c590ad9f42b28ac4889b1f09e2d57fadbf7d8451163f1267af78f7"
+      "pngSha256": "180d80cfe30f838cb632d66ae3f489e836dd5b4eaca1ebce17a950e54f4d408a"
     },
     "pipe-tt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT2T_Snow": "white",
         "TTB_Snow": "sky"
@@ -968,10 +1664,10 @@
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "7477adff5296c38433377bbb3c13d19b6a30d85a932dfb2d0bcdff37fd556c5f"
+      "pngSha256": "f586a852878bc8c93cee218abe816433218db4d32412d34727317b52a2ccf0e0"
     },
     "pipe-tt1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT1T_Snow": "white",
         "TTB_Snow": "sky"
@@ -984,12 +1680,244 @@
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "d5a464b4da84da911b04b960fbc2cb27bcd26315485a5170df39b8db385a4524"
+      "pngSha256": "2c7976c875976b205dc61246af3301f1f1b29a02bfeb7f3eee347351e0472bfa"
+    },
+    "stairs-straight-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS11_Snow": "white"
+      },
+      "materialHexColors": {
+        "RS11_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "RS11": "30a326feb2e3a20b9bf2b038db679aa793bb75f66d028b8ec2b285c94b97194b"
+      },
+      "pngSha256": "fdeff97acffaa6c69bedfb0f4be72e675c5a3b8201ff9e4212e938b50a57c9d8"
+    },
+    "stairs-right-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS21_Snow": "white"
+      },
+      "materialHexColors": {
+        "RS21_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "RS21": "2bc4f0e496d43ab52732bc3e13992bc304c75528e41335e8728178f337afa607"
+      },
+      "pngSha256": "5f140d331313d049cce417ec1ce16d57aa05662b82b83a6927944f0024b4ead1"
+    },
+    "stairs-left-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS31_Snow": "white"
+      },
+      "materialHexColors": {
+        "RS31_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "RS31": "5694fc87d49258eb08f77ea21ba51571ef00ca63b9f5af20f1bd036dd089c540"
+      },
+      "pngSha256": "dc26c17d96cc6dfea996f62ba35ab5360c6097d151eb6329a821e23b994243dd"
+    },
+    "milk-house-right": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCRB_Snow": "sky",
+        "MCRR_Gold": "white"
+      },
+      "materialHexColors": {
+        "MCRB_Snow": "#A6C8DF",
+        "MCRR_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MCRB": "8f94e4aa71fee19d3f91f576b88d06b2a4974f62745f69607cd46919411a9849",
+        "MCRR": "5bf412079ef2b6932e4c1154b7530399fdcdb29f55acb6cfaaa72c6679091a8b"
+      },
+      "pngSha256": "05e4d621a4a50ecd392bd5da7bed31cb057d9c16492b20f3095b178891d0de26"
+    },
+    "milk-house-double": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDB_Snow": "sky",
+        "MCDR_Gold": "white"
+      },
+      "materialHexColors": {
+        "MCDB_Snow": "#A6C8DF",
+        "MCDR_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MCDB": "6fa171b21da573265f0b8d7b92972fb6b4c13189ddd862a5d59a12e730483ba2",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "c766582cd51847eda480a0aeb7d4323b78cdc9320764afdae0debc53e7ef5d22"
+    },
+    "sag-bridge": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "BR01_Sky": "sky"
+      },
+      "materialHexColors": {
+        "BR01_Sky": "#A6C8DF"
+      },
+      "modelSha256": {
+        "BR01": "f2a07b32c3c37fe81d158afe577a8df4e79f501412a4411613784e16a5b6c8d2"
+      },
+      "pngSha256": "a64bac68beaa4359b4df894d0381a134272619b56ea0e1fe88c7ece4957865b9"
+    },
+    "pokemon-center": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "PCW_cyan": "sky",
+        "PCW_dark": "gray",
+        "PCW_white": "white",
+        "PCR_red": "yellow",
+        "PCR_white": "white",
+        "PCR_cyan": "sky",
+        "PCR_dark": "gray"
+      },
+      "materialHexColors": {
+        "PCW_cyan": "#A6C8DF",
+        "PCW_dark": "#A4ABA9",
+        "PCW_white": "#FAFAF7",
+        "PCR_red": "#F3B34E",
+        "PCR_white": "#FAFAF7",
+        "PCR_cyan": "#A6C8DF",
+        "PCR_dark": "#A4ABA9"
+      },
+      "modelSha256": {
+        "PCW": "986e382f9ed7a0a0704547742229a64a2a0cb4c8b6ba51dd5acc31c64fe3b65e",
+        "PCR": "b7207f8e8a7806907dc58adf6fb1c7b1b07fb5fa753fd30727f480cef3117509"
+      },
+      "pngSha256": "88000b7b3df1d1bb8a3503f5f885c9521c988afb1cef86c28e5a0974c1363341"
+    },
+    "pipe-down": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "DP01_Snow": "white"
+      },
+      "materialHexColors": {
+        "DP01_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "DP01": "e28559bd8d93acf951465c4ce0a9dd394ab91e42e735f3a53916e234d54f3050"
+      },
+      "pngSha256": "5f2c529c881a1845fd584c2cd2f652ab99d96d4e3e972860399508d0447fa907"
+    },
+    "milk-house-double-2x3": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23B_Snow": "sky",
+        "MC23R_Gold": "white"
+      },
+      "materialHexColors": {
+        "MC23B_Snow": "#A6C8DF",
+        "MC23R_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MC23B": "2e8f3d63cb80d43a676272c45c01ca4eb04d31ee68e03672f5063edbbe5789af",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "6c5fca7354ceec85da49256655445a0680779405ff0b5ff7b61a69cef89c892f"
+    },
+    "milk-house-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATB_Snow": "sky",
+        "MCATR_Gold": "white"
+      },
+      "materialHexColors": {
+        "MCATB_Snow": "#A6C8DF",
+        "MCATR_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MCATB": "2cb77ddb6d665d54015f4d9b7b9f083c8fc2f0fce124c794cc695dceb77f0cc8",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "419e2b5b00136316093bc3082cc4813fd1b33c8cd4394de8aec0abefa2d46539"
+    },
+    "urine-tray-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "UT01_Snow": "white"
+      },
+      "materialHexColors": {
+        "UT01_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "UT01": "24b85d15e0ae2ac1eab8d9d518b02283035e6f3ea7643342aa7f7cf06dd62a31"
+      },
+      "pngSha256": "21c1e4f8111f9c67ebfd3680ff37a4c28e77f581891392625168c1f21abb215c"
+    },
+    "milk-house-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCLB_Snow": "sky",
+        "MCLR_Gold": "white"
+      },
+      "materialHexColors": {
+        "MCLB_Snow": "#A6C8DF",
+        "MCLR_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MCLB": "5070af2cffc4421a6d7ad1d082077dff3bc3fa1ea7833826040e2c062565e10b",
+        "MCLR": "204c815df506aa2be8caee1330691b47d784b0fe3b7d57330b3dcbb2b6a0f995"
+      },
+      "pngSha256": "6c2cac0677e6b308120a4a5b390863587565f6ebdfa99d9c7f1c9a70787db54b"
+    },
+    "milk-house-double-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDLB_Snow": "sky",
+        "MCDR_Gold": "white"
+      },
+      "materialHexColors": {
+        "MCDLB_Snow": "#A6C8DF",
+        "MCDR_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MCDLB": "2036cb33a36bd11c00a6a64c46e658f2fe881db01c29f8e56608f207f747a2e7",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "d80b2a065f97d20ece66f79693d3d81598b6357e9b06a8522e60075a4501a761"
+    },
+    "milk-house-double-2x3-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23LB_Snow": "sky",
+        "MC23R_Gold": "white"
+      },
+      "materialHexColors": {
+        "MC23LB_Snow": "#A6C8DF",
+        "MC23R_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MC23LB": "7c10d5388edf6f76f7353d9511e8deea926a9abe0334b804bcb33eb50860236d",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "5b2425ed5210c29752c86d2acc249d6b85a332fc115023793cde2988c79c1ab6"
+    },
+    "milk-house-aite-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATLB_Snow": "sky",
+        "MCATR_Gold": "white"
+      },
+      "materialHexColors": {
+        "MCATLB_Snow": "#A6C8DF",
+        "MCATR_Gold": "#FAFAF7"
+      },
+      "modelSha256": {
+        "MCATLB": "a331a9ddee896c3696a8231e076011745d49cd0eee40c9e4aaa6cef9ba89c865",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "4b41b4d2df961579bd5a8c147737a990bfabadbd93cc21600cbac88e20ebccae"
     }
   },
   "jade-garden": {
     "villa": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "A01_PineGreen": "jade",
         "A01_Gold": "white",
@@ -1017,8 +1945,8 @@
         "W02_Snow": "#FAFAF7"
       },
       "modelSha256": {
-        "A01": "83afa899ab21c0152b636ee495d56cf985f0baae462b3802be1083229454cfdb",
-        "A02": "9ac43842b4329194d5eb0fc5db3810470409ce19e4a1818cade0d472c7c92ec8",
+        "A01": "a72e3b41f7eb4fae45d593f93ff3e177cd17467a63faf2a14f60c5199614f758",
+        "A02": "9ee098378f7db18c64aac8b7c932b37e0986a8db3c5de6a946477287f60f3de1",
         "G05": "2f6ce52fb5537de354d120928028bce0ec227a4355b4225478bccbbe0826476a",
         "G15": "4436f7f7d6045cda7a3428e6bb9a2cd33eb235c50f27c38c3e12e7e320b0eedd",
         "G16": "a9b4f3b9e44ccee22438f6255d1eede99dbf22896ef8abfb954695231b90c57c",
@@ -1026,42 +1954,42 @@
         "W01": "287a69cfa89909ba1b7ef42f5eba1da397980fefa2ca7d56073107097f4037c7",
         "W02": "3d66333233c2e7ce884ecce5b406a65c13599016e79693e99c2d6630dc6a2149"
       },
-      "pngSha256": "22607153c5b095af2b4a810cb76b7e216c40d0bad4fb09422478f5c83e59c422"
+      "pngSha256": "c2f364b6647b42749c31c90c9a49fea3ae765da6bee0610c9b42b8bb14d246de"
     },
     "l-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LHB_PineGreen": "jade",
-        "LHR_Gold": "rose"
+        "LHR_Snow": "rose"
       },
       "materialHexColors": {
         "LHB_PineGreen": "#299C82",
-        "LHR_Gold": "#E9AEBC"
+        "LHR_Snow": "#E9AEBC"
       },
       "modelSha256": {
-        "LHB": "f5dc119f24fc2ebb66f8b48abac2d01726ccacc3dd2992ff0f68586ed32c4ee5",
-        "LHR": "8644d31dfe73a8d8a1f3d15681d0bc03355000bb2e67a0c44c5021344c493c28"
+        "LHB": "50dd9521c984de5f8e2daf6e915a6b03d9887801e1e883db95c7ebb12e79c2ca",
+        "LHR": "91d2dccbfe4497564b0531a7c255a005883f055b46476512116e71ee28fdabcc"
       },
-      "pngSha256": "b3b3581167d352925314a8bf28a96ad98e53f7168cac6a293a1708c488f3b32a"
+      "pngSha256": "a6199d51ab8f98363b0a34f9612ab2ff14a4e7c9887db4d1d2f9e4005257c198"
     },
     "cube-house": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SHB_PineGreen": "jade",
-        "SHR_Gold": "rose"
+        "SHR_Snow": "rose"
       },
       "materialHexColors": {
         "SHB_PineGreen": "#299C82",
-        "SHR_Gold": "#E9AEBC"
+        "SHR_Snow": "#E9AEBC"
       },
       "modelSha256": {
-        "SHB": "b5c9662cd893e20be00545d787f47efcd40958978ed3faf0e3a0ffb214120883",
-        "SHR": "f7900b47777f9e86387fec507e8212cbeafa8d9905a90c5498b629af33c6d036"
+        "SHB": "12173775b31452a0b998484ad28c2861d67cf98432e08c0358fc0fbe9dc6ae35",
+        "SHR": "a12165dc903633633743f57ed93a123882627225ae2ca426520a25ae14168478"
       },
-      "pngSha256": "770492015dcd8184b9ce07f4cc442602067ecd7d108fbe3c90074cf580804d1a"
+      "pngSha256": "0e317ab5b19166ff1af1af836ac867a538e709587d8fe287f2cbb7b6cd9d108b"
     },
     "roof-cottage": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G03_ChristmasRed": "jade",
         "G03_Snow": "white",
@@ -1075,10 +2003,10 @@
       "modelSha256": {
         "G03": "8aa2f27d3bcea0cd7bf9ca60385888fa9c8301c1bfa7aa10ea7499d4b8a3963d"
       },
-      "pngSha256": "90dfffdc4b2b546fa47d12f82dba6f92eb4c306d24a9885960c0af1fe4fbe9f8"
+      "pngSha256": "c6ac5f9ca21840f1ca7e352bca6e59b76fa2d882d726ec953b75f08c3b0ef38d"
     },
     "pipe-st1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST1T_Snow": "white",
         "ST1B_Snow": "jade"
@@ -1091,10 +2019,10 @@
         "ST1T": "965cb04b68cafd7ce493c725a3762e7b94e56321fb0fe4171d4529b9de6bde34",
         "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
       },
-      "pngSha256": "5c29e10eb53de099fe2df881c7d3601e5063d3490d5da320fe8ceb319577f2a0"
+      "pngSha256": "0e7cc2d2d51ae54d0000b59e190a4147e764db51685e454944d911bf379c3c72"
     },
     "pipe-st2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "ST2T_Snow": "white",
         "ST2B_Snow": "jade"
@@ -1107,10 +2035,10 @@
         "ST2T": "7b170068bdf4f7f4a40bee216074ea97805a6fe2de5788b6099b7426750ea320",
         "ST2B": "d406ee3389354a42a257a34af2cbf129a73bc0aae3b273d48b20a38fd76647e0"
       },
-      "pngSha256": "49d9f63cbc937c0f9c47e171b0962207901359a4b4c8747ae3a921772c2840ee"
+      "pngSha256": "546d8173a77fac823b2c1cef045b346a2e096c60d328c16e1add807b93478f25"
     },
     "pipe-lt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2T_Snow": "white",
         "LT2B_Snow": "jade"
@@ -1123,10 +2051,10 @@
         "LT2T": "3210a180a83637e84ad6464c587ff1b94af4c187f4deee0b24df563754faccea",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "1a3deee51b9ef9c4cc264ba443fb6abec5ae629343ec354d1746cf8ac9b002d2"
+      "pngSha256": "e7f4a8f7ee37c660ee08b156d713cab0c2a4fa009a5ee583af2cb6a5b4799019"
     },
     "planter": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "G06_ChristmasRed": "rose",
         "G06_Snow": "cream"
@@ -1138,10 +2066,10 @@
       "modelSha256": {
         "G06": "bbb316ba614bfff31692d1178d3941466fd0e2f4590cd87b6b77da63a0eb676b"
       },
-      "pngSha256": "f0487ae3838fbaa905a9906aaebae86f961d29fbd014f190c27d3ac33361b600"
+      "pngSha256": "895675cfc69cc1edfd977aa999016182ec19d68039dc4622ea7537cf3aef23a7"
     },
     "food-bowl": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "O01_ChristmasRed": "rose",
         "O01_Snow": "cream"
@@ -1151,12 +2079,12 @@
         "O01_Snow": "#FEF1DB"
       },
       "modelSha256": {
-        "O01": "f0d330649e2ed8e92d63af40611634a165255cf026f80c534151ada8617b1e91"
+        "O01": "8a98e833608ab52c774e69abbf06d0c7c19c8f210b514743b9611bf5c430a301"
       },
-      "pngSha256": "eee3f806ecd4d9e87bd086068c5f6524d629a4383536be48f887315e828d14d5"
+      "pngSha256": "884e087134eed863a20a205c7c98fa7b612b3008e0ae4a7fbec70fb71f233e8a"
     },
     "pool": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "B01_Snow": "jade",
         "B01_ChristmasRed": "rose"
@@ -1168,10 +2096,10 @@
       "modelSha256": {
         "B01": "3d7d260002590f193b3547c2babf70bf62155efc32fb5c5a54ecab9ac8e97922"
       },
-      "pngSha256": "42be8c0c9deecd72e2da26c260395870b6744d093e1c74d59f0dfc5ae8b889ae"
+      "pngSha256": "52685d4879dd9a34d9117e9c7330ddc8f6c6d81e2c31180a2142badde552e09a"
     },
     "pipe-lt2n": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "LT2NT_Snow": "white",
         "LT2B_Snow": "jade"
@@ -1184,10 +2112,10 @@
         "LT2NT": "60f9d0f411a0944801fbba866dcd66d9c983a5bd475ba432916da71577f3f39e",
         "LT2B": "98283cb7538e86cdc14c6d89ec31cb43675a07ede640b282b633fac26f4e1b46"
       },
-      "pngSha256": "ee9286656833d9c178418a8e5e47afa6faed2691ef32928096109015ed1dbdd7"
+      "pngSha256": "a95267153a5465183a04946e9570f921545bca6ccb355c8dabc1872fa9f466bb"
     },
     "seesaw": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "SS01_Gold": "yellow",
         "SS01_PineGreen": "jade"
@@ -1199,10 +2127,10 @@
       "modelSha256": {
         "SS01": "13c26a1397a622d1556396bac3d3975a6ceeea12bf296f0b4176adc7eddab877"
       },
-      "pngSha256": "0d978be4550cf333f07cad7ef519f3827aadf7df7c25825a6e8ab642429f7f01"
+      "pngSha256": "db93500745b79dc4cc537b8252f465bb9d3d07615e9c27c8f8362266fa0806bc"
     },
     "pipe-tt2": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT2T_Snow": "white",
         "TTB_Snow": "jade"
@@ -1215,10 +2143,10 @@
         "TT2T": "e9cf437446bbe6567f47ed205fc2e6acba3de220666b4df832db7f4d5087c829",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "1379684bebf8064e804a4b1057a0f824562537aa23c5ae719c0508d7fdf66ce5"
+      "pngSha256": "2202cf4da7e7cebfad10d957519e1118d079c975d3b963cee853d55e544e43c4"
     },
     "pipe-tt1": {
-      "renderer": "three-shared-v1",
+      "renderer": "three-neutral-v5-wall-planes",
       "materialColors": {
         "TT1T_Snow": "white",
         "TTB_Snow": "jade"
@@ -1231,7 +2159,239 @@
         "TT1T": "2a741e9ea1eed51871aa004a628ceb04502979b81c8f4bdc082964866e3ed676",
         "TTB": "9229afd8cb07199357c3d1cdc965393ecaae340737a1e78825009f401636fa3f"
       },
-      "pngSha256": "1358e100c892fe3d59d5dabc669a4c7d65c717aba368f8bb72d84de14eec0c0b"
+      "pngSha256": "48c140f89b08ae1b453226ed0dd92732abb4784e51bcdad2a0910cd9044bb927"
+    },
+    "stairs-straight-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS11_Snow": "white"
+      },
+      "materialHexColors": {
+        "RS11_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "RS11": "30a326feb2e3a20b9bf2b038db679aa793bb75f66d028b8ec2b285c94b97194b"
+      },
+      "pngSha256": "fdeff97acffaa6c69bedfb0f4be72e675c5a3b8201ff9e4212e938b50a57c9d8"
+    },
+    "stairs-right-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS21_Snow": "white"
+      },
+      "materialHexColors": {
+        "RS21_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "RS21": "2bc4f0e496d43ab52732bc3e13992bc304c75528e41335e8728178f337afa607"
+      },
+      "pngSha256": "5f140d331313d049cce417ec1ce16d57aa05662b82b83a6927944f0024b4ead1"
+    },
+    "stairs-left-1": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "RS31_Snow": "white"
+      },
+      "materialHexColors": {
+        "RS31_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "RS31": "5694fc87d49258eb08f77ea21ba51571ef00ca63b9f5af20f1bd036dd089c540"
+      },
+      "pngSha256": "dc26c17d96cc6dfea996f62ba35ab5360c6097d151eb6329a821e23b994243dd"
+    },
+    "milk-house-right": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCRB_Snow": "jade",
+        "MCRR_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MCRB_Snow": "#299C82",
+        "MCRR_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MCRB": "8f94e4aa71fee19d3f91f576b88d06b2a4974f62745f69607cd46919411a9849",
+        "MCRR": "5bf412079ef2b6932e4c1154b7530399fdcdb29f55acb6cfaaa72c6679091a8b"
+      },
+      "pngSha256": "7d4d43aa3ae5e60fbe8bbe91c1479abb0d7f8a4a2c674ae357b87a03f74a0f90"
+    },
+    "milk-house-double": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDB_Snow": "jade",
+        "MCDR_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MCDB_Snow": "#299C82",
+        "MCDR_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MCDB": "6fa171b21da573265f0b8d7b92972fb6b4c13189ddd862a5d59a12e730483ba2",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "a96510b47786cee190392bce40dcba0f8aa4dccc7103a5ff86caa0f699852e45"
+    },
+    "sag-bridge": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "BR01_Sky": "jade"
+      },
+      "materialHexColors": {
+        "BR01_Sky": "#299C82"
+      },
+      "modelSha256": {
+        "BR01": "f2a07b32c3c37fe81d158afe577a8df4e79f501412a4411613784e16a5b6c8d2"
+      },
+      "pngSha256": "2ac7a7ab60444c970d8f2e8daa53b9a26f04380b02c792a0b144ed67bcc639b0"
+    },
+    "pokemon-center": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "PCW_cyan": "sky",
+        "PCW_dark": "gray",
+        "PCW_white": "white",
+        "PCR_red": "rose",
+        "PCR_white": "white",
+        "PCR_cyan": "sky",
+        "PCR_dark": "gray"
+      },
+      "materialHexColors": {
+        "PCW_cyan": "#A6C8DF",
+        "PCW_dark": "#A4ABA9",
+        "PCW_white": "#FAFAF7",
+        "PCR_red": "#E9AEBC",
+        "PCR_white": "#FAFAF7",
+        "PCR_cyan": "#A6C8DF",
+        "PCR_dark": "#A4ABA9"
+      },
+      "modelSha256": {
+        "PCW": "986e382f9ed7a0a0704547742229a64a2a0cb4c8b6ba51dd5acc31c64fe3b65e",
+        "PCR": "b7207f8e8a7806907dc58adf6fb1c7b1b07fb5fa753fd30727f480cef3117509"
+      },
+      "pngSha256": "79d9eec30f0d1b55c7bfdb41f556ae5e4fba014dd4e70117769560b1db5e235a"
+    },
+    "pipe-down": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "DP01_Snow": "white"
+      },
+      "materialHexColors": {
+        "DP01_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "DP01": "e28559bd8d93acf951465c4ce0a9dd394ab91e42e735f3a53916e234d54f3050"
+      },
+      "pngSha256": "5f2c529c881a1845fd584c2cd2f652ab99d96d4e3e972860399508d0447fa907"
+    },
+    "milk-house-double-2x3": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23B_Snow": "jade",
+        "MC23R_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MC23B_Snow": "#299C82",
+        "MC23R_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MC23B": "2e8f3d63cb80d43a676272c45c01ca4eb04d31ee68e03672f5063edbbe5789af",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "163ee09a03103c5104c8065fe4f34eaf9c1df2b5c9e2382ed93dde2abce17fe2"
+    },
+    "milk-house-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATB_Snow": "jade",
+        "MCATR_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MCATB_Snow": "#299C82",
+        "MCATR_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MCATB": "2cb77ddb6d665d54015f4d9b7b9f083c8fc2f0fce124c794cc695dceb77f0cc8",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "3c94ab0d62d64d539c5901145a8aaa5dbf75e0a1981608e43441b80b1f59f901"
+    },
+    "urine-tray-aite": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "UT01_Snow": "white"
+      },
+      "materialHexColors": {
+        "UT01_Snow": "#FAFAF7"
+      },
+      "modelSha256": {
+        "UT01": "24b85d15e0ae2ac1eab8d9d518b02283035e6f3ea7643342aa7f7cf06dd62a31"
+      },
+      "pngSha256": "21c1e4f8111f9c67ebfd3680ff37a4c28e77f581891392625168c1f21abb215c"
+    },
+    "milk-house-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCLB_Snow": "jade",
+        "MCLR_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MCLB_Snow": "#299C82",
+        "MCLR_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MCLB": "5070af2cffc4421a6d7ad1d082077dff3bc3fa1ea7833826040e2c062565e10b",
+        "MCLR": "204c815df506aa2be8caee1330691b47d784b0fe3b7d57330b3dcbb2b6a0f995"
+      },
+      "pngSha256": "bc6b6d71c0a805c25917d9d29cbaacb1bcb13505c4da8a670dbf4addb4943131"
+    },
+    "milk-house-double-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCDLB_Snow": "jade",
+        "MCDR_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MCDLB_Snow": "#299C82",
+        "MCDR_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MCDLB": "2036cb33a36bd11c00a6a64c46e658f2fe881db01c29f8e56608f207f747a2e7",
+        "MCDR": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+      },
+      "pngSha256": "19d9e13a307436249b5cbf51e5df8422f31f012d9fd32ec52ed828a1bb05e694"
+    },
+    "milk-house-double-2x3-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MC23LB_Snow": "jade",
+        "MC23R_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MC23LB_Snow": "#299C82",
+        "MC23R_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MC23LB": "7c10d5388edf6f76f7353d9511e8deea926a9abe0334b804bcb33eb50860236d",
+        "MC23R": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+      },
+      "pngSha256": "58b415d0400af8fe5feaadc8cd6aaa5061a9a2c98607f809046b4be87b73bd09"
+    },
+    "milk-house-aite-left": {
+      "renderer": "three-neutral-v5-wall-planes",
+      "materialColors": {
+        "MCATLB_Snow": "jade",
+        "MCATR_Gold": "rose"
+      },
+      "materialHexColors": {
+        "MCATLB_Snow": "#299C82",
+        "MCATR_Gold": "#E9AEBC"
+      },
+      "modelSha256": {
+        "MCATLB": "a331a9ddee896c3696a8231e076011745d49cd0eee40c9e4aaa6cef9ba89c865",
+        "MCATR": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+      },
+      "pngSha256": "5263a5a7c65dd0704be3fee53f6b80337d0100c8e71d277655e5c8bfc138c0a9"
     }
   }
 }

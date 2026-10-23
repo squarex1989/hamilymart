@@ -1,0 +1,66 @@
+{
+  "files": 200,
+  "zip_bytes": 9829739,
+  "sha256": "daed665e540c902b3f3f1693e623b6e5f070d585a59687120c1b02cf3dd53101",
+  "static_audit_passed": true,
+  "web_build_passed": true,
+  "actual_xhs_container_tested": false,
+  "date": "2026-10-23",
+  "source_bundle_matches_zip": true,
+  "source_models_match_zip": true,
+  "minitool_typescript_passed": true,
+  "website_tests": {
+    "total": 398,
+    "passed": 368,
+    "failed": 30,
+    "failing_tests": [
+      "catalog covers source groups, four 30 cm legs and three T-pipe groups across bundles and alternatives",
+      "frozen catalog-2 code migrates four custom colors and reports the V4 loft safety change",
+      "legacy raw localStorage migrates without mutating the original or clearing any item",
+      "current states and unversioned eight-color villas never receive legacy direction repairs",
+      "legacy migration only repairs the documented 180-degree loft, never malformed positions or 90-degree lofts",
+      "removing the middle platform shifts the third platform and its whole family left",
+      "no-leg mode removes all legs from the order and preserves either platform pool",
+      "valid HM1 catalog 3 migrates without moving, recoloring or dropping the existing pool",
+      "existing HM2 and local bow choices carry over to the star across the catalog upgrade",
+      "Gift deck retains its five legacy contacts and adds a source-backed grid contact for roof accessories",
+      "HM3 round-trips third-platform state, long legs, bedding, hamster and independent new colors",
+      "removing the first platform shifts later platforms, properties and descendants without losing colors",
+      "web: cross-platform pipe dragging and first-platform removal retain only manual cover edits",
+      "mini: cross-platform pipe dragging and first-platform removal retain only manual cover edits",
+      "new pool inherits only B01; old pool and independently colored covers retain their colors",
+      "all five catalog image sets use current geometry and the same material colors as the live scene",
+      "separate hat window color preserves every triangle and leaves the brim and pompom independent",
+      "twenty distinct official layouts offer five choices at each platform count and cover the entire library",
+      "web: all twenty layouts pass real magnet, collision, roof-support and door-clearance checks",
+      "mini: all twenty layouts pass real magnet, collision, roof-support and door-clearance checks",
+      "all models stay inside the platform, with visible doors and clear supported entrance landings",
+      "approved library products, stable legacy indices, independent color controls and prices",
+      "only the three 90 mm stairs are offered; retired catalog indices remain readable",
+      "website: 2x3 milk house preserves existing IDs and supports roof accessories",
+      "minitool: 2x3 milk house preserves existing IDs and supports roof accessories",
+      "pool accent is derived after sharing or loading, with unchanged persisted color keys",
+      "every selectable component has a short, specific introduction",
+      "the new-user Christmas design uses one 10 cm platform with the pool and both accessories on the villa",
+      "frozen HM3 and local catalog-6 designs migrate every orientation without losing IDs, colors or base positions",
+      "current imports never repair corrupted current positions or repeat the old five-millimeter shift"
+    ]
+  },
+  "minitool_tests": {
+    "total": 88,
+    "passed": 86,
+    "failed": 2,
+    "failing_tests": [
+      "companion models share one script while preserving every original mesh and releasing factories",
+      "every selectable component has a short, specific introduction"
+    ]
+  },
+  "python_model_tests": {
+    "total": 4,
+    "passed": 3,
+    "failed": 1,
+    "failing_tests": [
+      "test_model_inventory_and_part_metadata_are_preserved"
+    ]
+  }
+}

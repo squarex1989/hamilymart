@@ -3,7 +3,7 @@ import { getPlatforms, type AssemblyState } from "./assembly";
 import { decodeConfig, encodeConfig } from "./config-code";
 import { COLOR_STYLES, applyColorStyle, getBaseStyleColors, getProductStyleColors } from "./color-styles";
 
-/** UI context only: never changes AssemblyState or the HM3 payload. */
+/** UI context only: never changes AssemblyState or the share-code payload. */
 export interface CatalogStyleHint { styleId: string; configurationCode: string }
 export interface StyledAssemblySnapshot { state: AssemblyState; styleIndex: number }
 
@@ -50,10 +50,10 @@ export function originalProductThumbnailUrl(productId: string): string {
 export function colorNewAdditions(previous: AssemblyState, next: AssemblyState, styleIndex: number): AssemblyState {
   const oldItems = new Set(previous.items.map(item => item.id));
   const oldPlatforms = new Map(getPlatforms(previous).map(platform => [platform.id, platform]));
-  const platformColors = (id: "base" | "base2" | "base3", colors: ColorMap, baseInsert: "lid" | "pool") => {
+  const platformColors = (id: "base" | "base2" | "base3" | "base4", colors: ColorMap, baseInsert: "lid" | "pool") => {
     const old = oldPlatforms.get(id);
     if (!old) return getBaseStyleColors(styleIndex);
-    if (old.baseInsert !== "pool" && baseInsert === "pool") return { ...colors, B01: getProductStyleColors("pool", styleIndex).B01 };
+    if (old.baseInsert !== "pool" && baseInsert === "pool") return { ...colors, ...getProductStyleColors("pool", styleIndex) };
     return colors;
   };
   return {
@@ -61,6 +61,7 @@ export function colorNewAdditions(previous: AssemblyState, next: AssemblyState, 
     baseColors: platformColors("base", next.baseColors, next.baseInsert),
     extension: next.extension ? { ...next.extension, baseColors: platformColors("base2", next.extension.baseColors, next.extension.baseInsert) } : null,
     thirdPlatform: next.thirdPlatform ? { ...next.thirdPlatform, baseColors: platformColors("base3", next.thirdPlatform.baseColors, next.thirdPlatform.baseInsert) } : null,
+    fourthPlatform: next.fourthPlatform ? { ...next.fourthPlatform, baseColors: platformColors("base4", next.fourthPlatform.baseColors, next.fourthPlatform.baseInsert) } : null,
     items: next.items.map(item => oldItems.has(item.id) ? item : { ...item, colors: getProductStyleColors(item.productId, styleIndex) }),
   };
 }

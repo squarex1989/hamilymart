@@ -1,3 +1,4 @@
+import { decodeCompactPayload } from "../src/lib/compact-config";
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
@@ -24,7 +25,7 @@ function success(result: ActionResult): AssemblyState {
 }
 
 function readPayload(code: string): unknown[] {
-  return JSON.parse(Buffer.from(code.split(".")[1], "base64url").toString());
+  return code.startsWith("HM5.") ? decodeCompactPayload(code) : JSON.parse(Buffer.from(code.split(".")[1], "base64url").toString());
 }
 
 /** Recompute CRC so malformed bedding reaches schema validation, not the copy-error check. */
@@ -102,9 +103,9 @@ test("the new-user Christmas design uses one 10 cm platform with the pool and bo
   assert.throws(() => validateAssembly({ ...state, items: [...state.items, { ...hat, id: "overlapping-hat" }] }), /磁吸位|重叠/);
   const code = encodeConfig(state);
   assert.equal(encodeConfig(decodeConfig(code)), code);
-  assert.equal(getTotalPrice(decodeConfig(code)), 18000);
+  assert.equal(getTotalPrice(decodeConfig(code)), 17800);
   assert.deepEqual(getOrderLines(state).map(line => [line.sku, line.quantity, line.total]), [
-    ["HM-PL-001-100", 1, 3000], ["HM-GD-003", 1, 2500], ["HM-HS-001", 1, 8000], ["HM-HS-004", 1, 4000], ["HM-GD-001", 1, 500],
+    ["HM-PL-001-100", 1, 3000], ["HM-GD-003", 1, 2400], ["HM-HS-001", 1, 7900], ["HM-HS-004", 1, 3900], ["HM-GD-001", 1, 600],
   ]);
   assert(!getOrderLines(state)[0].parts.includes("H06"));
 });

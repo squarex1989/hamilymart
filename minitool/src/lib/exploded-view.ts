@@ -21,7 +21,7 @@ function assemblyGroup(partId: string, sourcePart?: string, colorKey?: string) {
   if (/^(A02|W0[12])$/.test(partId)) return "upper-platform";
   if (/^G1[567]$/.test(partId)) return "grass";
   if (PIPE_PART.test(partId)) return "pipe";
-  if (["A01", "G03", "G05"].includes(partId)) return partId;
+  if (["A01", "G03", "G05", "PCW", "PCR"].includes(partId)) return partId;
   return `${partId}:${getSourceColorSlot(partId, sourcePart, colorKey) ?? "body"}`;
 }
 
@@ -32,7 +32,7 @@ function overlapFootprints(a: THREE.Box3, b: THREE.Box3) {
     && a.min.y < b.max.y - .01 && a.max.y > b.min.y + .01;
 }
 
-export function createExplodedLayout(root: THREE.Object3D) {
+export function createExplodedLayout(root: THREE.Object3D, grouping: "assembly" | "parts" = "assembly") {
   root.updateWorldMatrix(true, true);
   const pieces: ExplodedPiece[] = [];
   for (const owner of root.children) {
@@ -41,7 +41,9 @@ export function createExplodedLayout(root: THREE.Object3D) {
       const partId = String(part.userData.partId ?? part.name);
       part.traverse(node => {
         if (!(node instanceof THREE.Mesh) || !node.userData.modelMesh) return;
-        const group = assemblyGroup(partId, node.userData.sourcePart, node.userData.colorKey);
+        const group = grouping === "parts"
+          ? `${partId}:${getSourceColorSlot(partId, node.userData.sourcePart, node.userData.colorKey) ?? "body"}`
+          : assemblyGroup(partId, node.userData.sourcePart, node.userData.colorKey);
         if (!groups.has(group)) groups.set(group, {
           key: `${owner.userData.itemId}:${group}`,
           partId, partIds: [], meshes: [], originalBounds: new THREE.Box3(), offset: new THREE.Vector3(),

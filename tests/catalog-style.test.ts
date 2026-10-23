@@ -65,7 +65,7 @@ test("adding a product takes the catalog style without recoloring previous custo
   assert.equal(JSON.stringify(previous), before);
 });
 
-test("new second and third platforms inherit the current style while earlier palettes stay intact", () => {
+test("new second, third and fourth platforms inherit the current style while earlier palettes stay intact", () => {
   const original: AssemblyState = { ...createInitialState(), baseColors: { ...createInitialState().baseColors, P01: "red", H01: "rose" } };
   const second = colorNewAdditions(original, success(addPlatform(original)), 1);
   assert.deepEqual(second.baseColors, original.baseColors);
@@ -74,6 +74,12 @@ test("new second and third platforms inherit the current style while earlier pal
   assert.deepEqual(third.baseColors, original.baseColors);
   assert.deepEqual(third.extension!.baseColors, second.extension!.baseColors);
   assert.deepEqual(third.thirdPlatform!.baseColors, getBaseStyleColors(4));
+  const fourth = colorNewAdditions(third, success(addPlatform(third)), 3);
+  assert.deepEqual(fourth.baseColors, original.baseColors);
+  assert.deepEqual(fourth.extension!.baseColors, second.extension!.baseColors);
+  assert.deepEqual(fourth.thirdPlatform!.baseColors, third.thirdPlatform!.baseColors);
+  assert.deepEqual(fourth.fourthPlatform!.baseColors, getBaseStyleColors(3));
+  assert.deepEqual(applyColorStyle(fourth, 2).fourthPlatform!.baseColors, getBaseStyleColors(2));
 });
 
 test("new pool inherits only B01; old pool and independently colored covers retain their colors", () => {
@@ -92,4 +98,16 @@ test("all catalog styles use offline render URLs with the shared asset revision 
   }
   assert.equal(productThumbnailUrl("villa", -1), productThumbnailUrl("villa", 0));
   assert.equal(originalProductThumbnailUrl("villa"), `/thumbnails/villa.png?v=${MODEL_ASSET_VERSION}`);
+});
+
+
+test("all five flat houses share wall and roof colors in every official palette", async () => {
+  const mini = await import('../minitool/src/lib/color-styles');
+  for (const api of [{ getProductStyleColors }, mini]) for (const [index] of COLOR_STYLES.entries()) {
+    const milk=api.getProductStyleColors('milk-house-double',index);
+    for(const id of ['l-house','cube-house','milk-house-left','milk-house-right','milk-house-double']) {
+      const colors=api.getProductStyleColors(id,index);
+      for(const [part,color] of Object.entries(colors)) assert.equal(color,part.endsWith('R')?milk.MCDR:milk.MCDB,`${id} ${part} palette ${index}`);
+    }
+  }
 });

@@ -74,7 +74,7 @@
       "ST1B": "8096e7eb756d1f7c5bb502e88dded8ba04689f77817094e9d947607c09fa7d8d"
     },
     "generator": "scripts/prepare-tee-pipes.py",
-    "production3mfIncluded": false
+    "production3mfIncluded": true
   },
   "groups": {
     "TT1T": {
@@ -134,5 +134,12 @@
       "front-to-junction": 0.0
     }
   },
-  "physicalFitTested": false
+  "physicalFitTested": false,
+  "production": {
+    "file": "artifacts/HamilyMart-3MF模型库/05_楼梯与管道/全部管道与对应底座_七款合集.3mf",
+    "sha256": "d5b21e5b3575680b37fb4229aa58b5ddf345ecef05260695ed1317314f620501",
+    "native_readback": true,
+    "slice_plates": 3,
+    "physicalFitTested": false
+  }
 }

@@ -1,0 +1,871 @@
+{
+  "RS11": {
+    "source": "milk-candy-storey-100/三阶圆角台阶_100mm_mesh.json",
+    "bounds": [
+      2.0,
+      2.0,
+      -0.0,
+      98.0,
+      98.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "RS11_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 24776
+      }
+    ],
+    "sha256": "30a326feb2e3a20b9bf2b038db679aa793bb75f66d028b8ec2b285c94b97194b"
+  },
+  "RS12": {
+    "source": "milk-candy-storey-100/三阶圆角台阶_100mm_mesh.json",
+    "bounds": [
+      2.0,
+      2.0,
+      -0.0,
+      98.0,
+      98.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "RS12_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 24776
+      }
+    ],
+    "sha256": "0935dc898faca8a58b8c31aa29726db3c8fb3e15bf8990b6382a26cfe0e28e14"
+  },
+  "RS21": {
+    "source": "milk-candy-storey-100/弧线螺旋台阶_右出_100mm_mesh.json",
+    "bounds": [
+      2.0221794471144676,
+      2.0,
+      0.0,
+      98.0,
+      97.97863306105137,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "RS21_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 30846
+      }
+    ],
+    "sha256": "2bc4f0e496d43ab52732bc3e13992bc304c75528e41335e8728178f337afa607"
+  },
+  "RS22": {
+    "source": "milk-candy-storey-100/弧线螺旋台阶_右出_100mm_mesh.json",
+    "bounds": [
+      2.0221794471144676,
+      2.0,
+      0.0,
+      98.0,
+      97.97863306105137,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "RS22_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 30846
+      }
+    ],
+    "sha256": "16f4137e2b47f97eee98e1f2014ab6921e8929cad75eee45ec4dd6fb1200e3a6"
+  },
+  "RS31": {
+    "source": "milk-candy-storey-100/弧线螺旋台阶_左出_100mm_mesh.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      97.97782055288553,
+      97.97863306105137,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "RS31_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 30836
+      }
+    ],
+    "sha256": "5694fc87d49258eb08f77ea21ba51571ef00ca63b9f5af20f1bd036dd089c540"
+  },
+  "RS32": {
+    "source": "milk-candy-storey-100/弧线螺旋台阶_左出_100mm_mesh.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      97.97782055288553,
+      97.97863306105137,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "RS32_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 30836
+      }
+    ],
+    "sha256": "c6d5d5f2c30c4ed9579dbd5794848bcad13b149e720ea263d09c0cdac08a9ecb"
+  },
+  "MCLB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/single-left/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      98.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MCLB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "10bedb075740e885fbe746ff58e30298344cfa561e848c378ca6f5d88b306c2f"
+  },
+  "MCLR": {
+    "source": "bambu-output/fixed-door-compact-20261022/single-left/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      88.6,
+      198.0,
+      98.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "MCLR_Gold",
+        "color_key": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "watertight": true
+      }
+    ],
+    "sha256": "204c815df506aa2be8caee1330691b47d784b0fe3b7d57330b3dcbb2b6a0f995"
+  },
+  "MCRB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/single-right/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      98.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MCRB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "0b79af22be9cf11fd49ea8919b96f5ea00fab63d845f6a6fd52ae8ca6e1a601e"
+  },
+  "MCRR": {
+    "source": "bambu-output/fixed-door-compact-20261022/single-right/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      88.6,
+      198.0,
+      98.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "MCRR_Gold",
+        "color_key": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "watertight": true
+      }
+    ],
+    "sha256": "5bf412079ef2b6932e4c1154b7530399fdcdb29f55acb6cfaaa72c6679091a8b"
+  },
+  "MCDB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/2x2-right/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      198.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MCDB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "ab7b38c8eee5d5af8e054fcb51950db4887296baca3bd89ab0176133af0f4da5"
+  },
+  "MCDR": {
+    "source": "bambu-output/fixed-door-compact-20261022/2x2-left/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      88.6,
+      198.0,
+      198.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "MCDR_Gold",
+        "color_key": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "watertight": true
+      }
+    ],
+    "sha256": "97a6ba8a9ab44bbdcc18a54459972bae03f8e4a431d8bd0c80b6d95659e7b211"
+  },
+  "LHR": {
+    "source": "unified-storey-90/L型转角屋_scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      76.4000015258789,
+      198.0,
+      198.0,
+      90.0
+    ],
+    "components": [
+      {
+        "id": "LHR_Snow",
+        "color_key": "Snow",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 9068
+      }
+    ],
+    "sha256": "91d2dccbfe4497564b0531a7c255a005883f055b46476512116e71ee28fdabcc"
+  },
+  "SHR": {
+    "source": "unified-storey-90/方糖小屋_scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      78.5999984741211,
+      98.0,
+      98.0,
+      90.0
+    ],
+    "components": [
+      {
+        "id": "SHR_Snow",
+        "color_key": "Snow",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 4524
+      }
+    ],
+    "sha256": "a12165dc903633633743f57ed93a123882627225ae2ca426520a25ae14168478"
+  },
+  "BR01": {
+    "source": "magnetic-sag-bridge/mesh.json",
+    "bounds": [
+      0.0,
+      0.0,
+      -6.0,
+      164.0,
+      96.0,
+      6.200000002980232
+    ],
+    "components": [
+      {
+        "id": "BR01_Sky",
+        "color_key": "Sky",
+        "color": "#2E85B8"
+      }
+    ],
+    "checks": [
+      {
+        "sourceTriangles": 8724,
+        "triangles": 8026,
+        "sampledMaxErrorMm": 0.00898,
+        "boundsMaxErrorMm": 0.0,
+        "volumeRelativeError": 4.48e-06
+      }
+    ],
+    "sha256": "f2a07b32c3c37fe81d158afe577a8df4e79f501412a4411613784e16a5b6c8d2"
+  },
+  "PCW": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/pokemon/scene.json",
+    "bounds": [
+      11.998505592346191,
+      1.9987752437591553,
+      0.0,
+      287.9985046386719,
+      198.0,
+      71.5
+    ],
+    "components": [
+      {
+        "id": "PCW_cyan",
+        "color_key": "cyan",
+        "color": "#8EDADB"
+      },
+      {
+        "id": "PCW_dark",
+        "color_key": "dark",
+        "color": "#272B43"
+      },
+      {
+        "id": "PCW_white",
+        "color_key": "white",
+        "color": "#F4F1EC"
+      }
+    ],
+    "sha256": "29337a6fac056731dcc378925dcd6c22ddbb8235f31a06cb84f2215c48ba44eb"
+  },
+  "PCR": {
+    "source": "pokemon-center-rear-trim/scene.json",
+    "bounds": [
+      6.774089658881942,
+      -7.989218313161811,
+      66.5,
+      293.2204284667969,
+      199.9000065105509,
+      151.356201171875
+    ],
+    "components": [
+      {
+        "id": "PCR_red",
+        "color_key": "red",
+        "color": "#F40836"
+      },
+      {
+        "id": "PCR_white",
+        "color_key": "white",
+        "color": "#F4F1EC"
+      },
+      {
+        "id": "PCR_cyan",
+        "color_key": "cyan",
+        "color": "#8EDADB"
+      },
+      {
+        "id": "PCR_dark",
+        "color_key": "dark",
+        "color": "#272B43"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true
+      },
+      {
+        "sourceTriangles": 30720,
+        "triangles": 9452,
+        "sampledMaxErrorMm": 0.042294,
+        "boundsMaxErrorMm": 0.001224,
+        "volumeRelativeError": 0.00010699
+      },
+      {
+        "sourceTriangles": 4602,
+        "triangles": 3058,
+        "sampledMaxErrorMm": 0.016676,
+        "boundsMaxErrorMm": 0.001365,
+        "volumeRelativeError": 0.00060346
+      },
+      {
+        "keptOriginal": true
+      }
+    ],
+    "sha256": "b7207f8e8a7806907dc58adf6fb1c7b1b07fb5fa753fd30727f480cef3117509"
+  },
+  "LHB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/lhouse/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      198.0,
+      84.4000015258789
+    ],
+    "components": [
+      {
+        "id": "LHB_PineGreen",
+        "color_key": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "sha256": "96d30cc26b67ba7ecc840c73c6dccf781af2db267fe30406bac46b6642c1c3a6"
+  },
+  "SHB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/sugar/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      98.0,
+      98.0,
+      86.5999984741211
+    ],
+    "components": [
+      {
+        "id": "SHB_PineGreen",
+        "color_key": "PineGreen",
+        "color": "#174A3A"
+      }
+    ],
+    "sha256": "4c88ac44d4e2839115d0894ed3adac79516624b262088ee3a2b3415370ef4f69"
+  },
+  "O01": {
+    "source": "roof-accessories/O01_scene.json",
+    "bounds": [
+      241.0,
+      236.0,
+      200.0,
+      296.0,
+      296.0,
+      221.0
+    ],
+    "components": [
+      {
+        "id": "O01_ChristmasRed",
+        "color_key": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "O01_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 2620
+      },
+      {
+        "keptOriginal": true,
+        "triangles": 800
+      }
+    ],
+    "sha256": "8a98e833608ab52c774e69abbf06d0c7c19c8f210b514743b9611bf5c430a301"
+  },
+  "A02": {
+    "source": "roof-accessories/A02_scene.json",
+    "bounds": [
+      0.0,
+      180.0,
+      182.0,
+      300.0,
+      300.0,
+      200.0
+    ],
+    "components": [
+      {
+        "id": "A02_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "triangles": 5430
+      }
+    ],
+    "sha256": "9ee098378f7db18c64aac8b7c932b37e0986a8db3c5de6a946477287f60f3de1"
+  },
+  "MC23B": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/2x3-right/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      298.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MC23B_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "ff44b828cf6e496665b8718d5a6153c138391e33bbf553042e9a43ad24528bcf"
+  },
+  "MC23R": {
+    "source": "bambu-output/fixed-door-compact-20261022/2x3-left/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      88.6,
+      198.0,
+      298.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "MC23R_Gold",
+        "color_key": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "watertight": true
+      }
+    ],
+    "sha256": "c31542494e7dd0abc01552312cd74bdacc0623a7dfbb655bf3985015382c8921"
+  },
+  "MCATB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/aite-right/scene.json",
+    "bounds": [
+      -2.9802322831784522e-09,
+      -2.9802322831784522e-09,
+      0.0,
+      300.0,
+      186.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MCATB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "22deb8735e7fc81c5b72853687f01ff29a9d35ecd5823c6fb19d8832d91be06f"
+  },
+  "MCATP": {
+    "source": "milk-reversible-panels/aite/scene.json",
+    "bounds": [
+      4.5,
+      4.3,
+      0.0,
+      295.5,
+      7.5,
+      96.3
+    ],
+    "components": [
+      {
+        "id": "MCATP_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "watertight": true
+      }
+    ],
+    "sha256": "1fd688c90ee03da9c39e460683aae9d2c86c16239203ba670f742d951fdb56c2"
+  },
+  "MCATR": {
+    "source": "bambu-output/fixed-door-compact-20261022/aite-left/scene.json",
+    "bounds": [
+      -0.0,
+      -0.0,
+      89.6,
+      300.0,
+      186.0,
+      100.0
+    ],
+    "components": [
+      {
+        "id": "MCATR_Gold",
+        "color_key": "Gold",
+        "color": "#C99B46"
+      }
+    ],
+    "checks": [
+      {
+        "watertight": true
+      }
+    ],
+    "sha256": "a0a9fc1cfc523b1e7a9178c0b51875e17d13b74f66b9d2fceee40ed049885a78"
+  },
+  "UT01": {
+    "source": "urine-tray-rounded/print_parts/UT01.stl",
+    "bounds": [
+      -6.611315795177764e-15,
+      0.006378173828125,
+      0.0,
+      129.99362182617188,
+      130.0,
+      90.0
+    ],
+    "components": [
+      {
+        "id": "UT01_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "sourceTriangles": 90880,
+        "triangles": 30172,
+        "sampledMaxErrorMm": 0.009801,
+        "boundsMaxErrorMm": 0.000901,
+        "volumeRelativeError": 5.774e-05
+      }
+    ],
+    "sha256": "24b85d15e0ae2ac1eab8d9d518b02283035e6f3ea7643342aa7f7cf06dd62a31"
+  },
+  "MCRP": {
+    "source": "milk-reversible-panels/single/scene.json",
+    "bounds": [
+      6.5,
+      6.3,
+      0.0,
+      193.5,
+      9.5,
+      96.3
+    ],
+    "components": [
+      {
+        "id": "MCRP_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "watertight": true
+      }
+    ],
+    "sha256": "7406f4780ffa9fd7131d28ebc8f8b9ee55700f510e2284eda3ec17e3eb7e9dba"
+  },
+  "MCDP": {
+    "source": "milk-reversible-panels/double-2x2/scene.json",
+    "bounds": [
+      190.5,
+      6.5,
+      0.0,
+      193.7,
+      193.5,
+      96.3
+    ],
+    "components": [
+      {
+        "id": "MCDP_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "watertight": true
+      }
+    ],
+    "sha256": "00ccd2e16be4e601bcc76addc597bb1bd0ee7f8153be9c887e667ba4257bb7ba"
+  },
+  "MC23P": {
+    "source": "milk-reversible-panels/double-2x3/scene.json",
+    "bounds": [
+      190.5,
+      6.5,
+      0.0,
+      193.7,
+      293.5,
+      96.3
+    ],
+    "components": [
+      {
+        "id": "MC23P_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "checks": [
+      {
+        "keptOriginal": true,
+        "watertight": true
+      }
+    ],
+    "sha256": "c4f1421cef46fe40b7c9c677fafba1d4050ebe8a36308bab884e7d5c3490ee67"
+  },
+  "MCDLB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/2x2-left/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      198.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MCDLB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "2cdb6bf814213ba6e5039be2b6a1dec1de68c53fefad3f3cd46973b6bafa85fb"
+  },
+  "MC23LB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/2x3-left/scene.json",
+    "bounds": [
+      2.0,
+      2.0,
+      0.0,
+      198.0,
+      298.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MC23LB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "e4a06be73872bd19df18ac84a763f75654b08242fa21a77223cff8de1d87a089"
+  },
+  "MCATLB": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/aite-left/scene.json",
+    "bounds": [
+      -2.9802322831784522e-09,
+      -2.9802322831784522e-09,
+      0.0,
+      300.0,
+      186.0,
+      96.5999984741211
+    ],
+    "components": [
+      {
+        "id": "MCATLB_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      }
+    ],
+    "sha256": "d0189e9977386cee9324e85c75034a18a43416a664c901ccedb218545203a3d9"
+  },
+  "A01": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/gift/scene.json",
+    "bounds": [
+      2.0,
+      179.1999969482422,
+      110.0,
+      198.0,
+      298.0,
+      190.0
+    ],
+    "components": [
+      {
+        "id": "A01_PineGreen",
+        "color_key": "PineGreen",
+        "color": "#174A3A"
+      },
+      {
+        "id": "A01_Gold",
+        "color_key": "Gold",
+        "color": "#C99B46"
+      },
+      {
+        "id": "A01_ChristmasRed",
+        "color_key": "ChristmasRed",
+        "color": "#B8273C"
+      }
+    ],
+    "sha256": "484e8f909d087ae073f06c1c48598968e8d672ceaa1f592d61d25d5e6fd79062"
+  },
+  "G03": {
+    "source": "bambu-output/seamless-magnet-seats-20261023/hat/print_parts/主体_红色.stl",
+    "bounds": [
+      2.0,
+      179.60000610351562,
+      200.0,
+      164.0,
+      298.0,
+      373.3333435058594
+    ],
+    "components": [
+      {
+        "id": "G03_ChristmasRed",
+        "color_key": "ChristmasRed",
+        "color": "#B8273C"
+      },
+      {
+        "id": "G03_Snow",
+        "color_key": "Snow",
+        "color": "#F1EADB"
+      },
+      {
+        "id": "G03_WindowSnow",
+        "color_key": "Snow",
+        "color": "#F1EADB",
+        "color_slot": "G03-window"
+      }
+    ],
+    "sha256": "119ec7a7297a5f9d01627afa2857618249af1e93cb23e8ba243c3781cc906b61"
+  }
+}

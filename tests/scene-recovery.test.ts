@@ -6,19 +6,20 @@ import ts from "typescript";
 import * as THREE from "three";
 import { captureSceneView, restoreSceneView } from "../src/lib/scene-recovery";
 import { BeddingFade } from "../src/lib/bedding-fade";
+import { stabilizeModelNormals } from "../src/lib/model-normals";
 
 const source = ts.createSourceFile("AssemblyScene.tsx", readFileSync(new URL("../src/components/AssemblyScene.tsx", import.meta.url), "utf8"),
   ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-function handlers(names: string[], bindings: Record<string, unknown>) {
+function handlers(names: string[], bindings: Record<string, unknown>, input = source) {
   const code: string[] = [];
   const visit = (node: ts.Node) => {
-    if (ts.isFunctionDeclaration(node) && node.name && names.includes(node.name.text)) code.push(node.getText(source));
-    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && names.includes(node.name.text)) code.push(`var ${node.getText(source)};`);
+    if (ts.isFunctionDeclaration(node) && node.name && names.includes(node.name.text)) code.push(node.getText(input));
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && names.includes(node.name.text)) code.push(`var ${node.getText(input)};`);
     ts.forEachChild(node, visit);
   };
-  visit(source);
+  visit(input);
   const context = vm.createContext(bindings);
-  vm.runInContext(ts.transpileModule(code.join("\n"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText, context);
+  vm.runInContext(ts.transpileModule(code.join("\n").replace(/export /g, ""), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText, context);
   return context;
 }
 
@@ -38,10 +39,12 @@ test("retry restores an independent camera snapshot including its already consum
 test("a rejected GLB request is removed from cache, while successful retries stay shared", async () => {
   let calls = 0;
   const scene = new THREE.Group(), cache = new Map<string, Promise<THREE.Group>>();
+  const loaderSource = ts.createSourceFile("model-loader.ts", readFileSync(new URL("../src/lib/model-loader.ts", import.meta.url), "utf8"), ts.ScriptTarget.Latest, true);
   const context = handlers(["loadPart"], {
+    THREE, stabilizeModelNormals,
     cache, index: { P01: { url: "/models/P01.glb" } }, MODEL_ASSET_VERSION: "test",
     loader: { loadAsync: () => ++calls === 1 ? Promise.reject(new Error("network failed")) : Promise.resolve({ scene }) },
-  });
+  }, loaderSource);
   const first = context.loadPart("P01");
   assert.equal(context.loadPart("P01"), first);
   await assert.rejects(first, /network failed/);

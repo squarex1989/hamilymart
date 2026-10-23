@@ -1,7 +1,10 @@
 import * as THREE from 'three';
+import { MODEL_ASSET_VERSION } from '../data/catalog';
+import modelBundles from '../data/model-bundles.json';
 import format from '../data/offline-model-format.json';
 type ModelMesh = { v: number; name: string; extras: Record<string, unknown>; p: number[]; n: number[]; i: number[]; material: { doubleSided?: boolean; pbrMetallicRoughness?: { baseColorFactor?: number[]; roughnessFactor?: number; metallicFactor?: number } } };
 declare global { interface Window { HamilyModels?: Record<string, () => ModelMesh[]>; } }
+const completed = new Set<string>();
 const cache = new Map<string, Promise<THREE.Group>>();
 let queue = Promise.resolve();
 function readModel(id: string): Promise<ModelMesh[]> {
@@ -9,10 +12,12 @@ function readModel(id: string): Promise<ModelMesh[]> {
     const present = window.HamilyModels?.[id];
     if (present) { resolve(present()); return; }
     const script = document.createElement('script');
-    script.src = `./models/${id}.js?v=${format.cacheRevision}`;
+    script.src = `./models/${(modelBundles as Record<string, string>)[id] || id}.js?v=${format.cacheRevision}&a=${MODEL_ASSET_VERSION}`;
     const timeout = setTimeout(() => { script.remove(); reject(new Error(`本地模型加载超时：${id}`)); }, 15000);
     script.onload = () => {
       clearTimeout(timeout); script.remove();
+      // A retried shared bundle may redefine factories already uploaded to geometry.
+      for (const loaded of completed) if (window.HamilyModels) delete window.HamilyModels[loaded];
       const make = window.HamilyModels?.[id];
       try { if (make) resolve(make()); else reject(new Error(`模型内容不完整：${id}`)); }
       catch (error) { reject(error); }
@@ -45,6 +50,7 @@ export function loadPart(id: string): Promise<THREE.Group> {
         const material = new THREE.MeshStandardMaterial({ color: new THREE.Color().setRGB(rgb[0], rgb[1], rgb[2]), roughness: settings.roughnessFactor ?? .62, metalness: settings.metallicFactor ?? 0, side: source.material.doubleSided ? THREE.DoubleSide : THREE.FrontSide });
         const mesh = new THREE.Mesh(geometry, material); mesh.name = source.name; mesh.userData = { ...source.extras }; group.add(mesh);
       }
+      completed.add(id);
       // Release numeric source arrays/factory after geometry upload; keep shared geometry.
       if (window.HamilyModels) delete window.HamilyModels[id];
       await new Promise<void>(resolve => setTimeout(resolve, 0));

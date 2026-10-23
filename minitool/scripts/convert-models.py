@@ -150,7 +150,18 @@ def convert_model(path):
             for component in pieces:
                 target = min(len(component.faces), max(64, min(8000 if path.stem == 'P01' else 4200,
                                                                int(len(component.faces) * .24))))
-                result, metrics, decimals, method = simplify_component(component, target)
+                if path.stem in {'MCDB', 'MCLB', 'MCRB', 'SHB', 'LHB', 'UT01'}:
+                    # Doorway planes/fillets are visually sensitive: quadrics drag their
+                    # boundary vertices into long fan triangles. Retain CAD topology.
+                    preserved = quantized_candidate(component, component.vertices, component.faces)
+                    if preserved is None:
+                        raise ValueError(f'{path.stem}: wall mesh cannot be preserved')
+                    result, metrics, decimals = preserved
+                    # The tray's continuous circular entry also needs its original
+                    # curve tessellation; aggressive reduction causes shading bands.
+                    method = 'source-curve' if path.stem == 'UT01' else 'source-wall'
+                else:
+                    result, metrics, decimals, method = simplify_component(component, target)
                 converted.append(result)
                 precision = max(precision, decimals)
                 component_reports.append({'sourceTriangles': len(component.faces), 'previewTriangles': len(result.faces),
@@ -176,7 +187,7 @@ def main():
     helper = ROOT / 'minitool/scripts/bake-model-normals.mjs'
     report_path = ROOT / 'minitool/generated/model-report.json'
     cache_path = ROOT / 'minitool/generated/model-cache.json'
-    dependencies = [Path(__file__), helper, ROOT / 'minitool/src/data/offline-model-format.json',
+    dependencies = [Path(__file__), helper, ROOT / 'src/lib/planar-normals.js', ROOT / 'minitool/src/data/offline-model-format.json',
                     ROOT / 'node_modules/three/examples/jsm/utils/BufferGeometryUtils.js',
                     ROOT / 'node_modules/three/package.json']
     digest = hashlib.sha256()

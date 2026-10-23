@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MODEL_ASSET_VERSION, VISIBLE_PRODUCTS } from '../src/data/catalog';
-import modelIndex from '../src/data/model-index.json';
+import { loadPart } from '../src/lib/model-loader';
+import { VISIBLE_PRODUCTS } from '../src/data/catalog';
 import { COLOR_STYLES } from '../src/lib/color-styles';
 import { getThumbnailDefinition } from '../src/lib/catalog-thumbnail-contract';
 import { configureModelRenderer, createModelLighting, createModelMaterial, MODEL_CAMERA_DIRECTION } from '../src/lib/model-presentation';
@@ -9,15 +8,6 @@ import { configureModelRenderer, createModelLighting, createModelMaterial, MODEL
 const button = document.querySelector<HTMLButtonElement>('#export')!;
 const status = document.querySelector<HTMLParagraphElement>('#status')!;
 const gallery = document.querySelector<HTMLDivElement>('#previews')!;
-const loader = new GLTFLoader();
-const cache = new Map<string, Promise<THREE.Group>>();
-function loadPart(id: string) {
-  if (!cache.has(id)) cache.set(id, loader.loadAsync(`${modelIndex[id as keyof typeof modelIndex].url}?v=${MODEL_ASSET_VERSION}`).then(gltf => gltf.scene).catch(error => {
-    cache.delete(id);
-    throw error;
-  }));
-  return cache.get(id)!;
-}
 
 function frame(camera: THREE.PerspectiveCamera, bounds: THREE.Box3) {
   const center = bounds.getCenter(new THREE.Vector3());
@@ -49,9 +39,11 @@ button.addEventListener('click', async () => {
   const camera = new THREE.PerspectiveCamera(34, 480 / 400, 1, 4500);
   camera.up.set(0, 0, 1);
   let count = 0;
-  const total = COLOR_STYLES.length * VISIBLE_PRODUCTS.length;
+  const selected = new Set((new URLSearchParams(location.search).get('products') ?? '').split(',').filter(Boolean));
+  const products = VISIBLE_PRODUCTS.filter(product => !selected.size || selected.has(product.id));
+  const total = COLOR_STYLES.length * products.length;
   try {
-    for (const [styleIndex, style] of COLOR_STYLES.entries()) for (const product of VISIBLE_PRODUCTS) {
+    for (const [styleIndex, style] of COLOR_STYLES.entries()) for (const product of products) {
       status.textContent = `正在生成 ${++count}/${total}：${style.name} · ${product.name}`;
       const definition = getThumbnailDefinition(product.id, styleIndex);
       const group = new THREE.Group();

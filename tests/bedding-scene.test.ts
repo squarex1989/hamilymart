@@ -3,7 +3,7 @@ import test from "node:test";
 import * as THREE from "three";
 import { createBedding, getBeddingBounds } from "../src/lib/bedding-scene";
 import { addPlatform, createInitialState, setBedding, setLegHeight, setPlatformPool } from "../src/lib/assembly";
-import type { ActionResult } from "../src/lib/assembly";
+import type { ActionResult, AssemblyState } from "../src/lib/assembly";
 
 function success(result: ActionResult) {
   if (!result.ok) assert.fail(result.reason);
@@ -49,7 +49,7 @@ test("zero bedding builds no meshes and removes an existing pile without breakin
 });
 
 test("the complete fluffy bedding envelope extends exactly 50 mm beyond every outside platform edge", () => {
-  let state = createInitialState();
+  let state: AssemblyState = { ...createInitialState(), cage: null };
   const scene = new THREE.Scene(), bedding = createBedding(scene);
   for (let count = 1; count <= 3; count++) {
     if (count > 1) state = success(addPlatform(state));
@@ -83,6 +83,19 @@ test("sizing the outside fringe preserves the pool cavity position and radius", 
   for (let index = 0; index < positions.count; index++) {
     const radius = Math.hypot(positions.getX(index) - 100, positions.getY(index) - 100);
     assert.ok(Math.abs(radius - 82) < .001);
+  }
+  bedding.dispose();
+});
+
+test('rendered bedding follows the selected cage, and changing cage size rebuilds its envelope', () => {
+  const scene = new THREE.Scene(), bedding = createBedding(scene);
+  let state = createInitialState();
+  for (const [width, depth] of [[73.5,48],[100,60],[50,32]]) {
+    state = { ...state, cage: {presetId:null,width,depth,height:53} };
+    bedding.update(state);
+    const size = bedding.getBounds().getSize(new THREE.Vector3());
+    assert.ok(Math.abs(size.x-width*10)<.01, String(size.x));
+    assert.ok(Math.abs(size.y-depth*10)<.01, String(size.y));
   }
   bedding.dispose();
 });

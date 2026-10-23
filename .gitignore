@@ -4,3 +4,7 @@ dist/
 .DS_Store
 .site-workflow/
 test-results/
+artifacts/
+result.json
+__pycache__/
+*.pyc

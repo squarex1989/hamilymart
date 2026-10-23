@@ -1,0 +1,25 @@
+{
+  "source": "down-pipe-60mm-20261022/scene.json:part",
+  "assemblyBounds": [
+    [
+      -33.0,
+      -33.0,
+      -100.0
+    ],
+    [
+      60.14999999999999,
+      33.0,
+      0.0
+    ]
+  ],
+  "watertight": true,
+  "stats": {
+    "sourceTriangles": 174428,
+    "triangles": 73134,
+    "sampledMaxErrorMm": 0.013658,
+    "boundsMaxErrorMm": 0.007954,
+    "volumeRelativeError": 0.00016342,
+    "float32CleanupMm": 0.0001
+  },
+  "sha256": "e28559bd8d93acf951465c4ce0a9dd394ab91e42e735f3a53916e234d54f3050"
+}

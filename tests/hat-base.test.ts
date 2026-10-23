@@ -14,7 +14,9 @@ test('hat left pair seats on two real steel discs with 3 mm offset, without movi
   assert.deepEqual(product.bottomMagnets.slice(0, 2).map(p => transformPoint(p, product, candidate)), [[10, 193, 110], [10, 287, 110]]);
   const receivers = getMagnetPoints(empty).map(m => m.point);
   for (const receiver of [[10, 190, 110], [10, 290, 110]]) assert.ok(receivers.some(p => p.every((v, i) => v === receiver[i])));
-  const placed = success(autoPlace(empty, product.id));
+  // Test the audited left-pair transform explicitly; automatic defaults now
+  // turn the door toward the viewer instead of selecting the lowest rotation.
+  const placed = success(tryPlace(empty, product.id, candidate, candidate.rotation));
   const bounds = getItemBounds(placed.items[0])[0];
   assert.deepEqual(bounds.slice(0, 3), [2, 180.6, 110]);
   assert.equal(bounds[4], 299);
@@ -48,9 +50,9 @@ test('all three empty platforms offer four hat orientations, with distinct recei
 test('first-floor hat rotates all four ways on the same platform and preserves its configuration', () => {
   let state = success(autoPlace(success(addPlatform(createInitialState())), 'roof-cottage', 'base2'));
   const original = state.items[0];
-  for (const rotation of [90, 180, 270, 0]) {
+  for (const step of [1, 2, 3, 4]) {
     state = success(rotateItem(state, original.id));
-    assert.equal(state.items[0].rotation, rotation);
+    assert.equal(state.items[0].rotation, (original.rotation + step * 90) % 360);
     assert.equal(state.items[0].parentId, 'base2');
     assert.equal(state.items[0].z, 110);
     assert.deepEqual(state.items[0].colors, original.colors);

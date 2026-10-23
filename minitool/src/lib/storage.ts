@@ -6,6 +6,7 @@ export interface LaunchOptions {
 export interface MiniToolStorageApi {
   getLaunchOptions?: () => Promise<LaunchOptions>;
   getStorage?: (options: { key: string }) => Promise<{ data: string | null }>;
+  getStorageInfo?: () => Promise<{ keys: string[]; usedBytes?: number; limitBytes?: number }>;
   setStorage?: (options: { key: string; data: string }) => Promise<unknown>;
 }
 
@@ -20,10 +21,25 @@ export interface DraftStorage {
   backend: "native" | "browser";
   read: (key: string) => Promise<StorageRead>;
   write: (key: string, serializedData: string) => Promise<boolean>;
+  getLastWriteError?: () => string | null;
   /** One-time, read-only upgrade source, available only after native reports the key missing. */
   readLegacyForMigration?: (key: string) => Promise<StorageRead>;
 }
 
+/** Empty host values contain no JSON draft; nonempty malformed data stays recoverable. */
+export function normalizeStoredValue(value: string | null): string | null {
+  return value === null || value.trim() === "" ? null : value;
+}
+export function sameStoredJson(actual: string | null, expected: string): boolean {
+  if (actual === expected) return true;
+  if (actual === null) return false;
+  const canonical = (value: unknown): string => {
+    if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+    if (value !== null && typeof value === "object") return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonical((value as Record<string, unknown>)[key])}`).join(",")}}`;
+    return JSON.stringify(value);
+  };
+  try { return canonical(JSON.parse(actual)) === canonical(JSON.parse(expected)); } catch { return false; }
+}
 const NATIVE_TIMEOUT_MS = 5000;
 class StorageTimeoutError extends Error {}
 
@@ -79,31 +95,58 @@ export async function createDraftStorage(environment = currentEnvironment()): Pr
     let timedOut = false;
     const missingKeys = new Set<string>();
     const legacyReads = new Map<string, StorageRead>();
-    return {
+    let lastWriteError: string | null = null;
+    const store: DraftStorage = {
       backend: "native",
+      getLastWriteError: () => lastWriteError,
       async read(key) {
         if (timedOut || !miniTool || typeof miniTool.getStorage !== "function") return { ok: false };
         try {
           const result = await withTimeout(miniTool.getStorage({ key }), timeoutMs);
-          if (!result || (result.data !== null && typeof result.data !== "string")) return { ok: false };
-          if (result.data === null) missingKeys.add(key);
+          if (!result || (result.data !== null && typeof result.data !== "string")) throw new Error("Unreadable storage response");
+          const value = normalizeStoredValue(result.data);
+          if (value === null) missingKeys.add(key);
           else missingKeys.delete(key);
-          return { ok: true, value: result.data };
+          return { ok: true, value };
         } catch (error) {
-          if (error instanceof StorageTimeoutError) timedOut = true;
+          // Reads have no late-write race: a later edit may retry after a timeout.
           missingKeys.delete(key);
+          // Some hosts reject missing keys. Only a successful key inventory can
+          // establish absence; a generic read failure must never overwrite a draft.
+          if (!timedOut && typeof miniTool.getStorageInfo === "function") {
+            try {
+              const info = await withTimeout(miniTool.getStorageInfo(), timeoutMs);
+              if (Array.isArray(info?.keys) && info.keys.every(value => typeof value === "string") && !info.keys.includes(key)) {
+                missingKeys.add(key);
+                return { ok: true, value: null };
+              }
+            } catch { /* A later read can retry; no write has started. */ }
+          }
           return { ok: false };
         }
       },
       async write(key, data) {
-        if (timedOut || !miniTool || typeof miniTool.setStorage !== "function") return false;
+        if (timedOut || !miniTool || typeof miniTool.setStorage !== "function") { lastWriteError = "存储接口暂时不可用"; return false; }
         try {
           await withTimeout(miniTool.setStorage({ key, data }), timeoutMs);
           missingKeys.delete(key);
+          // Resolving setStorage is not proof of persistence. Verify the actual value.
+          let check = await store.read(key);
+          if (!check.ok || !sameStoredJson(check.value, data)) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            check = await store.read(key);
+          }
+          if (!check.ok) { lastWriteError = "无法读取并核对刚保存的搭配"; return false; }
+          if (!sameStoredJson(check.value, data)) {
+            lastWriteError = check.value === null ? "存储接口写入后仍返回空内容" : "存储接口读回的内容与写入不一致";
+            return false;
+          }
+          lastWriteError = null;
           return true;
         } catch (error) {
           // A timed-out write may still finish later. Never start a newer write it could overwrite.
           if (error instanceof StorageTimeoutError) timedOut = true;
+          lastWriteError = error instanceof StorageTimeoutError ? "存储写入超时，请重新打开后重试" : "存储接口拒绝了本次写入";
           return false;
         }
       },
@@ -113,7 +156,7 @@ export async function createDraftStorage(environment = currentEnvironment()): Pr
         if (previous) return previous;
         let result: StorageRead;
         try {
-          result = { ok: true, value: environment.getBrowserStorage().getItem(key) };
+          result = { ok: true, value: normalizeStoredValue(environment.getBrowserStorage().getItem(key)) };
         } catch {
           result = { ok: false };
         }
@@ -121,20 +164,22 @@ export async function createDraftStorage(environment = currentEnvironment()): Pr
         return result;
       },
     };
+    return store;
   }
   return {
     backend: "browser",
     async read(key) {
       try {
-        return { ok: true, value: environment.getBrowserStorage().getItem(key) };
+        return { ok: true, value: normalizeStoredValue(environment.getBrowserStorage().getItem(key)) };
       } catch {
         return { ok: false };
       }
     },
     async write(key, data) {
       try {
-        environment.getBrowserStorage().setItem(key, data);
-        return true;
+        const browser = environment.getBrowserStorage();
+        browser.setItem(key, data);
+        return sameStoredJson(normalizeStoredValue(browser.getItem(key)), data);
       } catch {
         return false;
       }

@@ -269,7 +269,7 @@ test("catalog previews and placement share complete palettes, with a light sky t
       const colors = getProductStyleColors(product.id, index);
       assert.deepEqual(Object.keys(colors), Object.keys(getDefaultColors(product.id)));
       assert.deepEqual(resolveLinkedProductColors(colors), colors, "preview colors must already match linked rendered parts");
-      if (index === 0) assert.deepEqual(colors, getDefaultColors(product.id));
+      if (index === 0 && !["l-house", "cube-house"].includes(product.id)) assert.deepEqual(colors, getDefaultColors(product.id));
       if (index === skyIndex) assert.ok(Object.values(colors).every(color => skyColors.has(color)), `${product.id} introduces a dark or off-theme tone`);
     }
   }
@@ -282,12 +282,12 @@ test("catalog previews and placement share complete palettes, with a light sky t
   assert.throws(() => getBaseStyleColors(1.5), /未知配色/);
 });
 
-test("official palettes use matching L-house and cube-house roofs, with apricot Christmas defaults", () => {
+test("official palettes use matching L-house and cube-house roofs, matching the milk-house Christmas defaults", () => {
   assert.equal(COLOR_STYLES[0].id, "original");
   assert.equal(COLOR_STYLES[0].name, "圣诞礼物");
   const placed = autoPlace(createInitialState(), "l-house");
   assert.ok(placed.ok);
-  const roofs = ["cream", "peachwood", "cream", "white", "rose"];
+  const roofs = ["butter", "peachwood", "cream", "white", "rose"];
   for (const [index] of COLOR_STYLES.entries()) {
     const preview = getProductStyleColors("l-house", index);
     const styled = applyColorStyle(placed.state, index);

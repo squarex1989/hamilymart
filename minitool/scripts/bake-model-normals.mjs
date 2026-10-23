@@ -1,4 +1,4 @@
-/** Build-time only: preserve the old runtime shading, then reuse identical vertices.
+/** Build-time only: smooth curves, keep planar faces flat, then reuse identical vertices.
  * No mesh simplification, material merging, or component reordering happens here.
  */
 import { readFileSync } from 'node:fs';
@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import * as THREE from 'three';
+import { lockPlanarFaceNormals } from '../../src/lib/planar-normals.js';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export const FORMAT = JSON.parse(readFileSync(new URL('../src/data/offline-model-format.json', import.meta.url), 'utf8'));
@@ -33,7 +34,7 @@ export function renderedStreamHash(positions, normals) {
 
 export function bakeMesh(source) {
   const geometry = new THREE.BufferGeometry();
-  // Use the exact old loadPart input and helper, including its Float32 rounding.
+  // Use the runtime coordinate precision, then correct only planar-face normals.
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(source.p.map(value => value / FORMAT.positionScale), 3));
   geometry.setIndex(source.i);
   const smooth = toCreasedNormals(geometry, FORMAT.creaseAngleDegrees * Math.PI / 180);
@@ -41,6 +42,9 @@ export function bakeMesh(source) {
   try {
     const positions = smooth.getAttribute('position').array;
     const normals = smooth.getAttribute('normal').array;
+    // Offline simplification introduces tiny plane slopes; allow less than 2.57°
+    // while retaining normals on the visibly curved facets. No positions move.
+    lockPlanarFaceNormals(positions, normals, 1e-3);
     const unique = new Map();
     const p = [], n = [], i = [];
     for (let vertex = 0; vertex < positions.length / 3; vertex++) {

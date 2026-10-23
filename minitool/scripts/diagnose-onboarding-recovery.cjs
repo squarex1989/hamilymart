@@ -1,0 +1,12 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');const fs=require('node:fs');
+(async()=>{const b=await chromium.launch({channel:'chrome',headless:true});const p=await b.newPage({viewport:{width:390,height:844},deviceScaleFactor:2});const errors=[];p.on('pageerror',e=>errors.push(e.message));
+await p.goto('http://127.0.0.1:5182/');await p.waitForSelector('.onboarding-loading',{state:'detached'});await p.getByRole('button',{name:'关闭弹窗'}).click();
+await p.waitForSelector('.scene-loading',{state:'detached'});await p.waitForTimeout(1600);
+await p.evaluate(()=>document.activeElement.blur());const canvas=p.locator('.scene-canvas canvas');const before=await canvas.screenshot();
+await p.getByRole('button',{name:'介绍',exact:true}).click();await p.waitForSelector('.onboarding-loading',{state:'detached'});
+await p.getByRole('button',{name:'第 1 页：你可以自由设计'}).click();await p.waitForTimeout(150);assert.equal(await p.locator('.onboarding-loading').count(),0,'clicking the current page must not get stuck loading');
+await p.locator('.onboarding-canvas canvas').evaluate(c=>{const gl=c.getContext('webgl2');gl.getExtension('WEBGL_lose_context').loseContext();});
+await p.getByText('3D 连接中断，请重试').waitFor();await p.getByRole('button',{name:'重新加载 3D'}).click();await p.waitForSelector('.onboarding-loading',{state:'detached'});
+await p.getByRole('button',{name:'关闭弹窗'}).click();await p.waitForTimeout(1600);await p.evaluate(()=>document.activeElement.blur());const after=await canvas.screenshot();fs.writeFileSync('artifacts/onboarding-v44/scene-before.png',before);fs.writeFileSync('artifacts/onboarding-v44/scene-after.png',after);assert.ok(before.equals(after),'camera and drawing must be unchanged after intro');
+await p.emulateMedia({reducedMotion:'reduce'});await p.getByRole('button',{name:'介绍',exact:true}).click();await p.waitForSelector('.onboarding-loading',{state:'detached'});await p.getByRole('button',{name:'第 3 页：可以模块化组装'}).click();await p.waitForSelector('.onboarding-loading',{state:'detached'});await p.getByRole('button',{name:'关闭弹窗'}).click();assert.deepEqual(errors,[]);
+const r={passed:true,currentPageReplay:true,contextLossRetry:true,cameraScreenshotIdentical:true,reducedMotion:true,errors};fs.writeFileSync('artifacts/onboarding-v44/recovery-validation.json',JSON.stringify(r,null,2));console.log(r);await b.close();})().catch(e=>{console.error(e);process.exit(1)});

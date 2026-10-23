@@ -1,5 +1,11 @@
+import { FIXED_DOOR_PAIRS } from './fixed-door-variants';
+import { PANEL_COLOR_LEADERS, hasReversiblePanel } from './reversible-panels';
+import downPipeCollision from "./down-pipe-collision.json";
+import libraryV18 from "./library-v18.json";
+import milkHouse2x3 from "./milk-house-2x3.json";
+import milkHouseAite from "./milk-house-aite.json";
 // Mesh/thumbnail cache revision is separate from saved configuration indices.
-export const MODEL_ASSET_VERSION = "steel-v17-four-magnet-seesaw";
+export const MODEL_ASSET_VERSION = "20261022-fixed-doors-compact-seats";
 
 /** Product data, prices (CNY cents), and attachment geometry. All dimensions are mm.
  * Magnet coordinates follow unified_complete_steel_v15/hardware_complete.json.
@@ -54,6 +60,11 @@ export const SOURCE_PART_TRIM_COLORS: Record<string, Record<string, ColorId>> = 
   A01: { ChristmasRed: "butter" },
 };
 export type ColorMap = Record<string, ColorId>;
+/** Preserve the formerly derived rim in old drafts; explicit rim colors take priority. */
+export function getPoolRimColor(basin: ColorId): ColorId {
+  const accents: Partial<Record<ColorId, ColorId>> = { cream: "red", peachwood: "darkwood", rose: "white", sky: "yellow", jade: "rose", white: "sky", wood: "darkwood", darkwood: "wood", gray: "white", black: "gray" };
+  return accents[basin] ?? "cream";
+}
 export interface ProductPart {
   id: string;
   role: string;
@@ -62,11 +73,14 @@ export interface ProductPart {
 }
 /** Independent decorative color slots; these are color controls, not separately sold parts. */
 export const SOURCE_PART_COLOR_SLOTS: Record<string, Record<string, string>> = {
+  B01: { ChristmasRed: "B01-rim" },
   A01: { Gold: "A01-ribbon", ChristmasRed: "A01-bow" },
   G05: { Snow: "G05-base" },
 };
 /** Source IDs distinguish decorative bodies even when both have the Gold material. */
 export const SOURCE_COMPONENT_COLOR_SLOTS: Record<string, Record<string, string>> = {
+  PCW: { PCW_cyan: "PCW-glass", PCW_dark: "PCW-frame" },
+  PCR: { PCR_white: "PCR-trim", PCR_cyan: "PCR-glass", PCR_dark: "PCR-frame" },
   A01: {
     A01_Gold: "A01-ribbon",
     A01_StarGold: "A01-bow",
@@ -87,6 +101,12 @@ export function getSourceColorSlot(
     ?? (colorKey ? SOURCE_PART_COLOR_SLOTS[groupId]?.[colorKey] : undefined);
 }
 export const COLOR_SLOTS: Record<string, ProductPart> = {
+  "B01-rim": { id: "B01-rim", role: "泳池外圈", defaultColor: "red" },
+  "PCW-glass": { id: "PCW-glass", role: "墙面窗玻璃", defaultColor: "sky" },
+  "PCW-frame": { id: "PCW-frame", role: "墙面窗框", defaultColor: "black" },
+  "PCR-trim": { id: "PCR-trim", role: "屋顶装饰", defaultColor: "white" },
+  "PCR-glass": { id: "PCR-glass", role: "屋顶窗玻璃", defaultColor: "sky" },
+  "PCR-frame": { id: "PCR-frame", role: "屋顶窗框", defaultColor: "black" },
   "SS01-base": { id: "SS01-base", role: "跷跷板底座", defaultColor: "pine" },
   "A01-ribbon": { id: "A01-ribbon", role: "礼物盒丝带", defaultColor: "butter" },
   // Keep the persisted key and position so previous bow colors become the star colors.
@@ -101,14 +121,15 @@ export function getColorParts(parts: ProductPart[]): ProductPart[] {
     ...Object.values(SOURCE_PART_COLOR_SLOTS[part.id] ?? {}),
     ...Object.values(SOURCE_COMPONENT_COLOR_SLOTS[part.id] ?? {}),
   ]))];
-  return [...parts, ...slots.map(id => COLOR_SLOTS[id])];
+  return [...parts.filter(part => !PANEL_COLOR_LEADERS[part.id]), ...slots.map(id => COLOR_SLOTS[id])];
 }
-const LINKED_COLOR_PARTS: Record<string, string> = { G16: "G15", G17: "G15", W01: "A02", W02: "A02" };
+const LINKED_COLOR_PARTS: Record<string, string> = { ...PANEL_COLOR_LEADERS, G16: "G15", G17: "G15", W01: "A02", W02: "A02" };
 /** Rendering and editing use one leader; persisted part positions remain unchanged. */
 export function getLinkedColorPartId(partId: string): string {
   return LINKED_COLOR_PARTS[partId] ?? partId;
 }
 export function setProductColor(colors: ColorMap, partId: string, color: ColorId): ColorMap {
+  if (partId === "PCW-glass" || partId === "PCR-glass") return resolveLinkedProductColors(colors);
   const leader = getLinkedColorPartId(partId);
   const linked = Object.entries(LINKED_COLOR_PARTS).filter(([, id]) => id === leader).map(([id]) => id);
   return resolveHatContrast({ ...colors, ...Object.fromEntries([leader, ...linked].map(id => [id, color])) });
@@ -124,7 +145,11 @@ export function resolveHatContrast(colors: ColorMap): ColorMap {
 }
 /** Effective rendered/order colors; old saved follower choices are left intact in storage. */
 export function resolveLinkedProductColors(colors: ColorMap): ColorMap {
-  return resolveHatContrast(Object.fromEntries(Object.entries(colors).map(([part, color]) => [part, colors[getLinkedColorPartId(part)] ?? color])));
+  const resolved = Object.fromEntries(Object.entries(colors).map(([part, color]) => [part, colors[getLinkedColorPartId(part)] ?? color]));
+  if ('PCW' in colors || 'PCR' in colors || 'PCW-glass' in colors || 'PCR-glass' in colors) {
+    resolved['PCW-glass'] = resolved['PCR-glass'] = 'sky';
+  }
+  return resolveHatContrast(resolved);
 }
 export interface MagnetSurface {
   id: string;
@@ -135,6 +160,7 @@ export interface PipeFace {
   center: Vec3;
   normal: Vec3;
 }
+export const FLAT_HOUSE_ROOF_IDS = ["l-house", "cube-house", "milk-house-left", "milk-house-right", "milk-house-double", "milk-house-double-2x3", "milk-house-double-left", "milk-house-double-2x3-left"];
 export interface Product {
   id: string;
   sku: string;
@@ -144,6 +170,7 @@ export interface Product {
   description: string;
   badge?: string;
   installation?: "magnet" | "insert";
+  attachment?: "platform-hole" | "room-floor";
   parts: ProductPart[];
   /** Source-space pivot; renderer subtracts this before rotating and translating. */
   origin: Vec3;
@@ -153,11 +180,16 @@ export interface Product {
   minimumMagnetMatches?: number;
   /** Audited partial overlap on base steel receivers; other surfaces remain concentric. */
   baseMagnetOffsetMm?: number;
+  /** Same audited magnet/steel overlap, only on explicitly verified roof grids. */
+  roofMagnetOffsets?: Record<string, number>;
   /** Source-space conservative occupied volumes, separate boxes retain L-shaped clearance. */
   collisionBoxes: Bounds[];
   /** Source-space upward attachment positions and supporting area. */
   surfaces?: MagnetSurface[];
   pipeFaces?: PipeFace[];
+  /** A bridge needs two distinct, coplanar roof supports. */
+  supportMode?: "bridge";
+  preciseCollisionBoxes?: Bounds[];
   allowedParents?: string[];
   /** Relative rotations proven clear of the bundled parent geometry. */
   allowedRelativeRotations?: Rotation[];
@@ -179,12 +211,12 @@ export const LEG_SET_PRICES = { 0: 0, 100: 1000, 200: 1200, 300: 1400 } as const
 export const BASE_PRODUCT = {
   id: "platform",
   sku: "HM-PL-001",
-  name: "云朵基础平台",
+  name: "基础平台",
   price: PLATFORM_BODY_PRICE + LEG_SET_PRICES[100],
   tallLegSurcharge: LEG_SET_PRICES[200] - LEG_SET_PRICES[100],
   extraTallLegSurcharge: LEG_SET_PRICES[300] - LEG_SET_PRICES[100],
   noLegDiscount: LEG_SET_PRICES[100],
-  poolSurcharge: 2500,
+  poolSurcharge: 2400,
   description: "30 × 30 cm 平台 · 含四支撑脚与六个孔盖",
 };
 export function getBaseParts(
@@ -194,7 +226,7 @@ export function getBaseParts(
 ): ProductPart[] {
   return [
     part("P01", "平台", "cream"),
-    ...[1, 2, 3, 4, 5].filter(n => !removedCovers.includes(`H0${n}`)).map((n) => part(`H0${n}`, `小圆盖 ${n}`, "cream")),
+    ...[1, 2, 3, 4, 5].filter(n => !removedCovers.includes(`H0${n}`)).map((n) => part(`H0${n}`, `连通孔 ${n}`, "cream")),
     part(
       pool === true || pool === "pool" ? "B01" : "H06",
       pool === true || pool === "pool" ? "嵌入池盆" : "大圆盖",
@@ -228,7 +260,7 @@ function pipe(
     bottomMagnets: down(magnets, 0),
     collisionBoxes: [bounds],
     pipeFaces: faces,
-    allowedParents: ["base", "l-house"],
+    allowedParents: ["base", ...FLAT_HOUSE_ROOF_IDS],
   };
 }
 const straightFaces = (x: number, y: number): PipeFace[] => [
@@ -241,7 +273,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-HS-001",
     name: "礼物盒小屋",
     category: "house",
-    price: 8000,
+    price: 7900,
     badge: "人气套餐",
     description: "礼物盒小屋 + 二层平台 + 楼梯 + 三边草栏 + 双支柱",
     origin: [150, 190, 110],
@@ -290,10 +322,11 @@ export const PRODUCTS: Product[] = [
         points: down(
           [
             [280.5, 264],
+            [210, 290],
           ],
           200,
         ),
-        bounds: [235, 215, 200, 300, 300, 200],
+        bounds: [167, 180, 200, 300, 300, 200],
       },
     ],
     allowedParents: ["base"],
@@ -303,7 +336,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-HS-002",
     name: "L型转角屋",
     category: "house",
-    price: 3500,
+    price: 3400,
     description: "L 型房屋 + 顶盖板 · 屋顶可继续搭建",
     origin: [100, 100, 0],
     parts: [part("LHB", "房屋", "pine"), part("LHR", "顶盖板", "cream")],
@@ -316,32 +349,21 @@ export const PRODUCTS: Product[] = [
       0,
     ),
     collisionBoxes: [
-      [2, 2, 0, 98, 198, 85.6],
-      [98, 102, 0, 198, 198, 85.6],
+      [2, 2, 0, 98, 198, 90],
+      [98, 102, 0, 198, 198, 90],
     ],
     surfaces: [
-      {
-        id: "roof",
-        points: down(
-          [
-            [10, 110],
-            [90, 110],
-            [10, 190],
-            [90, 190],
-          ],
-          85.6,
-        ),
-        bounds: [2, 102, 85.6, 98, 198, 85.6],
-      },
+      { id: "roof", points: down([[10,10],[90,10],[10,90],[90,90],[10,110],[90,110],[10,190],[90,190]],90), bounds: [2,2,90,98,198,90] },
+      { id: "roof-wide", points: down([[10,110],[90,110],[110,110],[190,110],[10,190],[90,190],[110,190],[190,190]],90), bounds: [2,102,90,198,198,90] },
     ],
-    allowedParents: ["base"],
+    allowedParents: ["base", "milk-house-double", "milk-house-double-2x3"],
   },
   {
     id: "cube-house",
     sku: "HM-HS-003",
     name: "方糖小屋",
     category: "house",
-    price: 1500,
+    price: 1400,
     description: "立方房屋 + 顶盖板 · 也能叠在 L 型屋顶",
     origin: [50, 50, 0],
     parts: [part("SHB", "房屋", "pine"), part("SHR", "顶盖板", "cream")],
@@ -352,16 +374,17 @@ export const PRODUCTS: Product[] = [
       ],
       0,
     ),
-    collisionBoxes: [[2, 2, 0, 98, 98, 83.4]],
-    allowedParents: ["base", "l-house"],
+    collisionBoxes: [[2, 2, 0, 98, 98, 90]],
+    surfaces: [{ id: "roof", points: down([[10,10],[10,90],[90,10],[90,90]],90), bounds: [2,2,90,98,98,90] }],
+    allowedParents: ["base", "l-house", "milk-house-left", "milk-house-right", "milk-house-double", "milk-house-double-2x3"],
   },
   {
     id: "roof-cottage",
     sku: "HM-HS-004",
     name: "帽子小屋",
     category: "house",
-    price: 4000,
-    description: "一层两点磁吸 · 二层四点磁吸",
+    price: 3900,
+    description: "平台及奶糖二居室两点磁吸 · 礼物盒二层四点磁吸",
     // Stable virtual pivot: source body and all four contacts moved +5 mm in
     // V15, matching the parent receivers, so old saved hat transforms survive.
     origin: [78, 239, 200],
@@ -376,10 +399,11 @@ export const PRODUCTS: Product[] = [
       200,
     ),
     collisionBoxes: [[2, 179.60000610351562, 200, 164, 298, 373.3333435058594]],
-    allowedParents: ["base", "villa"],
+    allowedParents: ["base", "villa", "milk-house-double", "milk-house-double-2x3"],
     // Ø8 magnets on Ø12 steel: 94 mm / 100 mm pairs, centered with 3 mm
     // offset per magnet (89.36% overlap). Does not imply measured holding force.
     baseMagnetOffsetMm: 3,
+    roofMagnetOffsets: { "milk-house-double": 3, "milk-house-double-2x3": 3 },
     allowedRelativeRotations: [0],
   },
   pipe(
@@ -459,7 +483,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-GD-001",
     name: "袜子花圃",
     category: "facility",
-    price: 500,
+    price: 800,
     description: "中心单点磁吸 · 可安装于平台及房屋顶面",
     origin: [280.5, 264, 200],
     parts: [part("G06", "花圃", "red")],
@@ -471,7 +495,7 @@ export const PRODUCTS: Product[] = [
     ),
     minimumMagnetMatches: 1,
     collisionBoxes: [[264, 220, 200, 296, 294, 261.5]],
-    allowedParents: ["base", "villa", "l-house"],
+    allowedParents: ["base", "villa", ...FLAT_HOUSE_ROOF_IDS],
     allowedRelativeRotations: [0],
   },
   {
@@ -479,14 +503,14 @@ export const PRODUCTS: Product[] = [
     sku: "HM-GD-002",
     name: "方块食盆",
     category: "facility",
-    price: 500,
-    description: "中心单点磁吸 · 可安装于平台及房屋顶面",
+    price: 800,
+    description: "原位与边角磁吸 · 可安装于平台及房屋顶面",
     origin: [280.5, 264, 200],
     parts: [part("O01", "食盆", "red")],
-    bottomMagnets: down([[280.5, 264]], 200),
+    bottomMagnets: down([[280.5, 264], [249, 288]], 200),
     minimumMagnetMatches: 1,
     collisionBoxes: [[241, 236, 200, 296, 296, 221]],
-    allowedParents: ["base", "villa", "l-house"],
+    allowedParents: ["base", "villa", ...FLAT_HOUSE_ROOF_IDS],
     allowedRelativeRotations: [0],
   },
   {
@@ -509,7 +533,7 @@ export const PRODUCTS: Product[] = [
     sku: "HM-TY-001",
     name: "跷跷板",
     category: "facility",
-    price: 1500,
+    price: 1400,
     description: "18 × 10 cm · 四点磁吸 · 最高 10 cm · 圆角防滑棱",
     origin: [100, 250, 110],
     parts: [part("SS01", "防滑板面", "butter")],
@@ -517,7 +541,7 @@ export const PRODUCTS: Product[] = [
     minimumMagnetMatches: 4,
     // Reserve the complete +/-32 degree swing, not just the default pose.
     collisionBoxes: [[9.3, 200, 110, 190.7, 300, 210]],
-    allowedParents: ["base"],
+    allowedParents: ["base", ...FLAT_HOUSE_ROOF_IDS],
   },
   // The source LT2N uses the same real LT2B support, magnets and end faces as LT2.
   {
@@ -539,10 +563,47 @@ export const PRODUCTS: Product[] = [
     description: "10 × 10 cm · 三向连通管道 + 专用磁吸底座",
     parts: [part(`${id}T`, "管道", "cream"), part("TTB", "磁吸底座", "cream")],
   })),
+  ...(libraryV18 as Product[]),
+  {
+    id: "pipe-down", sku: "HM-PP-DP01", name: "向下连通管道", category: "pipe", price: 800,
+    description: "向下 10 cm · 净内径≥6 cm · 内壁防滑棱 · 插入平台连通孔",
+    installation: "insert", attachment: "platform-hole",
+    parts: [part("DP01", "管道", "cream")], origin: [0,0,0], bottomMagnets: [],
+    // Include a short clear entry above the opening, so a house cannot seal it.
+    collisionBoxes: [[-37.85,-37.85,-100,55.6,37.85,10]], preciseCollisionBoxes: downPipeCollision as Bounds[], allowedParents: ["base"],
+  },
+  milkHouse2x3 as Product,
+  milkHouseAite as Product,
+  {
+    id: "urine-tray-aite", sku: "HM-GD-004", name: "尿砂盆（艾特）", category: "facility", price: 1400,
+    description: "13×13×9 cm · 弧形低口4 cm · 自由摆放",
+    attachment: "room-floor", parts: [part("UT01", "盆体", "cream")],
+    origin: [65,65,0], bottomMagnets: [], minimumMagnetMatches: 0,
+    collisionBoxes: [[0,0,0,130,130,90]],
+    allowedParents: ["base","milk-house-double","milk-house-double-2x3","milk-house-aite"],
+  },
 ];
+// Append new left-hand variants; never reorder the historical PRODUCTS array.
+for (const pair of FIXED_DOOR_PAIRS) {
+  const right = PRODUCTS.find(p => p.id === pair.right)!;
+  if (pair.right !== 'milk-house-right') {
+    const left = JSON.parse(JSON.stringify(right)) as Product;
+    left.id = pair.left; left.sku += '-L'; left.name = right.name.replace('右开门', '左开门');
+    left.parts = left.parts.map(p => ({ ...p, id: p.id === pair.body ? pair.leftBody : p.id }));
+    left.bottomMagnets = right.bottomMagnets.map(p => { const q = [...p] as Vec3; q[pair.axis] = pair.span - q[pair.axis]; return q; });
+    PRODUCTS.push(left);
+  }
+}
+for (const product of PRODUCTS) {
+  if (!product.allowedParents) continue;
+  product.allowedParents = [...new Set((product.allowedParents ?? []).flatMap(id => {
+    const pair = FIXED_DOOR_PAIRS.find(p => p.right === id);
+    return pair ? [id, pair.left] : [id];
+  }))];
+}
 /** Keep legacy product indices decodable while showing one choice per distinct pipe geometry. */
-const VISIBLE_PRODUCT_IDS = ["villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-lt2n", "pipe-st2", "pipe-lt2", "pipe-tt2", "pipe-tt1", "planter", "food-bowl", "pool", "seesaw"];
-export const VISIBLE_PRODUCTS = VISIBLE_PRODUCT_IDS.map(id => getProduct(id));
+const VISIBLE_PRODUCT_IDS = ["villa", "l-house", "cube-house", "roof-cottage", "pipe-st1", "pipe-lt2n", "pipe-st2", "pipe-lt2", "pipe-tt2", "pipe-tt1", "planter", "food-bowl", "pool", "urine-tray-aite", "seesaw"];
+export const VISIBLE_PRODUCTS = [...VISIBLE_PRODUCT_IDS, ...libraryV18.filter(product => !/^stairs-.*-2$/.test(product.id) && (product.id !== "milk-house-left" || !hasReversiblePanel("milk-house-right"))).map(product => product.id), "pipe-down", "milk-house-double-2x3", "milk-house-aite", "milk-house-double-left", "milk-house-double-2x3-left", "milk-house-aite-left"].map(id => getProduct(id));
 export function getProduct(id: string): Product {
   const product = PRODUCTS.find((p) => p.id === id);
   if (!product) throw new Error(`未知组件：${id}`);
@@ -556,7 +617,7 @@ export function getEditableProductColorParts(productId: string): ProductPart[] {
     A01: "小屋墙面", A02: "二层平台与支柱", G05: "楼梯踏面", G15: "草丛围栏", G03: "帽子主体",
   };
   return getProductColorParts(productId)
-    .filter(part => getLinkedColorPartId(part.id) === part.id)
+    .filter(part => getLinkedColorPartId(part.id) === part.id && part.id !== "PCW-glass" && part.id !== "PCR-glass")
     .map(part => ({ ...part, role: roles[part.id] ?? part.role }));
 }
 export function getDefaultColors(productId: string): ColorMap {
@@ -566,4 +627,4 @@ export function getDefaultColors(productId: string): ColorMap {
 }
 export const COLOR_IDS = new Set<string>(COLORS.map((c) => c.id));
 export const SNAP_DISTANCE_MM = 42;
-export const CATALOG_VERSION = 8;
+export const CATALOG_VERSION = 10;

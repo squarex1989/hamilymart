@@ -90,7 +90,7 @@ test("rotated and stacked real houses keep roofs directly above their own bodies
     // The cube stands on the occupied back-left square of the L roof. Rotate
     // its position with the L so all four real assembly orientations are covered.
     const upperPosition = new THREE.Vector3(-50, 50, 0).applyAxisAngle(new THREE.Vector3(0, 0, 1), rotation)
-      .add(new THREE.Vector3(150, 150, 195.6));
+      .add(new THREE.Vector3(150, 150, 200));
     root.add(await realOwner("upper", cube.parts, cube.origin, upperPosition.toArray(), rotation));
     try {
       const original = allTransforms(root);
@@ -194,4 +194,19 @@ test("blank double taps require nearby consecutive clicks of the same pointer ty
   taps.reset(); // Model hit, drag, pinch, cancellation, or hidden document breaks the pair.
   assert.equal(taps.tap(60, 24, 1400, "mouse"), false);
   assert.equal(taps.tap(60, 24, 1400, "mouse"), true, "native fast double clicks remain supported");
+});
+
+test('isolated part mode separates platform covers/legs and restores every original transform', async () => {
+  const root = new THREE.Group();
+  root.add(await realOwner('base', getBaseParts(100), [0,0,0], [0,0,0]));
+  try {
+    const before = allTransforms(root);
+    const layout = createExplodedLayout(root, 'parts');
+    assert(layout.pieces.length >= 11);
+    const deck = layout.pieces.find(piece => piece.partId === 'P01')!;
+    assert(deck.offset.z > 0, 'deck lifts off the separate legs');
+    for (const piece of layout.pieces.filter(piece => /^H0/.test(piece.partId))) assert(piece.offset.z > deck.offset.z, 'covers lift above the deck');
+    layout.apply(1); assert.notDeepEqual(allTransforms(root), before);
+    layout.apply(.3); layout.restore(); assert.deepEqual(allTransforms(root), before);
+  } finally { dispose(root); }
 });

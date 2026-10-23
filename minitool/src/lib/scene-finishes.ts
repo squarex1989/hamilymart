@@ -13,6 +13,8 @@ export function applyFinish(material: THREE.MeshStandardMaterial, colorId: strin
   material.onBeforeCompile = THREE.Material.prototype.onBeforeCompile;
   material.customProgramCacheKey = () => "hamily-solid-1";
   if (material instanceof THREE.MeshPhysicalMaterial) {
+    // Matte stock is diffuse: moving the camera must not add a white specular wash.
+    material.specularIntensity = 0;
     material.clearcoat = 0;
     material.clearcoatRoughness = 0;
   }
@@ -21,6 +23,7 @@ export function applyFinish(material: THREE.MeshStandardMaterial, colorId: strin
     material.roughness = .22;
     material.metalness = .04;
     if (material instanceof THREE.MeshPhysicalMaterial) {
+      material.specularIntensity = 1;
       material.clearcoat = .8;
       material.clearcoatRoughness = .12;
     }

@@ -5,6 +5,7 @@ import { join, resolve } from "node:path";
 import type { Plugin } from "vite";
 import { VISIBLE_PRODUCTS } from "../src/data/catalog";
 import { COLOR_STYLES } from "../src/lib/color-styles";
+import { MODEL_RENDER_VERSION } from "../src/lib/model-presentation";
 import { getThumbnailDefinition } from "../src/lib/catalog-thumbnail-contract";
 
 const ENDPOINT = "/__catalog-export/assets";
@@ -126,12 +127,14 @@ export function thumbnailExportPlugin(): Plugin {
               let manifest: Record<string, Record<string, unknown>> = {};
               try { manifest = JSON.parse(await readFile(manifestPath, "utf8")); }
               catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+              const visible = new Set(VISIBLE_PRODUCTS.map(product => product.id));
+              for (const entries of Object.values(manifest)) for (const id of Object.keys(entries)) if (!visible.has(id)) delete entries[id];
               await mkdir(join(root, style.id), { recursive: true });
               await atomicWrite(join(root, style.id, `${product.id}.png`), png);
               if (style.id === "original") await atomicWrite(join(root, `${product.id}.png`), png);
               manifest[style.id] ??= {};
               manifest[style.id][product.id] = {
-                renderer: "three-shared-v1", materialColors: definition.materialColors,
+                renderer: MODEL_RENDER_VERSION, materialColors: definition.materialColors,
                 materialHexColors: definition.materialHexColors, modelSha256, pngSha256,
               };
               await atomicWrite(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

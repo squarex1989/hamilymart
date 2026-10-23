@@ -1061,6 +1061,25 @@
         "generator": "scripts/prepare-tee-pipes.py",
         "production3mfIncluded": false
       }
+    },
+    "UT01": {
+      "bytes": 544492,
+      "components": [
+        {
+          "id": "UT01_Snow",
+          "sourceTriangles": 90880,
+          "triangles": 30172,
+          "sampledMaxErrorMm": 0.009801,
+          "boundsMaxErrorMm": 0.000901,
+          "volumeRelativeError": 5.774e-05
+        }
+      ],
+      "source": {
+        "sourceDirectory": "urine-tray-rounded",
+        "source": "print_parts/UT01.stl",
+        "sourceSha256": "fa10f5efb0e5d4d215372f0e010121f66d2146ba89f646c470290daaab1a530e",
+        "orthogonalTransformOnly": true
+      }
     }
   }
 }

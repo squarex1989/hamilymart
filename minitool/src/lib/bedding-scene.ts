@@ -1,5 +1,7 @@
+import { getLayoutFootprint } from "./layout-footprint";
+import { getCageBounds } from "./cage-scene";
 import * as THREE from "three";
-import { getPlatforms, getDisplayElevation } from "./assembly";
+import { getPlatforms } from "./assembly";
 import type { AssemblyState } from "./assembly";
 import modelIndex from "../data/model-index.json";
 import { MIN_BEDDING_OPACITY } from "./bedding-fade";
@@ -11,12 +13,12 @@ export const BEDDING_OVERHANG_MM = 50;
 
 /** One continuous bed around the whole joined platform footprint. */
 export function getBeddingBounds(state: AssemblyState): Bounds {
-  const platforms = getPlatforms(state);
+  const cage = getCageBounds(state);
+  if (cage) return { minX: cage.min.x, maxX: cage.max.x, minY: cage.min.y, maxY: cage.max.y };
+  const footprint = getLayoutFootprint(state);
   return {
-    minX: Math.min(...platforms.map(p => p.x)) - BEDDING_OVERHANG_MM,
-    maxX: Math.max(...platforms.map(p => p.x + 300)) + BEDDING_OVERHANG_MM,
-    minY: Math.min(...platforms.map(p => p.y)) - BEDDING_OVERHANG_MM,
-    maxY: Math.max(...platforms.map(p => p.y + 300)) + BEDDING_OVERHANG_MM,
+    minX: footprint.minX - BEDDING_OVERHANG_MM, maxX: footprint.maxX + BEDDING_OVERHANG_MM,
+    minY: footprint.minY - BEDDING_OVERHANG_MM, maxY: footprint.maxY + BEDDING_OVERHANG_MM,
   };
 }
 
@@ -191,11 +193,12 @@ function makeRibbon() {
 }
 
 /** Rounded, gently uneven fill with real curled shavings around every edge. */
-export function createBedding(scene: THREE.Scene) {
+export function createBedding(scene: THREE.Scene, decorate?: (material: THREE.Material) => void) {
   const shavingsTexture = createShavingsTexture();
   const group = new THREE.Group();
   group.name = "浅黄蓬松木屑垫料";
   scene.add(group);
+  const renderedBounds = new THREE.Box3();
   let signature = "";
   let opacity = 1;
   const materials: THREE.Material[] = [];
@@ -225,9 +228,11 @@ export function createBedding(scene: THREE.Scene) {
       }
     });
     group.clear();
+    renderedBounds.makeEmpty();
     materials.length = shadowCasters.length = 0;
   };
   return {
+    getBounds() { return renderedBounds.clone(); },
     setVisible(visible: boolean) { group.visible = visible; },
     setOpacity(value: number) {
       const next = Math.max(MIN_BEDDING_OPACITY, Math.min(1, value));
@@ -240,19 +245,16 @@ export function createBedding(scene: THREE.Scene) {
     setLowQuality(low: boolean) { group.traverse(object => { if (object instanceof THREE.InstancedMesh) object.visible = !low; }); },
     update(state: AssemblyState) {
       const platforms = getPlatforms(state);
-      const elevation = getDisplayElevation(state);
-      const key = JSON.stringify([state.bedding.depth, elevation, platforms.map(p => [p.x, p.y, p.baseInsert])]);
+      const key = JSON.stringify([state.cage, state.bedding.depth, getLayoutFootprint(state), platforms.map(p => [p.x, p.y, p.baseInsert, p.elevation])]);
       if (key === signature) return;
       signature = key;
       clear();
       const height = state.bedding.depth;
       if (height === 0) return;
       const bounds = getBeddingBounds(state);
-      const poolBottom = modelIndex.B01.bounds[2] + elevation;
-      // A raised basin must not punch a hole through bedding it never touches.
-      const pools = platforms.filter(p => p.baseInsert === "pool" && poolBottom < height - 1)
-        .map(p => ({ x: p.x + 100, y: p.y + 100 }));
-      const floor = Math.max(0, poolBottom - .5);
+      // Each basin cuts only the bedding reached by its own platform height.
+      const pools = platforms.filter(p => p.baseInsert === "pool" && modelIndex.B01.bounds[2] + p.elevation < height - 1)
+        .map(p => ({ x: p.x + 100, y: p.y + 100, floor: Math.max(0, modelIndex.B01.bounds[2] + p.elevation - .5) }));
       const material = new THREE.MeshStandardMaterial({
         color: "#FFFFFF", map: shavingsTexture, bumpMap: shavingsTexture,
         bumpScale: .38, roughness: 1,
@@ -318,7 +320,7 @@ export function createBedding(scene: THREE.Scene) {
       sides.setAttribute("uv", new THREE.Float32BufferAttribute(sideUV, 2));
       sides.setIndex(sideIndices); sides.computeVertexNormals();
       addMesh(sides);
-      const bottom = new THREE.ShapeGeometry(shapeWithPools(rings[0].points, floor === 0 ? pools : []), 32);
+      const bottom = new THREE.ShapeGeometry(shapeWithPools(rings[0].points, pools.filter(pool => pool.floor === 0)), 32);
       bottom.scale(1, 1, -1);
       // The underside faces down, without making the entire fill double-sided.
       const bottomIndex = bottom.index!;
@@ -328,6 +330,7 @@ export function createBedding(scene: THREE.Scene) {
       }
       bottom.computeVertexNormals(); addMesh(bottom);
       for (const pool of pools) {
+        const floor = pool.floor;
         const positions: number[] = [], uv: number[] = [], indices: number[] = [];
         for (let i = 0; i <= 64; i++) {
           const angle = i / 64 * Math.PI * 2;
@@ -422,6 +425,15 @@ export function createBedding(scene: THREE.Scene) {
       materials.push(chips.material);
       applyOpacity();
       fitOuterEnvelope(group, bounds);
+      renderedBounds.setFromObject(group);
+      if (decorate) {
+        const seen = new Set<THREE.Material>();
+        group.traverse(object => { if (object instanceof THREE.Mesh) {
+          for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
+            if (!seen.has(material)) { seen.add(material); decorate(material); }
+          }
+        } });
+      }
     },
     dispose() { clear(); shavingsTexture.dispose(); scene.remove(group); },
   };

@@ -51,7 +51,7 @@ for(const [name,engine] of [['web', {createInitialState,getMagnetPoints,getPlace
 }
 test('V17 independent colors survive HM3, order lines and all five material palettes',()=>{
  const first=createInitialState();const placed=autoPlace(first,'seesaw');assert(placed.ok);const state={...placed.state,items:placed.state.items.map(i=>({...i,colors:{SS01:'rose' as const,'SS01-base':'sky' as const}}))};
- assert.equal(getTotalPrice(state)-getTotalPrice(first),1500);assert.deepEqual(decodeConfig(encodeConfig(state)).items[0].colors,state.items[0].colors);
+ assert.equal(getTotalPrice(state)-getTotalPrice(first),1400);assert.deepEqual(decodeConfig(encodeConfig(state)).items[0].colors,state.items[0].colors);
  assert.deepEqual(getOrderLines(state).find(l=>l.sku.startsWith('HM-TY-001'))!.colors,state.items[0].colors);
  const part=getProduct('seesaw').parts[0];
  for(let i=0;i<5;i++){const colors=getProductStyleColors('seesaw',i);assert.notEqual(colors.SS01,colors['SS01-base']);assert.equal(getModelMaterialColor(part,'SS01_Gold','Gold',colors),colors.SS01);assert.equal(getModelMaterialColor(part,'SS01_PineGreen','PineGreen',colors),colors['SS01-base']);}

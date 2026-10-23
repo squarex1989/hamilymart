@@ -1,0 +1,61 @@
+{
+  "id": "milk-house-aite",
+  "sku": "HM-HS-010",
+  "name": "奶糖二居室（艾特）（右开门）",
+  "category": "house",
+  "price": 4900,
+  "description": "固定门墙 · 含盖高 10 cm · 无顶盖铁片",
+  "parts": [
+    {
+      "id": "MCATB",
+      "role": "墙体",
+      "defaultColor": "cream"
+    },
+    {
+      "id": "MCATR",
+      "role": "顶盖",
+      "defaultColor": "butter"
+    }
+  ],
+  "origin": [
+    150,
+    93,
+    0
+  ],
+  "bottomMagnets": [
+    [
+      10.0,
+      76.0,
+      0.0
+    ],
+    [
+      290.0,
+      76.0,
+      0.0
+    ],
+    [
+      10.0,
+      176.0,
+      0.0
+    ],
+    [
+      290.0,
+      176.0,
+      0.0
+    ]
+  ],
+  "collisionBoxes": [
+    [
+      0,
+      0,
+      0,
+      300,
+      186,
+      100
+    ]
+  ],
+  "allowedParents": [
+    "base",
+    "milk-house-double-2x3"
+  ]
+}

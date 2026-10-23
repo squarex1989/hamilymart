@@ -1,0 +1,82 @@
+{
+  "H01:0": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H01:90": {
+    "legClear": false,
+    "poolClear": true
+  },
+  "H01:180": {
+    "legClear": false,
+    "poolClear": true
+  },
+  "H01:270": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H02:0": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H02:90": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H02:180": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H02:270": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H03:0": {
+    "legClear": false,
+    "poolClear": true
+  },
+  "H03:90": {
+    "legClear": false,
+    "poolClear": true
+  },
+  "H03:180": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H03:270": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H04:0": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H04:90": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H04:180": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H04:270": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H05:0": {
+    "legClear": false,
+    "poolClear": true
+  },
+  "H05:90": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H05:180": {
+    "legClear": true,
+    "poolClear": true
+  },
+  "H05:270": {
+    "legClear": false,
+    "poolClear": true
+  }
+}

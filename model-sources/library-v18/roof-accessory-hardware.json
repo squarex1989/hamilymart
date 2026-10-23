@@ -1,0 +1,62 @@
+{
+  "O01": {
+    "title": "方块食盆_通用边角磁吸",
+    "bounds_mm": [
+      241.0,
+      236.0,
+      200.0,
+      296.0,
+      296.0,
+      221.0
+    ],
+    "new_contact_mm": [
+      249,
+      288,
+      200
+    ],
+    "pocket_diameter_mm": 8.1,
+    "pocket_z_mm": [
+      200,
+      202.1
+    ],
+    "hardware_mm": [
+      8,
+      2
+    ],
+    "old_contacts_preserved": true,
+    "watertight": true,
+    "removed_mm3": 108.16949178410141,
+    "ceiling_intact": true,
+    "source_sha256": "2bd026e9baed5bfb6df61ed4d3dce1fa3acab984b58fe2d7ec0a5d5befc4c095"
+  },
+  "A02": {
+    "title": "礼物盒二层平台_通用钢片位",
+    "bounds_mm": [
+      0.0,
+      180.0,
+      182.0,
+      300.0,
+      300.0,
+      200.0
+    ],
+    "new_contact_mm": [
+      210,
+      290,
+      200
+    ],
+    "pocket_diameter_mm": 12.2,
+    "pocket_z_mm": [
+      197.6,
+      199.6
+    ],
+    "hardware_mm": [
+      12,
+      2
+    ],
+    "old_contacts_preserved": true,
+    "watertight": true,
+    "removed_mm3": 233.70344470062992,
+    "ceiling_intact": true,
+    "source_sha256": "2bd026e9baed5bfb6df61ed4d3dce1fa3acab984b58fe2d7ec0a5d5befc4c095"
+  }
+}

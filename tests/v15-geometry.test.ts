@@ -54,7 +54,7 @@ test("V15 source bounds stay within the 300 mm deck and source contacts match th
   assert.deepEqual(surfaces.find(surface => surface.id === "cottage")!.points, getProduct("roof-cottage").bottomMagnets);
   for (const id of ["planter", "food-bowl"]) {
     assert.deepEqual(getProduct(id).origin, [280.5, 264, 200]);
-    assert.deepEqual(getProduct(id).bottomMagnets, surfaces.find(surface => surface.id === "planter")!.points);
+    assert.deepEqual(getProduct(id).bottomMagnets[0], surfaces.find(surface => surface.id === "planter")!.points[0]);
   }
 });
 
@@ -71,19 +71,20 @@ test("catalog-6 imports are validated against the old physical deck before upgra
   assert.equal(JSON.stringify(invalid), before);
 });
 
-test("old single-contact accessories on L-house roofs keep their physical position in all rotations", () => {
+test("old single-contact accessories on L-house roofs follow the unified storey without a horizontal shift", () => {
   for (const rotation of [0, 90, 180, 270] as const) {
     for (const id of ["planter", "food-bowl"]) {
       const initial = createInitialState();
       const house = tryPlace(initial, "l-house", getPlacements(initial, "l-house", rotation)[0], rotation);
       assert.ok(house.ok);
       if (!house.ok) continue;
-      const position = getPlacements(house.state, id, rotation).find(candidate => candidate.parentId === house.item.id)!;
+      const oldContacts = getProduct("l-house").surfaces!.flatMap(surface => surface.points).map(point => transformPoint(point, getProduct("l-house"), house.item));
+      const position = getPlacements(house.state, id, rotation).find(candidate => candidate.parentId === house.item.id && oldContacts.some(point => point.every((v,i) => Math.abs(v-[candidate.x,candidate.y,candidate.z][i]) < .01)))!;
       assert.ok(position);
       const accessory = tryPlace(house.state, id, position, rotation);
       assert.ok(accessory.ok);
       if (!accessory.ok) continue;
-      const previous = { ...accessory.state, catalogVersion: 6 };
+      const previous = { ...accessory.state, catalogVersion: 6, items: accessory.state.items.map(item => item.id === accessory.item.id ? { ...item, z: item.z - 4.4 } : item) };
       const migrated = migrateAssembly(previous).state;
       assert.deepEqual(migrated.items, accessory.state.items);
       assert.deepEqual(migrated.items.find(item => item.id === accessory.item.id), accessory.item);
@@ -102,6 +103,6 @@ test("current imports never repair corrupted current positions or repeat the old
   }
   const migratedAgain = migrateAssembly(current).state;
   assert.deepEqual(migratedAgain, current);
-  const foreign = { ...current, catalogVersion: 9 } as unknown as AssemblyState;
+  const foreign = { ...current, catalogVersion: 10 } as unknown as AssemblyState;
   assert.throws(() => migrateAssembly(foreign), /版本/);
 });

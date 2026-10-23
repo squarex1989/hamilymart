@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
+import { MODEL_ASSET_VERSION } from '../src/data/catalog';
 import format from '../src/data/offline-model-format.json';
 import { loadPart } from '../src/lib/offline-models';
 
@@ -30,7 +31,7 @@ test('offline script failures remain retryable and never block the shared model 
     head: {
       appendChild(script: FakeScript) {
         requests.push(script);
-        const match = /^\.\/models\/([A-Z][A-Z0-9]+)\.js\?v=creased36-indexed-v2$/.exec(script.src);
+        const match = /^\.\/models\/([A-Z][A-Z0-9]+)\.js\?v=planar-creased36-v4&a=[a-z0-9-]+$/.exec(script.src);
         assert.ok(match, 'the real loader must request its same-origin model script');
         const id = match[1];
         const outcome = outcomes.get(id)?.shift();
@@ -99,8 +100,8 @@ test('offline script failures remain retryable and never block the shared model 
     assert.strictEqual(await loadPart(id), group, 'the already parsed group is reused');
     assert.equal(factoryCalls.get(id), failure === 'throw' || failure === 'stale' ? 2 : 1);
     assert.equal(factoryCalls.get(nextId), 1);
-    assert.equal(requests.filter(script => script.src === `./models/${id}.js?v=${format.cacheRevision}`).length, 2);
-    assert.equal(requests.filter(script => script.src === `./models/${nextId}.js?v=${format.cacheRevision}`).length, 1);
+    assert.equal(requests.filter(script => script.src === `./models/${id}.js?v=${format.cacheRevision}&a=${MODEL_ASSET_VERSION}`).length, 2);
+    assert.equal(requests.filter(script => script.src === `./models/${nextId}.js?v=${format.cacheRevision}&a=${MODEL_ASSET_VERSION}`).length, 1);
     assert.ok(requests.every(script => script.removeCount === 1), 'success and failure both clean up their script nodes');
   });
 });

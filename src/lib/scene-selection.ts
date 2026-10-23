@@ -5,7 +5,7 @@ export function updateSelectionMetadata(objects: THREE.Object3D, selectedId: str
   for (const owner of objects.children) {
     const ownerId = owner.userData.itemId as string | undefined;
     if (!ownerId) continue;
-    const platform = /^(base|base2|base3)$/.test(ownerId);
+    const platform = /^(base|base2|base3|base4)$/.test(ownerId);
     const editingOwner = selectedId === ownerId || !!selectedId?.startsWith(`cover:${ownerId}:`);
     for (const part of owner.children) {
       const partId = String(part.userData.partId ?? "");

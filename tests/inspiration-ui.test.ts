@@ -42,7 +42,7 @@ function harness(appPath: string) {
     setViewResetKey() { assert.fail("inspiration must not reset the camera"); },
     notify: (message: string) => notices.push(message),
   };
-  const context = vm.createContext(bindings);
+  const context = vm.createContext(Object.assign(bindings, { connectionPlatform: null, setConnectionPlatform() {} }));
   vm.runInContext(ts.transpileModule(declarations.join("\n"), {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None },
   }).outputText, context);

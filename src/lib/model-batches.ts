@@ -34,7 +34,7 @@ export function createModelBatches(scene: THREE.Scene, objects: THREE.Group) {
     objects.traverseVisible(node => {
       if (!(node instanceof THREE.Mesh) || node instanceof THREE.InstancedMesh || !node.userData.modelMesh
         || Array.isArray(node.material) || node.material.transparent
-        || node.material.onBeforeCompile !== THREE.Material.prototype.onBeforeCompile
+        || (node.material.onBeforeCompile !== THREE.Material.prototype.onBeforeCompile && !node.material.userData.cageShader)
         || node.onBeforeRender !== THREE.Object3D.prototype.onBeforeRender) return;
       const material = node.material.toJSON();
       delete material.uuid; delete material.metadata; delete material.name; delete material.userData;

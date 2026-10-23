@@ -32,7 +32,7 @@ const server = http.createServer((req, res) => {
 const ASSEMBLY = 'hamilymart.assembly.v2', STYLE = 'hamilymart.catalog-style.v1';
 const saved = new Map();
 const hash = value => crypto.createHash('sha256').update(typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value)).digest('hex');
-const platforms = state => [state, state.extension, state.thirdPlatform].filter(Boolean);
+const platforms = state => [state, state.extension, state.thirdPlatform, state.fourthPlatform].filter(Boolean);
 function snapshot() {
   return { state: JSON.parse(saved.get(ASSEMBLY) || 'null'), hint: JSON.parse(saved.get(STYLE) || 'null') };
 }
@@ -79,7 +79,10 @@ function assertPreserved(before, after, count) {
   const allowed = after.hint.styleId === 'woodland' ? new Set(['wood', 'peachwood', 'darkwood'])
     : new Set(['white', 'sky', 'yellow', 'butter', 'cream', 'gray']);
   const colors = [...platforms(after.state).map(platform => platform.baseColors), ...after.state.items.map(item => item.colors)];
-  for (const color of colors.flatMap(map => Object.values(map))) assert(allowed.has(color), `Unexpected ${color} in ${after.hint.styleId} palette`);
+  for (const [key,color] of colors.flatMap(map => Object.entries(map))) {
+    if (key === 'PCW-glass' || key === 'PCR-glass') assert.equal(color,'sky','Pokemon glass remains blue in every palette');
+    else assert(allowed.has(color), `Unexpected ${color} in ${after.hint.styleId} palette`);
+  }
 }
 async function changeStyle(page, target) {
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -104,8 +107,8 @@ async function toolbarCheck(page, width, count) {
       })),
     };
   });
-  assert.deepEqual(result.buttons.map(button => button.label), ['增加平台', '给点灵感', '换个配色', '垫料高度', '清空当前设计']);
-  assert.equal(result.buttons[0].disabled, count === 3);
+  assert.deepEqual(result.buttons.map(button => button.label), ['增加平台', '给点灵感', '换个配色', '垫料与笼子', '清空当前设计']);
+  assert.equal(result.buttons[0].disabled, count === 4);
   assert.equal(result.buttons[1].disabled, false);
   assert(result.bar.left >= 0 && result.bar.right <= width, 'Bottom toolbar escapes the viewport');
   assert(result.bar.height <= 54, 'Toolbar unexpectedly grew into the main model area');
@@ -165,7 +168,7 @@ async function toolbarCheck(page, width, count) {
     saved.delete(STYLE);
     await page.reload({ waitUntil: 'load' });
     await ready(page);
-    for (const count of [1, 2, 3]) {
+    for (const count of [1, 2, 3, 4]) {
       if (count > 1) {
         await page.getByRole('button', { name: '增加平台', exact: true }).click();
         await waitSaved(page, value => value.state && platforms(value.state).length === count);

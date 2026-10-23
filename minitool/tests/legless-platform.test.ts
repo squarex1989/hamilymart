@@ -71,7 +71,9 @@ test("switching a populated three-pool design to no legs preserves all platforms
   previous = success(setPlatformPool(previous, "base3", true));
   previous = success(setBedding(previous, { mode: "thick", depth: 300 }));
   const updated = success(setLegHeight(previous, 0));
-  assert.deepEqual(getPlatforms(updated), getPlatforms(previous));
+  const shape = (state: AssemblyState) => getPlatforms(state).map(({legHeight: _height, elevation: _elevation, ...platform}) => platform);
+  assert.deepEqual(shape(updated), shape(previous));
+  assert.deepEqual(getPlatforms(updated).map(platform => platform.legHeight), [0, 300, 300], "only the selected base switches to no legs");
   assert.deepEqual(updated.items, previous.items);
   assert.equal(updated.legHeight, 0);
 });

@@ -31,3 +31,17 @@ test('shared product materials preserve clearcoat and the stair face treatment w
   assert.equal(step.onBeforeCompile, THREE.Material.prototype.onBeforeCompile);
   source.dispose(); material.dispose(); step.dispose();
 });
+
+test('matte cream and white retain their chosen colors without view-dependent white highlights', () => {
+  const source = new THREE.MeshStandardMaterial();
+  const part = getProduct('cube-house').parts[1];
+  const cream = createModelMaterial(source, part, undefined, undefined, { [part.id]: 'cream' });
+  const white = createModelMaterial(source, part, undefined, undefined, { [part.id]: 'white' });
+  assert.equal(cream.color.getHexString(), 'fef1db');
+  assert.equal(white.color.getHexString(), 'fafaf7');
+  assert.equal(cream.specularIntensity, 0);
+  assert.equal(white.specularIntensity, 0);
+  const lights = createModelLighting(new THREE.Scene());
+  for (const light of [lights.sun, lights.fill, lights.underside]) assert.equal(light.color.getHexString(), 'ffffff');
+  source.dispose();cream.dispose();white.dispose();
+});

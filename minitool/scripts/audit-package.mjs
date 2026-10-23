@@ -7,6 +7,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.resolve(process.env.HAMILY_AUDIT_DIST || path.join(root, 'dist'));
 const failures = [], warnings = [], files = [];
 const walkFiles = dir => { for (const name of readdirSync(dir)) { const target = path.join(dir,name); if(statSync(target).isDirectory())walkFiles(target);else files.push(target); } };walkFiles(dist);
+if(files.length > 200) failures.push(`Package has ${files.length} files; maximum is 200`);
+const modelBundles=JSON.parse(readFileSync(path.join(root,'src/data/model-bundles.json'),'utf8'));
 const allowed = new Set(['.html','.css','.js','.png','.jpg','.jpeg','.gif','.webp','.svg','.woff','.woff2','.json']);
 const htmlFiles = files.filter(f=>path.extname(f)==='.html');
 if(htmlFiles.length!==1||htmlFiles[0]!==path.join(dist,'index.html'))failures.push('Exactly one root index.html required');
@@ -34,7 +36,7 @@ for(const file of files.filter(f=>f.endsWith('.js'))){try{const tree=parse(readF
 const modelReport=JSON.parse(readFileSync(path.join(root,'generated/model-report.json'),'utf8'));
 let vertices=0, triangles=0;
 for(const [id,report] of Object.entries(modelReport)){
- const file=path.join(dist,'models',`${id}.js`);if(!existsSync(file)){failures.push(`Missing model ${id}`);continue;}
+ const file=path.join(dist,'models',`${modelBundles[id] || id}.js`);if(!existsSync(file)){failures.push(`Missing model ${id}`);continue;}
  const context={window:{}};vm.runInNewContext(readFileSync(file,'utf8'),context,{timeout:1000});
  let sum=0;
  for(const mesh of context.window.HamilyModels[id]()){

@@ -1,5 +1,6 @@
+import { hasReversiblePanel } from '../data/reversible-panels';
 import { useEffect, useRef } from "react";
-import { ArrowLeft, Check, Plus, Undo2, Redo2 } from "lucide-react";
+import { ArrowLeft, Check, Plus, Undo2, Redo2, Search } from "lucide-react";
 import { AVAILABLE_COLORS, canonicalColorId, getColorSwatch, getProduct } from "../data/catalog";
 import type { ColorId, ProductPart } from "../data/catalog";
 import { getPlatforms } from "../lib/assembly";
@@ -7,7 +8,7 @@ import type { AssemblyState, PlatformId } from "../lib/assembly";
 import ProductThumbnail from "./ProductThumbnail";
 import "./mobile-workbench.css";
 
-const categories = [["all", "全部"], ["house", "小屋"], ["pipe", "管道"], ["facility", "设施"]];
+const categories = [["all", "全部"], ["house", "小屋"], ["pipe", "楼梯与管道"], ["facility", "设施"]];
 export type WorkbenchProps = {
   state: AssemblyState;
   styleIndex: number;
@@ -28,10 +29,12 @@ export type WorkbenchProps = {
   onAdd: (id: string) => void;
   onColorPart: (id: string) => void;
   onColor: (id: ColorId) => void;
-  onLegHeight: (height: AssemblyState["legHeight"]) => void;
+  onLegHeight: (height: AssemblyState["legHeight"], applyAll?: boolean) => void;
+  onDoorSide: (side: "left" | "right") => void;
   onRestoreCover: (platform: PlatformId, cover: string) => void;
   onUndo: () => void;
   onRedo: () => void;
+  onDetails: () => void;
 };
 
 /** A dedicated touch rail, separate from the desktop catalog and pointer-drag flow. */
@@ -41,18 +44,21 @@ export default function MobileWorkbench(props: WorkbenchProps) {
   const platforms = getPlatforms(props.state);
   const platform = platforms.find(p => p.id === props.platformId);
   const editing = !!props.selectedId;
+  const item = props.state.items.find(item => item.id === props.selectedId);
   useEffect(() => { rail.current?.scrollTo({ left: 0 }); }, [props.category]);
   return <aside className={`mobile-workbench ${editing ? "is-editing" : ""}`} aria-label="移动端组件工作台">
     <header className="mobile-dock-header">
       {editing ? <button onClick={() => props.onSelect(null)}><ArrowLeft size={18} /><span>返回</span></button> :
         <div className="history-actions"><button onClick={props.onUndo} disabled={!props.canUndo} aria-label="后退一步"><Undo2 size={18} /></button><button onClick={props.onRedo} disabled={!props.canRedo} aria-label="前进一步"><Redo2 size={18} /></button></div>}
       <strong>{editing ? props.title : "给小家添点喜欢"}</strong>
-      <span aria-hidden="true" />
+      {editing ? <button className="component-details-button" onClick={props.onDetails}><Search size={17} /><span>详情</span></button> : <span aria-hidden="true" />}
     </header>
     {editing ? <div className="mobile-edit-body">
       {props.editingPlatform && <div className="mobile-leg-options">
-        <span>腿高</span><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={props.state.legHeight === height} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div>
+        <span>腿高</span><div>{([0, 100, 200, 300] as const).map(height => <button key={height} aria-pressed={platform?.legHeight === height} onClick={() => props.onLegHeight(height)}>{height === 0 ? "无腿" : `${height / 10} cm`}</button>)}</div>
       </div>}
+      {props.editingPlatform && platform && platforms.length > 1 && <button className="apply-all-leg-height" onClick={() => props.onLegHeight(platform.legHeight, true)}>将当前腿高应用到所有平台</button>}
+      {item && hasReversiblePanel(item.productId) && <div className="door-side-options" aria-label="门板方向"><span>开门方向</span><div>{(["left", "right"] as const).map(side => <button key={side} aria-pressed={(item.doorSide ?? "right") === side} onClick={() => props.onDoorSide(side)}>{side === "left" ? "左侧开门" : "右侧开门"}</button>)}</div></div>}
       <div className="mobile-part-rail" aria-label="选择换色部位">
         {props.parts.map(part => <button key={part.id} aria-pressed={props.colorPart === part.id} onClick={() => props.onColorPart(part.id)}>{/^[LXY]01$/.test(part.id) ? "支撑脚" : part.role}</button>)}
       </div>
@@ -61,7 +67,7 @@ export default function MobileWorkbench(props: WorkbenchProps) {
           <span className="mobile-color-chip" style={{ background: getColorSwatch(color.id) }}>{currentColor === color.id && <Check size={16} />}</span><small>{color.name}</small>
         </button>)}
       </div>
-      {props.editingPlatform && !!platform?.removedCovers.length && <div className="mobile-cover-options"><div>{platform.removedCovers.map(id => <button key={id} onClick={() => props.onRestoreCover(platform.id, id)}><Plus size={15} />放回小圆盖 {Number(id.slice(-1))}</button>)}</div></div>}
+      {props.editingPlatform && !!platform?.removedCovers.length && <div className="mobile-cover-options"><div>{platform.removedCovers.map(id => <button key={id} onClick={() => props.onRestoreCover(platform.id, id)}><Plus size={15} />封闭连通孔 {Number(id.slice(-1))}</button>)}</div></div>}
     </div> : <>
       <div className="mobile-product-rail" ref={rail} aria-label="横滑挑选配件">
         {props.products.map(product => <button className="mobile-product" key={product.id} disabled={!props.ready} onClick={() => props.onAdd(product.id)}>

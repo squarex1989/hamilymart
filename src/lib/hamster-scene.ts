@@ -3,8 +3,10 @@ import { HAMSTER_VARIANTS } from "../data/hamsters";
 import type { HamsterVariant } from "../data/hamsters";
 import { getProduct } from "../data/catalog";
 import type { Vec3 } from "../data/catalog";
-import { getPlatforms, getDisplayElevation, transformPoint, getItemBounds } from "./assembly";
+import { getPlatforms, getItemDisplayElevation, transformPoint, getItemBounds } from "./assembly";
 import type { AssemblyState } from "./assembly";
+import { getLayoutFootprint } from "./layout-footprint";
+import modelIndex from "../data/model-index.json";
 
 /** Z-up, millimetres. Edges are reversible, physically checked motion segments. */
 export interface HamsterWalkSample { point: Vec3; region: string }
@@ -189,9 +191,12 @@ function* indexTriangles(colliders: Collider[]): Generator<void, TriangleIndex> 
   return result;
 }
 function makeProbe(state: AssemblyState, variant: HamsterVariant, spatial: TriangleIndex): WorldProbe {
-  const radius = variant.size * .24, height = variant.size * .51, elevation = getDisplayElevation(state);
+  const radius = variant.size * .24, height = variant.size * .51;
   const platforms = getPlatforms(state), up = new THREE.Vector3(0, 0, 1), down = new THREE.Vector3(0, 0, -1);
   const boxes = state.items.flatMap(item => getItemBounds(item).map(box => ({ item, box })));
+  const ground = hamsterGroundBounds(state);
+  const high = Math.max(state.bedding.depth, ...platforms.map(p => 110 + p.elevation),
+    ...boxes.map(({item, box}) => box[5] + getItemDisplayElevation(state, item))) + height + 20;
   const hits = (origin: Vec3, direction: THREE.Vector3, far: number, firstOnly = false) => spatial.hits(origin, direction, far, firstOnly);
   const clear = (point: Vec3, climbing = false) => {
     const [x, y, z] = point;
@@ -208,21 +213,29 @@ function makeProbe(state: AssemblyState, variant: HamsterVariant, spatial: Trian
   };
   const floors = (x: number, y: number) => {
     const found: HamsterWalkSample[] = [];
-    const platform = platforms.find(p => x >= p.x + radius && x <= p.x + 300 - radius && y >= p.y + radius && y <= p.y + 300 - radius)
-      ?? platforms.find(p => x >= p.x && x <= p.x + 300 && y >= p.y && y <= p.y + 300 &&
-        // A shared platform seam is supported on both sides, unlike an outer edge.
-        [[-radius, 0], [radius, 0], [0, -radius], [0, radius]].every(([dx, dy]) => platforms.some(q => x + dx >= q.x && x + dx <= q.x + 300 && y + dy >= q.y && y + dy <= q.y + 300)));
-    if (!platform) return found;
-    const localX = x - platform.x, localY = y - platform.y;
-    const inPool = platform.baseInsert === "pool" && Math.hypot(localX - 100, localY - 100) < 78 + radius * .3;
-    const open = openings.some(([id, hx, hy]) => platform.removedCovers.includes(id) && Math.hypot(localX - hx, localY - hy) < 33 + radius * .25);
-    if (!inPool && !open) found.push({ point: [x, y, 110 + elevation], region: "platform" });
-    // Bedding is a support surface, never an invisible bridge across an empty basin.
-    if (!inPool) found.push({ point: [x, y, state.bedding.depth], region: "bedding" });
+    for (const platform of platforms) {
+      const supported = x >= platform.x + radius && x <= platform.x + 300 - radius && y >= platform.y + radius && y <= platform.y + 300 - radius;
+      // Only a coplanar neighboring platform can support a shared seam.
+      const seam = x >= platform.x && x <= platform.x + 300 && y >= platform.y && y <= platform.y + 300
+        && [[-radius, 0], [radius, 0], [0, -radius], [0, radius]].every(([dx, dy]) => platforms.some(q =>
+          Math.abs(q.elevation - platform.elevation) < .1 && x + dx >= q.x && x + dx <= q.x + 300 && y + dy >= q.y && y + dy <= q.y + 300));
+      if (!supported && !seam) continue;
+      const localX = x - platform.x, localY = y - platform.y;
+      const inPool = platform.baseInsert === "pool" && Math.hypot(localX - 100, localY - 100) < 78 + radius * .3;
+      const open = openings.some(([id, hx, hy]) => platform.removedCovers.includes(id) && Math.hypot(localX - hx, localY - hy) < 33 + radius * .25);
+      const level = 110 + platform.elevation;
+      if (!inPool && !open && level >= state.bedding.depth - .5 && !found.some(s => Math.abs(s.point[2] - level) < .1))
+        found.push({ point: [x, y, level], region: "platform" });
+    }
+    // Ground furniture remains usable after its last platform is removed. A pool
+    // below the bedding surface still cuts its real cavity out of this floor.
+    const inBasinCavity = platforms.some(p => p.baseInsert === "pool" && modelIndex.B01.bounds[2] + p.elevation < state.bedding.depth - 1
+      && Math.hypot(x - p.x - 100, y - p.y - 100) < 82 + radius * .3);
+    if (!inBasinCavity && x >= ground.minX + radius && x <= ground.maxX - radius && y >= ground.minY + radius && y <= ground.maxY - radius)
+      found.push({ point: [x, y, state.bedding.depth], region: state.bedding.depth ? "bedding" : "ground" });
     if (boxes.some(({ box }) => x >= box[0] - 1 && x <= box[3] + 1 && y >= box[1] - 1 && y <= box[4] + 1)) {
-      const high = 600 + elevation;
       for (const hit of hits([x, y, high], down, high + 2)) {
-        if (/^(P01|H0[1-6]|[LX]0[1-4]|B01)$/.test(hit.part) || hit.normal.z < .44 || hit.point.z < state.bedding.depth - .5) continue;
+        if (/^(P01|H0[1-6]|[LXY]0[1-4]|B01)$/.test(hit.part) || hit.normal.z < .44 || hit.point.z < state.bedding.depth - .5) continue;
         const part = hit.part;
         const region = part === "G05" ? "stairs" : part;
         if (!found.some(s => Math.abs(s.point[2] - hit.point.z) < 1)) found.push({ point: [x, y, hit.point.z], region });
@@ -259,18 +272,19 @@ function makeProbe(state: AssemblyState, variant: HamsterVariant, spatial: Trian
 
 interface Excursion { node: number; points: Vec3[]; kind: "burrow" | "basin" }
 function excursions(state: AssemblyState, variant: HamsterVariant, nodes: HamsterNavNode[], probe: WorldProbe): Excursion[] {
-  const result: Excursion[] = [], elevation = getDisplayElevation(state), level = 110 + elevation, radius = variant.size * .24;
+  const result: Excursion[] = [], radius = variant.size * .24;
   const nearest = (point: Vec3, max: number) => {
     let best = -1, length = max;
     nodes.forEach((n, i) => { const d = distance(n.point, point); if (n.links.length && d < length) { best = i; length = d; } }); return best;
   };
   for (const platform of getPlatforms(state)) {
+    const elevation = platform.elevation, level = 110 + elevation;
     for (const [id, x, y] of openings) {
       if (!platform.removedCovers.includes(id) || !canUseBurrow(variant.size, 33, level - state.bedding.depth)) continue;
       for (const [nx, ny] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
         const cx = x + platform.x, cy = y + platform.y;
         const at = nearest([cx + nx * (33 + radius * .5), cy + ny * (33 + radius * .5), level], STEP * 1.6);
-        if (at < 0 || nodes[at].region === "bedding") continue;
+        if (at < 0 || nodes[at].region !== "platform" || Math.abs(nodes[at].point[2] - level) > 4) continue;
         const above: Vec3 = [cx, cy, level + 2];
         if (!probe.clear(above) || !probe.straight([nodes[at].point[0], nodes[at].point[1], level + variant.size * .3], [cx, cy, level + variant.size * .3])) continue;
         const below: Vec3 = [cx, cy, Math.min(level - 12, state.bedding.depth - variant.size * .45)];
@@ -295,11 +309,16 @@ function excursions(state: AssemblyState, variant: HamsterVariant, nodes: Hamste
   return result;
 }
 
+/** Finite ground envelope also exists when every platform has been removed. */
+function hamsterGroundBounds(state: AssemblyState) {
+  const bounds = getLayoutFootprint(state);
+  return { minX: bounds.minX - 50, minY: bounds.minY - 50, maxX: bounds.maxX + 50, maxY: bounds.maxY + 50 };
+}
+
 function* buildNetwork(state: AssemblyState, variant: HamsterVariant, probe: WorldProbe): Generator<void, HamsterNavNode[]> {
-  const platforms = getPlatforms(state), seen = new Set<string>(), samples: HamsterWalkSample[] = [];
-  for (const platform of platforms) for (let x = Math.ceil(platform.x / STEP) * STEP; x <= platform.x + 300; x += STEP) for (let y = Math.ceil(platform.y / STEP) * STEP; y <= platform.y + 300; y += STEP) {
-    const key = `${x},${y}`;
-    if (!seen.has(key)) { seen.add(key); samples.push(...probe.floors(x, y)); }
+  const bounds = hamsterGroundBounds(state), samples: HamsterWalkSample[] = [];
+  for (let x = Math.ceil(bounds.minX / STEP) * STEP; x <= bounds.maxX; x += STEP) for (let y = Math.ceil(bounds.minY / STEP) * STEP; y <= bounds.maxY; y += STEP) {
+    samples.push(...probe.floors(x, y));
     yield;
   }
   // Allocate links separately so geometry queries are spread over animation frames.
@@ -334,7 +353,7 @@ export function createHamsterSimulation(scene: THREE.Scene): { update(state: Ass
   let nodes: HamsterNavNode[] = [], trips: Excursion[] = [], currentNode = -1, route: number[] = [], targetTrip: Excursion | null = null;
   let tripPoints: Vec3[] = [], tripIndex = 0, tripKind: Excursion["kind"] | null = null;
   let time = 0, phase = 0, pause = 1, specialPause = 0, facing = 0, slope = 0, action: "sniff" | "rear" | "dig" = "sniff";
-  let disposed = false, randomSeed = 92817;
+  let disposed = false, hasPosition = false, randomSeed = 92817;
   const random = () => { randomSeed = (Math.imul(randomSeed, 1664525) + 1013904223) >>> 0; return randomSeed / 4294967296; };
   const worldPoint = () => pet!.root.position.toArray() as Vec3;
   const choosePause = () => { pause = .7 + random() * 2.8; action = random() < .19 ? "rear" : random() < .25 ? "dig" : "sniff"; };
@@ -346,13 +365,15 @@ export function createHamsterSimulation(scene: THREE.Scene): { update(state: Ass
   const finishBuild = (graph: HamsterNavNode[]) => {
     nodes = graph;
     if (!pet || !variant || !state || !probe) return;
-    const prior = worldPoint(), level = 110 + getDisplayElevation(state);
+    const prior = worldPoint(), platform = getPlatforms(state)[0], ground = hamsterGroundBounds(state);
+    const level = platform ? 110 + platform.elevation : state.bedding.depth;
+    const spawn: Vec3 = platform ? [platform.x + 150, platform.y + 65, level] : [(ground.minX + ground.maxX) / 2, ground.minY + 50, level];
     const valid = nodes.map((n, i) => ({ n, i })).filter(({ n }) => n.links.length);
-    const nearby = valid.filter(({ n }) => distance(n.point, prior) < STEP * 1.7);
+    const nearby = hasPosition ? valid.filter(({ n }) => distance(n.point, prior) < STEP * 1.7) : [];
     // On initial placement use the accessible main platform, never an isolated roof.
-    const first = nearby[0] ?? valid.filter(({ n }) => Math.abs(n.point[2] - level) < 6).sort((a, b) => lengthXY(a.n.point, [150, 65, level]) - lengthXY(b.n.point, [150, 65, level]))[0] ?? valid[0];
+    const first = nearby[0] ?? valid.filter(({ n }) => Math.abs(n.point[2] - level) < 6).sort((a, b) => lengthXY(a.n.point, spawn) - lengthXY(b.n.point, spawn))[0] ?? valid[0];
     if (!first) { pet.root.visible = false; group.userData.navigation = { ready: true, nodes: 0 }; return; }
-    currentNode = first.i; pet.root.position.set(...first.n.point); pet.root.visible = true;
+    currentNode = first.i; pet.root.position.set(...first.n.point); pet.root.visible = true; hasPosition = true;
     route = []; trips = excursions(state, variant, nodes, probe); targetTrip = null; tripPoints = []; tripKind = null;
     pause = .35;
     const reachable = componentOf(currentNode);
@@ -360,7 +381,7 @@ export function createHamsterSimulation(scene: THREE.Scene): { update(state: Ass
       reachableRegions: [...new Set(reachable.map(i => nodes[i].region))], maxHeight: Math.max(...reachable.map(i => nodes[i].point[2])), minHeight: Math.min(...reachable.map(i => nodes[i].point[2])),
       interiors: state.items.filter(item => ["villa", "l-house", "cube-house", "roof-cottage"].includes(item.productId)).map(item => {
         const source: Vec3 = item.productId === "villa" ? [100, 235, 110] : item.productId === "l-house" ? [50, 145, 0] : item.productId === "cube-house" ? [50, 50, 0] : [78, 239, 200];
-        const target = transformPoint(source, getProduct(item.productId), item); target[2] += getDisplayElevation(state!);
+        const target = transformPoint(source, getProduct(item.productId), item); target[2] += getItemDisplayElevation(state!, item);
         return { id: item.id, reachable: reachable.some(i => lengthXY(nodes[i].point, target) < STEP * 2 && Math.abs(nodes[i].point[2] - target[2]) < 8) };
       }) };
   };
@@ -398,14 +419,13 @@ export function createHamsterSimulation(scene: THREE.Scene): { update(state: Ass
       if (disposed) return;
       const desired = HAMSTER_VARIANTS.find(v => v.id === next.hamster);
       state = next;
-      const nextSignature = JSON.stringify({ hamster: next.hamster, leg: next.legHeight, bedding: next.bedding, platforms: getPlatforms(next).map(p => [p.id, p.x, p.y, p.baseInsert, p.removedCovers]), items: next.items.map(i => [i.id, i.productId, i.x, i.y, i.z, i.rotation, i.parentId]) });
-      if (!desired) { disposePet(pet); pet = null; variant = undefined; signature = nextSignature; building = null; nodes = []; trips = []; return; }
+      const nextSignature = JSON.stringify({ hamster: next.hamster, bedding: next.bedding, platforms: getPlatforms(next).map(p => [p.id, p.x, p.y, p.legHeight, p.elevation, p.baseInsert, p.removedCovers]), items: next.items.map(i => [i.id, i.productId, i.x, i.y, i.z, i.rotation, i.parentId, i.doorSide]) });
+      if (!desired) { disposePet(pet); pet = null; variant = undefined; hasPosition = false; signature = nextSignature; building = null; nodes = []; trips = []; return; }
       if (nextSignature === signature && pet) return;
       const oldPosition = pet?.root.position.clone();
       if (variant?.id !== desired.id || !pet) { disposePet(pet); pet = makePet(desired); group.add(pet.root); if (oldPosition) pet.root.position.copy(oldPosition); }
       variant = desired; signature = nextSignature;
       const colliders = collectColliders(scene);
-      if (!colliders.length) { signature = ""; pet.root.visible = false; return; }
       const selectedVariant = variant;
       building = (function* () {
         const spatial = yield* indexTriangles(colliders);

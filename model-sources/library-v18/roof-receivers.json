@@ -1,0 +1,592 @@
+[
+  {
+    "name": "奶糖左开口",
+    "steel_count": 8,
+    "steel_diameter_mm": 12,
+    "steel_thickness_mm": 2,
+    "cavity_diameter_mm": 12.2,
+    "cavity_depth_mm": 2,
+    "top_z": 100,
+    "roof_cover_mm": 0.4,
+    "print_cavity_z": [
+      0.4,
+      2.4
+    ],
+    "pause_before_z": 2.6,
+    "centers": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        90
+      ],
+      [
+        90,
+        10
+      ],
+      [
+        90,
+        90
+      ],
+      [
+        110,
+        10
+      ],
+      [
+        110,
+        90
+      ],
+      [
+        190,
+        10
+      ],
+      [
+        190,
+        90
+      ]
+    ],
+    "watertight": true,
+    "body_unchanged": false,
+    "assembly_intersection_mm3": -4.733830339088726e-13,
+    "checks": [
+      {
+        "x": 10,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      }
+    ]
+  },
+  {
+    "name": "奶糖右开口",
+    "steel_count": 8,
+    "steel_diameter_mm": 12,
+    "steel_thickness_mm": 2,
+    "cavity_diameter_mm": 12.2,
+    "cavity_depth_mm": 2,
+    "top_z": 100,
+    "roof_cover_mm": 0.4,
+    "print_cavity_z": [
+      0.4,
+      2.4
+    ],
+    "pause_before_z": 2.6,
+    "centers": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        90
+      ],
+      [
+        90,
+        10
+      ],
+      [
+        90,
+        90
+      ],
+      [
+        110,
+        10
+      ],
+      [
+        110,
+        90
+      ],
+      [
+        190,
+        10
+      ],
+      [
+        190,
+        90
+      ]
+    ],
+    "watertight": true,
+    "body_unchanged": false,
+    "assembly_intersection_mm3": 6.729485249520586e-13,
+    "checks": [
+      {
+        "x": 10,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      }
+    ]
+  },
+  {
+    "name": "四格双室",
+    "steel_count": 16,
+    "steel_diameter_mm": 12,
+    "steel_thickness_mm": 2,
+    "cavity_diameter_mm": 12.2,
+    "cavity_depth_mm": 2,
+    "top_z": 100,
+    "roof_cover_mm": 0.4,
+    "print_cavity_z": [
+      0.4,
+      2.4
+    ],
+    "pause_before_z": 2.6,
+    "centers": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        90
+      ],
+      [
+        10,
+        110
+      ],
+      [
+        10,
+        190
+      ],
+      [
+        90,
+        10
+      ],
+      [
+        90,
+        90
+      ],
+      [
+        90,
+        110
+      ],
+      [
+        90,
+        190
+      ],
+      [
+        110,
+        10
+      ],
+      [
+        110,
+        90
+      ],
+      [
+        110,
+        110
+      ],
+      [
+        110,
+        190
+      ],
+      [
+        190,
+        10
+      ],
+      [
+        190,
+        90
+      ],
+      [
+        190,
+        110
+      ],
+      [
+        190,
+        190
+      ]
+    ],
+    "watertight": true,
+    "body_unchanged": false,
+    "assembly_intersection_mm3": -3.304023721284466e-13,
+    "checks": [
+      {
+        "x": 10,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      }
+    ]
+  },
+  {
+    "name": "L型转角屋",
+    "steel_count": 12,
+    "steel_diameter_mm": 12,
+    "steel_thickness_mm": 2,
+    "cavity_diameter_mm": 12.2,
+    "cavity_depth_mm": 2,
+    "top_z": 90,
+    "roof_cover_mm": 0.4,
+    "print_cavity_z": [
+      0.4,
+      2.4
+    ],
+    "pause_before_z": 2.6,
+    "centers": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        90
+      ],
+      [
+        10,
+        110
+      ],
+      [
+        10,
+        190
+      ],
+      [
+        90,
+        10
+      ],
+      [
+        90,
+        90
+      ],
+      [
+        90,
+        110
+      ],
+      [
+        90,
+        190
+      ],
+      [
+        110,
+        110
+      ],
+      [
+        110,
+        190
+      ],
+      [
+        190,
+        110
+      ],
+      [
+        190,
+        190
+      ]
+    ],
+    "watertight": true,
+    "body_unchanged": false,
+    "assembly_intersection_mm3": 5.031530747601209e-13,
+    "checks": [
+      {
+        "x": 10,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 110,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 110,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 190,
+        "y": 190,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      }
+    ]
+  },
+  {
+    "name": "方糖小屋",
+    "steel_count": 4,
+    "steel_diameter_mm": 12,
+    "steel_thickness_mm": 2,
+    "cavity_diameter_mm": 12.2,
+    "cavity_depth_mm": 2,
+    "top_z": 90,
+    "roof_cover_mm": 0.4,
+    "print_cavity_z": [
+      0.4,
+      2.4
+    ],
+    "pause_before_z": 2.6,
+    "centers": [
+      [
+        10,
+        10
+      ],
+      [
+        10,
+        90
+      ],
+      [
+        90,
+        10
+      ],
+      [
+        90,
+        90
+      ]
+    ],
+    "watertight": true,
+    "body_unchanged": false,
+    "assembly_intersection_mm3": -5.384581669432009e-13,
+    "checks": [
+      {
+        "x": 10,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 10,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 10,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      },
+      {
+        "x": 90,
+        "y": 90,
+        "cavity_clear": true,
+        "cover_mm": 0.4
+      }
+    ]
+  }
+]

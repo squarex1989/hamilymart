@@ -1,3 +1,11 @@
+import Onboarding from "./components/Onboarding";
+import { createDraftStorage } from "./lib/storage";
+import { hasSeenIntroduction, rememberIntroduction } from "./lib/onboarding";
+import ProductDetailPreview from "./components/ProductDetailPreview";
+import { getProductDetail } from "./lib/product-detail";
+import { MATERIAL_NOTE, CARE_NOTE } from "./data/product-details";
+import { bindDialogViewport } from "./lib/dialog-viewport";
+import CageSettings from "./components/CageSettings";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownToLine, ChevronDown, FileText, Info, Layers2, Lightbulb, Plus, Ruler, Sparkles, Trash2, X } from "lucide-react";
 import AssemblyScene from "./components/AssemblyScene";
@@ -32,6 +40,7 @@ import {
   setPlatformColors,
   setCoverRemoved,
   setLegHeight,
+  setItemDoorSide,
   setPlatformPool,
   tryPlace,
 } from "./lib/assembly";
@@ -41,8 +50,8 @@ import { decodePastedDesign } from "./lib/import-design";
 import { selectManualCopyText } from "./lib/clipboard";
 import type { DraftSession } from "./lib/draft-session";
 import { createInspiredDesign } from "./lib/inspiration";
-const platformName = (id: string) => id === "base3" ? "第三平台" : id === "base2" ? "第二平台" : "基础平台";
-const HOUSE_ORDER = ["villa", "roof-cottage", "l-house", "cube-house"];
+const platformName = (id: string) => id === "base4" ? "第四平台" : id === "base3" ? "第三平台" : id === "base2" ? "第二平台" : "基础平台";
+const HOUSE_ORDER = ["villa", "roof-cottage", "pokemon-center", "l-house", "cube-house"];
 const money = (cents: number) =>
   new Intl.NumberFormat("zh-CN", {
     style: "currency",
@@ -86,9 +95,29 @@ export default function App({ startup }: { startup: DraftSession }) {
   const [migrationNotice, setMigrationNotice] = useState(startup.messages.join(" "));
   const [activeProduct, setActiveProduct] = useState<string | null>(null),
     [rotation, setRotation] = useState<Rotation>(0);
+  const [connectionPlatform, setConnectionPlatform] = useState<PlatformId | null>(null);
   const [category, setCategory] = useState("all");
-  const [showDimensions, setShowDimensions] = useState(false);
-  const [modal, setModal] = useState<"import" | "order" | "bedding" | "clear" | null>(null);
+  const [showDimensions, setShowDimensions] = useState(!!startup.state.cage);
+  useEffect(() => { if (state.cage) setShowDimensions(true); }, [state.cage]);
+  const [modal, setModal] = useState<"import" | "order" | "bedding" | "clear" | "detail" | "intro" | null>(null);
+  const introStorage = useMemo(() => createDraftStorage(), []);
+  const [showIntroEntry, setShowIntroEntry] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void introStorage.then(hasSeenIntroduction).then(seen => {
+      if (!active) return;
+      setShowIntroEntry(seen);
+      if (!seen) setModal(current => current ?? "intro");
+    });
+    return () => { active = false; };
+  }, [introStorage]);
+  function closeModal() {
+    if (modal === "intro") {
+      setShowIntroEntry(true);
+      void introStorage.then(rememberIntroduction);
+    }
+    setModal(null);
+  }
   const [showOrderText, setShowOrderText] = useState(false);
   const [importCode, setImportCode] = useState(""),
     [importError, setImportError] = useState(""),
@@ -96,6 +125,7 @@ export default function App({ startup }: { startup: DraftSession }) {
   const [ready, setReady] = useState(false),
     [colorPart, setColorPart] = useState("P01"),
     [saveStatus, setSaveStatus] = useState<"saving" | "saved" | "failed">("saving");
+  const [saveNoticeDismissed, setSaveNoticeDismissed] = useState(false);
   const [history, setHistory] = useState<StyledAssemblySnapshot[]>([]);
   const [future, setFuture] = useState<StyledAssemblySnapshot[]>([]);
   const [styleIndex, setStyleIndex] = useState(startup.styleIndex);
@@ -111,17 +141,17 @@ export default function App({ startup }: { startup: DraftSession }) {
   const platforms = getPlatforms(state);
   const selectedCover = selectedId?.startsWith("cover:") ? selectedId.split(":")[2] : null;
   const selectedPool = selectedId?.startsWith("pool:") ?? false;
-  const selectedPlatformId = (selectedId === "base" || selectedId === "base2" || selectedId === "base3"
+  const selectedPlatformId = (selectedId === "base" || selectedId === "base2" || selectedId === "base3" || selectedId === "base4"
     ? selectedId : selectedCover || selectedPool ? selectedId!.split(":")[1] : null) as PlatformId | null;
   const selectedPlatform = platforms.find(p => p.id === selectedPlatformId);
-  const editingPlatform = selectedId === "base" || selectedId === "base2" || selectedId === "base3";
+  const editingPlatform = selectedId === "base" || selectedId === "base2" || selectedId === "base3" || selectedId === "base4";
   const selectedItem = state.items.find((i) => i.id === selectedId);
   const selectedProduct = selectedItem
     ? getProduct(selectedItem.productId)
     : null;
   const selectedParts =
-    selectedPlatform
-      ? getBaseParts(state.legHeight, selectedPlatform.baseInsert, selectedPlatform.removedCovers).filter(
+    selectedPool ? getEditableProductColorParts("pool") : selectedPlatform
+      ? getBaseParts(selectedPlatform.legHeight, selectedPlatform.baseInsert, selectedPlatform.removedCovers).filter(
           (p) => selectedCover ? p.id === selectedCover : selectedPool ? p.id === "B01" : p.id === "P01" || /^[LXY]01$/.test(p.id),
         )
       : (selectedProduct ? getEditableProductColorParts(selectedProduct.id) : []);
@@ -133,8 +163,10 @@ export default function App({ startup }: { startup: DraftSession }) {
     selectedParts.find((p) => p.id === colorPart)?.defaultColor ??
     "cream";
   const visibleProducts = VISIBLE_PRODUCTS.filter(
-    (p) => category === "all" || p.category === category,
-  ).sort((a, b) => (HOUSE_ORDER.includes(a.id) ? HOUSE_ORDER.indexOf(a.id) : 20) - (HOUSE_ORDER.includes(b.id) ? HOUSE_ORDER.indexOf(b.id) : 20));
+    (p) => category === "all" || (p.id.startsWith("stairs-") ? "pipe" : p.category) === category,
+  ).sort((a, b) => category === "pipe"
+    ? Number(b.id.startsWith("stairs-")) - Number(a.id.startsWith("stairs-"))
+    : (HOUSE_ORDER.includes(a.id) ? HOUSE_ORDER.indexOf(a.id) : 20) - (HOUSE_ORDER.includes(b.id) ? HOUSE_ORDER.indexOf(b.id) : 20));
   function notify(message: string) {
     setToast(message);
     clearTimeout(toastTimer.current);
@@ -170,31 +202,33 @@ export default function App({ startup }: { startup: DraftSession }) {
     if (!result.ok) { notify(result.reason); return; }
     commit(colorNewAdditions(state, result.state, styleIndex));
     setViewResetKey(value => value + 1);
-    select(getPlatforms(result.state).at(-1)!.id);
+    select(getPlatforms(result.state).find(platform => !platforms.some(previous => previous.id === platform.id))!.id);
   }
   function chooseBedding(bedding: Bedding) {
-    if (applyAction(setBedding(state, bedding))) setModal(null);
+    applyAction(setBedding(state, bedding));
   }
   useEffect(() => {
     let current = true;
     setSaveStatus("saving");
     void startup.persist(state, styleIndex).then(success => {
-      if (current) setSaveStatus(success ? "saved" : "failed");
+      if (current) { setSaveStatus(success ? "saved" : "failed"); if (success) { setSaveNoticeDismissed(false); if (startup.messages.some(message => message.startsWith("本地搭配未能载入"))) setMigrationNotice(""); } }
     });
     return () => { current = false; };
   }, [state, styleIndex, startup]);
   useEffect(() => {
     setColorPart(selectedParts[0]?.id ?? "P01");
-  }, [selectedId, state.legHeight, selectedPlatform?.baseInsert, selectedProduct]);
+  }, [selectedId, selectedPlatform?.legHeight, selectedPlatform?.baseInsert, selectedProduct]);
   useEffect(() => {
     if (!modal) return;
+    const releaseViewport = bindDialogViewport();
+    const scrollX = window.scrollX, scrollY = window.scrollY;
     const previous = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setModal(null);
+      if (e.key === "Escape") closeModal();
       if (e.key === "Tab") {
         const nodes = [
           ...document.querySelectorAll<HTMLElement>(
-            '.modal button,.modal textarea,.modal input,.modal [tabindex="0"]',
+            '.modal button,.modal summary,.modal textarea,.modal input,.modal select,.modal [tabindex="0"]',
           ),
         ].filter((n) => !n.hasAttribute("disabled"));
         const first = nodes[0],
@@ -210,16 +244,20 @@ export default function App({ startup }: { startup: DraftSession }) {
     };
     document.addEventListener("keydown", onKey);
     const focus = setTimeout(
-      () => document.querySelector<HTMLElement>(".modal button")?.focus(),
+      () => document.querySelector<HTMLElement>(".modal button")?.focus({ preventScroll: true }),
       0,
     );
     return () => {
       document.removeEventListener("keydown", onKey);
       clearTimeout(focus);
-      previous?.focus();
+      releaseViewport();
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+      previous?.focus({ preventScroll: true });
+      window.scrollTo(scrollX, scrollY);
     };
   }, [modal]);
   function select(id: string | null) {
+    if (connectionPlatform && (!id || (id !== connectionPlatform && !id.startsWith(`cover:${connectionPlatform}:`)))) setConnectionPlatform(null);
     setSelectedId(id);
     setActiveProduct(null);
     if (id) {
@@ -286,15 +324,15 @@ export default function App({ startup }: { startup: DraftSession }) {
   }
   function removeSelected() {
     if (selectedCover && selectedPlatformId) {
-      if (applyAction(setCoverRemoved(state, selectedPlatformId, selectedCover, true), "小圆盖已移除，可以看到留洞效果")) select(selectedPlatformId);
+      if (applyAction(setCoverRemoved(state, selectedPlatformId, selectedCover, !selectedPlatform?.removedCovers.includes(selectedCover)))) { if (!connectionPlatform) select(selectedPlatformId); }
       return;
     }
     if (selectedPool && selectedPlatformId) {
-      if (applyAction(setPlatformPool(state, selectedPlatformId, false), "泳池已移除，大圆盖已放回")) select(selectedPlatformId);
+      if (applyAction(setPlatformPool(state, selectedPlatformId, false), "泳池已移除，洞口已封闭")) select(selectedPlatformId);
       return;
     }
-    if (selectedId === "base2" || selectedId === "base3") {
-      if (applyAction(removePlatform(state, selectedId), `${platformName(selectedId)}及其上方组件已移除`)) select("base");
+    if (editingPlatform && selectedPlatformId) {
+      if (applyAction(removePlatform(state, selectedPlatformId), "平台已移除，上方组件已放到垫料或地面")) { setConnectionPlatform(null); select(null); }
       return;
     }
     if (!selectedItem) return;
@@ -305,6 +343,7 @@ export default function App({ startup }: { startup: DraftSession }) {
   function restore() {
     try {
       const result = decodePastedDesign(importCode);
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
       commit(result.state, restoreCatalogStyle(result.state, encodeConfig(result.state)));
       setViewResetKey(key => key + 1);
       setMigrationNotice(result.messages.join(" "));
@@ -318,29 +357,10 @@ export default function App({ startup }: { startup: DraftSession }) {
       );
     }
   }
-  function getOrderText() {
-    return [
-      "HamilyMart 搭配清单",
-      ...orderLines.map(
-        (l) =>
-          `${l.sku} | ${l.name} × ${l.quantity} | ${money(l.total)} | 颜色：${Object.entries(
-            l.colors,
-          )
-            .map(
-              ([part, c]) =>
-                `${COLOR_SLOTS[part]?.role ?? part} ${COLORS.find((v) => v.id === c)?.name ?? c}`,
-            )
-            .join("、")} | 包含：${l.parts.join("、")}`,
-      ),
-      `合计：${money(total)}`,
-      "搭配编号：",
-      configurationCode,
-    ].join("\n");
-  }
   function orderTextButton() {
-    return <button className="primary-button full-width" onClick={() => setShowOrderText(value => !value)} aria-expanded={showOrderText} aria-controls="manual-order-text">
+    return <button className="primary-button full-width" onClick={() => setShowOrderText(true)} aria-expanded={showOrderText} aria-controls="manual-order-text">
       <FileText size={16} />
-      {showOrderText ? "收起可复制清单" : "展示可复制清单"}
+      复制装配清单
     </button>;
   }
   function undo() {
@@ -379,40 +399,49 @@ export default function App({ startup }: { startup: DraftSession }) {
     setMigrationNotice("");
     setToast("");
   }
-  const selectedTitle = selectedCover ? `小圆盖 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圆形泳池" : editingPlatform ? platformName(selectedId!) : selectedProduct?.name ?? "组件设置";
+  const selectedTitle = selectedCover ? `连通孔 ${Number(selectedCover.slice(-1))}` : selectedPool ? "圆形泳池" : editingPlatform ? platformName(selectedId!) : selectedProduct?.name ?? "组件设置";
+  const detail = useMemo(() => modal === "detail" ? getProductDetail(state, selectedId) : null, [modal, state, selectedId]);
   const workbench: WorkbenchProps = {
     state, styleIndex, ready, selectedId, title: selectedTitle, products: visibleProducts, parts: selectedParts,
     colorPart, currentColor, category, canUndo: !!history.length, canRedo: !!future.length,
     editingPlatform, platformId: selectedPlatformId,
     onCategory: setCategory, onSelect: select, onAdd: addProduct,
     onColorPart: setColorPart, onColor: setColor,
-    onLegHeight: height => applyAction(setLegHeight(state, height)),
+    onLegHeight: (height, applyAll = false) => { if (selectedPlatformId) applyAction(setLegHeight(state, height, selectedPlatformId, applyAll)); },
+    onDoorSide: side => { if (selectedItem) applyAction(setItemDoorSide(state, selectedItem.id, side)); },
     onRestoreCover: (platform, cover) => applyAction(setCoverRemoved(state, platform, cover, false)),
-    onUndo: undo, onRedo: redo,
+    onUndo: undo, onRedo: redo, onDetails: () => setModal("detail"),
   };
   return <div className={`app-shell ${mobile ? "is-mobile" : "is-desktop"}`} onContextMenu={event => { if (!(event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)) event.preventDefault(); }} onDragStart={event => event.preventDefault()}>
     <header className="site-header minitool-header">
       <a className="brand" href="#" onClick={event => { event.preventDefault(); }} aria-label="HamilyMart 仓鼠造屋所"><HamsterMark /><span>Hamily<span className="brand-light">Mart</span><small>仓鼠造屋所</small></span></a>
-      <div className="header-actions"><button className="header-import" onClick={() => { setImportCode(""); setImportError(""); setModal("import"); }}>导入搭配</button></div>
+      <div className="header-actions">{showIntroEntry && <button className="header-import header-intro" onClick={() => setModal("intro")}>介绍</button>}<button className="header-import" onClick={() => { setImportCode(""); setImportError(""); setModal("import"); }}>导入</button></div>
     </header>
     <main className="workspace">
       <section className="studio" aria-label="3D 搭建工作台">
-        <AssemblyScene ref={scene} state={state} viewResetKey={viewResetKey} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
+        <AssemblyScene ref={scene} suspended={modal === "intro"} state={state} viewResetKey={viewResetKey} selectedId={selectedId} selectedTitle={selectedTitle} activeProduct={activeProduct} rotation={rotation}
           getPreviewColors={productId => getProductStyleColors(productId, styleIndex)}
+          connectionPlatform={connectionPlatform}
+          onConnection={() => { if (selectedPlatformId) setConnectionPlatform(selectedPlatformId); }}
+          onExitConnection={() => { setConnectionPlatform(null); select(connectionPlatform); }}
+          canConnect={editingPlatform && !connectionPlatform}
+          removeTitle={selectedCover ? (selectedPlatform?.removedCovers.includes(selectedCover) ? "封闭" : "开洞") : "移除"}
           showDimensions={showDimensions} canRotate={!!selectedItem}
-          canRemove={!!(selectedItem || selectedCover || selectedPool || selectedId === "base2" || selectedId === "base3")}
+          canRemove={!!(selectedItem || selectedCover || selectedPool || editingPlatform)}
           onRotate={rotateSelected} onRemove={removeSelected} onSelect={select} onDrop={drop}
           onDragEnd={() => { dragFinishedAt.current = Date.now(); }} onReady={() => setReady(true)} onError={notify} />
         <button type="button" className="canvas-dimensions" aria-label="显示尺寸" title="显示尺寸" aria-pressed={showDimensions} onClick={() => setShowDimensions(value => !value)}><Ruler size={20} aria-hidden="true" /></button>
+        <div className="canvas-social-actions">
         <button type="button" className="header-price canvas-price" onClick={() => setModal("order")} aria-label={`搭配清单，总价 ${money(total)}`}><span>{money(total)}</span><ChevronDown size={14} /></button>
+        </div>
         <div className="canvas-bottom-actions" aria-label="搭建选项">
-          <button disabled={platforms.length >= 3} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
+          <button disabled={platforms.length >= 4} onClick={addNextPlatform}><Plus size={17} /><span>增加平台</span></button>
           <button disabled={!ready} onClick={giveInspiration}><Lightbulb size={16} /><span>给点灵感</span></button>
           <button onClick={nextStyle}><Sparkles size={16} /><span>换个配色</span></button>
-          <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料高度</span></button>
+          <button onClick={() => setModal("bedding")}><Layers2 size={16} /><span>垫料与笼子</span></button>
           <button className="clear-design-button" aria-label="清空当前设计" title="清空当前设计" onClick={() => setModal("clear")}><Trash2 size={18} /></button>
         </div>
-        {(migrationNotice || toast || saveStatus !== "saved") && <div className="canvas-notice" role="status"><Info size={16} /><span>{migrationNotice || toast || (saveStatus === "saving" ? "正在保存本地搭配…" : "暂未保存，请在清单中手动复制搭配编号")}</span><button aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); }}><X size={16} /></button></div>}
+        {(migrationNotice || toast || (saveStatus === "failed" && !saveNoticeDismissed)) && <div className="canvas-notice" role="status"><Info size={16} /><span>{migrationNotice || toast || (startup.saveError ? `${startup.saveError}，本次搭配尚未保存，可在清单中复制编号留存` : "本次搭配尚未保存，可在清单中复制编号留存")}</span><button aria-label="关闭提示" onClick={() => { setMigrationNotice(""); setToast(""); setSaveNoticeDismissed(true); }}><X size={16} /></button></div>}
       </section>
       {mobile ? <MobileWorkbench {...workbench} /> : <DesktopWorkbench {...workbench} onStartDrag={(id, event) => {
         if (event.button !== 0 || !ready || id === "pool") return;
@@ -420,15 +449,23 @@ export default function App({ startup }: { startup: DraftSession }) {
         scene.current?.startDrag(id, event.clientX, event.clientY, event.pointerId);
       }} />}
     </main>
-    {modal && <div className="modal-backdrop" onClick={event => { if (event.target === event.currentTarget) setModal(null); }}>
-      <section className={`modal ${modal === "order" ? "order-modal" : ""} ${modal === "bedding" ? "bedding-modal" : ""}`} role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <button className="round-button modal-close" aria-label="关闭弹窗" onClick={() => setModal(null)}><X size={20} /></button>
+    {modal && <div className={`modal-backdrop ${modal === "detail" ? "product-detail-backdrop" : modal === "order" ? "order-backdrop" : modal === "intro" ? "onboarding-backdrop" : ""}`} onClick={event => { if (event.target === event.currentTarget) closeModal(); }}>
+      <section className={`modal ${modal === "intro" ? "onboarding-modal" : ""} ${modal === "order" ? "order-modal" : ""} ${modal === "bedding" ? "bedding-modal" : ""} ${modal === "detail" ? "product-detail-modal" : ""}`} role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button className="round-button modal-close" aria-label="关闭弹窗" onClick={closeModal}><X size={20} /></button>
+        {modal === "intro" && <Onboarding onFinish={closeModal} />}
+        {modal === "detail" && detail && <>
+          <header className="product-detail-heading"><h2 id="modal-title">{detail.title}</h2></header>
+          <ProductDetailPreview detail={detail} />
+          <div className="product-detail-copy"><p>{detail.introduction}</p>
+            <details><summary>材料与清洁</summary><p>{MATERIAL_NOTE}</p><p>{CARE_NOTE}</p></details>
+          </div>
+        </>}
         {modal === "clear" && <><h2 id="modal-title">是否清空当前所有设计</h2><p className="modal-lead">清空后只保留一个基础平台。可以通过后退恢复。</p><div className="clear-design-actions"><button className="outline-button" onClick={() => setModal(null)}>取消</button><button className="primary-button" onClick={clearDesign}>确认清空</button></div></>}
-        {modal === "bedding" && <><h2 id="modal-title">设置垫料高度</h2><div className="bedding-options">
+        {modal === "bedding" && <><h2 id="modal-title">垫料与笼子</h2><h3>垫料高度</h3><div className="bedding-options">
           <button className={`bedding-option ${state.bedding.mode === "none" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "none"} onClick={() => chooseBedding({ mode: "none", depth: 0 })}><span className="bedding-preview" /><strong>不铺垫料</strong><span>0 cm</span></button>
           <button className={`bedding-option ${state.bedding.mode === "thin" ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thin"} onClick={() => chooseBedding({ mode: "thin", depth: 50 })}><span className="bedding-preview"><i style={{height:"18%"}} /></span><strong>薄铺</strong><span>5 cm</span></button>
           {([100, 200, 300] as const).map(depth => <button key={depth} className={`bedding-option ${state.bedding.mode === "thick" && state.bedding.depth === depth ? "selected" : ""}`} aria-pressed={state.bedding.mode === "thick" && state.bedding.depth === depth} onClick={() => chooseBedding({mode:"thick",depth})}><span className="bedding-preview"><i style={{height:`${depth / 4}%`}} /></span><strong>厚铺</strong><span>{depth / 10} cm</span></button>)}
-        </div></>}
+        </div><CageSettings cage={state.cage} onChange={cage => { commit({ ...state, cage }); if (cage) setShowDimensions(true); }} /></>}
         {modal === "import" && <>
           <h2 id="modal-title">导入搭配</h2>
           <p className="modal-lead">粘贴搭配清单或搭配编号，应用后会替换当前设计，可通过后退恢复。</p>
@@ -445,8 +482,8 @@ export default function App({ startup }: { startup: DraftSession }) {
                 </header>
                 <div className="order-modal-scroll">
                 {showOrderText && <div className="order-copy-fallback" id="manual-order-text">
-                  <p className="modal-lead">选中下方文字，通过系统文本选项手动复制；电脑可按 Ctrl/Cmd+C。搭配编号在清单末尾。</p>
-                  <textarea className="code-field" aria-label="可手动复制的清单和搭配编号" readOnly autoFocus rows={6} value={getOrderText()} onFocus={event => selectManualCopyText(event.currentTarget)} />
+                  <p className="modal-lead">长按下方搭配编号，选择系统“复制”；电脑可按 Ctrl/Cmd+C。</p>
+                  <textarea className="code-field" aria-label="可手动复制的搭配编号" readOnly autoFocus rows={6} value={configurationCode} onFocus={event => selectManualCopyText(event.currentTarget)} />
                 </div>}
                 <div className="order-lines">
                   {orderLines.map((line, i) => (

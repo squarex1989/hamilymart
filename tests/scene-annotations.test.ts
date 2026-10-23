@@ -85,3 +85,22 @@ test("real 30 cm leg meshes measure 31 cm overall and helpers or bedding never c
   assembly.add(fakeBedding, createSelectionBox(getRenderedModelBounds(assembly, "base")));
   assert.deepEqual(dimensionsInCentimeters(getRenderedModelBounds(assembly)), dimensions);
 });
+
+for (const runtime of ["../src/lib/scene-annotations", "../minitool/src/lib/scene-annotations"]) {
+  test(`${runtime}: dimensions exclude bedding and cage, including when a legless model rests on bedding`, async () => {
+    const { getRenderedModelBounds: measure, dimensionsInCentimeters: centimeters } = await import(runtime);
+    const root = new THREE.Group();
+    const assembly = model([600, 300, 343], "assembly");
+    assembly.position.set(300, 150, 343 / 2);
+    const bedding = new THREE.Mesh(new THREE.BoxGeometry(1200, 600, 300));
+    bedding.position.set(300, 150, 150);
+    const cage = new THREE.Mesh(new THREE.BoxGeometry(1200, 600, 625));
+    root.add(assembly, bedding, cage);
+    for (const elevation of [0, 100, 300]) {
+      assembly.position.z = elevation + 343 / 2;
+      const bounds = measure(root);
+      assert.deepEqual(centimeters(bounds), [60, 30, 34.3]);
+      assert.equal(bounds.min.z, elevation, "height starts at the model, not the bedding floor");
+    }
+  });
+}
